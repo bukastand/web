@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Logo from "./Logo";
 
 export default function Footer() {
   const ref = useRef<HTMLElement>(null);
@@ -31,9 +32,17 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
-              <h3 className="text-xl font-bold text-white mb-3">
-                PAGODA<span className="text-[#22c55e]"> STUDIO</span>
-              </h3>
+              <div className="flex items-center gap-3 mb-3">
+                <Logo className="w-10 h-10" />
+                <div>
+                  <h3 className="text-xl font-bold text-white leading-tight">
+                    PAGODA<span className="text-[#22c55e]"> STUDIO</span>
+                  </h3>
+                  <span className="text-[10px] text-gray-600 tracking-[0.2em] uppercase">
+                    Web Development
+                  </span>
+                </div>
+              </div>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Jasa pembuatan website profesional untuk bisnis, instansi, dan
                 perusahaan. Siap membantu Anda tampil lebih baik di internet.
