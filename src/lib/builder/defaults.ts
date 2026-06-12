@@ -50,7 +50,7 @@ interface ElementDefaults {
 const elementDefaults: Record<ElementType, ElementDefaults> = {
   heading: {
     content: { text: "Judul Heading", level: "h2", align: "center" },
-    styles: { color: "#1e293b", fontSize: "2.25rem", fontWeight: "800", textAlign: "center", margin: "0 0 16px" },
+    styles: { color: "#1e293b", fontWeight: "800", textAlign: "center", margin: "0 0 16px" },
   },
   text: {
     content: { text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
