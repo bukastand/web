@@ -71,27 +71,37 @@ export default function BuilderTopBar({
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {/* Toggle Sidebar */}
         <button
           onClick={onToggleSidebar}
-          className={`p-1.5 rounded-lg transition-colors ${showSidebar ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-[#22c55e] bg-[#22c55e]/20"}`}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            showSidebar
+              ? "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+              : "text-[#22c55e] bg-[#22c55e]/15 border border-[#22c55e]/30"
+          }`}
           title={showSidebar ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
+          <span>{showSidebar ? "Sidebar" : "Sidebar"}</span>
         </button>
 
         {/* Toggle Style Panel */}
         <button
           onClick={onToggleStylePanel}
-          className={`p-1.5 rounded-lg transition-colors ${showStylePanel ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-[#22c55e] bg-[#22c55e]/20"}`}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            showStylePanel
+              ? "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+              : "text-[#22c55e] bg-[#22c55e]/15 border border-[#22c55e]/30"
+          }`}
           title={showStylePanel ? "Sembunyikan Style Panel" : "Tampilkan Style Panel"}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
           </svg>
+          <span>Style</span>
         </button>
 
         {/* Divider */}

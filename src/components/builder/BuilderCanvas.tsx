@@ -3,10 +3,10 @@
 import { useBuilder } from "@/lib/builder/store";
 import BuilderSection from "./BuilderSection";
 
-const viewportWidths: Record<string, string> = {
-  desktop: "max-w-[1200px]",
-  tablet: "max-w-[768px]",
-  mobile: "max-w-[375px]",
+const viewportWidths: Record<string, number> = {
+  desktop: 1200,
+  tablet: 768,
+  mobile: 375,
 };
 
 export default function BuilderCanvas({
@@ -53,8 +53,11 @@ export default function BuilderCanvas({
       )}
 
       <div className={`min-h-full flex flex-col items-center py-8 ${isFullscreen ? "pt-16" : ""}`}>
-        {/* Canvas frame with responsive width */}
-        <div className={`w-full ${viewportWidths[viewport] || "max-w-[1200px]"} transition-all duration-300 ${isFullscreen ? "" : ""}`}>
+        {/* Canvas frame with responsive width - using inline style for dynamic values */}
+        <div
+          className="w-full transition-all duration-300"
+          style={{ maxWidth: viewportWidths[viewport] || 1200 }}
+        >
           {/* Viewport frame in fullscreen */}
           {isFullscreen && viewport !== "desktop" && (
             <div className="mb-4 px-4">
@@ -62,7 +65,7 @@ export default function BuilderCanvas({
                 <div className="w-2 h-2 rounded-full bg-red-500" />
                 <div className="w-2 h-2 rounded-full bg-yellow-500" />
                 <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-xs text-gray-600 ml-2">{viewportWidths[viewport]?.replace("max-w-", "")}</span>
+                <span className="text-xs text-gray-600 ml-2">{viewportWidths[viewport]}px</span>
               </div>
             </div>
           )}
