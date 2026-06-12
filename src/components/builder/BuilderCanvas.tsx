@@ -3,7 +3,21 @@
 import { useBuilder } from "@/lib/builder/store";
 import BuilderSection from "./BuilderSection";
 
-export default function BuilderCanvas() {
+const viewportWidths: Record<string, string> = {
+  desktop: "max-w-[1200px]",
+  tablet: "max-w-[768px]",
+  mobile: "max-w-[375px]",
+};
+
+export default function BuilderCanvas({
+  viewport = "desktop",
+  isFullscreen = false,
+  onExitFullscreen,
+}: {
+  viewport?: "desktop" | "tablet" | "mobile";
+  isFullscreen?: boolean;
+  onExitFullscreen?: () => void;
+}) {
   const { currentPage, dispatch } = useBuilder();
 
   if (!currentPage) return null;
@@ -13,10 +27,46 @@ export default function BuilderCanvas() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#0a0f1e]">
-      <div className="min-h-full flex flex-col items-center py-8">
-        {/* Canvas frame */}
-        <div className="w-full max-w-[1200px]">
+    <div className="flex-1 overflow-y-auto bg-[#0a0f1e] relative">
+      {/* Fullscreen exit button */}
+      {isFullscreen && onExitFullscreen && (
+        <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
+          <button
+            onClick={onExitFullscreen}
+            className="flex items-center gap-2 px-4 py-2 bg-[#1e293b] border border-white/10 text-white text-sm font-medium rounded-xl hover:bg-[#334155] transition-all shadow-xl backdrop-blur-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Keluar Preview
+          </button>
+        </div>
+      )}
+
+      {/* Viewport indicator in fullscreen */}
+      {isFullscreen && (
+        <div className="fixed top-4 right-4 z-50">
+          <span className="px-3 py-1.5 bg-[#1e293b] border border-white/10 text-[10px] text-gray-400 rounded-lg uppercase tracking-wider shadow-xl backdrop-blur-sm">
+            {viewport === "desktop" ? "Desktop" : viewport === "tablet" ? "Tablet" : "Mobile"}
+          </span>
+        </div>
+      )}
+
+      <div className={`min-h-full flex flex-col items-center py-8 ${isFullscreen ? "pt-16" : ""}`}>
+        {/* Canvas frame with responsive width */}
+        <div className={`w-full ${viewportWidths[viewport] || "max-w-[1200px]"} transition-all duration-300 ${isFullscreen ? "" : ""}`}>
+          {/* Viewport frame in fullscreen */}
+          {isFullscreen && viewport !== "desktop" && (
+            <div className="mb-4 px-4">
+              <div className="rounded-2xl border border-white/10 bg-[#0f172a] px-3 py-2 flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+                <span className="text-xs text-gray-600 ml-2">{viewportWidths[viewport]?.replace("max-w-", "")}</span>
+              </div>
+            </div>
+          )}
+
           {/* Empty state */}
           {currentPage.sections.length === 0 && (
             <div className="flex flex-col items-center justify-center py-32 text-center">

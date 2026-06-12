@@ -13,6 +13,10 @@ import type { ElementType } from "@/lib/builder/types";
 export default function BuilderEditor() {
   const { currentPage, dispatch } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [showStylePanel, setShowStylePanel] = useState(true);
+  const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -90,11 +94,22 @@ export default function BuilderEditor() {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="h-screen flex flex-col bg-[#0f172a] overflow-hidden">
-        <BuilderTopBar />
+        {!isFullscreen && (
+          <BuilderTopBar
+            showSidebar={showSidebar}
+            onToggleSidebar={() => setShowSidebar(!showSidebar)}
+            showStylePanel={showStylePanel}
+            onToggleStylePanel={() => setShowStylePanel(!showStylePanel)}
+            viewport={viewport}
+            onViewportChange={setViewport}
+            isFullscreen={isFullscreen}
+            onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
+          />
+        )}
         <div className="flex-1 flex overflow-hidden">
-          <ElementSidebar />
-          <BuilderCanvas />
-          <StylePanel />
+          {showSidebar && !isFullscreen && <ElementSidebar />}
+          <BuilderCanvas viewport={viewport} isFullscreen={isFullscreen} onExitFullscreen={() => setIsFullscreen(false)} />
+          {showStylePanel && !isFullscreen && <StylePanel />}
         </div>
       </div>
       <DragOverlay>
