@@ -711,36 +711,74 @@ export default function StylePanel() {
           <div>
             <p className="text-[10px] text-gray-600 mb-3">Style di bawah akan diterapkan ke element ini</p>
             
-            {/* Elements that contain text show text-related style options */}
-            {!["image", "video", "spacer", "divider", "icon"].includes(selectedElement.type) && (
-              <>{renderSection("Teks", <>
-                {renderStyleField("Warna Teks", "color", "color")}
-                <FontSizeSlider
-                  value={selectedElement.styles.fontSize ?? ""}
-                  onChange={(v) => updateStyle("fontSize", v)}
-                />
-                {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
-                {(() => {
-                  const val = selectedElement.styles.fontFamily ?? "";
-                  return (
-                    <div className="mb-3">
-                      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Family</label>
-                      <select
-                        value={val}
-                        onChange={(e) => updateStyle("fontFamily", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                        style={{ colorScheme: 'dark' }}
-                      >
-                        <option value="" className="bg-[#1e293b] text-white">Default</option>
-                        {fontOptions.map((f) => (
-                          <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>
-                        ))}
-                      </select>
+            {/* ALIGNMENT - for ALL elements */}
+            {renderSection("Alignment", <>
+              {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
+            </>)}
+
+            {/* OBJECT FIT - only for image */}
+            {selectedElement.type === "image" && renderSection("Object Fit", <>
+              {renderStyleField("Object Fit", "objectFit", "select", ["cover", "contain", "fill", "none"])}
+            </>)}
+
+            {/* OPACITY - for image and video */}
+            {["image", "video"].includes(selectedElement.type) && renderSection("Opacity", <>
+              {(() => {
+                const val = selectedElement.styles.opacity ?? "";
+                const match = val?.match(/^([\d.]+)/) || [];
+                const num = parseFloat(match[1]) * 100 || 100;
+                return (
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={Math.round(num)}
+                        onChange={(e) => updateStyle("opacity", `${parseInt(e.target.value) / 100}`)}
+                        className="flex-1 h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+                      />
+                      <input
+                        type="text"
+                        value={val || "1"}
+                        onChange={(e) => updateStyle("opacity", e.target.value)}
+                        className="w-14 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs text-center focus:outline-none focus:border-[#22c55e]/50 font-mono"
+                        placeholder="1"
+                      />
                     </div>
-                  );
-                })()}
-                {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
-              </>)}
+                  </div>
+                );
+              })()}
+            </>)}
+
+            {/* TEKS - only for text-containing elements */}
+            {!["image", "video", "spacer", "divider", "icon"].includes(selectedElement.type) && renderSection("Teks", <>
+              {renderStyleField("Warna Teks", "color", "color")}
+              <FontSizeSlider
+                value={selectedElement.styles.fontSize ?? ""}
+                onChange={(v) => updateStyle("fontSize", v)}
+              />
+              {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
+              {(() => {
+                const val = selectedElement.styles.fontFamily ?? "";
+                return (
+                  <div className="mb-3">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Family</label>
+                    <select
+                      value={val}
+                      onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      <option value="" className="bg-[#1e293b] text-white">Default</option>
+                      {fontOptions.map((f) => (
+                        <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })()}
             </>)}
 
             {renderSection("Background", <>

@@ -32,6 +32,8 @@ export interface ElementStyles {
   fontFamily?: string;
   width?: string;
   height?: string;
+  opacity?: string;
+  objectFit?: string;
 }
 
 export interface ElementContent {

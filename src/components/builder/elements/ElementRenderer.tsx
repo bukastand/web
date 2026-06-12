@@ -20,6 +20,8 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   if (st.width) s.width = st.width;
   if (st.height) s.height = st.height;
   if (st.fontFamily) s.fontFamily = st.fontFamily;
+  if (st.opacity) s.opacity = st.opacity;
+  if (st.objectFit) s.objectFit = st.objectFit as React.CSSProperties['objectFit'];
   
   // Individual padding fields take priority over shorthand
   if (st.paddingTop || st.paddingBottom || st.paddingLeft || st.paddingRight) {
@@ -133,13 +135,16 @@ function ImageElement({ el }: ElementComponentProps) {
   const imgStyles = applyStyles(el);
   // Remove textAlign from img itself, apply to container instead
   const { textAlign, ...imgOnlyStyles } = imgStyles;
+  // Default to cover if no objectFit explicitly set
+  if (imgOnlyStyles.objectFit === undefined) {
+    imgOnlyStyles.objectFit = "cover";
+  }
   return (
     <div style={{ textAlign: el.styles.textAlign || el.content.align || "center" }}>
       <img
         src={el.content.src || "https://placehold.co/800x500/1e293b/64748b?text=Gambar"}
         alt={el.content.alt || ""}
         style={imgOnlyStyles}
-        className="object-cover"
       />
       {el.content.caption && <p className="text-sm text-gray-500 mt-2">{el.content.caption}</p>}
     </div>
