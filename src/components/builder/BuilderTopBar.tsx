@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function BuilderTopBar({
   showSidebar,
@@ -20,13 +21,16 @@ export default function BuilderTopBar({
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
 }) {
-  const { currentPage, dispatch } = useBuilder();
+  const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
   const { user, signOut } = useAuth();
+  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [editingSlug, setEditingSlug] = useState(false);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const publishedUrl = `https://pagodastudio.my.id/${currentPage?.slug || ""}`;
 
   if (!currentPage) return null;
 
@@ -86,27 +90,62 @@ export default function BuilderTopBar({
       </div>
 
       <div className="flex items-center gap-1.5 overflow-x-auto">
-        {/* Toggle Sidebar */}
+        {/* Undo / Redo */}
+        <div className="flex items-center">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className={`p-1.5 rounded-lg transition-colors ${canUndo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+            title="Undo (Ctrl+Z)"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            </svg>
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className={`p-1.5 rounded-lg transition-colors ${canRedo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+            title="Redo (Ctrl+Shift+Z)"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-white/10 mx-1" />
+
         {/* Publish Link - slug */}
         {currentPage.published && (
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 border border-white/10">
-            <span className="text-[10px] text-gray-500">pagodastudio.my.id/</span>
+          <a
+            href={publishedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
+          >
+            <span className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors">pagodastudio.my.id/</span>
             {editingSlug ? (
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                onBlur={handleSlugSave}
-                onKeyDown={(e) => e.key === "Enter" && handleSlugSave()}
+                onBlur={(e) => { e.stopPropagation(); handleSlugSave(); }}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSlugSave(); } }}
                 className="w-24 bg-transparent text-[#22c55e] text-xs font-medium outline-none border-b border-[#22c55e]"
                 autoFocus
+                onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <button onClick={handleSlugClick} className="text-[#22c55e] text-xs font-medium hover:underline">
+              <button onClick={(e) => { e.preventDefault(); handleSlugClick(); }} className="text-[#22c55e] text-xs font-medium hover:underline">
                 {currentPage.slug}
               </button>
             )}
-          </div>
+            <svg className="w-3 h-3 text-gray-600 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         )}
 
         {/* Divider */}
@@ -187,16 +226,27 @@ export default function BuilderTopBar({
           Preview
         </Link>
 
-        <button
-          onClick={handlePublish}
-          className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-            currentPage.published
-              ? "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
-              : "bg-[#22c55e] text-white hover:bg-[#16a34a]"
-          }`}
-        >
-          {currentPage.published ? "Published" : "Publish"}
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handlePublish}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              currentPage.published
+                ? "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
+                : "bg-[#22c55e] text-white hover:bg-[#16a34a]"
+            }`}
+          >
+            {currentPage.published ? "Published" : "Publish"}
+          </button>
+          {currentPage.published && (
+            <button
+              onClick={handlePublish}
+              className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
+              title="Unpublish"
+            >
+              Unpublish
+            </button>
+          )}
+        </div>
 
         {/* Divider */}
         <div className="w-px h-5 bg-white/10 mx-1" />

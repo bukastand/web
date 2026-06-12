@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useReducer, useEffect, useCallback, useRef, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState, type ReactNode } from "react";
 import type { BuilderState, BuilderAction, BuilderPage } from "./types";
 import { createDefaultPage, createDefaultSection, genId } from "./defaults";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -8,6 +8,8 @@ import * as supabasePages from "@/lib/supabase/pages";
 
 
 const STORAGE_KEY = "builder_pages";
+const SNAPSHOTS_KEY = "builder_published_snapshots";
+const MAX_HISTORY = 50;
 
 function loadLocalPages(): BuilderPage[] {
   if (typeof window === "undefined") return [];
@@ -23,6 +25,23 @@ function saveLocalPages(pages: BuilderPage[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
+  } catch {}
+}
+
+function loadPublishedSnapshots(): Record<string, BuilderPage> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(SNAPSHOTS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function savePublishedSnapshots(snapshots: Record<string, BuilderPage>) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
   } catch {}
 }
 
@@ -275,6 +294,10 @@ interface BuilderContextValue {
   dispatch: React.Dispatch<BuilderAction>;
   currentPage: BuilderPage | undefined;
   createNewPage: (title?: string) => void;
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
 const BuilderContext = createContext<BuilderContextValue | null>(null);
@@ -285,6 +308,14 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   const loadedUserIdRef = useRef<string | null>(null);
   const lastSavedJson = useRef("");
   const lastSavedPageIdsRef = useRef<string[]>([]);
+
+  // ── Undo/Redo ──
+  const historyRef = useRef<{ past: BuilderPage[][]; future: BuilderPage[][] }>({ past: [], future: [] });
+  const pagesRef = useRef(state.pages);
+  pagesRef.current = state.pages;
+
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
 
   // Load pages: from Supabase if logged in, otherwise from localStorage
   useEffect(() => {
@@ -325,7 +356,6 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
       const currentPageIds = new Set(state.pages.map((p) => p.id));
       
       // Detect deleted pages by comparing with previous page IDs
-      // (handles both partial deletes and deleting ALL pages)
       if (lastSavedPageIdsRef.current.length > 0) {
         const deletedIds = lastSavedPageIdsRef.current.filter((id) => !currentPageIds.has(id));
         for (const deletedId of deletedIds) {
@@ -343,15 +373,89 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
     }
   }, [state.pages, user?.id]);
 
+  // ── Update canUndo/canRedo after each state change ──
+  useEffect(() => {
+    setCanUndo(historyRef.current.past.length > 0);
+    setCanRedo(historyRef.current.future.length > 0);
+  }, [state.pages]);
+
+  // currentPage must be defined here (before effects that reference it)
   const currentPage = state.pages.find((p) => p.id === state.currentPageId);
+
+  // ── Published snapshots: save on publish, remove on unpublish ──
+  const prevPublishedRef = useRef<{ id: string; published: boolean } | null>(null);
+
+  useEffect(() => {
+    if (!currentPage) return;
+    const prev = prevPublishedRef.current;
+    const curr = { id: currentPage.id, published: currentPage.published };
+
+    if (prev && prev.id === currentPage.id && prev.published !== curr.published) {
+      const snapshots = loadPublishedSnapshots();
+      if (curr.published) {
+        // Save a DEEP COPY of current page as published snapshot
+        const snapshot = JSON.parse(JSON.stringify(currentPage));
+        // Remove old slug entry if slug changed
+        for (const [slug, pg] of Object.entries(snapshots)) {
+          if (pg.id === currentPage.id && slug !== currentPage.slug) {
+            delete snapshots[slug];
+          }
+        }
+        snapshots[currentPage.slug] = snapshot;
+      } else {
+        // Remove from published
+        delete snapshots[currentPage.slug];
+      }
+      savePublishedSnapshots(snapshots);
+    }
+
+    prevPublishedRef.current = curr;
+  }, [currentPage?.id, currentPage?.published, currentPage?.slug]);
+
+  // ── Wrapped dispatch for undo/redo history ──
+  const wrappedDispatch = useCallback((action: BuilderAction) => {
+    // Save to history before dispatching (except LOAD_PAGES which is used by undo/redo itself)
+    if (action.type !== "LOAD_PAGES") {
+      const current = pagesRef.current;
+      historyRef.current = {
+        past: [...historyRef.current.past.slice(-MAX_HISTORY), current],
+        future: [],
+      };
+    }
+    dispatch(action);
+  }, [dispatch]);
+
+  // ── Undo ──
+  const undo = useCallback(() => {
+    const { past } = historyRef.current;
+    if (past.length === 0) return;
+    const previous = past[past.length - 1];
+    historyRef.current = {
+      past: past.slice(0, -1),
+      future: [pagesRef.current, ...historyRef.current.future],
+    };
+    dispatch({ type: "LOAD_PAGES", pages: previous });
+  }, [dispatch]);
+
+  // ── Redo ──
+  const redo = useCallback(() => {
+    const { future } = historyRef.current;
+    if (future.length === 0) return;
+    const next = future[0];
+    historyRef.current = {
+      past: [...historyRef.current.past, pagesRef.current],
+      future: future.slice(1),
+    };
+    dispatch({ type: "LOAD_PAGES", pages: next });
+  }, [dispatch]);
 
   const createNewPage = useCallback((title?: string) => {
     const page = createDefaultPage(title);
-    dispatch({ type: "ADD_PAGE", page });
-  }, []);
+    wrappedDispatch({ type: "ADD_PAGE", page });
+  }, [wrappedDispatch]);
 
   return (
-    <BuilderContext.Provider value={{ state, dispatch, currentPage, createNewPage }}>
+    <BuilderContext.Provider value={{ state, dispatch: wrappedDispatch, currentPage, createNewPage, undo, redo, canUndo, canRedo }}>
       {children}
     </BuilderContext.Provider>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { createElement } from "@/lib/builder/defaults";
@@ -11,7 +11,7 @@ import StylePanel from "./StylePanel";
 import type { ElementType } from "@/lib/builder/types";
 
 export default function BuilderEditor() {
-  const { currentPage, dispatch, state } = useBuilder();
+  const { currentPage, dispatch, state, undo, redo } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
@@ -20,6 +20,27 @@ export default function BuilderEditor() {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
+
+  // ── Keyboard shortcuts for Undo/Redo ──
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't hijack undo/redo when user is typing in an input/textarea/contentEditable
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [undo, redo]);
 
   if (!currentPage) return null;
 

@@ -6,6 +6,8 @@ import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 
+const SNAPSHOTS_KEY = "builder_published_snapshots";
+
 export default function PublishedPage() {
   const params = useParams();
   const [page, setPage] = useState<BuilderPage | null>(null);
@@ -13,17 +15,31 @@ export default function PublishedPage() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("builder_pages");
+      const slug = params.slug as string;
+
+      // Option 1: Read from published snapshots (set when user clicks Publish)
+      const raw = localStorage.getItem(SNAPSHOTS_KEY);
       if (raw) {
-        const pages: BuilderPage[] = JSON.parse(raw);
-        const slug = params.slug as string;
-        // Find by slug AND must be published
-        const found = pages.find((p) => p.slug === slug && p.published);
-        if (found) setPage(found);
-        else setNotFound(true);
-      } else {
-        setNotFound(true);
+        const snapshots: Record<string, BuilderPage> = JSON.parse(raw);
+        const found = snapshots[slug];
+        if (found?.published) {
+          setPage(found);
+          return;
+        }
       }
+
+      // Option 2: Fallback to legacy builder_pages (for backward compat)
+      const rawLegacy = localStorage.getItem("builder_pages");
+      if (rawLegacy) {
+        const pages: BuilderPage[] = JSON.parse(rawLegacy);
+        const found = pages.find((p) => p.slug === slug && p.published);
+        if (found) {
+          setPage(found);
+          return;
+        }
+      }
+
+      setNotFound(true);
     } catch {
       setNotFound(true);
     }
