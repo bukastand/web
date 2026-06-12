@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useBuilder } from "@/lib/builder/store";
+import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
 
 export default function BuilderTopBar({
@@ -24,8 +25,10 @@ export default function BuilderTopBar({
   onToggleFullscreen: () => void;
 }) {
   const { currentPage, dispatch } = useBuilder();
+  const { user, signOut } = useAuth();
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   if (!currentPage) return null;
 
@@ -160,6 +163,55 @@ export default function BuilderTopBar({
         >
           {currentPage.published ? "Published" : "Publish"}
         </button>
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-white/10 mx-1" />
+
+        {/* User avatar */}
+        <div className="relative">
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="w-7 h-7 rounded-full bg-[#22c55e]/20 flex items-center justify-center hover:bg-[#22c55e]/30 transition-colors"
+            title={user?.email || "User"}
+          >
+            <span className="text-xs font-bold text-[#22c55e]">
+              {user?.email?.charAt(0).toUpperCase() || "U"}
+            </span>
+          </button>
+
+          {showUserMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+              <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                <div className="p-4 border-b border-white/10">
+                  <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Builder User</p>
+                </div>
+                <div className="p-2">
+                  <Link
+                    href="/builder"
+                    className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 rounded-lg transition-colors"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    Halaman Saya
+                  </Link>
+                  <button
+                    onClick={() => { setShowUserMenu(false); signOut(); }}
+                    className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Keluar
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

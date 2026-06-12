@@ -4,13 +4,19 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only protect admin dashboard routes (not login)
+  // Protect admin dashboard routes (not login)
   if (pathname.startsWith("/admin/dashboard")) {
-    // Check for session cookie set after login
     const adminSession = request.cookies.get("admin_session");
-
     if (!adminSession || adminSession.value !== "authenticated") {
       return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+  }
+
+  // Protect builder editor routes (not the builder home page)
+  if (pathname.startsWith("/builder/")) {
+    const builderSession = request.cookies.get("builder_session");
+    if (!builderSession || builderSession.value !== "authenticated") {
+      return NextResponse.redirect(new URL("/auth/login", request.url));
     }
   }
 
@@ -18,5 +24,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/builder/:path*"],
 };
