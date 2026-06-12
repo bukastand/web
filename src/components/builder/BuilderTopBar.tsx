@@ -71,7 +71,7 @@ export default function BuilderTopBar({
         )}
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 overflow-x-auto">
         {/* Toggle Sidebar */}
         <button
           onClick={onToggleSidebar}
