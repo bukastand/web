@@ -192,7 +192,12 @@ const defaultProjects: ProjectData[] = [
 ];
 
 export function getProjectBySlug(slug: string): ProjectData | undefined {
-  return defaultProjects.find((p) => p.slug === slug);
+  // First try exact slug match
+  const exact = defaultProjects.find((p) => p.slug === slug);
+  if (exact) return exact;
+
+  // Fallback: try matching by slugified title (handles data from Supabase)
+  return defaultProjects.find((p) => slugify(p.title) === slug);
 }
 
 export function getAllProjects(): ProjectData[] {
