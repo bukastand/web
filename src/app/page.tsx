@@ -6,6 +6,7 @@ import PricingSection from "@/components/PricingSection";
 import ServicesSection from "@/components/ServicesSection";
 import WhyUsSection from "@/components/WhyUsSection";
 import LocationSection from "@/components/LocationSection";
+import PortfolioSection from "@/components/PortfolioSection";
 import Footer from "@/components/Footer";
 
 // Load 3D background dynamically (client-side only)
@@ -26,6 +27,7 @@ export default function Home() {
         <PricingSection />
         <ServicesSection />
         <WhyUsSection />
+        <PortfolioSection />
         <LocationSection />
         <Footer />
       </div>
