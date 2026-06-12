@@ -711,33 +711,36 @@ export default function StylePanel() {
           <div>
             <p className="text-[10px] text-gray-600 mb-3">Style di bawah akan diterapkan ke element ini</p>
             
-            {renderSection("Teks", <>
-              {renderStyleField("Warna Teks", "color", "color")}
-              <FontSizeSlider
-                value={selectedElement.styles.fontSize ?? ""}
-                onChange={(v) => updateStyle("fontSize", v)}
-              />
-              {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
-              {(() => {
-                const val = selectedElement.styles.fontFamily ?? "";
-                return (
-                  <div className="mb-3">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Family</label>
-                    <select
-                      value={val}
-                      onChange={(e) => updateStyle("fontFamily", e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                      style={{ colorScheme: 'dark' }}
-                    >
-                      <option value="" className="bg-[#1e293b] text-white">Default</option>
-                      {fontOptions.map((f) => (
-                        <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })()}
-              {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
+            {/* Elements that contain text show text-related style options */}
+            {!["image", "video", "spacer", "divider", "icon"].includes(selectedElement.type) && (
+              <>{renderSection("Teks", <>
+                {renderStyleField("Warna Teks", "color", "color")}
+                <FontSizeSlider
+                  value={selectedElement.styles.fontSize ?? ""}
+                  onChange={(v) => updateStyle("fontSize", v)}
+                />
+                {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
+                {(() => {
+                  const val = selectedElement.styles.fontFamily ?? "";
+                  return (
+                    <div className="mb-3">
+                      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Family</label>
+                      <select
+                        value={val}
+                        onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                        style={{ colorScheme: 'dark' }}
+                      >
+                        <option value="" className="bg-[#1e293b] text-white">Default</option>
+                        {fontOptions.map((f) => (
+                          <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })()}
+                {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
+              </>)}
             </>)}
 
             {renderSection("Background", <>
