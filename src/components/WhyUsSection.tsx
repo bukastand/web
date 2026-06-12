@@ -1,44 +1,59 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
-const reasons = [
+interface WhyUsItem {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  gradient: string;
+}
+
+const iconSvg: Record<string, React.ReactNode> = {
+  image: (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  smartphone: (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+  ),
+  zap: (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  ),
+  settings: (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  ),
+};
+
+const defaultWhyUs: WhyUsItem[] = [
   {
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
+    icon: iconSvg.image || null,
     title: "Desain Modern",
     desc: "Tampilan elegan dan profesional untuk meningkatkan kepercayaan customer.",
     gradient: "from-emerald-500/20 to-emerald-500/5",
   },
   {
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg>
-    ),
+    icon: iconSvg.smartphone || null,
     title: "Mobile Friendly",
     desc: "Website tampil optimal di HP, tablet, maupun desktop.",
     gradient: "from-blue-500/20 to-blue-500/5",
   },
   {
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
+    icon: iconSvg.zap || null,
     title: "Fast Loading",
     desc: "Website ringan dan cepat diakses untuk pengalaman pengguna yang lebih baik.",
     gradient: "from-yellow-500/20 to-yellow-500/5",
   },
   {
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-      </svg>
-    ),
+    icon: iconSvg.settings || null,
     title: "Support Cepat",
     desc: "Kami siap membantu jika ada kendala atau update website.",
     gradient: "from-purple-500/20 to-purple-500/5",
@@ -46,7 +61,28 @@ const reasons = [
 ];
 
 export default function WhyUsSection() {
+  const [reasons, setReasons] = useState<WhyUsItem[]>(defaultWhyUs);
   const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    supabase
+      .from("why_us")
+      .select("title, description, icon_name, gradient")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setReasons(
+            data.map((r) => ({
+              icon: iconSvg[r.icon_name] || iconSvg.image,
+              title: r.title,
+              desc: r.description,
+              gradient: r.gradient,
+            }))
+          );
+        }
+      });
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

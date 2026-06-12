@@ -1,24 +1,51 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
-const services = [
-  { icon: "🎓", title: "Website Universitas", desc: "Portal kampus, informasi akademik, pendaftaran mahasiswa, dan sistem pendidikan modern." },
-  { icon: "📚", title: "Website Sekolah", desc: "Website sekolah modern lengkap dengan informasi, galeri, PPDB, dan berita sekolah." },
-  { icon: "🏢", title: "Website Property", desc: "Website property untuk perumahan, apartemen, agen properti, dan listing rumah." },
-  { icon: "🏬", title: "Company Profile", desc: "Tampilan profesional untuk meningkatkan branding dan kepercayaan bisnis Anda." },
-  { icon: "✈️", title: "Website Travel", desc: "Website travel dan tour lengkap dengan paket wisata dan booking online." },
-  { icon: "🏥", title: "Klinik & RS", desc: "Sistem informasi kesehatan, jadwal dokter, dan layanan pasien online." },
-  { icon: "🛒", title: "Toko Online", desc: "Website e-commerce modern untuk menjual produk secara online." },
-  { icon: "🏨", title: "Website Hotel", desc: "Website hotel dan penginapan dengan fitur booking dan reservasi online." },
-  { icon: "🍽️", title: "Restaurant & Cafe", desc: "Website menu digital, reservasi meja, dan promosi cafe atau restaurant." },
-  { icon: "🏛️", title: "Pemerintahan", desc: "Portal informasi instansi pemerintahan dan pelayanan publik digital." },
-  { icon: "📰", title: "Portal Berita", desc: "Portal media online dan berita dengan sistem kategori dan artikel lengkap." },
-  { icon: "💻", title: "Custom Web App", desc: "Sistem dashboard, ERP, CRM, booking system, dan aplikasi berbasis web custom." },
+interface Service {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+const defaultServices: Service[] = [
+  { icon: "🎓", title: "Website Universitas", description: "Portal kampus, informasi akademik, pendaftaran mahasiswa, dan sistem pendidikan modern." },
+  { icon: "📚", title: "Website Sekolah", description: "Website sekolah modern lengkap dengan informasi, galeri, PPDB, dan berita sekolah." },
+  { icon: "🏢", title: "Website Property", description: "Website property untuk perumahan, apartemen, agen properti, dan listing rumah." },
+  { icon: "🏬", title: "Company Profile", description: "Tampilan profesional untuk meningkatkan branding dan kepercayaan bisnis Anda." },
+  { icon: "✈️", title: "Website Travel", description: "Website travel dan tour lengkap dengan paket wisata dan booking online." },
+  { icon: "🏥", title: "Klinik & RS", description: "Sistem informasi kesehatan, jadwal dokter, dan layanan pasien online." },
+  { icon: "🛒", title: "Toko Online", description: "Website e-commerce modern untuk menjual produk secara online." },
+  { icon: "🏨", title: "Website Hotel", description: "Website hotel dan penginapan dengan fitur booking dan reservasi online." },
+  { icon: "🍽️", title: "Restaurant & Cafe", description: "Website menu digital, reservasi meja, dan promosi cafe atau restaurant." },
+  { icon: "🏛️", title: "Pemerintahan", description: "Portal informasi instansi pemerintahan dan pelayanan publik digital." },
+  { icon: "📰", title: "Portal Berita", description: "Portal media online dan berita dengan sistem kategori dan artikel lengkap." },
+  { icon: "💻", title: "Custom Web App", description: "Sistem dashboard, ERP, CRM, booking system, dan aplikasi berbasis web custom." },
 ];
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<Service[]>(defaultServices);
   const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    supabase
+      .from("services")
+      .select("title, description, icon")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setServices(
+            data.map((s) => ({
+              icon: s.icon || "💻",
+              title: s.title,
+              description: s.description,
+            }))
+          );
+        }
+      });
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -71,7 +98,7 @@ export default function ServicesSection() {
                 {service.title}
               </h4>
               <p className="text-sm text-gray-400 leading-relaxed">
-                {service.desc}
+                {service.description}
               </p>
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full" />
             </div>

@@ -1,72 +1,24 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
-const projects = [
-  {
-    title: "SMA Nusantara",
-    category: "Website Sekolah",
-    image: null,
-    gradient: "from-emerald-600 to-teal-700",
-    description:
-      "Website sekolah lengkap dengan sistem PPDB online, info akademik, dan galeri kegiatan.",
-  },
-  {
-    title: "GreenHill Residence",
-    category: "Website Property",
-    image: null,
-    gradient: "from-blue-600 to-cyan-700",
-    description:
-      "Landing page modern untuk perumahan dengan virtual tour 3D dan booking unit online.",
-  },
-  {
-    title: "WarungBahagia",
-    category: "Toko Online",
-    image: null,
-    gradient: "from-orange-600 to-amber-700",
-    description:
-      "E-commerce dengan payment gateway, manajemen stok, dan dashboard admin lengkap.",
-  },
-  {
-    title: "Klinik Sehati",
-    category: "Klinik & RS",
-    image: null,
-    gradient: "from-sky-600 to-indigo-700",
-    description:
-      "Sistem reservasi online, jadwal dokter, dan rekam medis pasien terintegrasi.",
-  },
-  {
-    title: "Java Adventure",
-    category: "Website Travel",
-    image: null,
-    gradient: "from-violet-600 to-purple-700",
-    description:
-      "Portal travel dengan paket wisata, booking online, dan galeri destinasi interaktif.",
-  },
-  {
-    title: "Hotel Grand Palace",
-    category: "Website Hotel",
-    image: null,
-    gradient: "from-rose-600 to-pink-700",
-    description:
-      "Website hotel dengan fitur reservasi kamar, menu restoran, dan virtual tour.",
-  },
-  {
-    title: "BeritaKota",
-    category: "Portal Berita",
-    image: null,
-    gradient: "from-slate-600 to-gray-700",
-    description:
-      "Portal berita modern dengan sistem kategori, tag, dan artikel multimedia.",
-  },
-  {
-    title: "TechBiz Solutions",
-    category: "Company Profile",
-    image: null,
-    gradient: "from-green-700 to-emerald-800",
-    description:
-      "Company profile interaktif dengan portfolio digital, tim, dan fitur inquiry.",
-  },
+interface PortfolioItem {
+  title: string;
+  category: string;
+  description: string;
+  gradient: string;
+}
+
+const defaultProjects: PortfolioItem[] = [
+  { title: "SMA Nusantara", category: "Website Sekolah", gradient: "from-emerald-600 to-teal-700", description: "Website sekolah lengkap dengan sistem PPDB online, info akademik, dan galeri kegiatan." },
+  { title: "GreenHill Residence", category: "Website Property", gradient: "from-blue-600 to-cyan-700", description: "Landing page modern untuk perumahan dengan virtual tour 3D dan booking unit online." },
+  { title: "WarungBahagia", category: "Toko Online", gradient: "from-orange-600 to-amber-700", description: "E-commerce dengan payment gateway, manajemen stok, dan dashboard admin lengkap." },
+  { title: "Klinik Sehati", category: "Klinik & RS", gradient: "from-sky-600 to-indigo-700", description: "Sistem reservasi online, jadwal dokter, dan rekam medis pasien terintegrasi." },
+  { title: "Java Adventure", category: "Website Travel", gradient: "from-violet-600 to-purple-700", description: "Portal travel dengan paket wisata, booking online, dan galeri destinasi interaktif." },
+  { title: "Hotel Grand Palace", category: "Website Hotel", gradient: "from-rose-600 to-pink-700", description: "Website hotel dengan fitur reservasi kamar, menu restoran, dan virtual tour." },
+  { title: "BeritaKota", category: "Portal Berita", gradient: "from-slate-600 to-gray-700", description: "Portal berita modern dengan sistem kategori, tag, dan artikel multimedia." },
+  { title: "TechBiz Solutions", category: "Company Profile", gradient: "from-green-700 to-emerald-800", description: "Company profile interaktif dengan portfolio digital, tim, dan fitur inquiry." },
 ];
 
 const categories = [
@@ -83,6 +35,7 @@ const categories = [
 
 export default function PortfolioSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [projects, setProjects] = useState<PortfolioItem[]>(defaultProjects);
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [visibleProjects, setVisibleProjects] = useState<number[]>([]);
 
@@ -90,6 +43,26 @@ export default function PortfolioSection() {
     activeCategory === "Semua"
       ? projects
       : projects.filter((p) => p.category === activeCategory);
+
+  useEffect(() => {
+    supabase
+      .from("portfolio")
+      .select("title, category, description, gradient_from, gradient_to")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setProjects(
+            data.map((p) => ({
+              title: p.title,
+              category: p.category,
+              description: p.description,
+              gradient: `from-${p.gradient_from} to-${p.gradient_to}`,
+            }))
+          );
+        }
+      });
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
