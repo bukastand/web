@@ -23,7 +23,9 @@ export default function BuilderTopBar({
   const { currentPage, dispatch } = useBuilder();
   const { user, signOut } = useAuth();
   const [editing, setEditing] = useState(false);
+  const [editingSlug, setEditingSlug] = useState(false);
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   if (!currentPage) return null;
@@ -40,16 +42,32 @@ export default function BuilderTopBar({
     setEditing(false);
   };
 
+  const handleSlugClick = () => {
+    setSlug(currentPage.slug);
+    setEditingSlug(true);
+  };
+
+  const handleSlugSave = () => {
+    if (slug.trim()) {
+      dispatch({ type: "UPDATE_PAGE_SLUG", pageId: currentPage.id, slug: slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") });
+    }
+    setEditingSlug(false);
+  };
+
   const handlePublish = () => {
     dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
   };
 
   return (
     <header className="h-14 flex items-center justify-between px-4 bg-[#0f172a] border-b border-white/10 flex-shrink-0">
-      <div className="flex items-center gap-4">
-        <Link href="/builder" className="text-lg font-bold text-white/60 hover:text-white transition-colors">
-          ←
+      <div className="flex items-center gap-3">
+        <Link href="/builder" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors group">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="text-xs font-bold tracking-wider text-[#22c55e] group-hover:text-[#22c55e]/80">PAGODASTUDIO</span>
         </Link>
+        <div className="w-px h-5 bg-white/10" />
         {editing ? (
           <input
             type="text"
@@ -68,6 +86,32 @@ export default function BuilderTopBar({
       </div>
 
       <div className="flex items-center gap-1.5 overflow-x-auto">
+        {/* Toggle Sidebar */}
+        {/* Publish Link - slug */}
+        {currentPage.published && (
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 border border-white/10">
+            <span className="text-[10px] text-gray-500">pagodastudio.my.id/</span>
+            {editingSlug ? (
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                onBlur={handleSlugSave}
+                onKeyDown={(e) => e.key === "Enter" && handleSlugSave()}
+                className="w-24 bg-transparent text-[#22c55e] text-xs font-medium outline-none border-b border-[#22c55e]"
+                autoFocus
+              />
+            ) : (
+              <button onClick={handleSlugClick} className="text-[#22c55e] text-xs font-medium hover:underline">
+                {currentPage.slug}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-white/10 mx-1" />
+
         {/* Toggle Sidebar */}
         <button
           onClick={onToggleSidebar}

@@ -61,6 +61,9 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
     case "UPDATE_PAGE_TITLE":
       return updatePage((p) => ({ ...p, title: action.title }));
 
+    case "UPDATE_PAGE_SLUG":
+      return updatePage((p) => ({ ...p, slug: action.slug }));
+
     case "ADD_SECTION": {
       const section = createDefaultSection();
       return updatePage((p) => {

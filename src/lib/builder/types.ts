@@ -4,15 +4,32 @@ export type ElementType =
   | "navbar" | "footer";
 
 export interface ElementStyles {
+  // Shorthand (backward compatible)
   padding?: string;
   margin?: string;
+  borderRadius?: string;
+  // Individual padding
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  // Individual margin
+  marginTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  // Individual border radius
+  borderTopLeftRadius?: string;
+  borderTopRightRadius?: string;
+  borderBottomLeftRadius?: string;
+  borderBottomRightRadius?: string;
+  // Other
   textAlign?: "left" | "center" | "right";
   backgroundColor?: string;
   color?: string;
   fontSize?: string;
   fontWeight?: string;
   fontFamily?: string;
-  borderRadius?: string;
   width?: string;
   height?: string;
 }
@@ -75,6 +92,7 @@ export type BuilderAction =
   | { type: "ADD_PAGE"; page: BuilderPage }
   | { type: "DELETE_PAGE"; pageId: string }
   | { type: "UPDATE_PAGE_TITLE"; pageId: string; title: string }
+  | { type: "UPDATE_PAGE_SLUG"; pageId: string; slug: string }
   | { type: "ADD_SECTION"; pageId: string; index?: number }
   | { type: "REMOVE_SECTION"; pageId: string; sectionId: string }
   | { type: "DUPLICATE_SECTION"; pageId: string; sectionId: string }

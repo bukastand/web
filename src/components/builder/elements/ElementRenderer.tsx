@@ -17,12 +17,41 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   if (st.fontSize) s.fontSize = st.fontSize;
   if (st.fontWeight) s.fontWeight = st.fontWeight;
   if (st.textAlign) s.textAlign = st.textAlign;
-  if (st.padding) s.padding = st.padding;
-  if (st.margin) s.margin = st.margin;
-  if (st.borderRadius) s.borderRadius = st.borderRadius;
   if (st.width) s.width = st.width;
   if (st.height) s.height = st.height;
   if (st.fontFamily) s.fontFamily = st.fontFamily;
+  
+  // Individual padding fields take priority over shorthand
+  if (st.paddingTop || st.paddingBottom || st.paddingLeft || st.paddingRight) {
+    s.paddingTop = st.paddingTop || "0px";
+    s.paddingBottom = st.paddingBottom || "0px";
+    s.paddingLeft = st.paddingLeft || "0px";
+    s.paddingRight = st.paddingRight || "0px";
+  } else if (st.padding) {
+    s.padding = st.padding;
+  }
+  
+  // Individual margin fields take priority over shorthand
+  if (st.marginTop || st.marginBottom || st.marginLeft || st.marginRight) {
+    s.marginTop = st.marginTop || "0px";
+    s.marginBottom = st.marginBottom || "0px";
+    s.marginLeft = st.marginLeft || "0px";
+    s.marginRight = st.marginRight || "0px";
+  } else if (st.margin) {
+    s.margin = st.margin;
+  }
+  
+  // Individual border-radius fields take priority over shorthand
+  if (st.borderTopLeftRadius || st.borderTopRightRadius || st.borderBottomLeftRadius || st.borderBottomRightRadius) {
+    s.borderTopLeftRadius = st.borderTopLeftRadius || "0px";
+    s.borderTopRightRadius = st.borderTopRightRadius || "0px";
+    s.borderBottomLeftRadius = st.borderBottomLeftRadius || "0px";
+    s.borderBottomRightRadius = st.borderBottomRightRadius || "0px";
+    s.borderRadius = "0px"; // Reset shorthand when individual is used
+  } else if (st.borderRadius) {
+    s.borderRadius = st.borderRadius;
+  }
+  
   return s;
 }
 
@@ -99,12 +128,15 @@ function TextElement({ el, editing, onEdit, onBlurEditing }: ElementComponentPro
 }
 
 function ImageElement({ el }: ElementComponentProps) {
+  const imgStyles = applyStyles(el);
+  // Remove textAlign from img itself, apply to container instead
+  const { textAlign, ...imgOnlyStyles } = imgStyles;
   return (
-    <div style={{ textAlign: (el.styles as any).textAlign || "center" }}>
+    <div style={{ textAlign: el.styles.textAlign || el.content.align || "center" }}>
       <img
         src={el.content.src || "https://placehold.co/800x500/1e293b/64748b?text=Gambar"}
         alt={el.content.alt || ""}
-        style={applyStyles(el)}
+        style={imgOnlyStyles}
         className="object-cover"
       />
       {el.content.caption && <p className="text-sm text-gray-500 mt-2">{el.content.caption}</p>}
@@ -132,9 +164,11 @@ function ButtonElement({ el }: ElementComponentProps) {
 }
 
 function VideoElement({ el }: ElementComponentProps) {
+  const videoContainerStyles = applyStyles(el);
+  const { textAlign, ...videoOnlyStyles } = videoContainerStyles;
   return (
-    <div>
-      <div className="relative overflow-hidden rounded-xl" style={{ aspectRatio: "16 / 9", ...applyStyles(el) }}>
+    <div style={{ textAlign: el.styles.textAlign || "center" }}>
+      <div className="relative overflow-hidden" style={{ aspectRatio: "16 / 9", ...videoOnlyStyles }}>
         <iframe src={el.content.url || ""} className="absolute inset-0 w-full h-full" allowFullScreen title="video" />
       </div>
       {el.content.caption && <p className="text-sm text-gray-500 mt-2 text-center">{el.content.caption}</p>}

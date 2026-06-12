@@ -26,6 +26,21 @@ const commonColors = [
   { label: "Dark", value: "#0f172a" },
 ];
 
+const fontOptions = [
+  { label: "Inter (Default)", value: "Inter, sans-serif" },
+  { label: "Arial", value: "Arial, Helvetica, sans-serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Times New Roman", value: "'Times New Roman', serif" },
+  { label: "Courier New", value: "'Courier New', monospace" },
+  { label: "Roboto", value: "'Roboto', sans-serif" },
+  { label: "Open Sans", value: "'Open Sans', sans-serif" },
+  { label: "Lato", value: "'Lato', sans-serif" },
+  { label: "Montserrat", value: "'Montserrat', sans-serif" },
+  { label: "Playfair Display", value: "'Playfair Display', serif" },
+  { label: "Poppins", value: "'Poppins', sans-serif" },
+  { label: "Merriweather", value: "'Merriweather', serif" },
+];
+
 function ColorPicker({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
   return (
     <div className="mb-3">
@@ -168,9 +183,10 @@ export default function StylePanel() {
             value={value}
             onChange={(e) => updateContent(key, e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+            style={{ colorScheme: 'dark' }}
           >
             {options?.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
+              <option key={opt} value={opt} className="bg-[#1e293b] text-white">{opt}</option>
             ))}
           </select>
         ) : type === "textarea" ? (
@@ -209,9 +225,10 @@ export default function StylePanel() {
             value={value}
             onChange={(e) => updateStyle(key, e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+            style={{ colorScheme: 'dark' }}
           >
             {options?.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
+              <option key={opt} value={opt} className="bg-[#1e293b] text-white">{opt}</option>
             ))}
           </select>
         ) : (
@@ -233,6 +250,57 @@ export default function StylePanel() {
       <div className="space-y-1">{children}</div>
     </div>
   );
+
+  const renderSpacingFields = (labelPrefix: string, keys: { top: string; bottom: string; left: string; right: string }) => {
+    const val = (k: string) => selectedElement.styles[k] ?? "";
+    return (
+      <div className="mb-3">
+        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{labelPrefix}</label>
+        <div className="grid grid-cols-2 gap-1.5">
+          <div>
+            <span className="text-[9px] text-gray-600 block mb-0.5">Top</span>
+            <input
+              type="text"
+              value={val(keys.top)}
+              onChange={(e) => updateStyle(keys.top, e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+              placeholder="0px"
+            />
+          </div>
+          <div>
+            <span className="text-[9px] text-gray-600 block mb-0.5">Bottom</span>
+            <input
+              type="text"
+              value={val(keys.bottom)}
+              onChange={(e) => updateStyle(keys.bottom, e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+              placeholder="0px"
+            />
+          </div>
+          <div>
+            <span className="text-[9px] text-gray-600 block mb-0.5">Left</span>
+            <input
+              type="text"
+              value={val(keys.left)}
+              onChange={(e) => updateStyle(keys.left, e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+              placeholder="0px"
+            />
+          </div>
+          <div>
+            <span className="text-[9px] text-gray-600 block mb-0.5">Right</span>
+            <input
+              type="text"
+              value={val(keys.right)}
+              onChange={(e) => updateStyle(keys.right, e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+              placeholder="0px"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <aside className="w-72 flex-shrink-0 bg-[#0f172a] border-l border-white/10 overflow-y-auto">
@@ -560,6 +628,25 @@ export default function StylePanel() {
               {renderStyleField("Warna Teks", "color", "color")}
               {renderStyleField("Ukuran Font", "fontSize", "text")}
               {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
+              {(() => {
+                const val = selectedElement.styles.fontFamily ?? "";
+                return (
+                  <div className="mb-3">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Family</label>
+                    <select
+                      value={val}
+                      onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      <option value="" className="bg-[#1e293b] text-white">Default</option>
+                      {fontOptions.map((f) => (
+                        <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })()}
               {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
             </>)}
 
@@ -567,13 +654,60 @@ export default function StylePanel() {
               {renderStyleField("Warna Background", "backgroundColor", "color")}
             </>)}
 
-            {renderSection("Spacing", <>
-              {renderStyleField("Padding", "padding", "text")}
-              {renderStyleField("Margin", "margin", "text")}
+            {renderSection("Padding", <>
+              {renderSpacingFields("Padding", { top: "paddingTop", bottom: "paddingBottom", left: "paddingLeft", right: "paddingRight" })}
+            </>)}
+
+            {renderSection("Margin", <>
+              {renderSpacingFields("Margin", { top: "marginTop", bottom: "marginBottom", left: "marginLeft", right: "marginRight" })}
+            </>)}
+
+            {renderSection("Border Radius", <>
+              <div className="grid grid-cols-2 gap-1.5">
+                <div>
+                  <span className="text-[9px] text-gray-600 block mb-0.5">Top-Left</span>
+                  <input
+                    type="text"
+                    value={selectedElement.styles.borderTopLeftRadius ?? ""}
+                    onChange={(e) => updateStyle("borderTopLeftRadius", e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0px"
+                  />
+                </div>
+                <div>
+                  <span className="text-[9px] text-gray-600 block mb-0.5">Top-Right</span>
+                  <input
+                    type="text"
+                    value={selectedElement.styles.borderTopRightRadius ?? ""}
+                    onChange={(e) => updateStyle("borderTopRightRadius", e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0px"
+                  />
+                </div>
+                <div>
+                  <span className="text-[9px] text-gray-600 block mb-0.5">Bottom-Left</span>
+                  <input
+                    type="text"
+                    value={selectedElement.styles.borderBottomLeftRadius ?? ""}
+                    onChange={(e) => updateStyle("borderBottomLeftRadius", e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0px"
+                  />
+                </div>
+                <div>
+                  <span className="text-[9px] text-gray-600 block mb-0.5">Bottom-Right</span>
+                  <input
+                    type="text"
+                    value={selectedElement.styles.borderBottomRightRadius ?? ""}
+                    onChange={(e) => updateStyle("borderBottomRightRadius", e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0px"
+                  />
+                </div>
+              </div>
             </>)}
 
             {renderSection("Lainnya", <>
-              {renderStyleField("Border Radius", "borderRadius", "text")}
               {renderStyleField("Width", "width", "text")}
               {renderStyleField("Height", "height", "text")}
             </>)}
