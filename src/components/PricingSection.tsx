@@ -126,8 +126,8 @@ export default function PricingSection() {
           {packages.map((pkg, index) => (
             <div
               key={index}
-              className={`reveal card-3d group relative rounded-2xl p-6 sm:p-8 transition-all duration-500 ${
-                pkg.popular
+            className={`reveal group relative rounded-2xl p-6 sm:p-8 transition-all duration-500 ${
+              pkg.popular
                   ? "bg-gradient-to-b from-[#22c55e]/20 via-[#22c55e]/10 to-transparent border-2 border-[#22c55e] shadow-[0_0_30px_rgba(34,197,94,0.15)]"
                   : "bg-white/5 border border-white/10 hover:border-[#22c55e]/40 hover:bg-white/[0.07]"
               }`}
