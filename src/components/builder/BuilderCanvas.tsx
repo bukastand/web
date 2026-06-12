@@ -26,8 +26,14 @@ export default function BuilderCanvas({
     dispatch({ type: "ADD_SECTION", pageId: currentPage.id });
   };
 
+  const handleCanvasClick = () => {
+    // Deselect any selected element when clicking empty canvas area
+    // Element onClick handlers use stopPropagation(), so they won't reach here
+    dispatch({ type: "SELECT_ELEMENT", elementId: null });
+  };
+
   return (
-    <div className="flex-1 overflow-y-auto bg-[#0a0f1e] relative">
+    <div className="flex-1 overflow-y-auto bg-[#0a0f1e] relative" onClick={handleCanvasClick}>
       {/* Fullscreen exit button */}
       {isFullscreen && onExitFullscreen && (
         <div className="fixed top-4 left-4 z-50 flex items-center gap-2">

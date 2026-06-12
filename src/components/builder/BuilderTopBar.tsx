@@ -8,8 +8,6 @@ import Link from "next/link";
 export default function BuilderTopBar({
   showSidebar,
   onToggleSidebar,
-  showStylePanel,
-  onToggleStylePanel,
   viewport,
   onViewportChange,
   isFullscreen,
@@ -17,8 +15,6 @@ export default function BuilderTopBar({
 }: {
   showSidebar: boolean;
   onToggleSidebar: () => void;
-  showStylePanel: boolean;
-  onToggleStylePanel: () => void;
   viewport: "desktop" | "tablet" | "mobile";
   onViewportChange: (v: "desktop" | "tablet" | "mobile") => void;
   isFullscreen: boolean;
@@ -86,22 +82,6 @@ export default function BuilderTopBar({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
           <span>{showSidebar ? "Sidebar" : "Sidebar"}</span>
-        </button>
-
-        {/* Toggle Style Panel */}
-        <button
-          onClick={onToggleStylePanel}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            showStylePanel
-              ? "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-              : "text-[#22c55e] bg-[#22c55e]/15 border border-[#22c55e]/30"
-          }`}
-          title={showStylePanel ? "Sembunyikan Style Panel" : "Tampilkan Style Panel"}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-          </svg>
-          <span>Style</span>
         </button>
 
         {/* Divider */}

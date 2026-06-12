@@ -11,10 +11,9 @@ import StylePanel from "./StylePanel";
 import type { ElementType } from "@/lib/builder/types";
 
 export default function BuilderEditor() {
-  const { currentPage, dispatch } = useBuilder();
+  const { currentPage, dispatch, state } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [showStylePanel, setShowStylePanel] = useState(true);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -98,8 +97,6 @@ export default function BuilderEditor() {
           <BuilderTopBar
             showSidebar={showSidebar}
             onToggleSidebar={() => setShowSidebar(!showSidebar)}
-            showStylePanel={showStylePanel}
-            onToggleStylePanel={() => setShowStylePanel(!showStylePanel)}
             viewport={viewport}
             onViewportChange={setViewport}
             isFullscreen={isFullscreen}
@@ -109,7 +106,7 @@ export default function BuilderEditor() {
         <div className="flex-1 flex overflow-hidden">
           {showSidebar && !isFullscreen && <ElementSidebar />}
           <BuilderCanvas viewport={viewport} isFullscreen={isFullscreen} onExitFullscreen={() => setIsFullscreen(false)} />
-          {showStylePanel && !isFullscreen && <StylePanel />}
+          {state.selectedElementId && !isFullscreen && <StylePanel />}
         </div>
       </div>
       <DragOverlay>
