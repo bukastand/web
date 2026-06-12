@@ -13,7 +13,6 @@ import type { ElementType } from "@/lib/builder/types";
 export default function BuilderEditor() {
   const { currentPage, dispatch } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
-  const [showStylePanel, setShowStylePanel] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -91,11 +90,11 @@ export default function BuilderEditor() {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="h-screen flex flex-col bg-[#0f172a] overflow-hidden">
-        <BuilderTopBar showStylePanel={showStylePanel} onToggleStylePanel={() => setShowStylePanel(!showStylePanel)} />
+        <BuilderTopBar />
         <div className="flex-1 flex overflow-hidden">
           <ElementSidebar />
           <BuilderCanvas />
-          {showStylePanel && <StylePanel onClose={() => setShowStylePanel(false)} />}
+          <StylePanel />
         </div>
       </div>
       <DragOverlay>

@@ -2,6 +2,13 @@
 
 import type { BuilderElement } from "@/lib/builder/types";
 
+interface ElementComponentProps {
+  el: BuilderElement;
+  editing?: boolean;
+  onEdit?: (content: Record<string, any>) => void;
+  onBlurEditing?: () => void;
+}
+
 function applyStyles(el: BuilderElement): React.CSSProperties {
   const s: React.CSSProperties = {};
   const st = el.styles;
@@ -19,30 +26,79 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   return s;
 }
 
-function HeadingElement({ el }: { el: BuilderElement }) {
+function HeadingElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const { text, level = "h2", align } = el.content;
   const styles = applyStyles(el);
   if (align) styles.textAlign = align;
 
   const sizeMap: Record<string, string> = { h1: "text-4xl md:text-5xl", h2: "text-3xl md:text-4xl", h3: "text-2xl md:text-3xl", h4: "text-xl md:text-2xl", h5: "text-lg md:text-xl", h6: "text-base md:text-lg" };
-  const cls = `${sizeMap[level] || "text-3xl"} font-bold leading-tight`;
+  const cls = `${sizeMap[level] || "text-3xl"} font-bold leading-tight outline-none`;
   const content = text || "Heading";
 
+  const handleBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
+    onEdit?.({ text: e.currentTarget.textContent || "" });
+    onBlurEditing?.();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      (e.target as HTMLElement).blur();
+    }
+  };
+
+  const sharedProps = {
+    className: cls,
+    style: styles,
+    contentEditable: editing || undefined,
+    suppressContentEditableWarning: true as any,
+    ...(editing ? {
+      onBlur: handleBlur,
+      onKeyDown: handleKeyDown,
+      spellCheck: false as any,
+      "data-placeholder": "Ketik teks..." as any,
+    } : {}),
+  };
+
   switch (level) {
-    case "h1": return <h1 className={cls} style={styles}>{content}</h1>;
-    case "h3": return <h3 className={cls} style={styles}>{content}</h3>;
-    case "h4": return <h4 className={cls} style={styles}>{content}</h4>;
-    case "h5": return <h5 className={cls} style={styles}>{content}</h5>;
-    case "h6": return <h6 className={cls} style={styles}>{content}</h6>;
-    default: return <h2 className={cls} style={styles}>{content}</h2>;
+    case "h1": return <h1 {...sharedProps}>{content}</h1>;
+    case "h3": return <h3 {...sharedProps}>{content}</h3>;
+    case "h4": return <h4 {...sharedProps}>{content}</h4>;
+    case "h5": return <h5 {...sharedProps}>{content}</h5>;
+    case "h6": return <h6 {...sharedProps}>{content}</h6>;
+    default: return <h2 {...sharedProps}>{content}</h2>;
   }
 }
 
-function TextElement({ el }: { el: BuilderElement }) {
-  return <p className="leading-relaxed" style={applyStyles(el)}>{el.content.text || "Teks paragraf"}</p>;
+function TextElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
+  const styles = applyStyles(el);
+  const content = el.content.text || "Teks paragraf";
+
+  const handleBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
+    onEdit?.({ text: e.currentTarget.textContent || "" });
+    onBlurEditing?.();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      (e.target as HTMLElement).blur();
+    }
+  };
+
+  return (
+    <p
+      className="leading-relaxed outline-none"
+      style={styles}
+      contentEditable={editing || undefined}
+      suppressContentEditableWarning={true}
+      onBlur={editing ? handleBlur : undefined}
+      onKeyDown={editing ? handleKeyDown : undefined}
+    >
+      {content}
+    </p>
+  );
 }
 
-function ImageElement({ el }: { el: BuilderElement }) {
+function ImageElement({ el }: ElementComponentProps) {
   return (
     <div style={{ textAlign: (el.styles as any).textAlign || "center" }}>
       <img
@@ -56,7 +112,7 @@ function ImageElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function ButtonElement({ el }: { el: BuilderElement }) {
+function ButtonElement({ el }: ElementComponentProps) {
   const variant = el.content.variant || "primary";
   const styles = applyStyles(el);
   const base = "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300";
@@ -75,7 +131,7 @@ function ButtonElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function VideoElement({ el }: { el: BuilderElement }) {
+function VideoElement({ el }: ElementComponentProps) {
   return (
     <div>
       <div className="relative overflow-hidden rounded-xl" style={{ aspectRatio: "16 / 9", ...applyStyles(el) }}>
@@ -86,18 +142,18 @@ function VideoElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function SpacerElement({ el }: { el: BuilderElement }) {
+function SpacerElement({ el }: ElementComponentProps) {
   const height = el.content.height || "40px";
   return <div style={{ height, width: "100%" }} />;
 }
 
-function DividerElement({ el }: { el: BuilderElement }) {
+function DividerElement({ el }: ElementComponentProps) {
   const borderStyle = el.content.style || "solid";
   const color = el.content.color || "#e2e8f0";
   return <hr style={{ border: "none", borderTop: `1px ${borderStyle} ${color}`, ...applyStyles(el) }} />;
 }
 
-function IconElement({ el }: { el: BuilderElement }) {
+function IconElement({ el }: ElementComponentProps) {
   const size = el.content.size || "48px";
   const color = el.content.color || "#22c55e";
   const icons: Record<string, React.ReactNode> = {
@@ -122,7 +178,7 @@ function IconElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function FeaturesElement({ el }: { el: BuilderElement }) {
+function FeaturesElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 3;
   return (
@@ -142,7 +198,7 @@ function FeaturesElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function PricingElement({ el }: { el: BuilderElement }) {
+function PricingElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   return (
     <div>
@@ -172,7 +228,7 @@ function PricingElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function TestimonialElement({ el }: { el: BuilderElement }) {
+function TestimonialElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   return (
     <div>
@@ -202,7 +258,7 @@ function TestimonialElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function CTAElement({ el }: { el: BuilderElement }) {
+function CTAElement({ el }: ElementComponentProps) {
   const bgColor = el.styles.backgroundColor || "#22c55e";
   return (
     <div className="text-center py-16 px-6 rounded-2xl" style={{ backgroundColor: bgColor }}>
@@ -220,7 +276,7 @@ function CTAElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function StatsElement({ el }: { el: BuilderElement }) {
+function StatsElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 4;
   return (
@@ -235,7 +291,7 @@ function StatsElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function ContactFormElement({ el }: { el: BuilderElement }) {
+function ContactFormElement({ el }: ElementComponentProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -260,7 +316,7 @@ function ContactFormElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function MapsElement({ el }: { el: BuilderElement }) {
+function MapsElement({ el }: ElementComponentProps) {
   return (
     <div>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-6">{el.content.title}</h2>}
@@ -278,7 +334,7 @@ function MapsElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function NavbarElement({ el }: { el: BuilderElement }) {
+function NavbarElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   return (
     <nav className="flex items-center justify-between py-4 px-6">
@@ -296,7 +352,7 @@ function NavbarElement({ el }: { el: BuilderElement }) {
   );
 }
 
-function FooterElement({ el }: { el: BuilderElement }) {
+function FooterElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   return (
     <div className="py-12 px-6">
@@ -330,7 +386,7 @@ function FooterElement({ el }: { el: BuilderElement }) {
   );
 }
 
-const elementComponents: Record<string, React.FC<{ el: BuilderElement }>> = {
+const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   heading: HeadingElement,
   text: TextElement,
   image: ImageElement,
@@ -350,10 +406,20 @@ const elementComponents: Record<string, React.FC<{ el: BuilderElement }>> = {
   footer: FooterElement,
 };
 
-export function ElementRenderer({ element }: { element: BuilderElement }) {
+export function ElementRenderer({
+  element,
+  editing,
+  onEdit,
+  onBlurEditing,
+}: {
+  element: BuilderElement;
+  editing?: boolean;
+  onEdit?: (content: Record<string, any>) => void;
+  onBlurEditing?: () => void;
+}) {
   const Component = elementComponents[element.type];
   if (!Component) {
     return <div className="text-gray-500 text-sm">Unknown element: {element.type}</div>;
   }
-  return <Component el={element} />;
+  return <Component el={element} editing={editing} onEdit={onEdit} onBlurEditing={onBlurEditing} />;
 }

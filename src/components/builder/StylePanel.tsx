@@ -1,7 +1,7 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useBuilder } from "@/lib/builder/store";
-import { useState } from "react";
 
 const elementLabels: Record<string, string> = {
   heading: "Heading", text: "Teks", image: "Gambar", button: "Tombol",
@@ -11,15 +11,74 @@ const elementLabels: Record<string, string> = {
   maps: "Google Maps", navbar: "Navbar", footer: "Footer",
 };
 
-export default function StylePanel({ onClose }: { onClose: () => void }) {
+const commonColors = [
+  { label: "Hijau", value: "#22c55e" },
+  { label: "Biru", value: "#3b82f6" },
+  { label: "Ungu", value: "#8b5cf6" },
+  { label: "Merah", value: "#ef4444" },
+  { label: "Kuning", value: "#eab308" },
+  { label: "Pink", value: "#ec4899" },
+  { label: "Orange", value: "#f97316" },
+  { label: "Teal", value: "#14b8a6" },
+  { label: "Putih", value: "#ffffff" },
+  { label: "Hitam", value: "#000000" },
+  { label: "Abu-abu", value: "#64748b" },
+  { label: "Dark", value: "#0f172a" },
+];
+
+function ColorPicker({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
+  return (
+    <div className="mb-3">
+      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value || "#000000"}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-10 h-10 rounded-lg bg-transparent border border-white/10 cursor-pointer flex-shrink-0"
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50 font-mono"
+          placeholder="#000000"
+        />
+      </div>
+      <div className="flex gap-1.5 mt-1.5 flex-wrap">
+        {commonColors.map((c) => (
+          <button
+            key={c.value}
+            onClick={() => onChange(c.value)}
+            className="w-6 h-6 rounded-md border border-white/10 hover:scale-110 transition-transform"
+            style={{ backgroundColor: c.value }}
+            title={c.label}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function StylePanel() {
   const { currentPage, dispatch, state } = useBuilder();
   const [tab, setTab] = useState<"content" | "style">("content");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!currentPage) return null;
+
   if (!state.selectedElementId) {
     return (
       <aside className="w-72 flex-shrink-0 bg-[#0f172a] border-l border-white/10 p-4 overflow-y-auto">
-        <p className="text-sm text-gray-500 text-center mt-20">Klik element untuk mengedit</p>
+        <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 5h4a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h4m2 4l2-2m0 0l-2-2m2 2H8" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-400 font-medium">Klik element di canvas</p>
+          <p className="text-xs text-gray-600 mt-1">untuk mengedit konten & style</p>
+        </div>
       </aside>
     );
   }
@@ -58,13 +117,54 @@ export default function StylePanel({ onClose }: { onClose: () => void }) {
     dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: {}, styles: { [key]: value } });
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("src", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddItem = (field: string, defaultItem: any) => {
+    const items = [...(selectedElement.content[field] || []), defaultItem];
+    updateContent(field, items);
+  };
+
+  const handleRemoveItem = (field: string, index: number) => {
+    const items = [...(selectedElement.content[field] || [])];
+    items.splice(index, 1);
+    updateContent(field, items);
+  };
+
+  const handleItemChange = (field: string, index: number, key: string, value: any) => {
+    const items = [...(selectedElement.content[field] || [])];
+    items[index] = { ...items[index], [key]: value };
+    updateContent(field, items);
+  };
+
+  const handleAddLink = () => {
+    const links = [...(selectedElement.content.links || []), { label: "Link Baru", href: "#" }];
+    updateContent("links", links);
+  };
+
+  const handleRemoveLink = (index: number) => {
+    const links = [...(selectedElement.content.links || [])];
+    links.splice(index, 1);
+    updateContent("links", links);
+  };
+
   const renderField = (label: string, key: string, type: "text" | "color" | "number" | "select" | "textarea", options?: string[]) => {
     const value = selectedElement.content[key] ?? "";
+    const id = `field-${key}`;
     return (
       <div className="mb-3">
-        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+        <label htmlFor={id} className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
         {type === "select" ? (
           <select
+            id={id}
             value={value}
             onChange={(e) => updateContent(key, e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
@@ -75,17 +175,22 @@ export default function StylePanel({ onClose }: { onClose: () => void }) {
           </select>
         ) : type === "textarea" ? (
           <textarea
+            id={id}
             value={value}
             onChange={(e) => updateContent(key, e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50 resize-none"
             rows={3}
           />
+        ) : type === "color" ? (
+          <ColorPicker value={value} onChange={(v) => updateContent(key, v)} label="" />
         ) : (
           <input
-            type={type}
+            id={id}
+            type={type === "number" ? "number" : "text"}
             value={value}
-            onChange={(e) => type === "color" ? updateContent(key, e.target.value) : updateContent(key, e.target.value)}
+            onChange={(e) => updateContent(key, e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+            placeholder={label}
           />
         )}
       </div>
@@ -98,21 +203,7 @@ export default function StylePanel({ onClose }: { onClose: () => void }) {
       <div className="mb-3">
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
         {type === "color" ? (
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={value || "#000000"}
-              onChange={(e) => updateStyle(key, e.target.value)}
-              className="w-10 h-10 rounded-lg bg-transparent border border-white/10 cursor-pointer"
-            />
-            <input
-              type="text"
-              value={value}
-              onChange={(e) => updateStyle(key, e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50 font-mono"
-              placeholder="#000000"
-            />
-          </div>
+          <ColorPicker value={value} onChange={(v) => updateStyle(key, v)} label="" />
         ) : type === "select" ? (
           <select
             value={value}
@@ -136,20 +227,25 @@ export default function StylePanel({ onClose }: { onClose: () => void }) {
     );
   };
 
+  const renderSection = (title: string, children: React.ReactNode) => (
+    <div className="mb-4">
+      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{title}</h4>
+      <div className="space-y-1">{children}</div>
+    </div>
+  );
+
   return (
     <aside className="w-72 flex-shrink-0 bg-[#0f172a] border-l border-white/10 overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 bg-[#0f172a] z-10 p-4 border-b border-white/10">
         <div className="flex items-center justify-between mb-3">
-          <div>
-            <h3 className="text-sm font-semibold text-white">{elementLabels[selectedElement.type] || selectedElement.type}</h3>
-            <p className="text-[10px] text-gray-500 mt-0.5">ID: {selectedElement.id.slice(0, 8)}</p>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#22c55e]" />
+            <div>
+              <h3 className="text-sm font-semibold text-white">{elementLabels[selectedElement.type] || selectedElement.type}</h3>
+              <p className="text-[10px] text-gray-500 mt-0.5">Klik element lain atau double-click teks untuk edit langsung</p>
+            </div>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
         </div>
         <div className="flex gap-1">
           <button
@@ -170,94 +266,317 @@ export default function StylePanel({ onClose }: { onClose: () => void }) {
       <div className="p-4">
         {tab === "content" ? (
           <div>
+            {/* --- HEADING --- */}
             {selectedElement.type === "heading" && (
               <>
-                {renderField("Teks", "text", "text")}
-                {renderField("Level", "level", "select", ["h1", "h2", "h3", "h4", "h5", "h6"])}
+                {renderField("Teks Heading", "text", "text")}
+                {renderField("Level Heading", "level", "select", ["h1", "h2", "h3", "h4", "h5", "h6"])}
                 {renderField("Alignment", "align", "select", ["left", "center", "right"])}
               </>
             )}
-            {selectedElement.type === "text" && renderField("Teks", "text", "textarea")}
+
+            {/* --- TEXT --- */}
+            {selectedElement.type === "text" && (
+              <>
+                <p className="text-[10px] text-gray-600 mb-2">Double-click teks di canvas untuk edit langsung, atau edit di sini:</p>
+                {renderField("Teks Paragraf", "text", "textarea")}
+              </>
+            )}
+
+            {/* --- IMAGE --- */}
             {selectedElement.type === "image" && (
               <>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Preview</label>
+                  <div className="relative rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                    <img
+                      src={selectedElement.content.src || "https://placehold.co/800x500/1e293b/64748b?text=No+Image"}
+                      alt="preview"
+                      className="w-full h-32 object-cover"
+                    />
+                  </div>
+                </div>
                 {renderField("URL Gambar", "src", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Gambar</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+                  />
+                </div>
                 {renderField("Alt Text", "alt", "text")}
                 {renderField("Caption", "caption", "text")}
               </>
             )}
+
+            {/* --- BUTTON --- */}
             {selectedElement.type === "button" && (
               <>
-                {renderField("Teks", "text", "text")}
-                {renderField("Link", "href", "text")}
+                {renderField("Teks Tombol", "text", "text")}
+                {renderField("Link / URL", "href", "text")}
                 {renderField("Variant", "variant", "select", ["primary", "secondary", "outline"])}
+                {renderField("Target", "target", "select", ["_self", "_blank"])}
               </>
             )}
+
+            {/* --- VIDEO --- */}
             {selectedElement.type === "video" && (
               <>
+                <p className="text-[10px] text-gray-600 mb-2">Masukkan URL embed YouTube/Vimeo:</p>
+                <div className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+                  <code className="text-[10px] text-gray-500">Contoh: https://www.youtube.com/embed/VIDEO_ID</code>
+                </div>
                 {renderField("URL Video (Embed)", "url", "text")}
                 {renderField("Caption", "caption", "text")}
               </>
             )}
-            {selectedElement.type === "spacer" && renderField("Height (px)", "height", "text")}
+
+            {/* --- SPACER --- */}
+            {selectedElement.type === "spacer" && (
+              renderField("Tinggi Spacer (px)", "height", "text")
+            )}
+
+            {/* --- DIVIDER --- */}
             {selectedElement.type === "divider" && (
               <>
-                {renderField("Style", "style", "select", ["solid", "dashed", "dotted"])}
-                {renderField("Color", "color", "color")}
+                {renderField("Style Garis", "style", "select", ["solid", "dashed", "dotted"])}
+                {renderField("Warna", "color", "color")}
               </>
             )}
+
+            {/* --- ICON --- */}
             {selectedElement.type === "icon" && (
               <>
-                {renderField("Icon Name", "icon", "select", ["star", "heart", "rocket", "globe", "lightbulb", "shield", "chart", "users", "cog", "check"])}
-                {renderField("Size", "size", "text")}
-                {renderField("Color", "color", "color")}
+                {renderField("Ikon", "icon", "select", ["star", "heart", "rocket", "globe", "lightbulb", "shield", "chart", "users", "cog", "check"])}
+                {renderField("Ukuran", "size", "text")}
+                {renderField("Warna", "color", "color")}
               </>
             )}
-            {selectedElement.type === "features" && renderField("Title", "title", "text")}
-            {selectedElement.type === "pricing" && renderField("Title", "title", "text")}
-            {selectedElement.type === "testimonial" && renderField("Title", "title", "text")}
+
+            {/* --- FEATURES --- */}
+            {selectedElement.type === "features" && (
+              <>
+                {renderField("Judul Section", "title", "text")}
+                {renderField("Subtitle", "subtitle", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Items ({selectedElement.content.items?.length || 0})</label>
+                  {selectedElement.content.items?.map((item: any, i: number) => (
+                    <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-400">#{i + 1}</span>
+                        <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
+                      </div>
+                      <input
+                        value={item.icon || ""}
+                        onChange={(e) => handleItemChange("items", i, "icon", e.target.value)}
+                        className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                        placeholder="Icon (🚀)"
+                      />
+                      <input
+                        value={item.title || ""}
+                        onChange={(e) => handleItemChange("items", i, "title", e.target.value)}
+                        className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                        placeholder="Judul"
+                      />
+                      <textarea
+                        value={item.desc || ""}
+                        onChange={(e) => handleItemChange("items", i, "desc", e.target.value)}
+                        className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50 resize-none"
+                        rows={2}
+                        placeholder="Deskripsi"
+                      />
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => handleAddItem("items", { icon: "🚀", title: "Fitur Baru", desc: "Deskripsi fitur" })}
+                    className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
+                  >
+                    + Tambah Item
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* --- PRICING --- */}
+            {selectedElement.type === "pricing" && (
+              <>
+                {renderField("Judul Section", "title", "text")}
+                {renderField("Subtitle", "subtitle", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Paket ({selectedElement.content.items?.length || 0})</label>
+                  {selectedElement.content.items?.map((item: any, i: number) => (
+                    <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-400">#{i + 1}</span>
+                        <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
+                      </div>
+                      <input value={item.name || ""} onChange={(e) => handleItemChange("items", i, "name", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Nama Paket" />
+                      <input value={item.price || ""} onChange={(e) => handleItemChange("items", i, "price", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Harga" />
+                      <input value={item.desc || ""} onChange={(e) => handleItemChange("items", i, "desc", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Deskripsi" />
+                      <textarea
+                        value={(item.features || []).join("\n")}
+                        onChange={(e) => handleItemChange("items", i, "features", e.target.value.split("\n"))}
+                        className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none"
+                        rows={3}
+                        placeholder="Fitur (pisahkan dengan enter)"
+                      />
+                      <label className="flex items-center gap-2 mt-1">
+                        <input type="checkbox" checked={item.highlighted || false} onChange={(e) => handleItemChange("items", i, "highlighted", e.target.checked)} className="rounded bg-white/5 border-white/20" />
+                        <span className="text-xs text-gray-400">Highlight (unggulan)</span>
+                      </label>
+                    </div>
+                  ))}
+                  <button onClick={() => handleAddItem("items", { name: "Paket Baru", price: "Rp 0", desc: "Deskripsi", features: ["Fitur 1"], highlighted: false, cta: "Pilih Paket" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
+                    + Tambah Paket
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* --- TESTIMONIAL --- */}
+            {selectedElement.type === "testimonial" && (
+              <>
+                {renderField("Judul Section", "title", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Testimonial ({selectedElement.content.items?.length || 0})</label>
+                  {selectedElement.content.items?.map((item: any, i: number) => (
+                    <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-400">#{i + 1}</span>
+                        <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
+                      </div>
+                      <textarea value={item.text || ""} onChange={(e) => handleItemChange("items", i, "text", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Testimonial text" />
+                      <input value={item.name || ""} onChange={(e) => handleItemChange("items", i, "name", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Nama" />
+                      <input value={item.role || ""} onChange={(e) => handleItemChange("items", i, "role", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Role / Jabatan" />
+                    </div>
+                  ))}
+                  <button onClick={() => handleAddItem("items", { name: "Klien Baru", role: "CEO", text: "Testimonial...", rating: 5, avatar: "KB" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
+                    + Tambah Testimonial
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* --- CTA --- */}
             {selectedElement.type === "cta" && (
               <>
                 {renderField("Title", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
-                {renderField("Button Text", "buttonText", "text")}
-                {renderField("Button Link", "buttonHref", "text")}
+                {renderField("Teks Tombol", "buttonText", "text")}
+                {renderField("Link Tombol", "buttonHref", "text")}
               </>
             )}
-            {selectedElement.type === "stats" && renderField("Title (opsional)", "title", "text")}
+
+            {/* --- STATS --- */}
+            {selectedElement.type === "stats" && (
+              <>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Statistik ({selectedElement.content.items?.length || 0})</label>
+                  {selectedElement.content.items?.map((item: any, i: number) => (
+                    <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-400">#{i + 1}</span>
+                        <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
+                      </div>
+                      <input value={item.value || ""} onChange={(e) => handleItemChange("items", i, "value", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Nilai (50+)" />
+                      <input value={item.label || ""} onChange={(e) => handleItemChange("items", i, "label", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
+                    </div>
+                  ))}
+                  <button onClick={() => handleAddItem("items", { value: "0", label: "Item Baru" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
+                    + Tambah Statistik
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* --- CONTACT FORM --- */}
             {selectedElement.type === "contactForm" && (
               <>
                 {renderField("Title", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
-                {renderField("No. WhatsApp", "whatsappNumber", "text")}
+                {renderField("No. WhatsApp (dengan kode negara, tanpa +)", "whatsappNumber", "text")}
               </>
             )}
+
+            {/* --- MAPS --- */}
             {selectedElement.type === "maps" && (
               <>
                 {renderField("Title", "title", "text")}
-                {renderField("Address", "address", "text")}
+                {renderField("Alamat", "address", "text")}
                 {renderField("Latitude", "lat", "text")}
                 {renderField("Longitude", "lng", "text")}
               </>
             )}
+
+            {/* --- NAVBAR --- */}
             {selectedElement.type === "navbar" && (
               <>
-                {renderField("Logo Text", "logo", "text")}
+                {renderField("Logo / Brand", "logo", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Menu Links ({selectedElement.content.links?.length || 0})</label>
+                  {selectedElement.content.links?.map((link: any, i: number) => (
+                    <div key={i} className="flex items-center gap-1 mb-1">
+                      <input value={link.label || ""} onChange={(e) => handleItemChange("links", i, "label", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
+                      <input value={link.href || ""} onChange={(e) => handleItemChange("links", i, "href", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="/link" />
+                      <button onClick={() => handleRemoveLink(i)} className="text-red-400 hover:text-red-300 text-xs px-1">×</button>
+                    </div>
+                  ))}
+                  <button onClick={handleAddLink} className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Link</button>
+                </div>
                 {renderField("CTA Text", "ctaText", "text")}
                 {renderField("CTA Link", "ctaHref", "text")}
               </>
             )}
-            {selectedElement.type === "footer" && renderField("Copyright", "copyright", "text")}
+
+            {/* --- FOOTER --- */}
+            {selectedElement.type === "footer" && (
+              <>
+                {renderField("Logo / Brand", "logo", "text")}
+                {renderField("Deskripsi", "description", "textarea")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Footer Links ({selectedElement.content.links?.length || 0})</label>
+                  {selectedElement.content.links?.map((link: any, i: number) => (
+                    <div key={i} className="flex items-center gap-1 mb-1">
+                      <input value={link.label || ""} onChange={(e) => handleItemChange("links", i, "label", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
+                      <input value={link.href || ""} onChange={(e) => handleItemChange("links", i, "href", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="/link" />
+                      <button onClick={() => handleRemoveLink(i)} className="text-red-400 hover:text-red-300 text-xs px-1">×</button>
+                    </div>
+                  ))}
+                  <button onClick={handleAddLink} className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Link</button>
+                </div>
+                {renderField("Copyright", "copyright", "text")}
+                <p className="text-[10px] text-gray-600 mb-1">Social Media (edit di kode default dulu)</p>
+              </>
+            )}
           </div>
         ) : (
           <div>
-            {renderStyleField("Text Color", "color", "color")}
-            {renderStyleField("Background", "backgroundColor", "color")}
-            {renderStyleField("Font Size", "fontSize", "text")}
-            {renderStyleField("Font Weight", "fontWeight", "text")}
-            {renderStyleField("Text Align", "textAlign", "select", ["left", "center", "right"])}
-            {renderStyleField("Padding", "padding", "text")}
-            {renderStyleField("Margin", "margin", "text")}
-            {renderStyleField("Border Radius", "borderRadius", "text")}
+            <p className="text-[10px] text-gray-600 mb-3">Style di bawah akan diterapkan ke element ini</p>
+            
+            {renderSection("Teks", <>
+              {renderStyleField("Warna Teks", "color", "color")}
+              {renderStyleField("Ukuran Font", "fontSize", "text")}
+              {renderStyleField("Font Weight", "fontWeight", "select", ["100", "200", "300", "400", "500", "600", "700", "800", "900"])}
+              {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
+            </>)}
+
+            {renderSection("Background", <>
+              {renderStyleField("Warna Background", "backgroundColor", "color")}
+            </>)}
+
+            {renderSection("Spacing", <>
+              {renderStyleField("Padding", "padding", "text")}
+              {renderStyleField("Margin", "margin", "text")}
+            </>)}
+
+            {renderSection("Lainnya", <>
+              {renderStyleField("Border Radius", "borderRadius", "text")}
+              {renderStyleField("Width", "width", "text")}
+              {renderStyleField("Height", "height", "text")}
+            </>)}
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { ElementRenderer } from "./elements/ElementRenderer";
@@ -22,6 +23,7 @@ export default function BuilderElementComponent({
 }) {
   const { dispatch, state } = useBuilder();
   const isSelected = state.selectedElementId === element.id;
+  const [inlineEditing, setInlineEditing] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `el-${element.id}`,
@@ -37,6 +39,31 @@ export default function BuilderElementComponent({
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Only enable inline editing for text-based elements
+    if (["heading", "text"].includes(element.type)) {
+      setInlineEditing(true);
+    }
+  };
+
+  const handleInlineEdit = useCallback((content: Record<string, any>) => {
+    dispatch({
+      type: "UPDATE_ELEMENT",
+      pageId,
+      sectionId,
+      columnIndex,
+      elementId: element.id,
+      content,
+    });
+    setInlineEditing(false);
+  }, [dispatch, pageId, sectionId, columnIndex, element.id]);
+
+  const handleBlur = () => {
+    // Small delay to allow click events to fire
+    setTimeout(() => setInlineEditing(false), 200);
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -45,6 +72,7 @@ export default function BuilderElementComponent({
         isDragging ? "opacity-50 z-50" : ""
       } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-[#0f172a]" : "hover:ring-1 hover:ring-white/20"}`}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
     >
       {/* Drag handle & controls - appears on hover */}
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 opacity-0 group-hover/element:opacity-100 transition-opacity z-10">
@@ -89,9 +117,23 @@ export default function BuilderElementComponent({
         </div>
       </div>
 
+      {/* Inline editing hint */}
+      {isSelected && ["heading", "text"].includes(element.type) && !inlineEditing && (
+        <div className="absolute top-2 right-2 opacity-0 group-hover/element:opacity-100 transition-opacity z-10">
+          <span className="text-[10px] bg-[#22c55e]/20 text-[#22c55e] px-2 py-0.5 rounded-md">
+            Double-click to edit
+          </span>
+        </div>
+      )}
+
       {/* Element content */}
       <div className="p-3">
-        <ElementRenderer element={element} />
+        <ElementRenderer
+          element={element}
+          editing={inlineEditing}
+          onEdit={handleInlineEdit}
+          onBlurEditing={handleBlur}
+        />
       </div>
     </div>
   );

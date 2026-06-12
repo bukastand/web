@@ -4,13 +4,7 @@ import { useState } from "react";
 import { useBuilder } from "@/lib/builder/store";
 import Link from "next/link";
 
-export default function BuilderTopBar({
-  showStylePanel,
-  onToggleStylePanel,
-}: {
-  showStylePanel: boolean;
-  onToggleStylePanel: () => void;
-}) {
+export default function BuilderTopBar() {
   const { currentPage, dispatch } = useBuilder();
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");
@@ -59,12 +53,6 @@ export default function BuilderTopBar({
       <div className="flex items-center gap-3">
 
 
-        <button
-          onClick={onToggleStylePanel}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${showStylePanel ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-400 hover:text-white"}`}
-        >
-          Styles
-        </button>
 
         <Link
           href={`/builder/preview/${currentPage.id}`}
