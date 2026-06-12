@@ -133,27 +133,38 @@ function TextElement({ el, editing, onEdit, onBlurEditing }: ElementComponentPro
   );
 }
 
+function getAlign(align?: string): "flex-start" | "center" | "flex-end" {
+  if (align === "left") return "flex-start";
+  if (align === "right") return "flex-end";
+  return "center";
+}
+
 function ImageElement({ el }: ElementComponentProps) {
   const imgStyles = applyStyles(el);
   // Remove textAlign from img itself, apply to container instead
-  const { textAlign, ...imgOnlyStyles } = imgStyles;
+  const { textAlign: _ta, ...imgOnlyStyles } = imgStyles;
+  
+  // When alignment is set, convert width:100% to maxWidth so alignment has visible effect
+  // This handles old saved data that still has width: "100%"
+  if (el.styles.textAlign && imgOnlyStyles.width === "100%") {
+    delete imgOnlyStyles.width;
+    if (!imgOnlyStyles.maxWidth) imgOnlyStyles.maxWidth = "100%";
+  }
+  
   // Default to cover if no objectFit explicitly set
   if (imgOnlyStyles.objectFit === undefined) {
     imgOnlyStyles.objectFit = "cover";
   }
-  // If width is 100%, convert to maxWidth so alignment (textAlign) has visible effect
-  if (imgOnlyStyles.width === "100%") {
-    delete imgOnlyStyles.width;
-    if (!imgOnlyStyles.maxWidth) imgOnlyStyles.maxWidth = "100%";
-  }
+  
+  const justifyContent = getAlign(el.styles.textAlign || el.content.align);
   return (
-    <div style={{ textAlign: el.styles.textAlign || el.content.align || "center" }}>
+    <div style={{ display: "flex", justifyContent, flexWrap: "wrap" }}>
       <img
         src={el.content.src || "https://placehold.co/800x500/1e293b/64748b?text=Gambar"}
         alt={el.content.alt || ""}
         style={imgOnlyStyles}
-    />
-      {el.content.caption && <p className="text-sm text-gray-500 mt-2">{el.content.caption}</p>}
+      />
+      {el.content.caption && <p className="text-sm text-gray-500 mt-2 w-full">{el.content.caption}</p>}
     </div>
   );
 }
@@ -179,13 +190,33 @@ function ButtonElement({ el }: ElementComponentProps) {
 
 function VideoElement({ el }: ElementComponentProps) {
   const videoContainerStyles = applyStyles(el);
-  const { textAlign, ...videoOnlyStyles } = videoContainerStyles;
+  const { textAlign: _ta, ...videoOnlyStyles } = videoContainerStyles;
+  
+  const hasAlign = !!el.styles.textAlign;
+  const justifyContent = getAlign(el.styles.textAlign);
+  
+  // When alignment is set, convert width:100% to maxWidth and add minWidth so flex alignment works
+  if (hasAlign) {
+    if (videoOnlyStyles.width === "100%") {
+      delete videoOnlyStyles.width;
+    }
+    if (!videoOnlyStyles.maxWidth) {
+      videoOnlyStyles.maxWidth = "100%";
+    }
+    if (!videoOnlyStyles.minWidth) {
+      videoOnlyStyles.minWidth = "320px";
+    }
+  }
+  
   return (
-    <div style={{ textAlign: el.styles.textAlign || "center" }}>
-      <div className="relative overflow-hidden" style={{ aspectRatio: "16 / 9", ...videoOnlyStyles }}>
+    <div style={{ display: "flex", justifyContent, flexWrap: "wrap" }}>
+      <div 
+        className={`relative overflow-hidden${!hasAlign ? " w-full" : ""}`}
+        style={{ aspectRatio: "16 / 9", ...videoOnlyStyles }}
+      >
         <iframe src={el.content.url || ""} className="absolute inset-0 w-full h-full" allowFullScreen title="video" />
       </div>
-      {el.content.caption && <p className="text-sm text-gray-500 mt-2 text-center">{el.content.caption}</p>}
+      {el.content.caption && <p className="text-sm text-gray-500 mt-2 w-full">{el.content.caption}</p>}
     </div>
   );
 }
@@ -217,8 +248,9 @@ function IconElement({ el }: ElementComponentProps) {
     check: <path d="M5 13l4 4L19 7" />,
   };
 
+  const justifyContent = getAlign(el.styles.textAlign);
   return (
-    <div style={{ textAlign: (el.styles as any).textAlign || "center" }}>
+    <div style={{ display: "flex", justifyContent }}>
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         {icons[el.content.icon] || icons.star}
       </svg>
