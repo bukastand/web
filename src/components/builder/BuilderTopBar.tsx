@@ -57,21 +57,7 @@ export default function BuilderTopBar({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Undo/Redo placeholder */}
-        <div className="flex items-center gap-1 text-gray-600">
-          <button className="p-2 hover:text-white transition-colors" title="Undo">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-            </svg>
-          </button>
-          <button className="p-2 hover:text-white transition-colors" title="Redo">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
-            </svg>
-          </button>
-        </div>
 
-        <div className="w-px h-6 bg-white/10" />
 
         <button
           onClick={onToggleStylePanel}

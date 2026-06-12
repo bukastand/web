@@ -3,7 +3,7 @@
 import { createContext, useContext, useReducer, useEffect, useCallback, type ReactNode } from "react";
 import type { BuilderState, BuilderAction, BuilderPage } from "./types";
 import { createDefaultPage, createDefaultSection, genId } from "./defaults";
-import type { BuilderColumn } from "./types";
+
 
 const STORAGE_KEY = "builder_pages";
 
