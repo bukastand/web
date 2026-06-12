@@ -281,6 +281,7 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(builderReducer, initialState);
   const loadedUserIdRef = useRef<string | null>(null);
   const lastSavedJson = useRef("");
+  const lastSavedPageIdsRef = useRef<string[]>([]);
 
   // Load pages: from Supabase if logged in, otherwise from localStorage
   useEffect(() => {
@@ -311,13 +312,26 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
     }
   }, [user?.id]);
 
-  // Save pages to localStorage on every change, and debounce to Supabase
+  // Save pages to localStorage on every change, and sync to Supabase
   useEffect(() => {
     // Always save to localStorage as instant backup
     saveLocalPages(state.pages);
 
-    // Save to Supabase if user is logged in and data actually changed
-    if (user && state.pages.length > 0) {
+    // Sync to Supabase if user is logged in
+    if (user) {
+      const currentPageIds = new Set(state.pages.map((p) => p.id));
+      
+      // Detect deleted pages by comparing with previous page IDs
+      // (handles both partial deletes and deleting ALL pages)
+      if (lastSavedPageIdsRef.current.length > 0) {
+        const deletedIds = lastSavedPageIdsRef.current.filter((id) => !currentPageIds.has(id));
+        for (const deletedId of deletedIds) {
+          supabasePages.deletePage(user.id, deletedId);
+        }
+      }
+      lastSavedPageIdsRef.current = state.pages.map((p) => p.id);
+
+      // Upsert current pages if data changed
       const currentJson = JSON.stringify(state.pages);
       if (currentJson !== lastSavedJson.current) {
         lastSavedJson.current = currentJson;
