@@ -1,13 +1,15 @@
 "use client";
 
-import { createContext, useContext, useReducer, useEffect, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useEffect, useCallback, useRef, type ReactNode } from "react";
 import type { BuilderState, BuilderAction, BuilderPage } from "./types";
 import { createDefaultPage, createDefaultSection, genId } from "./defaults";
+import { useAuth } from "@/components/auth/AuthProvider";
+import * as supabasePages from "@/lib/supabase/pages";
 
 
 const STORAGE_KEY = "builder_pages";
 
-function loadPages(): BuilderPage[] {
+function loadLocalPages(): BuilderPage[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -17,7 +19,7 @@ function loadPages(): BuilderPage[] {
   }
 }
 
-function savePages(pages: BuilderPage[]) {
+function saveLocalPages(pages: BuilderPage[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
@@ -275,15 +277,54 @@ interface BuilderContextValue {
 const BuilderContext = createContext<BuilderContextValue | null>(null);
 
 export function BuilderProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [state, dispatch] = useReducer(builderReducer, initialState);
+  const loadedUserIdRef = useRef<string | null>(null);
+  const lastSavedJson = useRef("");
 
+  // Load pages: from Supabase if logged in, otherwise from localStorage
   useEffect(() => {
-    dispatch({ type: "LOAD_PAGES", pages: loadPages() });
-  }, []);
+    if (user) {
+      // Already loaded for this user - skip
+      if (loadedUserIdRef.current === user.id) return;
+      loadedUserIdRef.current = user.id;
 
+      supabasePages.fetchPages(user.id).then((pages) => {
+        if (pages.length > 0) {
+          dispatch({ type: "LOAD_PAGES", pages });
+          saveLocalPages(pages);
+          lastSavedJson.current = JSON.stringify(pages);
+        } else {
+          // No pages in Supabase yet, try localStorage
+          const local = loadLocalPages();
+          if (local.length > 0) {
+            dispatch({ type: "LOAD_PAGES", pages: local });
+          }
+          lastSavedJson.current = JSON.stringify(local);
+        }
+      });
+    } else {
+      loadedUserIdRef.current = null;
+      const local = loadLocalPages();
+      dispatch({ type: "LOAD_PAGES", pages: local });
+      lastSavedJson.current = JSON.stringify(local);
+    }
+  }, [user?.id]);
+
+  // Save pages to localStorage on every change, and debounce to Supabase
   useEffect(() => {
-    savePages(state.pages);
-  }, [state.pages]);
+    // Always save to localStorage as instant backup
+    saveLocalPages(state.pages);
+
+    // Save to Supabase if user is logged in and data actually changed
+    if (user && state.pages.length > 0) {
+      const currentJson = JSON.stringify(state.pages);
+      if (currentJson !== lastSavedJson.current) {
+        lastSavedJson.current = currentJson;
+        supabasePages.savePages(user.id, state.pages);
+      }
+    }
+  }, [state.pages, user?.id]);
 
   const currentPage = state.pages.find((p) => p.id === state.currentPageId);
 
