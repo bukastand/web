@@ -141,13 +141,18 @@ function ImageElement({ el }: ElementComponentProps) {
   if (imgOnlyStyles.objectFit === undefined) {
     imgOnlyStyles.objectFit = "cover";
   }
+  // If width is 100%, convert to maxWidth so alignment (textAlign) has visible effect
+  if (imgOnlyStyles.width === "100%") {
+    delete imgOnlyStyles.width;
+    if (!imgOnlyStyles.maxWidth) imgOnlyStyles.maxWidth = "100%";
+  }
   return (
     <div style={{ textAlign: el.styles.textAlign || el.content.align || "center" }}>
       <img
         src={el.content.src || "https://placehold.co/800x500/1e293b/64748b?text=Gambar"}
         alt={el.content.alt || ""}
         style={imgOnlyStyles}
-      />
+    />
       {el.content.caption && <p className="text-sm text-gray-500 mt-2">{el.content.caption}</p>}
     </div>
   );
