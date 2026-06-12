@@ -64,18 +64,37 @@ export default function BuilderElementComponent({
     setTimeout(() => setInlineEditing(false), 200);
   };
 
+  const isHidden = element.content.hidden === true;
+
+  const handleToggleHidden = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch({
+      type: "UPDATE_ELEMENT",
+      pageId,
+      sectionId,
+      columnIndex,
+      elementId: element.id,
+      content: { hidden: !isHidden },
+    });
+  };
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       className={`group/element relative rounded-lg transition-all ${
         isDragging ? "opacity-50 z-50" : ""
-      } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-[#0f172a]" : "hover:ring-1 hover:ring-white/20"}`}
+      } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-[#0f172a]" : "hover:ring-1 hover:ring-white/20"} ${isHidden ? "opacity-30" : ""}`}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
     >
-      {/* Drag handle & controls - appears on hover */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 opacity-0 group-hover/element:opacity-100 transition-opacity z-10">
+      {/* Drag handle & controls - appears on hover, always visible when hidden */}
+      <div className={`absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 transition-opacity z-10 ${isHidden ? "opacity-100" : "opacity-0 group-hover/element:opacity-100"}`}>
         <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[#1e293b] border border-white/10 shadow-lg">
           <button
             {...listeners}
@@ -89,6 +108,34 @@ export default function BuilderElementComponent({
           </button>
           <div className="w-px h-3 bg-white/10" />
           <span className="text-[10px] text-gray-500 uppercase font-medium px-1">{element.type}</span>
+          <div className="w-px h-3 bg-white/10" />
+          {/* Edit button */}
+          <button
+            onClick={handleEditClick}
+            className="p-0.5 text-gray-400 hover:text-[#22c55e] transition-colors"
+            title="Edit element"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          {/* Hide/Show button */}
+          <button
+            onClick={handleToggleHidden}
+            className={`p-0.5 transition-colors ${isHidden ? "text-yellow-400 hover:text-yellow-300" : "text-gray-400 hover:text-white"}`}
+            title={isHidden ? "Tampilkan element" : "Sembunyikan element"}
+          >
+            {isHidden ? (
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            )}
+          </button>
           <div className="w-px h-3 bg-white/10" />
           <button
             onClick={(e) => {
@@ -117,8 +164,17 @@ export default function BuilderElementComponent({
         </div>
       </div>
 
+      {/* Hidden badge */}
+      {isHidden && (
+        <div className="absolute top-2 right-2 z-10">
+          <span className="text-[10px] bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-md font-medium">
+            Disembunyikan
+          </span>
+        </div>
+      )}
+
       {/* Inline editing hint */}
-      {isSelected && ["heading", "text"].includes(element.type) && !inlineEditing && (
+      {isSelected && ["heading", "text"].includes(element.type) && !inlineEditing && !isHidden && (
         <div className="absolute top-2 right-2 opacity-0 group-hover/element:opacity-100 transition-opacity z-10">
           <span className="text-[10px] bg-[#22c55e]/20 text-[#22c55e] px-2 py-0.5 rounded-md">
             Double-click to edit
@@ -127,13 +183,25 @@ export default function BuilderElementComponent({
       )}
 
       {/* Element content */}
-      <div className="p-3">
-        <ElementRenderer
-          element={element}
-          editing={inlineEditing}
-          onEdit={handleInlineEdit}
-          onBlurEditing={handleBlur}
-        />
+      <div className={`p-3 ${isHidden ? "pointer-events-none select-none" : ""}`}>
+        {isHidden ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <svg className="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+              <p className="text-xs text-gray-600">Element disembunyikan</p>
+              <p className="text-[10px] text-gray-700">Klik ikon mata untuk tampilkan</p>
+            </div>
+          </div>
+        ) : (
+          <ElementRenderer
+            element={element}
+            editing={inlineEditing}
+            onEdit={handleInlineEdit}
+            onBlurEditing={handleBlur}
+          />
+        )}
       </div>
     </div>
   );
