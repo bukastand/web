@@ -135,7 +135,7 @@ export default function ProjectClient({
 
         <div className="relative z-10 container mx-auto px-6 pt-24 pb-20">
           <div className="max-w-4xl">
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8 reveal-project opacity-0 translate-y-8 transition-all duration-700">
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
               <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
               <span>/</span>
               <Link href="/#portfolio" className="hover:text-white transition-colors">Portfolio</Link>
@@ -143,20 +143,20 @@ export default function ProjectClient({
               <span className="text-white">{project.title}</span>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white text-sm mb-6 reveal-project opacity-0 translate-y-8 transition-all duration-700 delay-100">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white text-sm mb-6">
               <span className="w-2 h-2 rounded-full bg-[#22c55e]" />
               {project.industry}
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6 reveal-project opacity-0 translate-y-8 transition-all duration-700 delay-200">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6">
               {project.title}
             </h1>
 
-            <p className="text-xl text-gray-300 max-w-2xl mb-10 reveal-project opacity-0 translate-y-8 transition-all duration-700 delay-300 leading-relaxed">
+            <p className="text-xl text-gray-300 max-w-2xl mb-10 leading-relaxed">
               {project.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 reveal-project opacity-0 translate-y-8 transition-all duration-700 delay-400">
+            <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href={heroData.cta_link}
                 target="_blank"
@@ -176,7 +176,7 @@ export default function ProjectClient({
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 reveal-project opacity-0 translate-y-8 transition-all duration-700 delay-500">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
               {[
                 { val: project.features.length + "+", label: "Fitur Unggulan" },
                 { val: "Responsive", label: "Semua Perangkat" },

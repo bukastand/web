@@ -12,7 +12,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
   // Fallback: try matching by slugified title
   if (!project) {
-    project = getAllProjects().find((p) => slugify(p.title) === slug) || null;
+    project = getAllProjects().find((p) => slugify(p.title) === slug) ?? undefined;
   }
 
   if (!project) {
