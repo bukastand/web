@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
+import PortfolioDetailModal from "./PortfolioDetailModal";
 
 interface PortfolioItem {
   title: string;
@@ -38,6 +39,7 @@ export default function PortfolioSection() {
   const [projects, setProjects] = useState<PortfolioItem[]>(defaultProjects);
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [visibleProjects, setVisibleProjects] = useState<number[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const filteredProjects =
     activeCategory === "Semua"
@@ -94,7 +96,19 @@ export default function PortfolioSection() {
       });
     }, 100);
     return () => clearTimeout(timer);
-  }, [activeCategory]);
+  }, [activeCategory, filteredProjects.length]);
+
+  const handlePrev = useCallback(() => {
+    setSelectedIndex((prev) =>
+      prev === null ? null : prev === 0 ? filteredProjects.length - 1 : prev - 1
+    );
+  }, [filteredProjects.length]);
+
+  const handleNext = useCallback(() => {
+    setSelectedIndex((prev) =>
+      prev === null ? null : (prev + 1) % filteredProjects.length
+    );
+  }, [filteredProjects.length]);
 
   return (
     <section
@@ -137,9 +151,11 @@ export default function PortfolioSection() {
         {/* Project Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProjects.map((project, index) => (
-            <div
+            <button
+              onClick={() => setSelectedIndex(index)}
               key={index}
-              className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-[#22c55e]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#22c55e]/10 ${
+              aria-label={`Lihat detail ${project.title}`}
+              className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-[#22c55e]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#22c55e]/10 text-left w-full ${
                 visibleProjects.includes(index)
                   ? "opacity-100 translate-y-0"
                   : ""
@@ -202,7 +218,7 @@ export default function PortfolioSection() {
 
               {/* Hover border bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-            </div>
+            </button>
           ))}
         </div>
 
@@ -224,6 +240,18 @@ export default function PortfolioSection() {
             </svg>
             <p className="text-lg">Belum ada project di kategori ini</p>
           </div>
+        )}
+
+        {/* Portfolio Detail Modal */}
+        {selectedIndex !== null && (
+          <PortfolioDetailModal
+            project={filteredProjects[selectedIndex]}
+            allProjects={filteredProjects}
+            index={selectedIndex}
+            onClose={() => setSelectedIndex(null)}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
         )}
 
         {/* CTA */}
