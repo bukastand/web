@@ -426,7 +426,6 @@ export default function StylePanel() {
               <>
                 {renderField("Teks Heading", "text", "text")}
                 {renderField("Level Heading", "level", "select", ["h1", "h2", "h3", "h4", "h5", "h6"])}
-                {renderField("Alignment", "align", "select", ["left", "center", "right"])}
               </>
             )}
 
@@ -711,15 +710,38 @@ export default function StylePanel() {
           <div>
             <p className="text-[10px] text-gray-600 mb-3">Style di bawah akan diterapkan ke element ini</p>
             
-            {/* ALIGNMENT - for ALL elements */}
-            {renderSection("Alignment", <>
-              {renderStyleField("Alignment", "textAlign", "select", ["left", "center", "right"])}
-            </>)}
+            {/* ALIGNMENT - for ALL elements (no label inside to avoid double text) */}
+            <div className="mb-3">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Alignment</h4>
+              <select
+                value={selectedElement.styles.textAlign ?? ""}
+                onChange={(e) => updateStyle("textAlign", e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                style={{ colorScheme: 'dark' }}
+              >
+                <option value="" className="bg-[#1e293b] text-white">Default</option>
+                <option value="left" className="bg-[#1e293b] text-white">Left</option>
+                <option value="center" className="bg-[#1e293b] text-white">Center</option>
+                <option value="right" className="bg-[#1e293b] text-white">Right</option>
+              </select>
+            </div>
 
             {/* OBJECT FIT - only for image */}
-            {selectedElement.type === "image" && renderSection("Object Fit", <>
-              {renderStyleField("Object Fit", "objectFit", "select", ["cover", "contain", "fill", "none"])}
-            </>)}
+            {selectedElement.type === "image" && <div className="mb-3">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Object Fit</h4>
+              <select
+                value={selectedElement.styles.objectFit ?? ""}
+                onChange={(e) => updateStyle("objectFit", e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                style={{ colorScheme: 'dark' }}
+              >
+                <option value="" className="bg-[#1e293b] text-white">Default (cover)</option>
+                <option value="cover" className="bg-[#1e293b] text-white">Cover</option>
+                <option value="contain" className="bg-[#1e293b] text-white">Contain</option>
+                <option value="fill" className="bg-[#1e293b] text-white">Fill</option>
+                <option value="none" className="bg-[#1e293b] text-white">None</option>
+              </select>
+            </div>}
 
             {/* OPACITY - for image and video */}
             {["image", "video"].includes(selectedElement.type) && renderSection("Opacity", <>

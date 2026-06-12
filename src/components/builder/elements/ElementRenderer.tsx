@@ -62,7 +62,8 @@ function HeadingElement({ el, editing, onEdit, onBlurEditing }: ElementComponent
   const styles = applyStyles(el);
   // Remove fontSize from inline styles so the heading level Tailwind classes control the size
   delete styles.fontSize;
-  if (align) styles.textAlign = align;
+  // Style panel textAlign takes priority over content align
+  if (!styles.textAlign && align) styles.textAlign = align;
 
   const sizeMap: Record<string, string> = { h1: "text-4xl md:text-5xl", h2: "text-3xl md:text-4xl", h3: "text-2xl md:text-3xl", h4: "text-xl md:text-2xl", h5: "text-lg md:text-xl", h6: "text-base md:text-lg" };
   const cls = `${sizeMap[level] || "text-3xl"} font-bold leading-tight outline-none`;
