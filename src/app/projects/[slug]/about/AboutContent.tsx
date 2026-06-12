@@ -9,7 +9,7 @@ export default function AboutContent({ project }: { project: ProjectData }) {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden pt-20">
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden ">
         <ThreeScene />
         <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-15`} />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/50 to-transparent" />

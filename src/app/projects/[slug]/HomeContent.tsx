@@ -46,7 +46,7 @@ export default function HomeContent({
   return (
     <>
       {/* ===== 1. HERO SECTION ===== */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-16 md:pt-20">
+      <section className="relative min-h-screen flex items-center overflow-hidden ">
         <ThreeScene />
         <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-15`} />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/50 to-transparent" />
