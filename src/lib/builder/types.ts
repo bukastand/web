@@ -32,6 +32,7 @@ export interface ElementStyles {
   fontFamily?: string;
   width?: string;
   height?: string;
+  maxWidth?: string;
   opacity?: string;
   objectFit?: string;
 }

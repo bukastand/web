@@ -58,7 +58,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   },
   image: {
     content: { src: "https://placehold.co/800x500/1e293b/64748b?text=Gambar", alt: "Gambar", caption: "" },
-    styles: { borderRadius: "12px", width: "100%", margin: "0 0 0" },
+    styles: { borderRadius: "12px", maxWidth: "100%", margin: "0 0 0" },
   },
   button: {
     content: { text: "Klik Disini", href: "#", variant: "primary", target: "_self" },

@@ -19,6 +19,7 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   if (st.textAlign) s.textAlign = st.textAlign;
   if (st.width) s.width = st.width;
   if (st.height) s.height = st.height;
+  if (st.maxWidth) s.maxWidth = st.maxWidth;
   if (st.fontFamily) s.fontFamily = st.fontFamily;
   if (st.opacity) s.opacity = st.opacity;
   if (st.objectFit) s.objectFit = st.objectFit as React.CSSProperties['objectFit'];
