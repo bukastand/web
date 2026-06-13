@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 
-const SNAPSHOTS_KEY = "builder_published_snapshots";
+const SNAPSHOTS_PREFIX = "builder_published_snapshots_";
 
 export default function PublishedPage() {
   const params = useParams();
@@ -17,21 +17,38 @@ export default function PublishedPage() {
     try {
       const slug = params.slug as string;
 
-      // Option 1: Read from published snapshots (set when user clicks Publish)
-      const raw = localStorage.getItem(SNAPSHOTS_KEY);
-      if (raw) {
-        const snapshots: Record<string, BuilderPage> = JSON.parse(raw);
-        const found = snapshots[slug];
-        if (found?.published) {
+      // Scan all user-specific snapshot keys to find the published page
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+
+        // Check user-specific snapshots: builder_published_snapshots_<userId>
+        if (key.startsWith(SNAPSHOTS_PREFIX) || key === "builder_published_snapshots") {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const snapshots: Record<string, BuilderPage> = JSON.parse(raw);
+          const found = snapshots[slug];
+          if (found?.published) {
+            setPage(found);
+            return;
+          }
+        }
+      }
+
+      // Legacy fallback: check old builder_pages key (anonymous / pre-user-specific) 
+      const rawLegacy = localStorage.getItem("builder_pages_anonymous");
+      if (rawLegacy) {
+        const pages: BuilderPage[] = JSON.parse(rawLegacy);
+        const found = pages.find((p) => p.slug === slug && p.published);
+        if (found) {
           setPage(found);
           return;
         }
       }
-
-      // Option 2: Fallback to legacy builder_pages (for backward compat)
-      const rawLegacy = localStorage.getItem("builder_pages");
-      if (rawLegacy) {
-        const pages: BuilderPage[] = JSON.parse(rawLegacy);
+      // Also check old shared key for backward compat
+      const rawOld = localStorage.getItem("builder_pages");
+      if (rawOld) {
+        const pages: BuilderPage[] = JSON.parse(rawOld);
         const found = pages.find((p) => p.slug === slug && p.published);
         if (found) {
           setPage(found);

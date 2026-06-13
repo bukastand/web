@@ -7,41 +7,58 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import * as supabasePages from "@/lib/supabase/pages";
 
 
-const STORAGE_KEY = "builder_pages";
-const SNAPSHOTS_KEY = "builder_published_snapshots";
 const MAX_HISTORY = 50;
 
-function loadLocalPages(): BuilderPage[] {
+function storageKey(userId: string | null) {
+  if (userId) return `builder_pages_${userId}`;
+  return "builder_pages_anonymous";
+}
+
+function snapshotsKey(userId: string | null) {
+  if (userId) return `builder_published_snapshots_${userId}`;
+  return "builder_published_snapshots";
+}
+
+function loadLocalPages(userId: string | null): BuilderPage[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(userId));
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-function saveLocalPages(pages: BuilderPage[]) {
+function saveLocalPages(userId: string | null, pages: BuilderPage[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
+    localStorage.setItem(storageKey(userId), JSON.stringify(pages));
   } catch {}
 }
 
-function loadPublishedSnapshots(): Record<string, BuilderPage> {
+function loadPublishedSnapshots(userId: string | null): Record<string, BuilderPage> {
   if (typeof window === "undefined") return {};
   try {
-    const raw = localStorage.getItem(SNAPSHOTS_KEY);
+    const raw = localStorage.getItem(snapshotsKey(userId));
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
   }
 }
 
-function savePublishedSnapshots(snapshots: Record<string, BuilderPage>) {
+function savePublishedSnapshots(userId: string | null, snapshots: Record<string, BuilderPage>) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    localStorage.setItem(snapshotsKey(userId), JSON.stringify(snapshots));
+  } catch {}
+}
+
+/** Delete localStorage data for a specific user (used on logout / user switch) */
+function clearUserLocalStorage(userId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(storageKey(userId));
+    localStorage.removeItem(snapshotsKey(userId));
   } catch {}
 }
 
@@ -320,27 +337,33 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   // Load pages: from Supabase if logged in, otherwise from localStorage
   useEffect(() => {
     if (user) {
-      // Already loaded for this user - skip
+      // User changed — clear old user's localStorage cache to avoid data leak
+      if (loadedUserIdRef.current && loadedUserIdRef.current !== user.id) {
+        clearUserLocalStorage(loadedUserIdRef.current);
+      }
+
       if (loadedUserIdRef.current === user.id) return;
       loadedUserIdRef.current = user.id;
 
       supabasePages.fetchPages(user.id).then((pages) => {
         if (pages.length > 0) {
           dispatch({ type: "LOAD_PAGES", pages });
-          saveLocalPages(pages);
+          saveLocalPages(user.id, pages);
           lastSavedJson.current = JSON.stringify(pages);
         } else {
-          // No pages in Supabase yet, try localStorage
-          const local = loadLocalPages();
+          // No pages in Supabase — try this user's own localStorage cache
+          const local = loadLocalPages(user.id);
           if (local.length > 0) {
             dispatch({ type: "LOAD_PAGES", pages: local });
+          } else {
+            dispatch({ type: "LOAD_PAGES", pages: [] });
           }
           lastSavedJson.current = JSON.stringify(local);
         }
       });
     } else {
       loadedUserIdRef.current = null;
-      const local = loadLocalPages();
+      const local = loadLocalPages(null);
       dispatch({ type: "LOAD_PAGES", pages: local });
       lastSavedJson.current = JSON.stringify(local);
     }
@@ -348,8 +371,9 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
 
   // Save pages to localStorage on every change, and sync to Supabase
   useEffect(() => {
-    // Always save to localStorage as instant backup
-    saveLocalPages(state.pages);
+    // Always save to localStorage as instant backup (user-specific key)
+    const uid = user?.id || null;
+    saveLocalPages(uid, state.pages);
 
     // Sync to Supabase if user is logged in
     if (user) {
@@ -391,7 +415,8 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
     const curr = { id: currentPage.id, published: currentPage.published };
 
     if (prev && prev.id === currentPage.id && prev.published !== curr.published) {
-      const snapshots = loadPublishedSnapshots();
+      const uid = user?.id || null;
+      const snapshots = loadPublishedSnapshots(uid);
       if (curr.published) {
         // Save a DEEP COPY of current page as published snapshot
         const snapshot = JSON.parse(JSON.stringify(currentPage));
@@ -406,7 +431,7 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
         // Remove from published
         delete snapshots[currentPage.slug];
       }
-      savePublishedSnapshots(snapshots);
+      savePublishedSnapshots(uid, snapshots);
     }
 
     prevPublishedRef.current = curr;

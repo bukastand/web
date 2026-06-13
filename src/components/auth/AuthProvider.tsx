@@ -73,6 +73,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = async () => {
+    // Clear user-specific localStorage before signing out
+    if (user) {
+      try {
+        localStorage.removeItem(`builder_pages_${user.id}`);
+        localStorage.removeItem(`builder_published_snapshots_${user.id}`);
+      } catch {}
+    }
+
     await supabase.auth.signOut();
     // Clear all session cookies
     document.cookie = "builder_session=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
