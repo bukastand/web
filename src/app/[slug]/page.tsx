@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 import { fetchPublishedPage } from "@/lib/supabase/published";
+import { applyBgOpacity } from "@/lib/builder/utils";
 
 const SNAPSHOTS_PREFIX = "builder_published_snapshots_";
 
@@ -100,7 +101,7 @@ export default function PublishedPage() {
   const sectionBg = (s: any) => {
     const st: Record<string, string> = {};
     if (s.styles.backgroundColor && s.styles.backgroundColor !== "transparent") {
-      st.backgroundColor = s.styles.backgroundColor;
+      st.backgroundColor = applyBgOpacity(s.styles.backgroundColor, s.styles.backgroundOpacity) || s.styles.backgroundColor;
     }
     if (s.styles.backgroundImage) {
       st.backgroundImage = s.styles.backgroundImage;

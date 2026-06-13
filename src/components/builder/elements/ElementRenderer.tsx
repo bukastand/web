@@ -1,6 +1,7 @@
 "use client";
 
 import type { BuilderElement } from "@/lib/builder/types";
+import { applyBgOpacity } from "@/lib/builder/utils";
 
 interface ElementComponentProps {
   el: BuilderElement;
@@ -13,7 +14,10 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   const s: React.CSSProperties = {};
   const st = el.styles;
   if (st.color) s.color = st.color;
-  if (st.backgroundColor && st.backgroundColor !== "transparent") s.backgroundColor = st.backgroundColor;
+  // Background color with optional opacity
+  if (st.backgroundColor && st.backgroundColor !== "transparent") {
+    s.backgroundColor = applyBgOpacity(st.backgroundColor, st.backgroundOpacity) || st.backgroundColor;
+  }
   if (st.fontSize) s.fontSize = st.fontSize;
   if (st.fontWeight) s.fontWeight = st.fontWeight;
   if (st.textAlign) s.textAlign = st.textAlign;

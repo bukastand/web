@@ -877,6 +877,34 @@ export default function StylePanel() {
 
             {renderSection("Background", <>
               {renderStyleField("Warna Background", "backgroundColor", "color")}
+              {/* Background Opacity */}
+              {(() => {
+                const val = selectedElement.styles.backgroundOpacity ?? "";
+                const num = parseFloat(val) * 100 || 100;
+                return (
+                  <div className="mb-3">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Opacity Background ({Math.round(num)}%)</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={Math.round(num)}
+                        onChange={(e) => updateStyle("backgroundOpacity", `${Math.round(parseInt(e.target.value)) / 100}`)}
+                        className="flex-1 h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+                      />
+                      <input
+                        type="text"
+                        value={val || "1"}
+                        onChange={(e) => updateStyle("backgroundOpacity", e.target.value)}
+                        className="w-14 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs text-center focus:outline-none focus:border-[#22c55e]/50 font-mono"
+                        placeholder="1"
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
               <div className="mb-3">
                 <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Background Image / Gradient</label>
                 <input

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
+import { applyBgOpacity } from "@/lib/builder/utils";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -45,7 +46,7 @@ export default function PreviewPage() {
   const sectionBg = (s: any) => {
     const st: Record<string, string> = {};
     if (s.styles.backgroundColor && s.styles.backgroundColor !== "transparent") {
-      st.backgroundColor = s.styles.backgroundColor;
+      st.backgroundColor = applyBgOpacity(s.styles.backgroundColor, s.styles.backgroundOpacity) || s.styles.backgroundColor;
     }
     if (s.styles.backgroundImage) {
       st.backgroundImage = s.styles.backgroundImage;

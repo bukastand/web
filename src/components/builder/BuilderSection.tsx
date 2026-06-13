@@ -4,6 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import BuilderColumn from "./BuilderColumn";
 import type { BuilderSection as BuilderSectionType } from "@/lib/builder/types";
+import { applyBgOpacity } from "@/lib/builder/utils";
 
 function SectionControls({
   sectionId,
@@ -102,7 +103,7 @@ export default function BuilderSectionComponent({
 
   const bgStyle: React.CSSProperties = {};
   if (section.styles.backgroundColor && section.styles.backgroundColor !== "transparent") {
-    bgStyle.backgroundColor = section.styles.backgroundColor;
+    bgStyle.backgroundColor = applyBgOpacity(section.styles.backgroundColor, section.styles.backgroundOpacity) || section.styles.backgroundColor;
   }
   if (section.styles.backgroundImage) {
     bgStyle.backgroundImage = section.styles.backgroundImage as React.CSSProperties['backgroundImage'];
@@ -182,6 +183,25 @@ export default function BuilderSectionComponent({
               <option value="contain" className="bg-[#1e293b] text-white">Contain</option>
               <option value="auto" className="bg-[#1e293b] text-white">Auto</option>
             </select>
+          </div>
+          {/* Background Opacity */}
+          <div className="flex items-center gap-1 mt-1.5">
+            <span className="text-[9px] text-gray-500 flex-shrink-0">Opacity:</span>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={section.styles.backgroundOpacity ? Math.round(parseFloat(section.styles.backgroundOpacity) * 100) : 100}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundOpacity: `${Math.round(parseInt(e.target.value)) / 100}` } })}
+              className="flex-1 h-1 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+            />
+            <input
+              type="text"
+              value={section.styles.backgroundOpacity || "1"}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundOpacity: e.target.value || undefined } })}
+              className="w-10 px-0.5 py-0.5 rounded bg-white/10 text-white text-[10px] font-mono text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50"
+            />
           </div>
           {/* Background Position */}
           <div className="flex items-center gap-1 mt-1">

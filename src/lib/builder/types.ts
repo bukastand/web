@@ -38,6 +38,7 @@ export interface ElementStyles {
   backgroundImage?: string;
   backgroundSize?: string;
   backgroundPosition?: string;
+  backgroundOpacity?: string;
 }
 
 export interface ElementContent {
@@ -65,6 +66,7 @@ export interface SectionStyles {
   backgroundImage?: string;
   backgroundSize?: string;
   backgroundPosition?: string;
+  backgroundOpacity?: string;
   textColor?: string;
   containerWidth?: "full" | "boxed";
 }
