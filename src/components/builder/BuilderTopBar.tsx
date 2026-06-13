@@ -62,6 +62,20 @@ export default function BuilderTopBar({
     dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
   };
 
+  const handleUnpublish = () => {
+    dispatch({ type: "UNPUBLISH_PAGE", pageId: currentPage.id });
+  };
+
+  // Determine if there are unsaved changes since last publish
+  const hasPublishedSnapshot = !!currentPage.publishedSnapshot;
+  const ss = currentPage.publishedSnapshot;
+  const hasUnsavedChanges = hasPublishedSnapshot && (
+    currentPage.title !== ss?.title ||
+    currentPage.slug !== ss?.slug ||
+    JSON.stringify(currentPage.sections) !== JSON.stringify(ss?.sections) ||
+    JSON.stringify(currentPage.globalStyles) !== JSON.stringify(ss?.globalStyles)
+  );
+
   return (
     <header className="h-14 flex items-center justify-between px-4 bg-[#0f172a] border-b border-white/10 flex-shrink-0">
       <div className="flex items-center gap-3">
@@ -230,16 +244,22 @@ export default function BuilderTopBar({
           <button
             onClick={handlePublish}
             className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              currentPage.published
-                ? "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
-                : "bg-[#22c55e] text-white hover:bg-[#16a34a]"
+              !hasPublishedSnapshot
+                ? "bg-[#22c55e] text-white hover:bg-[#16a34a]"
+                : hasUnsavedChanges
+                ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
+                : "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
             }`}
           >
-            {currentPage.published ? "Published" : "Publish"}
+            {!hasPublishedSnapshot
+              ? "Publish"
+              : hasUnsavedChanges
+              ? "Publish"
+              : "Published"}
           </button>
-          {currentPage.published && (
+          {hasPublishedSnapshot && (
             <button
-              onClick={handlePublish}
+              onClick={handleUnpublish}
               className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
               title="Unpublish"
             >

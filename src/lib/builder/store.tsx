@@ -266,7 +266,15 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       return { ...state, selectedElementId: action.elementId };
 
     case "PUBLISH_PAGE":
-      return updatePage((p) => ({ ...p, published: !p.published }));
+      return updatePage((p) => ({
+        ...p,
+        published: true,
+        // Save a DEEP COPY as the published snapshot
+        publishedSnapshot: JSON.parse(JSON.stringify(p)),
+      }));
+
+    case "UNPUBLISH_PAGE":
+      return updatePage((p) => ({ ...p, published: false, publishedSnapshot: null }));
 
     case "ADD_COLUMN":
       return updatePage((p) => ({
@@ -406,45 +414,45 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   // currentPage must be defined here (before effects that reference it)
   const currentPage = state.pages.find((p) => p.id === state.currentPageId);
 
-  // ── Published snapshots: save on publish, remove on unpublish ──
-  const prevPublishedRef = useRef<{ id: string; published: boolean } | null>(null);
+  // ── Published snapshots: sync publishedSnapshot to Supabase & localStorage ──
+  const prevPublishRef = useRef<{ id: string; snapshot: BuilderPage | null } | null>(null);
 
   useEffect(() => {
     if (!currentPage || !user) return;
-    const prev = prevPublishedRef.current;
-    const curr = { id: currentPage.id, published: currentPage.published };
+    const prev = prevPublishRef.current;
+    const curr = { id: currentPage.id, snapshot: currentPage.publishedSnapshot };
 
-    if (prev && prev.id === currentPage.id && prev.published !== curr.published) {
+    // Only sync when publishedSnapshot actually changes (via PUBLISH_PAGE / UNPUBLISH_PAGE)
+    if (prev?.id === currentPage.id && prev.snapshot !== curr.snapshot) {
       const uid = user.id;
       const snapshots = loadPublishedSnapshots(uid);
 
-      if (curr.published) {
-        // Save a DEEP COPY of current page as published snapshot
-        const snapshot = JSON.parse(JSON.stringify(currentPage));
+      if (curr.snapshot) {
+        // Published: use the snapshot (frozen copy from publish time)
+        const snapshotData = curr.snapshot;
+
         // Remove old slug entry if slug changed
         for (const [slug, pg] of Object.entries(snapshots)) {
           if (pg.id === currentPage.id && slug !== currentPage.slug) {
             delete snapshots[slug];
-            // Also remove old slug from Supabase
             supabasePublished.unpublishPage(uid, slug);
           }
         }
-        snapshots[currentPage.slug] = snapshot;
+        snapshots[currentPage.slug] = snapshotData;
 
-        // Sync to Supabase (publicly accessible from any device)
-        supabasePublished.publishPage(uid, currentPage.slug, currentPage.title, snapshot);
+        // Sync to Supabase
+        supabasePublished.publishPage(uid, currentPage.slug, currentPage.title, snapshotData);
       } else {
-        // Remove from published
+        // Unpublished: remove from storage
         delete snapshots[currentPage.slug];
-        // Remove from Supabase
         supabasePublished.unpublishPage(uid, currentPage.slug);
       }
 
       savePublishedSnapshots(uid, snapshots);
     }
 
-    prevPublishedRef.current = curr;
-  }, [currentPage?.id, currentPage?.published, currentPage?.slug, user?.id]);
+    prevPublishRef.current = curr;
+  }, [currentPage?.id, currentPage?.publishedSnapshot, currentPage?.slug, user?.id]);
 
   // ── Wrapped dispatch for undo/redo history ──
   const wrappedDispatch = useCallback((action: BuilderAction) => {

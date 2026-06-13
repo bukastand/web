@@ -39,6 +39,7 @@ export function createDefaultPage(title = "Halaman Baru"): BuilderPage {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     published: false,
+    publishedSnapshot: null,
   };
 }
 

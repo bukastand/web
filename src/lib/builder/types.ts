@@ -87,6 +87,8 @@ export interface BuilderPage {
   createdAt: string;
   updatedAt: string;
   published: boolean;
+  /** Deep copy of page data at last publish time — the live published version */
+  publishedSnapshot: BuilderPage | null;
 }
 
 export type BuilderAction =
@@ -109,6 +111,7 @@ export type BuilderAction =
   | { type: "UPDATE_GLOBAL_STYLES"; pageId: string; styles: Partial<GlobalStyles> }
   | { type: "SELECT_ELEMENT"; elementId: string | null }
   | { type: "PUBLISH_PAGE"; pageId: string }
+  | { type: "UNPUBLISH_PAGE"; pageId: string }
   | { type: "REORDER_COLUMNS"; pageId: string; sectionId: string; columns: BuilderColumn[] }
   | { type: "UPDATE_COLUMN_WIDTH"; pageId: string; sectionId: string; columnIndex: number; width: number }
   | { type: "ADD_COLUMN"; pageId: string; sectionId: string; index?: number }
