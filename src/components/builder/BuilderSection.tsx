@@ -184,9 +184,9 @@ export default function BuilderSectionComponent({
           className="mx-auto"
           style={{ maxWidth: section.styles.containerWidth === "full" ? "100%" : "1200px", paddingLeft: "16px", paddingRight: "16px" }}
         >
-          <div className="flex gap-4" style={{ minHeight: "60px" }}>
+          <div className="flex gap-4" style={{ minHeight: "60px", flexWrap: "wrap" }}>
             {section.columns.map((column, colIndex) => (
-              <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%` }}>
+              <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "280px" }}>
                 <BuilderColumn
                   column={column}
                   columnIndex={colIndex}

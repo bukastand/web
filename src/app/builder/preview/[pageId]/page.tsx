@@ -73,9 +73,9 @@ export default function PreviewPage() {
               paddingRight: "16px",
             }}
           >
-            <div className="flex" style={{ gap: "16px" }}>
+            <div className="flex" style={{ gap: "16px", flexWrap: "wrap" }}>
               {section.columns.map((column) => (
-                <div key={column.id} style={{ flex: column.width, maxWidth: `${(column.width / 12) * 100}%` }}>
+                <div key={column.id} style={{ flex: `${(column.width / 12) * 100}%`, maxWidth: `${(column.width / 12) * 100}%`, minWidth: "280px" }}>
                   <div className="space-y-4">
                     {column.elements.map((element) => (
                       <div key={element.id}>

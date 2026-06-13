@@ -283,7 +283,7 @@ function FeaturesElement({ el }: ElementComponentProps) {
     <div>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
-      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
+      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cols > 2 ? "280px" : "200px"}, 1fr))` }}>
         {items.map((item: any, i: number) => {
           const iconDef = FEATURE_ICONS[item.icon];
           return (
@@ -388,7 +388,7 @@ function StatsElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 4;
   return (
-    <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
+    <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))` }}>
       {items.map((item: any, i: number) => (
         <div key={i} className="text-center">
           <div className="text-3xl md:text-4xl font-extrabold text-[#22c55e] mb-1">{item.value}</div>
