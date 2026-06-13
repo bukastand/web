@@ -15,6 +15,7 @@ export default function BuilderEditor() {
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
   const [showMobilePanel, setShowMobilePanel] = useState<"none" | "style" | "elements">("style");
+  const [closingPanel, setClosingPanel] = useState<"style" | "elements" | null>(null);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -60,14 +61,22 @@ export default function BuilderEditor() {
   // Auto-show style panel when element is selected on mobile
   // Close when element is deselected
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile && !closingPanel) {
       if (state.selectedElementId) {
         setShowMobilePanel("style");
       } else if (showMobilePanel === "style") {
         setShowMobilePanel("none");
       }
     }
-  }, [state.selectedElementId]);
+  }, [state.selectedElementId, closingPanel]);
+
+  const closeWithAnimation = (panel: "style" | "elements") => {
+    setClosingPanel(panel);
+    setTimeout(() => {
+      setShowMobilePanel("none");
+      setClosingPanel(null);
+    }, 280);
+  };
 
   if (!currentPage) return null;
 
@@ -98,7 +107,7 @@ export default function BuilderEditor() {
       element,
     });
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
-    if (isMobile) setShowMobilePanel("none");
+    if (isMobile && showMobilePanel === "elements") closeWithAnimation("elements");
   };
 
   const findColumnOfElement = (elementId: string) => {
@@ -208,13 +217,17 @@ export default function BuilderEditor() {
         {/* ─── MOBILE BOTTOM PANELS ─── */}
         
         {/* Mobile Elements Drawer */}
-        {isMobile && showMobilePanel === "elements" && (
+        {(isMobile && (showMobilePanel === "elements" || closingPanel === "elements")) && (
           <>
-            <div className="fixed inset-0 z-30 bg-black/40" onClick={() => setShowMobilePanel("none")} />
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[60vh] overflow-y-auto shadow-2xl animate-slideUp">
+            <div 
+              className={`fixed inset-0 z-30 ${closingPanel === "elements" ? "animate-backdropOut" : "animate-backdropIn"}`} 
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              onClick={() => closeWithAnimation("elements")} 
+            />
+            <div className={`fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[60vh] overflow-y-auto shadow-2xl ${closingPanel === "elements" ? "animate-slideDown" : "animate-slideUp"}`}>
               <div className="sticky top-0 bg-[#0f172a] z-10 px-4 py-3 border-b border-white/10 flex items-center justify-between rounded-t-2xl">
                 <h3 className="text-sm font-semibold text-white">Tambah Element</h3>
-                <button onClick={() => setShowMobilePanel("none")} className="p-1 text-gray-400 hover:text-white">
+                <button onClick={() => closeWithAnimation("elements")} className="p-1 text-gray-400 hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -237,10 +250,14 @@ export default function BuilderEditor() {
         )}
 
         {/* Mobile Style Drawer */}
-        {isMobile && showMobilePanel === "style" && state.selectedElementId && (
+        {(isMobile && (showMobilePanel === "style" || closingPanel === "style")) && state.selectedElementId && (
           <>
-            <div className="fixed inset-0 z-30 bg-black/40" onClick={() => setShowMobilePanel("none")} />
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-2xl animate-slideUp">
+            <div 
+              className={`fixed inset-0 z-30 ${closingPanel === "style" ? "animate-backdropOut" : "animate-backdropIn"}`}
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              onClick={() => closeWithAnimation("style")} 
+            />
+            <div className={`fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-2xl ${closingPanel === "style" ? "animate-slideDown" : "animate-slideUp"}`}>
               <StylePanel />
             </div>
           </>
@@ -250,7 +267,11 @@ export default function BuilderEditor() {
         {isMobile && !isFullscreen && (
           <div className="flex items-center justify-around px-4 py-2 bg-[#0f172a] border-t border-white/10 flex-shrink-0">
             <button
-              onClick={() => setShowMobilePanel(showMobilePanel === "elements" ? "none" : "elements")}
+              onClick={() => {
+                if (closingPanel) return;
+                if (showMobilePanel === "elements") closeWithAnimation("elements");
+                else setShowMobilePanel("elements");
+              }}
               className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${showMobilePanel === "elements" ? "text-[#22c55e]" : "text-gray-400"}`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,7 +281,11 @@ export default function BuilderEditor() {
             </button>
           {state.selectedElementId && (
               <button
-                onClick={() => setShowMobilePanel(showMobilePanel === "style" ? "none" : "style")}
+                onClick={() => {
+                  if (closingPanel) return;
+                  if (showMobilePanel === "style") closeWithAnimation("style");
+                  else setShowMobilePanel("style");
+                }}
                 className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${showMobilePanel === "style" ? "text-[#22c55e]" : "text-gray-400"}`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

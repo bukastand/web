@@ -88,9 +88,40 @@ html {
 @keyframes slideUp {
   from {
     transform: translateY(100%);
+    opacity: 0;
   }
   to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -134,6 +165,22 @@ html {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-backdropIn {
+  animation: backdropIn 0.3s ease-out forwards;
+}
+
+.animate-backdropOut {
+  animation: backdropOut 0.25s ease-in forwards;
 }
 
 /* ===== Scroll-triggered visibility ===== */
