@@ -10,6 +10,29 @@ interface ElementItem {
   category: string;
 }
 
+// Export for reuse in mobile drawer
+const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }> = [
+  { type: "heading", label: "Heading", icon: "H" },
+  { type: "text", label: "Text", icon: "¶" },
+  { type: "image", label: "Image", icon: "🖼" },
+  { type: "button", label: "Button", icon: "▣" },
+  { type: "video", label: "Video", icon: "▶" },
+  { type: "divider", label: "Divider", icon: "―" },
+  { type: "spacer", label: "Spacer", icon: "⬜" },
+  { type: "icon", label: "Icon", icon: "⭐" },
+  { type: "features", label: "Features", icon: "📊" },
+  { type: "pricing", label: "Pricing", icon: "💰" },
+  { type: "testimonial", label: "Testimonial", icon: "💬" },
+  { type: "cta", label: "CTA", icon: "📢" },
+  { type: "stats", label: "Stats", icon: "📈" },
+  { type: "contactForm", label: "Contact", icon: "📝" },
+  { type: "maps", label: "Maps", icon: "📍" },
+  { type: "navbar", label: "Navbar", icon: "⊞" },
+  { type: "footer", label: "Footer", icon: "⊟" },
+];
+
+export { MOBILE_ELEMENTS };
+
 const elements: ElementItem[] = [
   // Layout category
   { type: "heading", label: "Heading", icon: "H", category: "Teks" },

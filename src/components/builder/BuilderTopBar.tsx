@@ -14,6 +14,10 @@ export default function BuilderTopBar({
   onViewportChange,
   isFullscreen,
   onToggleFullscreen,
+  isMobile = false,
+  onShowElements,
+  onShowStyle,
+  showStylePanel = false,
 }: {
   showSidebar: boolean;
   onToggleSidebar: () => void;
@@ -21,6 +25,10 @@ export default function BuilderTopBar({
   onViewportChange: (v: "desktop" | "tablet" | "mobile") => void;
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
+  isMobile?: boolean;
+  onShowElements?: () => void;
+  onShowStyle?: () => void;
+  showStylePanel?: boolean;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
   const { user, signOut } = useAuth();
@@ -172,35 +180,61 @@ export default function BuilderTopBar({
       </div>
 
       <div className="flex items-center gap-1.5 overflow-x-auto">
-        {/* Undo / Redo */}
-        <div className="flex items-center">
-          <button
-            onClick={undo}
-            disabled={!canUndo}
-            className={`p-1.5 rounded-lg transition-colors ${canUndo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
-            title="Undo (Ctrl+Z)"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-            </svg>
-          </button>
-          <button
-            onClick={redo}
-            disabled={!canRedo}
-            className={`p-1.5 rounded-lg transition-colors ${canRedo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
-            title="Redo (Ctrl+Shift+Z)"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
-            </svg>
-          </button>
-        </div>
+        {/* Undo / Redo - hide on mobile */}
+        {!isMobile && (
+          <div className="flex items-center">
+            <button
+              onClick={undo}
+              disabled={!canUndo}
+              className={`p-1.5 rounded-lg transition-colors ${canUndo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+              title="Undo (Ctrl+Z)"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg>
+            </button>
+            <button
+              onClick={redo}
+              disabled={!canRedo}
+              className={`p-1.5 rounded-lg transition-colors ${canRedo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+              title="Redo (Ctrl+Shift+Z)"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+              </svg>
+            </button>
+          </div>
+        )}
 
         {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
+        {!isMobile && <div className="w-px h-5 bg-white/10 mx-1" />}
 
-        {/* Publish Link - slug */}
-        {currentPage.published && (
+        {/* Mobile buttons */}
+        {isMobile && onShowElements && (
+          <button
+            onClick={onShowElements}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Element</span>
+          </button>
+        )}
+        {isMobile && showStylePanel && onShowStyle && (
+          <button
+            onClick={onShowStyle}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+            <span>Style</span>
+          </button>
+        )}
+
+        {/* Publish Link - slug (hide on mobile) */}
+        {currentPage.published && !isMobile && (
           <a
             href={publishedUrl}
             target="_blank"
@@ -230,83 +264,92 @@ export default function BuilderTopBar({
           </a>
         )}
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
+        {/* Toggle Sidebar - hide on mobile */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <button
+              onClick={onToggleSidebar}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                showSidebar
+                  ? "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  : "text-[#22c55e] bg-[#22c55e]/15 border border-[#22c55e]/30"
+              }`}
+              title={showSidebar ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <span>{showSidebar ? "Sidebar" : "Sidebar"}</span>
+            </button>
+          </>
+        )}
 
-        {/* Toggle Sidebar */}
-        <button
-          onClick={onToggleSidebar}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            showSidebar
-              ? "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-              : "text-[#22c55e] bg-[#22c55e]/15 border border-[#22c55e]/30"
-          }`}
-          title={showSidebar ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <span>{showSidebar ? "Sidebar" : "Sidebar"}</span>
-        </button>
+        {/* Viewport Selector - hide on mobile */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <div className="flex items-center bg-white/5 rounded-lg p-0.5">
+              <button
+                onClick={() => onViewportChange("desktop")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "desktop" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
+                title="Desktop"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => onViewportChange("tablet")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "tablet" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
+                title="Tablet"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => onViewportChange("mobile")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "mobile" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
+                title="Mobile"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+          </>
+        )}
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
+        {/* Fullscreen Toggle - hide on mobile */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <button
+              onClick={onToggleFullscreen}
+              className={`p-1.5 rounded-lg transition-colors hover:text-white hover:bg-white/5 text-gray-400`}
+              title="Fullscreen Preview"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+          </>
+        )}
 
-        {/* Viewport Selector */}
-        <div className="flex items-center bg-white/5 rounded-lg p-0.5">
-          <button
-            onClick={() => onViewportChange("desktop")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "desktop" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
-            title="Desktop"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => onViewportChange("tablet")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "tablet" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
-            title="Tablet"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => onViewportChange("mobile")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "mobile" ? "bg-[#22c55e]/20 text-[#22c55e]" : "text-gray-500 hover:text-white"}`}
-            title="Mobile"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
-
-        {/* Fullscreen Toggle */}
-        <button
-          onClick={onToggleFullscreen}
-          className={`p-1.5 rounded-lg transition-colors hover:text-white hover:bg-white/5 text-gray-400`}
-          title="Fullscreen Preview"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-          </svg>
-        </button>
-
-        {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
-
-        <Link
-          href={`/builder/preview/${currentPage.id}`}
-          target="_blank"
-          className="px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-        >
-          Preview
-        </Link>
+        {/* Preview - hide on mobile */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <Link
+              href={`/builder/preview/${currentPage.id}`}
+              target="_blank"
+              className="px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            >
+              Preview
+            </Link>
+          </>
+        )}
 
         <div className="flex items-center gap-1">
           <button
