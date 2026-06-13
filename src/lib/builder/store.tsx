@@ -111,6 +111,14 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       });
     }
 
+    case "ADD_TEMPLATE_SECTION":
+      return updatePage((p) => {
+        const sections = [...p.sections];
+        const idx = action.index ?? sections.length;
+        sections.splice(idx, 0, action.section);
+        return { ...p, sections };
+      });
+
     case "REMOVE_SECTION":
       return updatePage((p) => ({ ...p, sections: p.sections.filter((s) => s.id !== action.sectionId) }));
 

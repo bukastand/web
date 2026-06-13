@@ -8,13 +8,14 @@ import BuilderTopBar from "./BuilderTopBar";
 import ElementSidebar, { MOBILE_ELEMENTS } from "./ElementSidebar";
 import BuilderCanvas from "./BuilderCanvas";
 import StylePanel from "./StylePanel";
+import TemplatePicker from "./TemplatePicker";
 import type { ElementType } from "@/lib/builder/types";
 
 export default function BuilderEditor() {
   const { currentPage, dispatch, state, undo, redo } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [showMobilePanel, setShowMobilePanel] = useState<"none" | "style" | "elements">("none");
+  const [showMobilePanel, setShowMobilePanel] = useState<"none" | "style" | "elements" | "templates">("none");
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -187,6 +188,7 @@ export default function BuilderEditor() {
             isMobile={isMobile}
             onShowElements={() => setShowMobilePanel(showMobilePanel === "elements" ? "none" : "elements")}
             onShowStyle={() => setShowMobilePanel(showMobilePanel === "style" ? "none" : "style")}
+            onShowTemplates={() => setShowMobilePanel(showMobilePanel === "templates" ? "none" : "templates")}
             showStylePanel={!!state.selectedElementId}
           />
         )}
@@ -231,6 +233,31 @@ export default function BuilderEditor() {
           </>
         )}
 
+        {/* Mobile Templates Drawer */}
+        {isMobile && showMobilePanel === "templates" && (
+          <>
+            <div className="fixed inset-0 z-30 bg-black/40" onClick={() => setShowMobilePanel("none")} />
+            <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[65vh] overflow-y-auto shadow-2xl animate-slideUp">
+              <div className="sticky top-0 bg-[#0f172a] z-10 px-4 py-3 border-b border-white/10 flex items-center justify-between rounded-t-2xl">
+                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                  </svg>
+                  Pilih Template Section
+                </h3>
+                <button onClick={() => setShowMobilePanel("none")} className="p-1 text-gray-400 hover:text-white">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-4">
+                <TemplatePicker onClose={() => setShowMobilePanel("none")} compact />
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Mobile Style Drawer */}
         {isMobile && showMobilePanel === "style" && state.selectedElementId && (
           <>
@@ -262,9 +289,18 @@ export default function BuilderEditor() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              <span className="text-[10px]">Section</span>
-            </button>
-            {state.selectedElementId && (
+            <span className="text-[10px]">Section</span>
+          </button>
+          <button
+            onClick={() => setShowMobilePanel(showMobilePanel === "templates" ? "none" : "templates")}
+            className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${showMobilePanel === "templates" ? "text-[#22c55e]" : "text-gray-400"}`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            <span className="text-[10px]">Template</span>
+          </button>
+          {state.selectedElementId && (
               <button
                 onClick={() => setShowMobilePanel(showMobilePanel === "style" ? "none" : "style")}
                 className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${showMobilePanel === "style" ? "text-[#22c55e]" : "text-gray-400"}`}

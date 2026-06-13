@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import type { ElementType } from "@/lib/builder/types";
+import TemplatePicker from "./TemplatePicker";
 
 interface ElementItem {
   type: ElementType;
@@ -87,27 +89,56 @@ function DraggableItem({ item }: { item: ElementItem }) {
 
 export default function ElementSidebar() {
   const categories = [...new Set(elements.map((e) => e.category))];
+  const [showTemplates, setShowTemplates] = useState(false);
 
   return (
     <aside className="w-60 flex-shrink-0 bg-[#0f172a] border-r border-white/10 overflow-y-auto">
-      <div className="p-4 border-b border-white/10">
-        <h3 className="text-sm font-semibold text-white uppercase tracking-wider">Elements</h3>
-        <p className="text-[10px] text-gray-500 mt-0.5">Drag ke canvas untuk menambahkan</p>
+      {/* Tab buttons */}
+      <div className="flex border-b border-white/10">
+        <button
+          onClick={() => setShowTemplates(false)}
+          className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
+            !showTemplates
+              ? "text-[#22c55e] border-b-2 border-[#22c55e]"
+              : "text-gray-500 hover:text-white"
+          }`}
+        >
+          Elements
+        </button>
+        <button
+          onClick={() => setShowTemplates(true)}
+          className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
+            showTemplates
+              ? "text-[#22c55e] border-b-2 border-[#22c55e]"
+              : "text-gray-500 hover:text-white"
+          }`}
+        >
+          Templates
+        </button>
       </div>
-      <div className="p-3 space-y-4">
-        {categories.map((cat) => (
-          <div key={cat}>
-            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
-            <div className="space-y-1">
-              {elements
-                .filter((e) => e.category === cat)
-                .map((item) => (
-                  <DraggableItem key={item.type} item={item} />
-                ))}
+
+      {showTemplates ? (
+        <div className="p-3">
+          <p className="text-[10px] text-gray-500 mb-3">Klik untuk tambah section lengkap</p>
+          <TemplatePicker onClose={undefined} compact />
+        </div>
+      ) : (
+        <div className="p-3 space-y-4">
+          <p className="text-[10px] text-gray-500">Drag ke canvas untuk menambahkan</p>
+          {categories.map((cat) => (
+            <div key={cat}>
+              <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
+              <div className="space-y-1">
+                {elements
+                  .filter((e) => e.category === cat)
+                  .map((item) => (
+                    <DraggableItem key={item.type} item={item} />
+                  ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </aside>
   );
 }

@@ -106,6 +106,7 @@ export type BuilderAction =
   | { type: "UPDATE_PAGE_TITLE"; pageId: string; title: string }
   | { type: "UPDATE_PAGE_SLUG"; pageId: string; slug: string }
   | { type: "ADD_SECTION"; pageId: string; index?: number }
+  | { type: "ADD_TEMPLATE_SECTION"; pageId: string; section: BuilderSection; index?: number }
   | { type: "REMOVE_SECTION"; pageId: string; sectionId: string }
   | { type: "DUPLICATE_SECTION"; pageId: string; sectionId: string }
   | { type: "MOVE_SECTION"; pageId: string; sectionId: string; toIndex: number }

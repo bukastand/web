@@ -17,6 +17,7 @@ export default function BuilderTopBar({
   isMobile = false,
   onShowElements,
   onShowStyle,
+  onShowTemplates,
   showStylePanel = false,
 }: {
   showSidebar: boolean;
@@ -28,6 +29,7 @@ export default function BuilderTopBar({
   isMobile?: boolean;
   onShowElements?: () => void;
   onShowStyle?: () => void;
+  onShowTemplates?: () => void;
   showStylePanel?: boolean;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
@@ -219,6 +221,17 @@ export default function BuilderTopBar({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <span>Element</span>
+          </button>
+        )}
+        {isMobile && onShowTemplates && (
+          <button
+            onClick={onShowTemplates}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            <span>Template</span>
           </button>
         )}
         {isMobile && showStylePanel && onShowStyle && (
