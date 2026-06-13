@@ -8,6 +8,7 @@ import WhyUsSection from "@/components/WhyUsSection";
 import LocationSection from "@/components/LocationSection";
 import PortfolioSection from "@/components/PortfolioSection";
 import Footer from "@/components/Footer";
+import HeroBuilderCTA from "@/components/HeroBuilderCTA";
 
 // Load 3D background dynamically (client-side only)
 const ThreeBackground = dynamic(
@@ -23,6 +24,7 @@ export default function Home() {
 
       {/* Content overlay */}
       <div className="relative z-10">
+        <HeroBuilderCTA />
         <HeroSection />
         <PricingSection />
         <ServicesSection />
