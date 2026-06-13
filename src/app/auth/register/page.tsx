@@ -89,9 +89,7 @@ export default function RegisterPage() {
           await supabase.from("builder_pages").insert({
             id: page.id,
             user_id: data.session.user.id,
-            title: page.title,
-            slug: page.slug,
-            data: JSON.stringify(page),
+            data: page,
             created_at: page.createdAt,
             updated_at: page.updatedAt,
           });

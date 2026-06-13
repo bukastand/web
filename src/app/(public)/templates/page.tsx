@@ -8,6 +8,9 @@ import { templates, createPageFromTemplate } from "@/lib/builder/templates";
 import type { Template } from "@/lib/builder/templates";
 import { fetchApprovedTemplates, communityToGalleryTemplate } from "@/lib/supabase/community-templates";
 
+// ElementRenderer for preview
+import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
+
 const categories = ["Semua", "Bisnis", "Kreatif", "Event", "Lainnya"];
 
 function TemplateCard({
@@ -21,6 +24,7 @@ function TemplateCard({
 }) {
   return (
     <button
+      onDoubleClick={() => onSelect(template)}
       onClick={() => onSelect(template)}
       className={`group relative text-left w-full rounded-2xl border-2 overflow-hidden transition-all duration-300 ${
         isSelected
@@ -42,7 +46,7 @@ function TemplateCard({
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <span className="text-white font-semibold text-sm bg-white/20 backdrop-blur-md px-6 py-2 rounded-xl">
-            Lihat Detail
+            Preview
           </span>
         </div>
       </div>
@@ -130,15 +134,13 @@ export default function TemplatesPage() {
       // Create a new page from the template
       const page = createPageFromTemplate(selectedTemplate);
 
-      // Save to Supabase
+      // Save to Supabase (columns: id, user_id, data, created_at, updated_at)
       const { error: saveError } = await supabase
         .from("builder_pages")
         .insert({
           id: page.id,
           user_id: session.user.id,
-          title: page.title,
-          slug: page.slug,
-          data: JSON.stringify(page),
+          data: page,
           created_at: page.createdAt,
           updated_at: page.updatedAt,
         });
@@ -153,8 +155,30 @@ export default function TemplatesPage() {
     }
   };
 
+  // Preview state
+  const [previewTemplate, setPreviewTemplate] = useState<GalleryTemplate | null>(null);
+  const [previewSection, setPreviewSection] = useState(0);
+
+  // Reset preview section when template changes
+  useEffect(() => {
+    setPreviewSection(0);
+  }, [previewTemplate]);
+
   return (
     <div className="min-h-screen bg-[#0f172a] pt-24 pb-16">
+      {/* Back button */}
+      <div className="container mx-auto px-6 mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors group"
+        >
+          <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Kembali ke Beranda
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="container mx-auto px-6 mb-10">
         <div className="max-w-3xl mx-auto text-center">
@@ -294,6 +318,93 @@ export default function TemplatesPage() {
 
       {/* Spacer for mobile */}
       {selectedTemplate && <div className="h-24" />}
+
+      {/* Full Website Preview Modal */}
+      {previewTemplate && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
+          {/* Preview toolbar */}
+          <div className="flex items-center justify-between px-6 py-3 bg-[#0f172a] border-b border-white/10 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setPreviewTemplate(null)}
+                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="w-px h-5 bg-white/10" />
+              <span className="text-2xl">{previewTemplate.icon}</span>
+              <div>
+                <p className="text-white font-semibold text-sm">{previewTemplate.title}</p>
+                <p className="text-[10px] text-gray-500">{previewTemplate.sections.length} section</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPreviewSection(Math.max(0, previewSection - 1))}
+                disabled={previewSection === 0}
+                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <span className="text-xs text-gray-500">{previewSection + 1}/{previewTemplate.sections.length}</span>
+              <button
+                onClick={() => setPreviewSection(Math.min(previewTemplate.sections.length - 1, previewSection + 1))}
+                disabled={previewSection >= previewTemplate.sections.length - 1}
+                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <div className="w-px h-5 bg-white/10 mx-1" />
+              <button
+                onClick={() => {
+                  const t = previewTemplate;
+                  setPreviewTemplate(null);
+                  setSelectedTemplate(t);
+                  setShowConfirm(true);
+                }}
+                className="px-4 py-2 bg-[#22c55e] text-white text-xs font-semibold rounded-lg hover:bg-[#16a34a] transition-all"
+              >
+                Gunakan Template
+              </button>
+            </div>
+          </div>
+
+          {/* Preview content */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            <div className="max-w-[1200px] mx-auto">
+              {previewTemplate.sections.map((section, idx) => {
+                // Only show current section or all for a full preview
+                if (previewSection >= 0 && idx !== previewSection) return null;
+                return (
+                  <div key={idx} className="border-b border-gray-100">
+                    {section.columns.map((col, ci) => (
+                      <div key={ci} className="max-w-[1200px] mx-auto px-4" style={{ paddingTop: "40px", paddingBottom: "40px" }}>
+                        <div className="flex gap-4">
+                          <div key={col.id} style={{ flex: col.width || 12, maxWidth: `${((col.width || 12) / 12) * 100}%` }}>
+                            <div className="space-y-2">
+                              {col.elements.map((el) => (
+                                <div key={el.id}>
+                                  <ElementRenderer element={el} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
