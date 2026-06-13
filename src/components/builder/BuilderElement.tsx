@@ -106,6 +106,33 @@ export default function BuilderElementComponent({
               <path d="M8 6h2v2H8V6zm6 0h2v2h-2V6zM8 11h2v2H8v-2zm6 0h2v2h-2v-2zm-6 5h2v2H8v-2zm6 0h2v2h-2v-2z" />
             </svg>
           </button>
+          {/* Move up / down */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id }, to: { sectionId, columnIndex, index: elementIndex - 1 } });
+            }}
+            disabled={elementIndex === 0}
+            className={`p-0.5 transition-colors ${elementIndex === 0 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
+            title="Pindah ke atas"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id }, to: { sectionId, columnIndex, index: elementIndex + 1 } });
+            }}
+            disabled={elementIndex >= totalElements - 1}
+            className={`p-0.5 transition-colors ${elementIndex >= totalElements - 1 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
+            title="Pindah ke bawah"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
           <div className="w-px h-3 bg-white/10" />
           <span className="text-[10px] text-gray-500 uppercase font-medium px-1">{element.type}</span>
           <div className="w-px h-3 bg-white/10" />
