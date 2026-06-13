@@ -43,10 +43,14 @@ export default function PreviewPage() {
 
   const gs = page.globalStyles;
   const sectionBg = (s: any) => {
+    const st: Record<string, string> = {};
     if (s.styles.backgroundColor && s.styles.backgroundColor !== "transparent") {
-      return { backgroundColor: s.styles.backgroundColor };
+      st.backgroundColor = s.styles.backgroundColor;
     }
-    return {};
+    if (s.styles.backgroundImage) {
+      st.backgroundImage = s.styles.backgroundImage;
+    }
+    return st;
   };
 
   const sectionPadding = (s: any) => {

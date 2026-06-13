@@ -104,6 +104,9 @@ export default function BuilderSectionComponent({
   if (section.styles.backgroundColor && section.styles.backgroundColor !== "transparent") {
     bgStyle.backgroundColor = section.styles.backgroundColor;
   }
+  if (section.styles.backgroundImage) {
+    bgStyle.backgroundImage = section.styles.backgroundImage as React.CSSProperties['backgroundImage'];
+  }
 
   return (
     <div
@@ -121,22 +124,45 @@ export default function BuilderSectionComponent({
 
       {/* Section Style Controls */}
       <div className="absolute -right-10 top-0 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-        <button
-          onClick={() => {
-            const newBg = section.styles.backgroundColor === "transparent" || !section.styles.backgroundColor
-              ? "#f8fafc"
-              : section.styles.backgroundColor === "#f8fafc"
-                ? "#0f172a"
-                : "transparent";
-            dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: newBg } });
-          }}
-          className="p-1.5 rounded-lg bg-[#1e293b] border border-white/10 text-gray-400 hover:text-white transition-colors"
-          title="Toggle Background"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-          </svg>
-        </button>
+        <div className="p-2 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
+          {/* Background Color */}
+          <div className="flex items-center gap-1 mb-1.5">
+            <input
+              type="color"
+              value={section.styles.backgroundColor && section.styles.backgroundColor !== "transparent" ? section.styles.backgroundColor : "#0f172a"}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: e.target.value } })}
+              className="w-6 h-6 rounded cursor-pointer border-0 p-0"
+              title="Warna Background"
+            />
+            <input
+              type="text"
+              value={section.styles.backgroundColor === "transparent" ? "" : section.styles.backgroundColor || ""}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: e.target.value || "transparent" } })}
+              className="w-16 px-1 py-0.5 rounded bg-white/10 text-white text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50"
+              placeholder="#hex"
+            />
+          </div>
+          {/* Quick colors */}
+          <div className="flex gap-0.5 flex-wrap mb-1.5">
+            {["#0f172a", "#1e293b", "#f8fafc", "#ffffff", "transparent"].map((c) => (
+              <button
+                key={c}
+                onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: c } })}
+                className={`w-3.5 h-3.5 rounded-sm border ${c === "transparent" ? "border-dashed border-white/30 bg-transparent" : "border-white/10"}`}
+                style={{ backgroundColor: c === "transparent" ? "transparent" : c }}
+                title={c}
+              />
+            ))}
+          </div>
+          {/* Background Image URL */}
+          <input
+            type="text"
+            value={section.styles.backgroundImage || ""}
+            onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundImage: e.target.value || undefined } })}
+            className="w-full px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 placeholder:text-gray-600"
+            placeholder="url(...) atau gradient(...)"
+          />
+        </div>
       </div>
 
       {/* Section content with padding */}

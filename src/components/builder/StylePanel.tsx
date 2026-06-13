@@ -877,7 +877,62 @@ export default function StylePanel() {
 
             {renderSection("Background", <>
               {renderStyleField("Warna Background", "backgroundColor", "color")}
-              {renderStyleField("Background Image (url(...) atau gradient)", "backgroundImage", "text")}
+              <div className="mb-3">
+                <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Background Image / Gradient</label>
+                <input
+                  type="text"
+                  value={selectedElement.styles.backgroundImage ?? ""}
+                  onChange={(e) => updateStyle("backgroundImage", e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50 font-mono text-xs"
+                  placeholder="url(...) atau linear-gradient(...)"
+                />
+                <div className="mt-1">
+                  <label className="block text-[10px] text-gray-600 mb-1">Upload Gambar Background</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        const dataUrl = ev.target?.result as string;
+                        updateStyle("backgroundImage", `url("${dataUrl}")`);
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    className="w-full text-xs text-gray-400 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-[10px] file:font-medium hover:file:bg-[#22c55e]/30"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="block text-[10px] text-gray-600 mb-1">Gradient Cepat</label>
+                  <div className="flex flex-wrap gap-1">
+                    {[
+                      { label: "Sunset", value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+                      { label: "Ocean", value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+                      { label: "Forest", value: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
+                      { label: "Purple", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+                      { label: "Warm", value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+                      { label: "Dark", value: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)" },
+                    ].map((g) => (
+                      <button
+                        key={g.label}
+                        onClick={() => updateStyle("backgroundImage", g.value)}
+                        className="px-2 py-1 text-[10px] rounded-md border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:border-white/20 transition-all"
+                        title={g.value}
+                      >
+                        {g.label}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => updateStyle("backgroundImage", "")}
+                      className="px-2 py-1 text-[10px] rounded-md border border-dashed border-red-400/30 text-red-400 hover:border-red-400/60 transition-all"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+              </div>
             </>)}
 
             {renderSection("Padding", <>
