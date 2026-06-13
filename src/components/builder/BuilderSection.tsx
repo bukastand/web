@@ -134,8 +134,8 @@ export default function BuilderSectionComponent({
         totalSections={totalSections}
       />
 
-      {/* Section Style Controls - only show when section is selected */}
-      <div className={`absolute -right-10 top-0 flex flex-col gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+      {/* Section Style Controls - show on hover, persist when selected */}
+      <div className={`absolute -right-10 top-0 flex flex-col gap-1 transition-all z-20 ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"}`}>
         <div className="p-2 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
           {/* Background Color */}
           <div className="flex items-center gap-1 mb-1.5">
