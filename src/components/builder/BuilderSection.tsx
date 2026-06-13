@@ -109,7 +109,7 @@ export default function BuilderSectionComponent({
     <div
       ref={setNodeRef}
       className={`group relative rounded-xl border-2 transition-all ${
-        isOver ? "border-[#22c55e]/50 bg-[#22c55e]/5" : "border-transparent hover:border-white/10"
+        isOver ? "border-[#22c55e]/50 bg-[#22c55e]/5" : "border-transparent hover:border-gray-200"
       }`}
     >
       <SectionControls

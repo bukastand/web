@@ -32,7 +32,7 @@ export default function BuilderColumnComponent({
         isOver
           ? "border-[#22c55e] bg-[#22c55e]/10"
           : column.elements.length === 0
-            ? "border-white/10 bg-white/[0.02]"
+            ? "border-gray-200 bg-gray-50/50"
             : "border-transparent"
       }`}
     >

@@ -89,7 +89,7 @@ export default function BuilderElementComponent({
       style={style}
       className={`group/element relative rounded-lg transition-all ${
         isDragging ? "opacity-50 z-50" : ""
-      } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-[#0f172a]" : "hover:ring-1 hover:ring-white/20"} ${isHidden ? "opacity-30" : ""}`}
+      } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-gray-100" : "hover:ring-1 hover:ring-gray-300"} ${isHidden ? "opacity-30" : ""}`}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
     >

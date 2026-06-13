@@ -35,6 +35,7 @@ export interface ElementStyles {
   maxWidth?: string;
   opacity?: string;
   objectFit?: string;
+  backgroundImage?: string;
 }
 
 export interface ElementContent {

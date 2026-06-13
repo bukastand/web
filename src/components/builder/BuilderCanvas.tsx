@@ -33,7 +33,7 @@ export default function BuilderCanvas({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#0a0f1e] relative" onClick={handleCanvasClick}>
+    <div className="flex-1 overflow-y-auto bg-gray-100 relative" onClick={handleCanvasClick}>
       {/* Fullscreen exit button */}
       {isFullscreen && onExitFullscreen && (
         <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
@@ -84,8 +84,8 @@ export default function BuilderCanvas({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Mulai Membangun Halaman</h3>
-              <p className="text-gray-400 max-w-md mb-8">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Mulai Membangun Halaman</h3>
+              <p className="text-gray-500 max-w-md mb-8">
                 Drag element dari sidebar ke canvas, atau klik tombol di bawah untuk menambahkan section pertama
               </p>
               <button

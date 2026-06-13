@@ -113,7 +113,7 @@ export default function BuilderEditor() {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="h-screen flex flex-col bg-[#0f172a] overflow-hidden">
+      <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
         {!isFullscreen && (
           <BuilderTopBar
             showSidebar={showSidebar}

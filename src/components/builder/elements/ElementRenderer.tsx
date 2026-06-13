@@ -23,6 +23,7 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   if (st.fontFamily) s.fontFamily = st.fontFamily;
   if (st.opacity) s.opacity = st.opacity;
   if (st.objectFit) s.objectFit = st.objectFit as React.CSSProperties['objectFit'];
+  if (st.backgroundImage) s.backgroundImage = st.backgroundImage as React.CSSProperties['backgroundImage'];
   
   // Individual padding fields take priority over shorthand
   if (st.paddingTop || st.paddingBottom || st.paddingLeft || st.paddingRight) {
@@ -61,8 +62,7 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
 function HeadingElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const { text, level = "h2", align } = el.content;
   const styles = applyStyles(el);
-  // Remove fontSize from inline styles so the heading level Tailwind classes control the size
-  delete styles.fontSize;
+  // Font size from style panel overrides heading level default size
   // Style panel textAlign takes priority over content align
   if (!styles.textAlign && align) styles.textAlign = align;
 
@@ -232,21 +232,25 @@ function DividerElement({ el }: ElementComponentProps) {
   return <hr style={{ border: "none", borderTop: `1px ${borderStyle} ${color}`, ...applyStyles(el) }} />;
 }
 
+export const FEATURE_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
+  star: { icon: <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, label: "Star" },
+  heart: { icon: <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />, label: "Heart" },
+  rocket: { icon: <path d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />, label: "Rocket" },
+  globe: { icon: <path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, label: "Globe" },
+  lightbulb: { icon: <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />, label: "Lightbulb" },
+  shield: { icon: <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />, label: "Shield" },
+  chart: { icon: <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />, label: "Chart" },
+  users: { icon: <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />, label: "Users" },
+  cog: { icon: <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />, label: "Cog" },
+  check: { icon: <path d="M5 13l4 4L19 7" />, label: "Check" },
+};
+
 function IconElement({ el }: ElementComponentProps) {
   const size = el.content.size || "48px";
   const color = el.content.color || "#22c55e";
-  const icons: Record<string, React.ReactNode> = {
-    star: <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />,
-    heart: <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />,
-    rocket: <path d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />,
-    globe: <path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
-    lightbulb: <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />,
-    shield: <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />,
-    chart: <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />,
-    users: <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />,
-    cog: <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />,
-    check: <path d="M5 13l4 4L19 7" />,
-  };
+  const icons: Record<string, React.ReactNode> = Object.fromEntries(
+    Object.entries(FEATURE_ICONS).map(([k, v]) => [k, v.icon])
+  );
 
   const justifyContent = getAlign(el.styles.textAlign);
   return (
@@ -261,18 +265,26 @@ function IconElement({ el }: ElementComponentProps) {
 function FeaturesElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 3;
+  const primaryColor = el.styles.color || "#22c55e";
   return (
     <div>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={{ color: el.styles.color }}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-gray-500 text-center mb-10">{el.content.subtitle}</p>}
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
-        {items.map((item: any, i: number) => (
-          <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <span className="text-3xl mb-3 block">{item.icon || "🚀"}</span>
-            <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-            <p className="text-sm text-gray-400">{item.desc}</p>
-          </div>
-        ))}
+        {items.map((item: any, i: number) => {
+          const iconDef = FEATURE_ICONS[item.icon];
+          return (
+            <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+              <div className="flex items-center justify-center mb-3" style={{ color: primaryColor }}>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                  {iconDef ? iconDef.icon : FEATURE_ICONS.star.icon}
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
+              <p className="text-sm text-gray-400">{item.desc}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -523,12 +523,24 @@ export default function StylePanel() {
                         <span className="text-xs text-gray-400">#{i + 1}</span>
                         <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
                       </div>
-                      <input
+                      <select
                         value={item.icon || ""}
                         onChange={(e) => handleItemChange("items", i, "icon", e.target.value)}
                         className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
-                        placeholder="Icon (🚀)"
-                      />
+                        style={{ colorScheme: 'dark' }}
+                      >
+                        <option value="" className="bg-[#1e293b] text-white">Pilih Icon</option>
+                        <option value="star" className="bg-[#1e293b] text-white">⭐ Star</option>
+                        <option value="heart" className="bg-[#1e293b] text-white">❤️ Heart</option>
+                        <option value="rocket" className="bg-[#1e293b] text-white">🚀 Rocket</option>
+                        <option value="globe" className="bg-[#1e293b] text-white">🌍 Globe</option>
+                        <option value="lightbulb" className="bg-[#1e293b] text-white">💡 Lightbulb</option>
+                        <option value="shield" className="bg-[#1e293b] text-white">🛡️ Shield</option>
+                        <option value="chart" className="bg-[#1e293b] text-white">📊 Chart</option>
+                        <option value="users" className="bg-[#1e293b] text-white">👥 Users</option>
+                        <option value="cog" className="bg-[#1e293b] text-white">⚙️ Cog</option>
+                        <option value="check" className="bg-[#1e293b] text-white">✓ Check</option>
+                      </select>
                       <input
                         value={item.title || ""}
                         onChange={(e) => handleItemChange("items", i, "title", e.target.value)}
@@ -805,6 +817,7 @@ export default function StylePanel() {
 
             {renderSection("Background", <>
               {renderStyleField("Warna Background", "backgroundColor", "color")}
+              {renderStyleField("Background Image (url(...) atau gradient)", "backgroundImage", "text")}
             </>)}
 
             {renderSection("Padding", <>

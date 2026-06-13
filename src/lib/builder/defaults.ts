@@ -63,7 +63,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   },
   button: {
     content: { text: "Klik Disini", href: "#", variant: "primary", target: "_self" },
-    styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "14px 32px", fontSize: "1rem", fontWeight: "600" },
+    styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "14px 32px", fontSize: "16px", fontWeight: "600" },
   },
   video: {
     content: { url: "https://www.youtube.com/embed/dQw4w9WgXcQ", caption: "" },
