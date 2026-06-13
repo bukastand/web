@@ -262,14 +262,27 @@ function IconElement({ el }: ElementComponentProps) {
   );
 }
 
+// Apply element styles to internal titles/subtitles in complex elements
+function getTitleStyles(el: BuilderElement): React.CSSProperties {
+  const st = el.styles;
+  const s: React.CSSProperties = {};
+  if (st.color) s.color = st.color;
+  if (st.fontSize) s.fontSize = st.fontSize;
+  if (st.fontWeight) s.fontWeight = st.fontWeight;
+  if (st.fontFamily) s.fontFamily = st.fontFamily;
+  if (st.textAlign) s.textAlign = st.textAlign;
+  return s;
+}
+
 function FeaturesElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 3;
   const primaryColor = el.styles.color || "#22c55e";
+  const titleStyles = getTitleStyles(el);
   return (
     <div>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={{ color: el.styles.color }}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-10">{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
         {items.map((item: any, i: number) => {
           const iconDef = FEATURE_ICONS[item.icon];
@@ -292,10 +305,11 @@ function FeaturesElement({ el }: ElementComponentProps) {
 
 function PricingElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
+  const titleStyles = getTitleStyles(el);
   return (
     <div>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2">{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-10">{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {items.map((item: any, i: number) => (
           <div key={i} className={`p-8 rounded-2xl border ${item.highlighted ? "border-[#22c55e] bg-[#22c55e]/5" : "border-white/10 bg-white/5"}`}>
@@ -322,9 +336,10 @@ function PricingElement({ el }: ElementComponentProps) {
 
 function TestimonialElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
+  const titleStyles = getTitleStyles(el);
   return (
     <div>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-10">{el.content.title}</h2>}
+      {el.content.title && <h2 className="text-3xl font-bold text-center mb-10" style={titleStyles}>{el.content.title}</h2>}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {items.map((item: any, i: number) => (
           <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10">
@@ -352,10 +367,11 @@ function TestimonialElement({ el }: ElementComponentProps) {
 
 function CTAElement({ el }: ElementComponentProps) {
   const bgColor = el.styles.backgroundColor || "#22c55e";
+  const titleStyles = getTitleStyles(el);
   return (
     <div className="text-center py-16 px-6 rounded-2xl" style={{ backgroundColor: bgColor }}>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{el.content.title || "Siap Memulai?"}</h2>
-      <p className="text-white/80 mb-8 max-w-xl mx-auto">{el.content.subtitle || "Hubungi kami sekarang"}</p>
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={titleStyles}>{el.content.title || "Siap Memulai?"}</h2>
+      <p className="text-white/80 mb-8 max-w-xl mx-auto" style={titleStyles}>{el.content.subtitle || "Hubungi kami sekarang"}</p>
       <a
         href={el.content.buttonHref || "#"}
         target="_blank"
@@ -394,10 +410,11 @@ function ContactFormElement({ el }: ElementComponentProps) {
     window.open(`https://wa.me/${el.content.whatsappNumber || "6282210099969"}?text=${text}`, "_blank");
   };
 
+  const titleStyles = getTitleStyles(el);
   return (
     <div>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2">{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-8">{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-gray-500 text-center mb-8" style={titleStyles}>{el.content.subtitle}</p>}
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
         <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50" />
         <input type="email" name="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50" />
@@ -409,9 +426,10 @@ function ContactFormElement({ el }: ElementComponentProps) {
 }
 
 function MapsElement({ el }: ElementComponentProps) {
+  const titleStyles = getTitleStyles(el);
   return (
     <div>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-6">{el.content.title}</h2>}
+      {el.content.title && <h2 className="text-3xl font-bold text-center mb-6" style={titleStyles}>{el.content.title}</h2>}
       <div className="rounded-2xl bg-white/5 border border-white/10 h-80 flex items-center justify-center" style={{ borderRadius: el.styles.borderRadius }}>
         <div className="text-center">
           <svg className="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -428,9 +446,14 @@ function MapsElement({ el }: ElementComponentProps) {
 
 function NavbarElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
+  const logoImg = el.content.logoImage;
   return (
     <nav className="flex items-center justify-between py-4 px-6">
-      <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
+      {logoImg ? (
+        <img src={logoImg} alt={el.content.logo || "Logo"} className="h-8 object-contain" />
+      ) : (
+        <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
+      )}
       <div className="hidden md:flex items-center gap-6">
         {links.map((link: any, i: number) => (
           <a key={i} href={link.href || "#"} className="text-sm text-gray-400 hover:text-white transition-colors">{link.label}</a>
@@ -446,11 +469,16 @@ function NavbarElement({ el }: ElementComponentProps) {
 
 function FooterElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
+  const logoImg = el.content.logoImage;
   return (
     <div className="py-12 px-6">
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div className="md:col-span-1">
-          <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
+          {logoImg ? (
+            <img src={logoImg} alt={el.content.logo || "Logo"} className="h-10 object-contain mb-2" />
+          ) : (
+            <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
+          )}
           <p className="text-sm text-gray-500 mt-2">{el.content.description || ""}</p>
         </div>
         <div>

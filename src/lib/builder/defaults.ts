@@ -159,6 +159,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   navbar: {
     content: {
       logo: "PAGODA STUDIO",
+      logoImage: "",
       links: [
         { label: "Beranda", href: "#" },
         { label: "Tentang", href: "#" },
@@ -174,6 +175,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   footer: {
     content: {
       logo: "PAGODA STUDIO",
+      logoImage: "",
       description: "Jasa pembuatan website profesional untuk bisnis Anda.",
       links: [
         { label: "Tentang", href: "#" },

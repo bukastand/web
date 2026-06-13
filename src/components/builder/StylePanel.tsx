@@ -682,6 +682,35 @@ export default function StylePanel() {
               <>
                 {renderField("Logo / Brand", "logo", "text")}
                 <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Logo Gambar</label>
+                  {selectedElement.content.logoImage && (
+                    <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                      <img src={selectedElement.content.logoImage} alt="logo preview" className="w-full h-20 object-contain" />
+                      <button
+                        onClick={() => updateContent("logoImage", "")}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        const dataUrl = ev.target?.result as string;
+                        updateContent("logoImage", dataUrl);
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+                  />
+                </div>
+                <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Menu Links ({selectedElement.content.links?.length || 0})</label>
                   {selectedElement.content.links?.map((link: any, i: number) => (
                     <div key={i} className="flex items-center gap-1 mb-1">
@@ -701,6 +730,35 @@ export default function StylePanel() {
             {selectedElement.type === "footer" && (
               <>
                 {renderField("Logo / Brand", "logo", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Logo Gambar</label>
+                  {selectedElement.content.logoImage && (
+                    <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                      <img src={selectedElement.content.logoImage} alt="logo preview" className="w-full h-20 object-contain" />
+                      <button
+                        onClick={() => updateContent("logoImage", "")}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        const dataUrl = ev.target?.result as string;
+                        updateContent("logoImage", dataUrl);
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+                  />
+                </div>
                 {renderField("Deskripsi", "description", "textarea")}
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Footer Links ({selectedElement.content.links?.length || 0})</label>
