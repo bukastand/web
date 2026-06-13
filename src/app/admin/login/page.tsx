@@ -28,14 +28,24 @@ export default function AdminLogin() {
     }
 
     // Verify user has admin role from profiles table
+    // Verify user has admin role from profiles table
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", data.user.id)
-      .single();
+      .maybeSingle();
 
-    if (profileError || !profile) {
-      setError("Akun tidak ditemukan. Hubungi administrator.");
+    if (profileError) {
+      console.error("Profile query error:", profileError);
+      setError("Gagal verifikasi akun: " + profileError.message);
+      await supabase.auth.signOut();
+      setLoading(false);
+      return;
+    }
+
+    if (!profile) {
+      console.warn("No profile found for user:", data.user.id);
+      setError("Akun tidak ditemukan. Silakan daftar terlebih dahulu.");
       await supabase.auth.signOut();
       setLoading(false);
       return;

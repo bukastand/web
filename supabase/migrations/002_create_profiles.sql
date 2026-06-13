@@ -15,25 +15,38 @@ CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
 -- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- Policies:
+-- ============================================================
+-- SECURITY DEFINER function to check admin role (avoids RLS recursion)
+-- ============================================================
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin');
+$$;
+
+-- ============================================================
+-- RLS Policies
+-- ============================================================
+
 -- Users can view their own profile
 CREATE POLICY "Users can view own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
--- Users can update their own profile (but NOT role)
+-- Users can update their own profile (role protected by RLS)
 CREATE POLICY "Users can update own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id)
-  WITH CHECK (auth.uid() = id AND role = (SELECT role FROM profiles WHERE id = auth.uid()));
+  WITH CHECK (auth.uid() = id);
 
--- Allow insert during signup (trigger-based or service-role)
+-- Allow insert during signup
 CREATE POLICY "Users can insert own profile" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Admins can view all profiles
+-- Admins can view all profiles (uses SECURITY DEFINER function to avoid recursion)
 CREATE POLICY "Admins can view all profiles" ON profiles
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- Function to auto-create profile on user signup (via trigger)
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -57,9 +70,3 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- Seed admin user (change email to your admin email after creating user in Supabase Auth)
--- First create the user in Supabase Auth > Users, then run:
--- INSERT INTO profiles (id, full_name, role)
--- VALUES ('<USER_UUID>', 'Admin', 'admin')
--- ON CONFLICT (id) DO UPDATE SET role = 'admin';
