@@ -447,10 +447,11 @@ function MapsElement({ el }: ElementComponentProps) {
 function NavbarElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
+  const logoH = el.content.logoHeight || "32";
   return (
     <nav className="flex items-center justify-between py-4 px-6">
       {logoImg ? (
-        <img src={logoImg} alt={el.content.logo || "Logo"} className="h-8 object-contain" />
+        <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
       ) : (
         <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
       )}
@@ -470,12 +471,13 @@ function NavbarElement({ el }: ElementComponentProps) {
 function FooterElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
+  const logoH = el.content.logoHeight || "40";
   return (
     <div className="py-12 px-6">
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div className="md:col-span-1">
           {logoImg ? (
-            <img src={logoImg} alt={el.content.logo || "Logo"} className="h-10 object-contain mb-2" />
+            <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain mb-2" style={{ height: `${logoH}px` }} />
           ) : (
             <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
           )}

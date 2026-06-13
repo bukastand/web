@@ -681,6 +681,7 @@ export default function StylePanel() {
             {selectedElement.type === "navbar" && (
               <>
                 {renderField("Logo / Brand", "logo", "text")}
+                {renderField("Tinggi Logo (px)", "logoHeight", "text")}
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Logo Gambar</label>
                   {selectedElement.content.logoImage && (
@@ -730,6 +731,7 @@ export default function StylePanel() {
             {selectedElement.type === "footer" && (
               <>
                 {renderField("Logo / Brand", "logo", "text")}
+                {renderField("Tinggi Logo (px)", "logoHeight", "text")}
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Logo Gambar</label>
                   {selectedElement.content.logoImage && (

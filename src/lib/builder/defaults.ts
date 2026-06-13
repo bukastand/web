@@ -160,6 +160,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       logo: "PAGODA STUDIO",
       logoImage: "",
+      logoHeight: "32",
       links: [
         { label: "Beranda", href: "#" },
         { label: "Tentang", href: "#" },
@@ -176,6 +177,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       logo: "PAGODA STUDIO",
       logoImage: "",
+      logoHeight: "40",
       description: "Jasa pembuatan website profesional untuk bisnis Anda.",
       links: [
         { label: "Tentang", href: "#" },
