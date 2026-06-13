@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { templates, createPageFromTemplate } from "@/lib/builder/templates";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -14,6 +15,14 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  // Read template param from URL (client-side only, avoids Suspense boundary issue)
+  const getSelectedTemplate = () => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const templateId = params.get("template");
+    if (!templateId) return null;
+    return templates.find((t) => t.id === templateId) || null;
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,9 +80,34 @@ export default function RegisterPage() {
       setSuccess("Akun berhasil dibuat! Mengarahkan ke builder...");
       document.cookie = "builder_session=authenticated; path=/; max-age=86400";
       document.cookie = "user_role=user; path=/; max-age=86400";
-      setTimeout(() => {
-        router.push("/builder");
-      }, 1500);
+      
+      // If user came from a template, create the page from template first
+      const selectedTemplate = getSelectedTemplate();
+      if (selectedTemplate) {
+        try {
+          const page = createPageFromTemplate(selectedTemplate);
+          await supabase.from("builder_pages").insert({
+            id: page.id,
+            user_id: data.session.user.id,
+            title: page.title,
+            slug: page.slug,
+            data: JSON.stringify(page),
+            created_at: page.createdAt,
+            updated_at: page.updatedAt,
+          });
+          setTimeout(() => {
+            router.push(`/builder/${page.id}`);
+          }, 1500);
+        } catch {
+          setTimeout(() => {
+            router.push("/builder");
+          }, 1500);
+        }
+      } else {
+        setTimeout(() => {
+          router.push("/builder");
+        }, 1500);
+      }
     } else {
       // Email confirmation required
       setSuccess("Pendaftaran berhasil! Cek email Anda untuk konfirmasi, lalu login.");

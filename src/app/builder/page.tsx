@@ -4,6 +4,7 @@ import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
 import { useState } from "react";
+import { templates } from "@/lib/builder/templates";
 
 export default function BuilderHome() {
   const { state, createNewPage } = useBuilder();
@@ -138,22 +139,76 @@ export default function BuilderHome() {
         {showNew && (
           <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
             <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-8 w-full max-w-md">
-              <h3 className="text-xl font-bold text-white mb-6">Buat Halaman Baru</h3>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Nama halaman (contoh: Landing Page Saya)"
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50 mb-6"
-                autoFocus
-                onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-              />
-              <div className="flex gap-3">
-                <button onClick={() => setShowNew(false)} className="flex-1 py-3 border border-white/10 text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
+              <h3 className="text-xl font-bold text-white mb-4">Buat Halaman Baru</h3>
+              
+              {/* Option 1: Empty page */}
+              <div className="mb-4">
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-3">Mulai dari Awal</p>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-white/10 hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all cursor-pointer group" onClick={() => setShowNew(false)}>
+                  <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-gray-500 group-hover:text-[#22c55e] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Nama halaman (contoh: Landing Page Saya)"
+                      className="w-full bg-transparent text-white text-sm outline-none placeholder-gray-500"
+                      autoFocus
+                      onKeyDown={(e) => { if (e.key === "Enter" && title.trim()) { handleCreate(); } }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <p className="text-[10px] text-gray-600 mt-0.5">Mulai dengan halaman kosong</p>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); if (title.trim()) handleCreate(); }}
+                    disabled={!title.trim()}
+                    className="px-4 py-1.5 bg-[#22c55e] text-white text-xs font-semibold rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Buat
+                  </button>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[10px] text-gray-600 uppercase tracking-wider">atau</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+
+              {/* Option 2: From Template */}
+              <div>
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-3">Mulai dari Template</p>
+                <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                  {templates.map((t) => (
+                    <Link
+                      key={t.id}
+                      href="/templates"
+                      className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all"
+                    >
+                      <div className={`w-full h-16 rounded-lg bg-gradient-to-br ${t.previewColor} flex items-center justify-center`}>
+                        <span className="text-2xl">{t.icon}</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 group-hover:text-white text-center leading-tight transition-colors">{t.title}</span>
+                    </Link>
+                  ))}
+                </div>
+                <Link
+                  href="/templates"
+                  className="block w-full mt-3 py-2 text-center text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
+                >
+                  Lihat Semua Template →
+                </Link>
+              </div>
+
+              {/* Cancel button */}
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <button onClick={() => setShowNew(false)} className="w-full py-2 text-sm text-gray-400 hover:text-white transition-colors">
                   Batal
-                </button>
-                <button onClick={handleCreate} className="flex-1 py-3 bg-[#22c55e] text-white font-semibold rounded-xl hover:bg-[#16a34a] transition-colors">
-                  Buat
                 </button>
               </div>
             </div>
