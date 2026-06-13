@@ -467,12 +467,17 @@ function NavbarElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
   const logoH = el.content.logoHeight || "32";
-  const logoAlign = el.content.logoAlign || "start";
-  const menuAlign = el.content.menuAlign || "center";
-  const ctaAlign = el.content.ctaAlign || "end";
   const elStyles = applyStyles(el);
+  // Use textAlign from styles as fallback for individual alignment fields
+  const ta = el.styles.textAlign;
+  const defaultLogoAlign = ta === "center" ? "center" : ta === "right" ? "end" : "start";
+  const defaultMenuAlign = ta === "center" ? "center" : ta === "right" ? "end" : "center";
+  const defaultCtaAlign = ta === "center" ? "center" : ta === "right" ? "end" : "end";
+  const logoAlign = el.content.logoAlign || defaultLogoAlign;
+  const menuAlign = el.content.menuAlign || defaultMenuAlign;
+  const ctaAlign = el.content.ctaAlign || defaultCtaAlign;
   const [menuOpen, setMenuOpen] = useState(false);
-  // Remove textAlign from nav since it's handled by individual alignment fields
+  // Remove textAlign from nav style since it doesn't affect flex containers
   const navStyle = { ...elStyles };
   delete navStyle.textAlign;
 
