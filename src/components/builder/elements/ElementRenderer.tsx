@@ -281,8 +281,9 @@ function FeaturesElement({ el }: ElementComponentProps) {
   const cols = el.content.columns || 3;
   const primaryColor = el.styles.color || "#22c55e";
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
   return (
-    <div>
+    <div style={elStyles}>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cols > 2 ? "280px" : "200px"}, 1fr))` }}>
@@ -308,8 +309,9 @@ function FeaturesElement({ el }: ElementComponentProps) {
 function PricingElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
   return (
-    <div>
+    <div style={elStyles}>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -339,8 +341,9 @@ function PricingElement({ el }: ElementComponentProps) {
 function TestimonialElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
   return (
-    <div>
+    <div style={elStyles}>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-10" style={titleStyles}>{el.content.title}</h2>}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {items.map((item: any, i: number) => (
@@ -368,10 +371,13 @@ function TestimonialElement({ el }: ElementComponentProps) {
 }
 
 function CTAElement({ el }: ElementComponentProps) {
-  const bgColor = el.styles.backgroundColor || "#22c55e";
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
+  if (!elStyles.backgroundColor) {
+    elStyles.backgroundColor = "#22c55e";
+  }
   return (
-    <div className="text-center py-16 px-6 rounded-2xl" style={{ backgroundColor: bgColor }}>
+    <div className="text-center py-16 px-6 rounded-2xl" style={elStyles}>
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={titleStyles}>{el.content.title || "Siap Memulai?"}</h2>
       <p className="text-white/80 mb-8 max-w-xl mx-auto" style={titleStyles}>{el.content.subtitle || "Hubungi kami sekarang"}</p>
       <a
@@ -389,8 +395,9 @@ function CTAElement({ el }: ElementComponentProps) {
 function StatsElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 4;
+  const elStyles = applyStyles(el);
   return (
-    <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))` }}>
+    <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))`, ...elStyles }}>
       {items.map((item: any, i: number) => (
         <div key={i} className="text-center">
           <div className="text-3xl md:text-4xl font-extrabold text-[#22c55e] mb-1">{item.value}</div>
@@ -413,8 +420,9 @@ function ContactFormElement({ el }: ElementComponentProps) {
   };
 
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
   return (
-    <div>
+    <div style={elStyles}>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-gray-500 text-center mb-8" style={titleStyles}>{el.content.subtitle}</p>}
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
@@ -429,8 +437,9 @@ function ContactFormElement({ el }: ElementComponentProps) {
 
 function MapsElement({ el }: ElementComponentProps) {
   const titleStyles = getTitleStyles(el);
+  const elStyles = applyStyles(el);
   return (
-    <div>
+    <div style={elStyles}>
       {el.content.title && <h2 className="text-3xl font-bold text-center mb-6" style={titleStyles}>{el.content.title}</h2>}
       <div className="rounded-2xl bg-white/5 border border-white/10 h-80 flex items-center justify-center" style={{ borderRadius: el.styles.borderRadius }}>
         <div className="text-center">
