@@ -24,6 +24,7 @@ export default function BuilderElementComponent({
   const { dispatch, state } = useBuilder();
   const isSelected = state.selectedElementId === element.id;
   const [inlineEditing, setInlineEditing] = useState(false);
+  const isTouchDevice = typeof window !== "undefined" && 'ontouchstart' in window;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `el-${element.id}`,
@@ -39,10 +40,11 @@ export default function BuilderElementComponent({
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
   };
 
+  const editableTypes = ["heading", "text", "button", "cta", "navbar"];
+
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Only enable inline editing for text-based elements
-    if (["heading", "text"].includes(element.type)) {
+    if (editableTypes.includes(element.type)) {
       setInlineEditing(true);
     }
   };
@@ -81,6 +83,10 @@ export default function BuilderElementComponent({
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
+    // Toggle inline editing for editable types
+    if (editableTypes.includes(element.type)) {
+      setInlineEditing(prev => !prev);
+    }
   };
 
   return (
@@ -201,10 +207,10 @@ export default function BuilderElementComponent({
       )}
 
       {/* Inline editing hint */}
-      {isSelected && ["heading", "text"].includes(element.type) && !inlineEditing && !isHidden && (
+      {isSelected && editableTypes.includes(element.type) && !inlineEditing && !isHidden && (
         <div className="absolute top-2 right-2 opacity-0 group-hover/element:opacity-100 transition-opacity z-10">
           <span className="text-[10px] bg-[#22c55e]/20 text-[#22c55e] px-2 py-0.5 rounded-md">
-            Double-click to edit
+            {isTouchDevice ? "Tap to edit" : "Double-click to edit"}
           </span>
         </div>
       )}

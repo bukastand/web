@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { BuilderElement } from "@/lib/builder/types";
 import { applyBgOpacity } from "@/lib/builder/utils";
 
@@ -179,7 +179,7 @@ function ImageElement({ el }: ElementComponentProps) {
   );
 }
 
-function ButtonElement({ el }: ElementComponentProps) {
+function ButtonElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const variant = el.content.variant || "primary";
   const styles = applyStyles(el);
   const base = "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300";
@@ -189,11 +189,35 @@ function ButtonElement({ el }: ElementComponentProps) {
     outline: "border-2 border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-white",
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+    onEdit?.({ text: e.currentTarget.textContent || "" });
+    onBlurEditing?.();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      (e.target as HTMLElement).blur();
+    }
+  };
+
   return (
     <div style={{ textAlign: (el.styles as any).textAlign || "center" }}>
-      <a href={el.content.href || "#"} target={el.content.target || "_self"} className={`${base} ${variants[variant] || variants.primary}`} style={styles}>
-        {el.content.text || "Tombol"}
-      </a>
+      {editing ? (
+        <span
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          className={`${base} ${variants[variant] || variants.primary}`}
+          style={styles}
+        >
+          {el.content.text || "Tombol"}
+        </span>
+      ) : (
+        <a href={el.content.href || "#"} target={el.content.target || "_self"} className={`${base} ${variants[variant] || variants.primary}`} style={styles}>
+          {el.content.text || "Tombol"}
+        </a>
+      )}
     </div>
   );
 }
@@ -378,24 +402,75 @@ function TestimonialElement({ el }: ElementComponentProps) {
   );
 }
 
-function CTAElement({ el }: ElementComponentProps) {
+function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
   if (!elStyles.backgroundColor) {
     elStyles.backgroundColor = "#22c55e";
   }
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to exit editing
+  useEffect(() => {
+    if (!editing) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onBlurEditing?.();
+      }
+    };
+    // Delay to avoid the same click that triggered editing
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editing, onBlurEditing]);
+
+  const handleFieldBlur = (field: string, e: React.FocusEvent<HTMLHeadingElement | HTMLParagraphElement | HTMLSpanElement>) => {
+    onEdit?.({ [field]: e.currentTarget.textContent || "" });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      (e.target as HTMLElement).blur();
+      onBlurEditing?.();
+    }
+  };
+
   return (
-    <div className="text-center py-16 px-6 rounded-2xl" style={elStyles}>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={titleStyles}>{el.content.title || "Siap Memulai?"}</h2>
-      <p className="text-white/80 mb-8 max-w-xl mx-auto" style={titleStyles}>{el.content.subtitle || "Hubungi kami sekarang"}</p>
-      <a
-        href={el.content.buttonHref || "#"}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-bold rounded-xl hover:bg-white/90 transition-all"
+    <div ref={containerRef} className="text-center py-16 px-6 rounded-2xl" style={elStyles}>
+      <h2
+        className="text-3xl md:text-4xl font-bold text-white mb-4 outline-none"
+        style={titleStyles}
+        contentEditable={editing || undefined}
+        suppressContentEditableWarning
+        onBlur={editing ? (e) => handleFieldBlur("title", e) : undefined}
+        onKeyDown={editing ? handleKeyDown : undefined}
+      >
+        {el.content.title || "Siap Memulai?"}
+      </h2>
+      <p
+        className="text-white/80 mb-8 max-w-xl mx-auto outline-none"
+        style={titleStyles}
+        contentEditable={editing || undefined}
+        suppressContentEditableWarning
+        onBlur={editing ? (e) => handleFieldBlur("subtitle", e) : undefined}
+        onKeyDown={editing ? handleKeyDown : undefined}
+      >
+        {el.content.subtitle || "Hubungi kami sekarang"}
+      </p>
+      <span
+        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-bold rounded-xl outline-none"
+        contentEditable={editing || undefined}
+        suppressContentEditableWarning
+        onBlur={editing ? (e) => handleFieldBlur("buttonText", e) : undefined}
+        onKeyDown={editing ? handleKeyDown : undefined}
       >
         {el.content.buttonText || "Konsultasi Gratis"}
-      </a>
+      </span>
     </div>
   );
 }
@@ -463,7 +538,7 @@ function MapsElement({ el }: ElementComponentProps) {
   );
 }
 
-function NavbarElement({ el }: ElementComponentProps) {
+function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
   const logoH = el.content.logoHeight || "32";
@@ -507,6 +582,22 @@ function NavbarElement({ el }: ElementComponentProps) {
         <div className="flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(logoAlign) }}>
           {logoImg ? (
             <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
+          ) : editing ? (
+            <input
+              autoFocus
+              defaultValue={el.content.logo || "Logo"}
+              onBlur={(e) => {
+                onEdit?.({ logo: e.target.value });
+                onBlurEditing?.();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                if (e.key === "Escape") onBlurEditing?.();
+              }}
+              className="text-xl font-bold bg-transparent border-b border-white/30 outline-none w-40"
+              style={childStyle}
+              onClick={(e) => e.stopPropagation()}
+            />
           ) : (
             <span className="text-xl font-bold" style={childStyle}>
               {el.content.logo || "Logo"}
