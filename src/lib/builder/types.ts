@@ -117,6 +117,7 @@ export type BuilderAction =
   | { type: "UPDATE_ELEMENT"; pageId: string; sectionId: string; columnIndex: number; elementId: string; content: Partial<ElementContent>; styles?: Partial<ElementStyles> }
   | { type: "UPDATE_GLOBAL_STYLES"; pageId: string; styles: Partial<GlobalStyles> }
   | { type: "SELECT_ELEMENT"; elementId: string | null }
+  | { type: "SELECT_SECTION"; sectionId: string | null }
   | { type: "PUBLISH_PAGE"; pageId: string }
   | { type: "UNPUBLISH_PAGE"; pageId: string }
   | { type: "REORDER_COLUMNS"; pageId: string; sectionId: string; columns: BuilderColumn[] }
@@ -128,4 +129,5 @@ export interface BuilderState {
   pages: BuilderPage[];
   currentPageId: string | null;
   selectedElementId: string | null;
+  selectedSectionId: string | null;
 }

@@ -94,8 +94,9 @@ export default function BuilderSectionComponent({
   sectionIndex: number;
   pageId: string;
 }) {
-  const { currentPage, dispatch } = useBuilder();
+  const { state, currentPage, dispatch } = useBuilder();
   const totalSections = currentPage?.sections.length ?? 0;
+  const isSelected = state.selectedSectionId === section.id;
   const { setNodeRef, isOver } = useDroppable({
     id: `section-${section.id}`,
     data: { type: "section", sectionId: section.id },
@@ -118,8 +119,12 @@ export default function BuilderSectionComponent({
   return (
     <div
       ref={setNodeRef}
-      className={`group relative rounded-xl border-2 transition-all ${
-        isOver ? "border-[#22c55e]/50 bg-[#22c55e]/5" : "border-transparent hover:border-gray-200"
+      onClick={(e) => {
+        // Only select section if no element was clicked (element handles stopPropagation)
+        dispatch({ type: "SELECT_SECTION", sectionId: section.id });
+      }}
+      className={`group relative rounded-xl border-2 transition-all cursor-pointer ${
+        isOver ? "border-[#22c55e]/50 bg-[#22c55e]/5" : isSelected ? "border-[#22c55e]/30 ring-1 ring-[#22c55e]/10" : "border-transparent hover:border-gray-200"
       }`}
     >
       <SectionControls
@@ -129,8 +134,8 @@ export default function BuilderSectionComponent({
         totalSections={totalSections}
       />
 
-      {/* Section Style Controls */}
-      <div className="absolute -right-10 top-0 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+      {/* Section Style Controls - only show when section is selected */}
+      <div className={`absolute -right-10 top-0 flex flex-col gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <div className="p-2 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
           {/* Background Color */}
           <div className="flex items-center gap-1 mb-1.5">

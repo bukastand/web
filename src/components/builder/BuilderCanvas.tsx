@@ -30,6 +30,7 @@ export default function BuilderCanvas({
     // Deselect any selected element when clicking empty canvas area
     // Element onClick handlers use stopPropagation(), so they won't reach here
     dispatch({ type: "SELECT_ELEMENT", elementId: null });
+    dispatch({ type: "SELECT_SECTION", sectionId: null });
   };
 
   return (

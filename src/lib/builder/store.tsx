@@ -66,6 +66,7 @@ const initialState: BuilderState = {
   pages: [],
   currentPageId: null,
   selectedElementId: null,
+  selectedSectionId: null,
 };
 
 function builderReducer(state: BuilderState, action: BuilderAction): BuilderState {
@@ -263,7 +264,10 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       return updatePage((p) => ({ ...p, globalStyles: { ...p.globalStyles, ...action.styles } }));
 
     case "SELECT_ELEMENT":
-      return { ...state, selectedElementId: action.elementId };
+      return { ...state, selectedElementId: action.elementId, selectedSectionId: null };
+
+    case "SELECT_SECTION":
+      return { ...state, selectedSectionId: action.sectionId, selectedElementId: null };
 
     case "PUBLISH_PAGE":
       return updatePage((p) => ({
