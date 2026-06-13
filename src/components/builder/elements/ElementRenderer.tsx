@@ -577,7 +577,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
 
   return (
     <>
-      <nav className="flex items-center gap-4 py-4 px-6" style={navStyle}>
+      <nav className="flex items-center justify-between gap-4 py-4 px-6" style={navStyle}>
         {/* Logo - natural width */}
         <div className="flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(logoAlign) }}>
           {logoImg ? (
@@ -645,7 +645,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
       </nav>
       {/* Mobile Menu Overlay - with z-index so it shows above other content */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/10 relative z-20 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
+        <div className="md:hidden border-t border-white/10 relative z-50 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
           <div className="px-6 py-4 space-y-3">
             {links.map((link: any, i: number) => (
               <a

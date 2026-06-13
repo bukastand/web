@@ -17,7 +17,6 @@ export default function BuilderTopBar({
   isMobile = false,
   onShowElements,
   onShowStyle,
-  onShowTemplates,
   showStylePanel = false,
 }: {
   showSidebar: boolean;
@@ -29,7 +28,6 @@ export default function BuilderTopBar({
   isMobile?: boolean;
   onShowElements?: () => void;
   onShowStyle?: () => void;
-  onShowTemplates?: () => void;
   showStylePanel?: boolean;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
@@ -211,40 +209,99 @@ export default function BuilderTopBar({
         {/* Divider */}
         {!isMobile && <div className="w-px h-5 bg-white/10 mx-1" />}
 
-        {/* Mobile buttons */}
-        {isMobile && onShowElements && (
-          <button
-            onClick={onShowElements}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Element</span>
-          </button>
-        )}
-        {isMobile && onShowTemplates && (
-          <button
-            onClick={onShowTemplates}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-            </svg>
-            <span>Template</span>
-          </button>
-        )}
-        {isMobile && showStylePanel && onShowStyle && (
-          <button
-            onClick={onShowStyle}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-            </svg>
-            <span>Style</span>
-          </button>
-        )}
+        {/* ── MOBILE: Compact dropdown with all actions ── */}
+        {isMobile && (() => {
+          const [showMenu, setShowMenu] = useState(false);
+          return (
+            <>
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+              </button>
+              {showMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+                  <div className="absolute right-2 top-full mt-1 w-48 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden py-1">
+                    {/* Preview */}
+                    <Link
+                      href={`/builder/preview/${currentPage.id}`}
+                      target="_blank"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Preview
+                    </Link>
+                    <div className="h-px bg-white/10 mx-3" />
+                    {/* Publish */}
+                    <button
+                      onClick={() => { handlePublish(); setShowMenu(false); }}
+                      className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors ${
+                        !hasPublishedSnapshot
+                          ? "text-[#22c55e] hover:bg-[#22c55e]/10"
+                          : hasUnsavedChanges
+                          ? "text-amber-400 hover:bg-amber-500/10"
+                          : "text-gray-400 hover:bg-white/5"
+                      }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {!hasPublishedSnapshot ? "Publish" : hasUnsavedChanges ? "Publish Ulang" : "Published"}
+                    </button>
+                    {hasPublishedSnapshot && (
+                      <button
+                        onClick={() => { handleUnpublish(); setShowMenu(false); }}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Unpublish
+                      </button>
+                    )}
+                    <div className="h-px bg-white/10 mx-3" />
+                    {/* Published link */}
+                    {currentPage.published && (
+                      <a
+                        href={publishedUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 transition-colors"
+                        onClick={() => setShowMenu(false)}
+                      >
+                        <svg className="w-4 h-4 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <span className="truncate">{currentPage.slug}</span>
+                      </a>
+                    )}
+                    <div className="h-px bg-white/10 mx-3" />
+                    {/* User */}
+                    <button
+                      onClick={() => { setShowMenu(false); signOut(); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Keluar
+                    </button>
+                  </div>
+                </>
+              )}
+            </>
+          );
+        })()}
+
+        {/* ── DESKTOP: Standard buttons ── */}
 
         {/* Publish Link - slug (hide on mobile) */}
         {currentPage.published && !isMobile && (
@@ -364,36 +421,87 @@ export default function BuilderTopBar({
           </>
         )}
 
-        <div className="flex items-center gap-1">
-          <button
-            onClick={handlePublish}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              !hasPublishedSnapshot
-                ? "bg-[#22c55e] text-white hover:bg-[#16a34a]"
-                : hasUnsavedChanges
-                ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
-                : "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
-            }`}
-          >
-            {!hasPublishedSnapshot
-              ? "Publish"
-              : hasUnsavedChanges
-              ? "Publish"
-              : "Published"}
-          </button>
-          {hasPublishedSnapshot && (
+        {/* Desktop: Publish/Unpublish */}
+        {!isMobile && (
+          <div className="flex items-center gap-1">
             <button
-              onClick={handleUnpublish}
-              className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
-              title="Unpublish"
+              onClick={handlePublish}
+              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                !hasPublishedSnapshot
+                  ? "bg-[#22c55e] text-white hover:bg-[#16a34a]"
+                  : hasUnsavedChanges
+                  ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
+                  : "bg-[#22c55e]/20 text-[#22c55e] hover:bg-[#22c55e]/30"
+              }`}
             >
-              Unpublish
+              {!hasPublishedSnapshot
+                ? "Publish"
+                : hasUnsavedChanges
+                ? "Publish"
+                : "Published"}
             </button>
-          )}
-        </div>
+            {hasPublishedSnapshot && (
+              <button
+                onClick={handleUnpublish}
+                className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
+                title="Unpublish"
+              >
+                Unpublish
+              </button>
+            )}
+          </div>
+        )}
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
+        {/* User avatar - hide on mobile (in dropdown) */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="w-7 h-7 rounded-full bg-[#22c55e]/20 flex items-center justify-center hover:bg-[#22c55e]/30 transition-colors"
+                title={user?.email || "User"}
+              >
+                <span className="text-xs font-bold text-[#22c55e]">
+                  {user?.email?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="p-4 border-b border-white/10">
+                      <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Builder User</p>
+                    </div>
+                    <div className="p-2">
+                      <Link
+                        href="/builder"
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 rounded-lg transition-colors"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Halaman Saya
+                      </Link>
+                      <button
+                        onClick={() => { setShowUserMenu(false); signOut(); }}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Keluar
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Template option modal */}
         {showTemplateOption && (
@@ -498,51 +606,7 @@ export default function BuilderTopBar({
           </div>
         )}
 
-        {/* User avatar */}
-        <div className="relative">
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-7 h-7 rounded-full bg-[#22c55e]/20 flex items-center justify-center hover:bg-[#22c55e]/30 transition-colors"
-            title={user?.email || "User"}
-          >
-            <span className="text-xs font-bold text-[#22c55e]">
-              {user?.email?.charAt(0).toUpperCase() || "U"}
-            </span>
-          </button>
 
-          {showUserMenu && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
-              <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
-                <div className="p-4 border-b border-white/10">
-                  <p className="text-sm font-medium text-white truncate">{user?.email}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Builder User</p>
-                </div>
-                <div className="p-2">
-                  <Link
-                    href="/builder"
-                    className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 rounded-lg transition-colors"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    Halaman Saya
-                  </Link>
-                  <button
-                    onClick={() => { setShowUserMenu(false); signOut(); }}
-                    className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Keluar
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
       </div>
     </header>
   );
