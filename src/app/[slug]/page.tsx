@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
+import { fetchPublishedPage } from "@/lib/supabase/published";
 
 const SNAPSHOTS_PREFIX = "builder_published_snapshots_";
 
@@ -14,52 +15,56 @@ export default function PublishedPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    try {
-      const slug = params.slug as string;
+    const slug = params.slug as string;
 
-      // Scan all user-specific snapshot keys to find the published page
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key) continue;
+    // Option 1: Fetch from Supabase (public, accessible from any device)
+    fetchPublishedPage(slug).then((result) => {
+      if (result) {
+        setPage(result);
+        return;
+      }
 
-        // Check user-specific snapshots: builder_published_snapshots_<userId>
-        if (key.startsWith(SNAPSHOTS_PREFIX) || key === "builder_published_snapshots") {
-          const raw = localStorage.getItem(key);
-          if (!raw) continue;
-          const snapshots: Record<string, BuilderPage> = JSON.parse(raw);
-          const found = snapshots[slug];
-          if (found?.published) {
+      // Option 2: Fallback to localStorage (backward compat, offline)
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (!key) continue;
+
+          if (key.startsWith(SNAPSHOTS_PREFIX) || key === "builder_published_snapshots") {
+            const raw = localStorage.getItem(key);
+            if (!raw) continue;
+            const snapshots: Record<string, BuilderPage> = JSON.parse(raw);
+            const found = snapshots[slug];
+            if (found?.published) {
+              setPage(found);
+              return;
+            }
+          }
+        }
+
+        // Legacy fallback
+        const rawLegacy = localStorage.getItem("builder_pages_anonymous");
+        if (rawLegacy) {
+          const pages: BuilderPage[] = JSON.parse(rawLegacy);
+          const found = pages.find((p) => p.slug === slug && p.published);
+          if (found) {
             setPage(found);
             return;
           }
         }
-      }
-
-      // Legacy fallback: check old builder_pages key (anonymous / pre-user-specific) 
-      const rawLegacy = localStorage.getItem("builder_pages_anonymous");
-      if (rawLegacy) {
-        const pages: BuilderPage[] = JSON.parse(rawLegacy);
-        const found = pages.find((p) => p.slug === slug && p.published);
-        if (found) {
-          setPage(found);
-          return;
+        const rawOld = localStorage.getItem("builder_pages");
+        if (rawOld) {
+          const pages: BuilderPage[] = JSON.parse(rawOld);
+          const found = pages.find((p) => p.slug === slug && p.published);
+          if (found) {
+            setPage(found);
+            return;
+          }
         }
-      }
-      // Also check old shared key for backward compat
-      const rawOld = localStorage.getItem("builder_pages");
-      if (rawOld) {
-        const pages: BuilderPage[] = JSON.parse(rawOld);
-        const found = pages.find((p) => p.slug === slug && p.published);
-        if (found) {
-          setPage(found);
-          return;
-        }
-      }
+      } catch {}
 
       setNotFound(true);
-    } catch {
-      setNotFound(true);
-    }
+    });
   }, [params.slug]);
 
   if (notFound) {

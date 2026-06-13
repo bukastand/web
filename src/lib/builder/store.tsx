@@ -5,7 +5,7 @@ import type { BuilderState, BuilderAction, BuilderPage } from "./types";
 import { createDefaultPage, createDefaultSection, genId } from "./defaults";
 import { useAuth } from "@/components/auth/AuthProvider";
 import * as supabasePages from "@/lib/supabase/pages";
-
+import * as supabasePublished from "@/lib/supabase/published";
 
 const MAX_HISTORY = 50;
 
@@ -410,13 +410,14 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   const prevPublishedRef = useRef<{ id: string; published: boolean } | null>(null);
 
   useEffect(() => {
-    if (!currentPage) return;
+    if (!currentPage || !user) return;
     const prev = prevPublishedRef.current;
     const curr = { id: currentPage.id, published: currentPage.published };
 
     if (prev && prev.id === currentPage.id && prev.published !== curr.published) {
-      const uid = user?.id || null;
+      const uid = user.id;
       const snapshots = loadPublishedSnapshots(uid);
+
       if (curr.published) {
         // Save a DEEP COPY of current page as published snapshot
         const snapshot = JSON.parse(JSON.stringify(currentPage));
@@ -424,18 +425,26 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
         for (const [slug, pg] of Object.entries(snapshots)) {
           if (pg.id === currentPage.id && slug !== currentPage.slug) {
             delete snapshots[slug];
+            // Also remove old slug from Supabase
+            supabasePublished.unpublishPage(uid, slug);
           }
         }
         snapshots[currentPage.slug] = snapshot;
+
+        // Sync to Supabase (publicly accessible from any device)
+        supabasePublished.publishPage(uid, currentPage.slug, currentPage.title, snapshot);
       } else {
         // Remove from published
         delete snapshots[currentPage.slug];
+        // Remove from Supabase
+        supabasePublished.unpublishPage(uid, currentPage.slug);
       }
+
       savePublishedSnapshots(uid, snapshots);
     }
 
     prevPublishedRef.current = curr;
-  }, [currentPage?.id, currentPage?.published, currentPage?.slug]);
+  }, [currentPage?.id, currentPage?.published, currentPage?.slug, user?.id]);
 
   // ── Wrapped dispatch for undo/redo history ──
   const wrappedDispatch = useCallback((action: BuilderAction) => {

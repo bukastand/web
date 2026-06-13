@@ -106,6 +106,40 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ============================================================
+-- 3. PUBLISHED PAGES TABLE (public snapshots)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS published_pages (
+  slug TEXT PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL DEFAULT 'Untitled',
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_published_pages_user_id ON published_pages(user_id);
+
+ALTER TABLE published_pages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can view published pages" ON published_pages;
+DROP POLICY IF EXISTS "Users can insert own published pages" ON published_pages;
+DROP POLICY IF EXISTS "Users can update own published pages" ON published_pages;
+DROP POLICY IF EXISTS "Users can delete own published pages" ON published_pages;
+
+CREATE POLICY "Anyone can view published pages" ON published_pages
+  FOR SELECT USING (true);
+
+CREATE POLICY "Users can insert own published pages" ON published_pages
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own published pages" ON published_pages
+  FOR UPDATE USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own published pages" ON published_pages
+  FOR DELETE USING (auth.uid() = user_id);
 `;
 
 export async function GET() {
