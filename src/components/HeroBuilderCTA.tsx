@@ -11,7 +11,14 @@ export default function HeroBuilderCTA() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
+            // Add .visible to all .reveal children with staggered timing
+            const reveals = entry.target.querySelectorAll(".reveal");
+            reveals.forEach((el, i) => {
+              setTimeout(() => {
+                (el as HTMLElement).classList.add("visible");
+              }, i * 100);
+            });
+            observer.unobserve(entry.target);
           }
         });
       },
