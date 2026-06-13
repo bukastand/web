@@ -105,7 +105,7 @@ function HeadingElement({ el, editing, onEdit, onBlurEditing }: ElementComponent
 }
 
 function TextElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
-  const styles = applyStyles(el);
+  const styles = { ...applyStyles(el), whiteSpace: "pre-line" as const };
   const content = el.content.text || "Teks paragraf";
 
   const handleBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
@@ -478,6 +478,62 @@ function FooterElement({ el }: ElementComponentProps) {
   );
 }
 
+function ThreeBackgroundElement({ el }: ElementComponentProps) {
+  const intensity = el.content.intensity || 0.5;
+  const color = el.content.color || "#22c55e";
+  const shapes = [
+    { top: "25%", left: "25%", w: "32", h: "32", rounded: true, duration: "4s" },
+    { top: "33%", right: "25%", w: "24", h: "24", rounded: false, rotate: true, duration: "5s" },
+    { bottom: "25%", right: "33%", w: "40", h: "40", rounded: true, duration: "6s" },
+    { bottom: "33%", left: "33%", w: "20", h: "20", rounded: false, rotate: true, duration: "3.5s" },
+  ];
+
+  return (
+    <div className="relative h-0 overflow-visible" style={{ zIndex: 0 }}>
+      {/* Radial gradients */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ opacity: intensity }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse at center, ${color}22 0%, transparent 70%)`,
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: [
+              `radial-gradient(circle at 20% 50%, ${color}15 0%, transparent 50%)`,
+              `radial-gradient(circle at 80% 20%, ${color}0a 0%, transparent 50%)`,
+              `radial-gradient(circle at 50% 80%, ${color}0a 0%, transparent 50%)`,
+            ].join(","),
+          }}
+        />
+        {/* Floating geometric shapes */}
+        {shapes.map((s, i) => (
+          <div
+            key={i}
+            className={`absolute animate-pulse pointer-events-none ${s.rounded ? "rounded-full" : ""}`}
+            style={{
+              top: "top" in s ? s.top : undefined,
+              bottom: "bottom" in s ? s.bottom : undefined,
+              left: "left" in s ? s.left : undefined,
+              right: "right" in s ? s.right : undefined,
+              width: `${parseInt(s.w) * 4}px`,
+              height: `${parseInt(s.h) * 4}px`,
+              border: `1px solid ${color}30`,
+              transform: s.rotate ? "rotate(45deg)" : undefined,
+              animationDuration: s.duration,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   heading: HeadingElement,
   text: TextElement,
@@ -496,6 +552,7 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   maps: MapsElement,
   navbar: NavbarElement,
   footer: FooterElement,
+  "three-background": ThreeBackgroundElement,
 };
 
 export function ElementRenderer({

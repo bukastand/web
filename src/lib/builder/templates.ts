@@ -464,6 +464,417 @@ export const templates: Template[] = [
       footerTemplate(),
     ],
   },
+  {
+    id: "dadet-property",
+    title: "Dadet Property",
+    slug: "dadet-property",
+    description: "Template properti profesional untuk agen properti daerah Payakumbuh & Lima Puluh Kota. Modern, clean, dengan integrasi WhatsApp & 3D background.",
+    category: "Bisnis",
+    previewColor: "from-amber-500 to-yellow-600",
+    icon: "🏠",
+    globalStyles: {
+      ...defaultGlobalStyles,
+      fontFamily: "Inter, sans-serif",
+      primaryColor: "#f59e0b",
+      backgroundColor: "#0f172a",
+      textColor: "#f8fafc",
+    },
+    sections: [
+      // ─── Navbar ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("navbar", {
+                logo: "🏠 Dadet Property",
+                links: [
+                  { label: "Beranda", href: "#" },
+                  { label: "Tentang", href: "#" },
+                  { label: "Layanan", href: "#" },
+                  { label: "Properti", href: "#" },
+                  { label: "Kontak", href: "#" },
+                ],
+                ctaText: "Hubungi WA",
+                ctaHref: "https://wa.me/6285219350091",
+                sticky: true,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "0", backgroundColor: "transparent", containerWidth: "boxed" },
+      },
+
+      // ─── Hero Section ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("spacer", { height: "20px" }),
+              createElement("icon", { icon: "star", size: "64px", color: "#f59e0b" }),
+              createElement("heading", {
+                text: "Temukan Properti Impian Anda\nBersama Dadet Property",
+                level: "h1",
+                align: "center",
+              }),
+              createElement("text", {
+                text: "Mitra properti terpercaya di Payakumbuh dan Lima Puluh Kota. Kami membantu Anda menemukan rumah, tanah, dan properti komersial terbaik dengan harga kompetitif dan proses yang transparan.",
+              }),
+              createElement("three-background", {
+                intensity: 0.6,
+                color: "#f59e0b",
+              }),
+              createElement("spacer", { height: "20px" }),
+              createElement("button", {
+                text: "📞 Konsultasi Gratis",
+                variant: "primary",
+                href: "https://wa.me/6285219350091",
+                target: "_blank",
+              }),
+              createElement("spacer", { height: "40px" }),
+              createElement("stats", {
+                items: [
+                  { value: "100+", label: "Properti Terjual" },
+                  { value: "200+", label: "Klien Puas" },
+                  { value: "10+", label: "Tahun Pengalaman" },
+                  { value: "2 Kota", label: "Area Layanan" },
+                ],
+                columns: 4,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "100px 0 60px", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── About Section ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 6,
+            elements: [
+              createElement("image", {
+                src: "https://placehold.co/600x500/f59e0b/1e293b?text=Dadet+Property",
+                alt: "Dadet Property - Agen Properti",
+              }),
+            ],
+          },
+          {
+            id: genId("col"),
+            width: 6,
+            elements: [
+              createElement("heading", {
+                text: "Tentang Dadet Property",
+                level: "h2",
+                align: "left",
+              }),
+              createElement("text", {
+                text: "Dadet Property adalah agen properti profesional yang berdedikasi membantu Anda menemukan properti terbaik di Payakumbuh dan Lima Puluh Kota. Dengan pengalaman lebih dari 10 tahun, kami telah berhasil membantu ratusan klien mewujudkan impian mereka memiliki properti idaman.\n\nKami menawarkan layanan lengkap mulai dari jual beli rumah, tanah, properti komersial, hingga konsultasi properti gratis. Tim kami yang berpengalaman akan memandu Anda di setiap langkah proses, memastikan transaksi berjalan lancar, aman, dan transparan.",
+              }),
+              createElement("stats", {
+                items: [
+                  { value: "100%", label: "Transparan" },
+                  { value: "24/7", label: "Support" },
+                  { value: "Rp 0", label: "Biaya Konsultasi" },
+                ],
+                columns: 3,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Services Section ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("features", {
+                title: "Layanan Kami",
+                subtitle: "Solusi lengkap untuk kebutuhan properti Anda",
+                items: [
+                  { icon: "star", title: "Jual Properti", desc: "Kami bantu jual properti Anda dengan harga terbaik dan pemasaran yang tepat sasaran" },
+                  { icon: "heart", title: "Beli Properti", desc: "Temukan properti impian Anda dengan pilihan terlengkap di Payakumbuh & 50 Kota" },
+                  { icon: "shield", title: "Sewa Properti", desc: "Rumah, ruko, atau apartemen untuk disewa dengan harga bersaing" },
+                  { icon: "users", title: "Konsultasi", desc: "Konsultasi gratis dengan tim ahli properti kami tanpa biaya sepeserpun" },
+                  { icon: "chart", title: "Appraisal", desc: "Penilaian properti akurat untuk mengetahui nilai pasar terkini" },
+                  { icon: "globe", title: "Pengurusan Dokumen", desc: "Bantuan pengurusan sertifikat, AJB, dan dokumen legal lainnya" },
+                ],
+                columns: 3,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Featured Properties ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 4,
+            elements: [
+              createElement("image", {
+                src: "https://placehold.co/600x400/1e293b/f59e0b?text=Rumah+Modern+Payakumbuh",
+                alt: "Rumah Modern Payakumbuh",
+              }),
+              createElement("heading", {
+                text: "Rumah Modern 2 Lantai",
+                level: "h3",
+                align: "left",
+              }),
+              createElement("text", {
+                text: "📍 Payakumbuh • LT 150m² • LB 200m²\n🏠 3 Kamar Tidur • 2 Kamar Mandi\n💰 Rp 450 Juta",
+              }),
+              createElement("button", {
+                text: "📞 Tanya Detail",
+                variant: "primary",
+                href: "https://wa.me/6285219350091?text=Halo+Dadet+Property%2C+saya+tertarik+dengan+Rumah+Modern+2+Lantai+di+Payakumbuh",
+                target: "_blank",
+              }),
+            ],
+          },
+          {
+            id: genId("col"),
+            width: 4,
+            elements: [
+              createElement("image", {
+                src: "https://placehold.co/600x400/1e293b/f59e0b?text=Tanah+Kavling+50+Kota",
+                alt: "Tanah Kavling 50 Kota",
+              }),
+              createElement("heading", {
+                text: "Tanah Kavling Strategis",
+                level: "h3",
+                align: "left",
+              }),
+              createElement("text", {
+                text: "📍 Lima Puluh Kota • LT 200m²\n🌳 Dekat jalan utama • SHM\n💰 Rp 250 Juta",
+              }),
+              createElement("button", {
+                text: "📞 Tanya Detail",
+                variant: "primary",
+                href: "https://wa.me/6285219350091?text=Halo+Dadet+Property%2C+saya+tertarik+dengan+Tanah+Kavling+Strategis+di+Lima+Puluh+Kota",
+                target: "_blank",
+              }),
+            ],
+          },
+          {
+            id: genId("col"),
+            width: 4,
+            elements: [
+              createElement("image", {
+                src: "https://placehold.co/600x400/1e293b/f59e0b?text=Ruko+Bisnis+Payakumbuh",
+                alt: "Ruko Bisnis Payakumbuh",
+              }),
+              createElement("heading", {
+                text: "Ruko 2 Lantai",
+                level: "h3",
+                align: "left",
+              }),
+              createElement("text", {
+                text: "📍 Pusat Kota Payakumbuh • LT 120m²\n🏪 Lokasi strategis • Cocok untuk bisnis\n💰 Rp 600 Juta",
+              }),
+              createElement("button", {
+                text: "📞 Tanya Detail",
+                variant: "primary",
+                href: "https://wa.me/6285219350091?text=Halo+Dadet+Property%2C+saya+tertarik+dengan+Ruko+2+Lantai+di+Payakumbuh",
+                target: "_blank",
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Why Us + Stats ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("heading", {
+                text: "Mengapa Memilih Dadet Property?",
+                level: "h2",
+                align: "center",
+              }),
+              createElement("text", {
+                text: "Kami berkomitmen memberikan pelayanan terbaik untuk setiap klien",
+              }),
+              createElement("spacer", { height: "20px" }),
+              createElement("features", {
+                title: "",
+                subtitle: "",
+                items: [
+                  { icon: "shield", title: "Terpercaya & Aman", desc: "Setiap transaksi diproses dengan standar keamanan tinggi dan dokumen legal lengkap" },
+                  { icon: "star", title: "Harga Terbaik", desc: "Kami negosiasikan harga terbaik untuk Anda, baik jual maupun beli properti" },
+                  { icon: "users", title: "Tim Profesional", desc: "Didukung tim berpengalaman yang siap membantu Anda 24/7" },
+                  { icon: "globe", title: "Area Luas", desc: "Melayani seluruh wilayah Payakumbuh dan Lima Puluh Kota dengan jangkauan maksimal" },
+                  { icon: "heart", title: "100% Transparan", desc: "Tidak ada biaya tersembunyi. Semua informasi disampaikan dengan jujur dan terbuka" },
+                  { icon: "chart", title: "Hasil Terbukti", desc: "Lebih dari 100 properti berhasil terjual dengan kepuasan klien di atas 95%" },
+                ],
+                columns: 3,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Location Section ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 6,
+            elements: [
+              createElement("maps", {
+                title: "Wilayah Layanan",
+                address: "Payakumbuh & Lima Puluh Kota, Sumatera Barat",
+                lat: "-0.2283",
+                lng: "100.6333",
+                zoom: 11,
+              }),
+            ],
+          },
+          {
+            id: genId("col"),
+            width: 6,
+            elements: [
+              createElement("heading", {
+                text: "Area Layanan Kami",
+                level: "h2",
+                align: "left",
+              }),
+              createElement("text", {
+                text: "Kami melayani seluruh wilayah:",
+              }),
+              createElement("features", {
+                title: "",
+                subtitle: "",
+                items: [
+                  { icon: "star", title: "Kota Payakumbuh", desc: "Pusat kota, Payakumbuh Barat, Payakumbuh Timur, Payakumbuh Utara, Payakumbuh Selatan" },
+                  { icon: "star", title: "Kabupaten 50 Kota", desc: "Sarilamak, Guguak, Payakumbuh, Harau, Situjuh, dan seluruh kecamatan" },
+                ],
+                columns: 1,
+              }),
+              createElement("text", {
+                text: "📍 Kantor: Payakumbuh, Sumatera Barat\n📞 Hubungi: +62 852-1935-0091",
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Testimonials ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("testimonial", {
+                title: "Apa Kata Klien Kami",
+                items: [
+                  { name: "M. Irfan", role: "Pemilik Rumah, Payakumbuh", text: "Proses jual rumah saya sangat cepat! Dalam 2 minggu sudah ada pembeli serius. Dadet Property benar-benar profesional dan membantu sekali.", rating: 5, avatar: "MI" },
+                  { name: "Rina Safitri", role: "Pembeli Rumah, 50 Kota", text: "Terima kasih Dadet Property! Saya akhirnya menemukan rumah impian dengan harga yang sesuai budget. Pelayanannya ramah dan jujur.", rating: 5, avatar: "RS" },
+                  { name: "Bambang H.", role: "Investor Properti", text: "Sudah beberapa kali kerja sama dengan Dadet Property. Selalu puas dengan pelayanan dan hasilnya. Sangat direkomendasikan!", rating: 5, avatar: "BH" },
+                ],
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── CTA Section ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("cta", {
+                title: "Siap Cari Properti Impian?",
+                subtitle: "Hubungi kami sekarang untuk konsultasi GRATIS. Tim Dadet Property siap membantu Anda!\n🏠 Jual • Beli • Sewa • Konsultasi",
+                buttonText: "📞 Konsultasi Gratis via WA",
+                buttonHref: "https://wa.me/6285219350091",
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "80px 0", backgroundColor: "#f59e0b", containerWidth: "boxed" },
+      },
+
+      // ─── Contact Form ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("contactForm", {
+                title: "Hubungi Kami",
+                subtitle: "Isi form di bawah dan tim Dadet Property akan segera menghubungi Anda",
+                whatsappNumber: "6285219350091",
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "60px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+
+      // ─── Footer ───
+      {
+        id: genId("sec"),
+        columns: [
+          {
+            id: genId("col"),
+            width: 12,
+            elements: [
+              createElement("footer", {
+                logo: "🏠 Dadet Property",
+                description: "Mitra properti terpercaya Anda di Payakumbuh dan Lima Puluh Kota.\nJual • Beli • Sewa • Konsultasi Properti",
+                links: [
+                  { label: "Beranda", href: "#" },
+                  { label: "Tentang", href: "#" },
+                  { label: "Layanan", href: "#" },
+                  { label: "Properti", href: "#" },
+                  { label: "Kontak", href: "#" },
+                ],
+                socials: [
+                  { platform: "instagram", url: "https://www.instagram.com/" },
+                  { platform: "facebook", url: "https://www.facebook.com/" },
+                  { platform: "youtube", url: "https://www.youtube.com/" },
+                ],
+                copyright: `© ${new Date().getFullYear()} Dadet Property. All rights reserved.`,
+              }),
+            ],
+          },
+        ],
+        styles: { padding: "60px 0 30px", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      },
+    ],
+  },
 ];
 
 export function createPageFromTemplate(template: Template, title?: string): BuilderPage {

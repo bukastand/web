@@ -190,6 +190,14 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { backgroundColor: "#0f172a", padding: "60px 0 30px" },
   },
+  "three-background": {
+    content: {
+      intensity: 0.5,
+      color: "#22c55e",
+      animated: true,
+    },
+    styles: { position: "absolute", inset: "0", zIndex: "0" },
+  },
 };
 
 export function createElement(type: ElementType, partialContent?: Record<string, any>): BuilderElement {
