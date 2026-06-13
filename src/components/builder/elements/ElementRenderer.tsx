@@ -24,6 +24,8 @@ function applyStyles(el: BuilderElement): React.CSSProperties {
   if (st.opacity) s.opacity = st.opacity;
   if (st.objectFit) s.objectFit = st.objectFit as React.CSSProperties['objectFit'];
   if (st.backgroundImage) s.backgroundImage = st.backgroundImage as React.CSSProperties['backgroundImage'];
+  if (st.backgroundSize) s.backgroundSize = st.backgroundSize as React.CSSProperties['backgroundSize'];
+  if (st.backgroundPosition) s.backgroundPosition = st.backgroundPosition as React.CSSProperties['backgroundPosition'];
   
   // Individual padding fields take priority over shorthand
   if (st.paddingTop || st.paddingBottom || st.paddingLeft || st.paddingRight) {

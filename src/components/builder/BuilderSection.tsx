@@ -107,6 +107,12 @@ export default function BuilderSectionComponent({
   if (section.styles.backgroundImage) {
     bgStyle.backgroundImage = section.styles.backgroundImage as React.CSSProperties['backgroundImage'];
   }
+  if (section.styles.backgroundSize) {
+    bgStyle.backgroundSize = section.styles.backgroundSize as React.CSSProperties['backgroundSize'];
+  }
+  if (section.styles.backgroundPosition) {
+    bgStyle.backgroundPosition = section.styles.backgroundPosition as React.CSSProperties['backgroundPosition'];
+  }
 
   return (
     <div
@@ -162,6 +168,32 @@ export default function BuilderSectionComponent({
             className="w-full px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 placeholder:text-gray-600"
             placeholder="url(...) atau gradient(...)"
           />
+          {/* Background Size */}
+          <div className="flex items-center gap-1 mt-1.5">
+            <span className="text-[9px] text-gray-500 flex-shrink-0">Size:</span>
+            <select
+              value={section.styles.backgroundSize || ""}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundSize: e.target.value || undefined } })}
+              className="flex-1 px-1 py-0.5 rounded bg-white/10 text-white text-[10px] focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50"
+              style={{ colorScheme: 'dark' }}
+            >
+              <option value="" className="bg-[#1e293b] text-white">Default</option>
+              <option value="cover" className="bg-[#1e293b] text-white">Cover</option>
+              <option value="contain" className="bg-[#1e293b] text-white">Contain</option>
+              <option value="auto" className="bg-[#1e293b] text-white">Auto</option>
+            </select>
+          </div>
+          {/* Background Position */}
+          <div className="flex items-center gap-1 mt-1">
+            <span className="text-[9px] text-gray-500 flex-shrink-0">Pos:</span>
+            <input
+              type="text"
+              value={section.styles.backgroundPosition || ""}
+              onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundPosition: e.target.value || undefined } })}
+              className="flex-1 px-1 py-0.5 rounded bg-white/10 text-white text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 placeholder:text-gray-600"
+              placeholder="center"
+            />
+          </div>
         </div>
       </div>
 

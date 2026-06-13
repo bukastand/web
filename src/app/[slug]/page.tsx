@@ -105,6 +105,12 @@ export default function PublishedPage() {
     if (s.styles.backgroundImage) {
       st.backgroundImage = s.styles.backgroundImage;
     }
+    if (s.styles.backgroundSize) {
+      st.backgroundSize = s.styles.backgroundSize;
+    }
+    if (s.styles.backgroundPosition) {
+      st.backgroundPosition = s.styles.backgroundPosition;
+    }
     return st;
   };
 

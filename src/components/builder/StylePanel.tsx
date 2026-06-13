@@ -904,7 +904,33 @@ export default function StylePanel() {
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-[10px] file:font-medium hover:file:bg-[#22c55e]/30"
                   />
                 </div>
-                <div className="mt-2">
+                {/* Background Size */}
+                <div className="flex items-center gap-2 mt-2 mb-1">
+                  <label className="block text-[10px] text-gray-600 flex-shrink-0">Ukuran:</label>
+                  <select
+                    value={selectedElement.styles.backgroundSize ?? ""}
+                    onChange={(e) => updateStyle("backgroundSize", e.target.value)}
+                    className="flex-1 px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" className="bg-[#1e293b] text-white">Default</option>
+                    <option value="cover" className="bg-[#1e293b] text-white">Cover</option>
+                    <option value="contain" className="bg-[#1e293b] text-white">Contain</option>
+                    <option value="auto" className="bg-[#1e293b] text-white">Auto</option>
+                  </select>
+                </div>
+                {/* Background Position */}
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="block text-[10px] text-gray-600 flex-shrink-0">Posisi:</label>
+                  <input
+                    type="text"
+                    value={selectedElement.styles.backgroundPosition ?? ""}
+                    onChange={(e) => updateStyle("backgroundPosition", e.target.value)}
+                    className="flex-1 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="center"
+                  />
+                </div>
+                <div className="mt-1">
                   <label className="block text-[10px] text-gray-600 mb-1">Gradient Cepat</label>
                   <div className="flex flex-wrap gap-1">
                     {[
