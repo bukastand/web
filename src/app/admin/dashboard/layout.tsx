@@ -28,6 +28,10 @@ export default function DashboardLayout({
     await supabase.auth.signOut();
     document.cookie =
       "admin_session=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie =
+      "user_role=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie =
+      "builder_session=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/admin/login");
   };
 

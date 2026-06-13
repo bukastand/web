@@ -16,19 +16,41 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { error: authError, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (authError) {
-      setError(authError.message);
+    if (authError || !data.user) {
+      setError(authError?.message || "Login gagal");
       setLoading(false);
       return;
     }
 
-    // Set cookie for middleware protection
+    // Verify user has admin role from profiles table
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profileError || !profile) {
+      setError("Akun tidak ditemukan. Hubungi administrator.");
+      await supabase.auth.signOut();
+      setLoading(false);
+      return;
+    }
+
+    if (profile.role !== "admin") {
+      setError("Akses ditolak. Anda tidak memiliki izin admin.");
+      await supabase.auth.signOut();
+      setLoading(false);
+      return;
+    }
+
+    // Set cookies for middleware protection
     document.cookie = "admin_session=authenticated; path=/; max-age=86400";
+    document.cookie = "user_role=admin; path=/; max-age=86400";
     router.push("/admin/dashboard");
   };
 

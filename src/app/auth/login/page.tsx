@@ -17,19 +17,40 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { error: authError, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (authError) {
-      setError(authError.message);
+    if (authError || !data.user) {
+      setError(authError?.message || "Login gagal");
       setLoading(false);
       return;
     }
 
-    // Set cookie for middleware protection
+    // Get user role from profiles table
+    let role = "user";
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profile) {
+      role = profile.role;
+    } else {
+      // Existing user without profile — create one (e.g. before the DB trigger existed)
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        full_name: data.user.user_metadata?.full_name || null,
+        role: "user",
+        updated_at: new Date().toISOString(),
+      });
+    }
+
+    // Set cookies for middleware protection
     document.cookie = "builder_session=authenticated; path=/; max-age=86400";
+    document.cookie = `user_role=${role}; path=/; max-age=86400`;
     router.push("/builder");
   };
 

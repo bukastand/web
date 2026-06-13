@@ -47,17 +47,30 @@ export default function RegisterPage() {
       return;
     }
 
-    // If Supabase requires email confirmation
+    // If Supabase requires email confirmation (user already exists)
     if (data?.user?.identities?.length === 0) {
       setSuccess("Email ini sudah terdaftar. Silakan login.");
       setLoading(false);
       return;
     }
 
-    // Check if session was created (email confirmation may be disabled)
-    if (data.session) {
+    // Profile akan auto-created via database trigger (handle_new_user)
+    // Tapi jika trigger belum jalan, kita buat manual
+    if (data.session?.user) {
+      try {
+        await supabase.from("profiles").upsert({
+          id: data.session.user.id,
+          full_name: name,
+          role: "user",
+          updated_at: new Date().toISOString(),
+        });
+      } catch {
+        // Trigger seharusnya sudah handle ini
+      }
+
       setSuccess("Akun berhasil dibuat! Mengarahkan ke builder...");
       document.cookie = "builder_session=authenticated; path=/; max-age=86400";
+      document.cookie = "user_role=user; path=/; max-age=86400";
       setTimeout(() => {
         router.push("/builder");
       }, 1500);
