@@ -182,12 +182,6 @@ export default function TemplatesPage() {
 
   // Preview state
   const [previewTemplate, setPreviewTemplate] = useState<GalleryTemplate | null>(null);
-  const [previewSection, setPreviewSection] = useState(0);
-
-  // Reset preview section when template changes
-  useEffect(() => {
-    setPreviewSection(0);
-  }, [previewTemplate]);
 
   return (
     <div className="min-h-screen bg-[#0f172a] pt-24 pb-16">
@@ -363,30 +357,10 @@ export default function TemplatesPage() {
               <span className="text-2xl">{previewTemplate.icon}</span>
               <div>
                 <p className="text-white font-semibold text-sm">{previewTemplate.title}</p>
-                <p className="text-[10px] text-gray-500">{previewTemplate.sections.length} section</p>
+                <p className="text-[10px] text-gray-500">{previewTemplate.sections.length} section • Scroll untuk lihat semua</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPreviewSection(Math.max(0, previewSection - 1))}
-                disabled={previewSection === 0}
-                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <span className="text-xs text-gray-500">{previewSection + 1}/{previewTemplate.sections.length}</span>
-              <button
-                onClick={() => setPreviewSection(Math.min(previewTemplate.sections.length - 1, previewSection + 1))}
-                disabled={previewSection >= previewTemplate.sections.length - 1}
-                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-              <div className="w-px h-5 bg-white/10 mx-1" />
               <button
                 onClick={() => {
                   const t = previewTemplate;
@@ -394,39 +368,41 @@ export default function TemplatesPage() {
                   setSelectedTemplate(t);
                   setShowConfirm(true);
                 }}
-                className="px-4 py-2 bg-[#22c55e] text-white text-xs font-semibold rounded-lg hover:bg-[#16a34a] transition-all"
+                className="px-5 py-2 bg-[#22c55e] text-white text-sm font-semibold rounded-lg hover:bg-[#16a34a] transition-all flex items-center gap-2"
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
                 Gunakan Template
               </button>
             </div>
           </div>
 
-          {/* Preview content */}
+          {/* Preview content - full website, scrollable */}
           <div className="flex-1 overflow-y-auto bg-white">
             <div className="max-w-[1200px] mx-auto">
-              {previewTemplate.sections.map((section, idx) => {
-                // Only show current section or all for a full preview
-                if (previewSection >= 0 && idx !== previewSection) return null;
-                return (
-                  <div key={idx} className="border-b border-gray-100">
-                    {section.columns.map((col, ci) => (
-                      <div key={ci} className="max-w-[1200px] mx-auto px-4" style={{ paddingTop: "40px", paddingBottom: "40px" }}>
-                        <div className="flex gap-4">
-                          <div key={col.id} style={{ flex: col.width || 12, maxWidth: `${((col.width || 12) / 12) * 100}%` }}>
-                            <div className="space-y-2">
-                              {col.elements.map((el) => (
-                                <div key={el.id}>
-                                  <ElementRenderer element={el} />
-                                </div>
-                              ))}
-                            </div>
+              {previewTemplate.sections.map((section, idx) => (
+                <div key={section.id || idx}>
+                  {section.columns.map((col, ci) => (
+                    <div key={col.id || ci} className="max-w-[1200px] mx-auto px-4" style={{ paddingTop: "40px", paddingBottom: "40px" }}>
+                      <div className="flex gap-4">
+                        <div
+                          key={col.id || ci}
+                          style={{ flex: col.width || 12, maxWidth: `${((col.width || 12) / 12) * 100}%` }}
+                        >
+                          <div className="space-y-2">
+                            {col.elements.map((el) => (
+                              <div key={el.id}>
+                                <ElementRenderer element={el} />
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                );
-              })}
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
