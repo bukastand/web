@@ -498,8 +498,8 @@ function NavbarElement({ el }: ElementComponentProps) {
   return (
     <>
       <nav className="flex items-center py-4 px-6" style={navStyle}>
-        {/* Logo */}
-        <div className="flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(logoAlign) }}>
+        {/* Logo - natural width */}
+        <div className="flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(logoAlign) }}>
           {logoImg ? (
             <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
           ) : (
@@ -508,16 +508,16 @@ function NavbarElement({ el }: ElementComponentProps) {
             </span>
           )}
         </div>
-        {/* Menu Links - Desktop */}
-        <div className="hidden md:flex items-center gap-6" style={{ flex: "1 1 0%", justifyContent: mapAlign(menuAlign) }}>
+        {/* Menu Links - Desktop - fills remaining space */}
+        <div className="hidden md:flex items-center gap-6 flex-1" style={{ justifyContent: mapAlign(menuAlign) }}>
           {links.map((link: any, i: number) => (
             <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={childStyle}>
               {link.label}
             </a>
           ))}
         </div>
-        {/* CTA - Desktop */}
-        <div className="hidden md:flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(ctaAlign) }}>
+        {/* CTA - Desktop - natural width */}
+        <div className="hidden md:flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(ctaAlign) }}>
           <a href={el.content.ctaHref || "#"} target="_blank" rel="noopener noreferrer"
             className="px-5 py-2.5 font-semibold rounded-xl hover:opacity-90 transition-all"
             style={{
