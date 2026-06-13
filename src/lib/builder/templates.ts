@@ -62,10 +62,11 @@ const galleryTemplates: Template[] = [
     icon: "🚀",
     previewColor: "from-blue-600 to-indigo-700",
     sections: [
+      // Navbar section — minimal padding
       sectionFromData({
-        padding: "120px 0",
+        padding: "0",
         backgroundColor: "#0f172a",
-        containerWidth: "boxed",
+        containerWidth: "full",
         columns: [
           {
             width: 12,

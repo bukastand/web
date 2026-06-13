@@ -477,9 +477,14 @@ function NavbarElement({ el }: ElementComponentProps) {
   const menuAlign = el.content.menuAlign || defaultMenuAlign;
   const ctaAlign = el.content.ctaAlign || defaultCtaAlign;
   const [menuOpen, setMenuOpen] = useState(false);
-  // Remove textAlign from nav style since it doesn't affect flex containers
+  // Remove textAlign & padding from nav style since Tailwind handles them
   const navStyle = { ...elStyles };
   delete navStyle.textAlign;
+  delete navStyle.padding;
+  delete navStyle.paddingTop;
+  delete navStyle.paddingBottom;
+  delete navStyle.paddingLeft;
+  delete navStyle.paddingRight;
 
   const mapAlign = (align: string): "flex-start" | "center" | "flex-end" => {
     if (align === "start") return "flex-start";
@@ -547,9 +552,9 @@ function NavbarElement({ el }: ElementComponentProps) {
           )}
         </button>
       </nav>
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - with z-index so it shows above other content */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/10" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
+        <div className="md:hidden border-t border-white/10 relative z-20 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
           <div className="px-6 py-4 space-y-3">
             {links.map((link: any, i: number) => (
               <a
