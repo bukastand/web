@@ -13,6 +13,7 @@ const navItems = [
   { href: "/admin/dashboard/portfolio", label: "Portfolio", icon: "🖼️" },
   { href: "/admin/dashboard/why-us", label: "Kenapa Kami", icon: "⭐" },
   { href: "/admin/dashboard/users", label: "Pengguna", icon: "👥" },
+  { href: "/admin/dashboard/templates", label: "Templates", icon: "📦" },
   { href: "/admin/dashboard/settings", label: "Pengaturan", icon: "⚙️" },
 ];
 

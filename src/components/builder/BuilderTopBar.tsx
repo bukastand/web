@@ -5,6 +5,7 @@ import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { submitTemplate } from "@/lib/supabase/community-templates";
 
 export default function BuilderTopBar({
   showSidebar,
@@ -29,6 +30,12 @@ export default function BuilderTopBar({
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showTemplateOption, setShowTemplateOption] = useState(false);
+  const [templateDesc, setTemplateDesc] = useState("");
+  const [templateCategory, setTemplateCategory] = useState("Bisnis");
+  const [templateSubmitting, setTemplateSubmitting] = useState(false);
+  const [templateError, setTemplateError] = useState("");
+  const [templateSuccess, setTemplateSuccess] = useState("");
 
   const publishedUrl = `https://pagodastudio.my.id/${currentPage?.slug || ""}`;
 
@@ -59,7 +66,68 @@ export default function BuilderTopBar({
   };
 
   const handlePublish = () => {
+    // Show template option if this is a first publish or there are unsaved changes
+    if (!hasPublishedSnapshot || hasUnsavedChanges) {
+      setShowTemplateOption(true);
+    } else {
+      dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
+    }
+  };
+
+  const handlePublishOnly = () => {
     dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
+    setShowTemplateOption(false);
+    setTemplateDesc("");
+  };
+
+  const handlePublishAndSubmitTemplate = async () => {
+    if (!user) return;
+    setTemplateSubmitting(true);
+    setTemplateError("");
+    setTemplateSuccess("");
+
+    try {
+      // First publish
+      dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
+
+      // Then submit as template
+      const result = await submitTemplate(user.id, currentPage, {
+        title: currentPage.title,
+        description: templateDesc || `${currentPage.title} - Landing page profesional`,
+        category: templateCategory,
+        icon: getCategoryIcon(templateCategory),
+        previewColor: getCategoryColor(templateCategory),
+      });
+
+      if (result.success) {
+        setTemplateSuccess("Template berhasil dikirim! Menunggu persetujuan admin.");
+        setTimeout(() => {
+          setShowTemplateOption(false);
+          setTemplateDesc("");
+          setTemplateSuccess("");
+        }, 2500);
+      } else {
+        setTemplateError(result.error || "Gagal mengirim template");
+      }
+    } catch (err: any) {
+      setTemplateError(err.message || "Terjadi kesalahan");
+    }
+    setTemplateSubmitting(false);
+  };
+
+  const getCategoryIcon = (cat: string) => {
+    const map: Record<string, string> = { Bisnis: "🏢", Kreatif: "🎨", Event: "📅", Lainnya: "📄" };
+    return map[cat] || "📄";
+  };
+
+  const getCategoryColor = (cat: string) => {
+    const map: Record<string, string> = {
+      Bisnis: "from-blue-500 to-indigo-600",
+      Kreatif: "from-purple-500 to-pink-600",
+      Event: "from-orange-500 to-red-600",
+      Lainnya: "from-gray-500 to-gray-600",
+    };
+    return map[cat] || "from-gray-500 to-gray-600";
   };
 
   const handleUnpublish = () => {
@@ -270,6 +338,109 @@ export default function BuilderTopBar({
 
         {/* Divider */}
         <div className="w-px h-5 bg-white/10 mx-1" />
+
+        {/* Template option modal */}
+        {showTemplateOption && (
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
+            <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 w-full max-w-md">
+              <div className="text-center mb-4">
+                <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-[#22c55e]/20 to-emerald-500/20 border border-[#22c55e]/30 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">Publikasi Halaman</h3>
+                <p className="text-sm text-gray-400">Halaman <span className="text-white font-semibold">{currentPage.title}</span> akan dipublikasikan.</p>
+              </div>
+
+              {templateSuccess ? (
+                <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm text-center mb-4">
+                  {templateSuccess}
+                </div>
+              ) : (
+                <>
+                  {/* Option A: Publish only */}
+                  <button
+                    onClick={handlePublishOnly}
+                    className="w-full flex items-center gap-3 p-4 rounded-xl border border-white/10 hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all mb-3 text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-[#22c55e]/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white group-hover:text-[#22c55e] transition-colors">Publikasi Saja</p>
+                      <p className="text-[11px] text-gray-500">Halaman live di URL Anda sendiri</p>
+                    </div>
+                  </button>
+
+                  {/* Option B: Publish & submit as template */}
+                  <div className="p-4 rounded-xl border border-dashed border-purple-500/30 bg-purple-500/5 mb-3">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-purple-400">Publikasi & Jadikan Template</p>
+                        <p className="text-[11px] text-gray-500">Bagikan ke komunitas (butuh persetujuan admin)</p>
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      value={templateDesc}
+                      onChange={(e) => setTemplateDesc(e.target.value)}
+                      placeholder="Deskripsi template (opsional)"
+                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2"
+                    />
+                    <select
+                      value={templateCategory}
+                      onChange={(e) => setTemplateCategory(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500/50 mb-2"
+                      style={{ colorScheme: "dark" }}
+                    >
+                      <option value="Bisnis" className="bg-[#1e293b] text-white">🏢 Bisnis</option>
+                      <option value="Kreatif" className="bg-[#1e293b] text-white">🎨 Kreatif</option>
+                      <option value="Event" className="bg-[#1e293b] text-white">📅 Event</option>
+                      <option value="Lainnya" className="bg-[#1e293b] text-white">📄 Lainnya</option>
+                    </select>
+
+                    <button
+                      onClick={handlePublishAndSubmitTemplate}
+                      disabled={templateSubmitting}
+                      className="w-full py-2 bg-purple-500 text-white text-sm font-semibold rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {templateSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Memproses...
+                        </>
+                      ) : (
+                        "Ya, Publikasi & Jadikan Template"
+                      )}
+                    </button>
+                  </div>
+
+                  {templateError && (
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-2">
+                      {templateError}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => { setShowTemplateOption(false); setTemplateDesc(""); setTemplateError(""); }}
+                    className="w-full py-2 text-sm text-gray-400 hover:text-white transition-colors text-center"
+                  >
+                    Batal
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* User avatar */}
         <div className="relative">

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { templates, createPageFromTemplate } from "@/lib/builder/templates";
 import type { Template } from "@/lib/builder/templates";
+import { fetchApprovedTemplates, communityToGalleryTemplate } from "@/lib/supabase/community-templates";
 
 const categories = ["Semua", "Bisnis", "Kreatif", "Event", "Lainnya"];
 
@@ -67,25 +68,46 @@ function TemplateCard({
             {template.sections.length} section
           </span>
           <span>{template.category}</span>
+          {(template as any).isCommunity && (
+            <span className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-medium">
+              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Komunitas
+            </span>
+          )}
         </div>
       </div>
     </button>
   );
 }
 
+type GalleryTemplate = Template & { isCommunity?: boolean; createdAt?: string };
+
 export default function TemplatesPage() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("Semua");
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<GalleryTemplate | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [communityTemplates, setCommunityTemplates] = useState<GalleryTemplate[]>([]);
+
+  // Fetch community templates on mount
+  useEffect(() => {
+    fetchApprovedTemplates().then((cts) => {
+      setCommunityTemplates(cts.map(communityToGalleryTemplate));
+    });
+  }, []);
+
+  // Combine built-in + community templates
+  const allTemplates = [...templates, ...communityTemplates];
 
   const filtered = activeCategory === "Semua"
-    ? templates
-    : templates.filter((t) => t.category === activeCategory);
+    ? allTemplates
+    : allTemplates.filter((t) => t.category === activeCategory);
 
-  const handleSelect = (t: Template) => {
+  const handleSelect = (t: GalleryTemplate) => {
     setSelectedTemplate(t);
   };
 

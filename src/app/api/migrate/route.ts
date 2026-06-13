@@ -140,6 +140,54 @@ CREATE POLICY "Users can update own published pages" ON published_pages
 
 CREATE POLICY "Users can delete own published pages" ON published_pages
   FOR DELETE USING (auth.uid() = user_id);
+
+-- ============================================================
+-- 4. COMMUNITY TEMPLATES TABLE (user-submitted templates)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS community_templates (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  category TEXT NOT NULL DEFAULT 'Lainnya',
+  icon TEXT NOT NULL DEFAULT '📄',
+  preview_color TEXT NOT NULL DEFAULT 'from-gray-500 to-gray-600',
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  is_approved BOOLEAN NOT NULL DEFAULT false,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_community_templates_approved ON community_templates(is_approved);
+CREATE INDEX IF NOT EXISTS idx_community_templates_user_id ON community_templates(user_id);
+CREATE INDEX IF NOT EXISTS idx_community_templates_category ON community_templates(category);
+
+ALTER TABLE community_templates ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can view approved templates" ON community_templates;
+DROP POLICY IF EXISTS "Users can insert own templates" ON community_templates;
+DROP POLICY IF EXISTS "Users can update own templates" ON community_templates;
+DROP POLICY IF EXISTS "Users can delete own templates" ON community_templates;
+DROP POLICY IF EXISTS "Admins can manage all templates" ON community_templates;
+
+CREATE POLICY "Anyone can view approved templates" ON community_templates
+  FOR SELECT USING (is_approved = true OR auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own templates" ON community_templates
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own templates" ON community_templates
+  FOR UPDATE USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own templates" ON community_templates
+  FOR DELETE USING (auth.uid() = user_id);
+
+CREATE POLICY "Admins can manage all templates" ON community_templates
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 `;
 
 export async function GET() {
