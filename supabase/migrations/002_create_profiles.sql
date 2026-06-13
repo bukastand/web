@@ -48,6 +48,11 @@ CREATE POLICY "Users can insert own profile" ON profiles
 CREATE POLICY "Admins can view all profiles" ON profiles
   FOR SELECT USING (public.is_admin());
 
+-- Admins can update any profile (e.g. change roles)
+CREATE POLICY "Admins can update all profiles" ON profiles
+  FOR UPDATE USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
 -- Function to auto-create profile on user signup (via trigger)
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
