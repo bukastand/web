@@ -7,11 +7,12 @@ import { useState } from "react";
 import { templates } from "@/lib/builder/templates";
 
 export default function BuilderHome() {
-  const { state, createNewPage } = useBuilder();
+  const { state, dispatch, createNewPage } = useBuilder();
   const { user, loading, signOut } = useAuth();
   const [showNew, setShowNew] = useState(false);
   const [title, setTitle] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const handleCreate = () => {
     createNewPage(title || undefined);
@@ -229,9 +230,9 @@ export default function BuilderHome() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {state.pages.map((page) => (
-              <div key={page.id} className="group rounded-2xl border border-white/10 bg-white/5 hover:border-[#22c55e]/40 transition-all overflow-hidden">
+              <div key={page.id} className="group relative rounded-2xl border border-white/10 bg-white/5 hover:border-[#22c55e]/40 transition-all overflow-hidden">
                 <Link href={`/builder/${page.id}`} className="block p-6">
-                  <div className="w-full h-32 rounded-xl bg-gradient-to-br from-[#22c55e]/10 to-blue-500/10 border border-white/10 flex items-center justify-center mb-4">
+                  <div className="w-full h-32 rounded-xl bg-gradient-to-br from-[#22c55e]/10 to-blue-500/10 border border-white/10 flex items-center justify-center mb-4 relative">
                     <svg className="w-12 h-12 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
@@ -248,8 +249,54 @@ export default function BuilderHome() {
                     )}
                   </div>
                 </Link>
+                {/* Delete button */}
+                <button
+                  onClick={(e) => { e.preventDefault(); setDeleteConfirm(page.id); }}
+                  className="absolute top-3 right-3 p-2 rounded-lg bg-red-500/80 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all shadow-lg"
+                  title="Hapus proyek"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirm && (
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
+            <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
+              <div className="text-center mb-4">
+                <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">Hapus Proyek?</h3>
+                <p className="text-sm text-gray-400">
+                  Proyek <span className="text-white font-semibold">{state.pages.find(p => p.id === deleteConfirm)?.title}</span> akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 py-2.5 text-sm text-gray-400 border border-white/10 rounded-xl hover:bg-white/5 hover:text-white transition-all"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={() => {
+                    dispatch({ type: "DELETE_PAGE", pageId: deleteConfirm });
+                    setDeleteConfirm(null);
+                  }}
+                  className="flex-1 py-2.5 text-sm font-semibold text-white bg-red-500 rounded-xl hover:bg-red-600 transition-all"
+                >
+                  Ya, Hapus
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
