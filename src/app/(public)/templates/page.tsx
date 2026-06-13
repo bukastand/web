@@ -17,39 +17,43 @@ function TemplateCard({
   template,
   onSelect,
   isSelected,
+  onPreview,
 }: {
   template: Template;
   onSelect: (t: Template) => void;
   isSelected: boolean;
+  onPreview: (t: Template) => void;
 }) {
   return (
-    <button
-      onDoubleClick={() => onSelect(template)}
-      onClick={() => onSelect(template)}
-      className={`group relative text-left w-full rounded-2xl border-2 overflow-hidden transition-all duration-300 ${
+    <div
+      className={`group relative w-full rounded-2xl border-2 overflow-hidden transition-all duration-300 ${
         isSelected
           ? "border-[#22c55e] ring-2 ring-[#22c55e]/30 shadow-lg shadow-[#22c55e]/10"
           : "border-white/10 hover:border-[#22c55e]/40 hover:shadow-lg hover:shadow-[#22c55e]/5"
       }`}
     >
-      {/* Preview thumbnail */}
-      <div className={`h-48 bg-gradient-to-br ${template.previewColor} flex items-center justify-center relative overflow-hidden`}>
-        {/* Decorative circles */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" />
-        <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-white/10 rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-          <span className="text-5xl mb-2">{template.icon}</span>
-          <span className="text-white/60 text-xs font-medium uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
-            {template.category}
-          </span>
+      {/* Preview thumbnail - click to preview */}
+      <button
+        onClick={() => onPreview(template)}
+        className="w-full text-left"
+      >
+        <div className={`h-48 bg-gradient-to-br ${template.previewColor} flex items-center justify-center relative overflow-hidden`}>
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" />
+          <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-white/10 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <span className="text-5xl mb-2">{template.icon}</span>
+            <span className="text-white/60 text-xs font-medium uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
+              {template.category}
+            </span>
+          </div>
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="text-white font-semibold text-sm bg-white/20 backdrop-blur-md px-6 py-2 rounded-xl">
+              👁️ Preview
+            </span>
+          </div>
         </div>
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <span className="text-white font-semibold text-sm bg-white/20 backdrop-blur-md px-6 py-2 rounded-xl">
-            Preview
-          </span>
-        </div>
-      </div>
+      </button>
 
       {/* Info */}
       <div className="p-5 bg-[#1e293b]">
@@ -64,14 +68,24 @@ function TemplateCard({
           )}
         </div>
         <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{template.description}</p>
-        <div className="mt-3 flex items-center gap-3 text-[10px] text-gray-500">
+        <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-500">
+          <button
+            onClick={() => onPreview(template)}
+            className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 hover:bg-[#22c55e]/20 hover:text-[#22c55e] transition-colors"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Preview
+          </button>
+          <span className="text-gray-700">|</span>
           <span className="flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             {template.sections.length} section
           </span>
-          <span>{template.category}</span>
           {(template as any).isCommunity && (
             <span className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-medium">
               <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,8 +95,19 @@ function TemplateCard({
             </span>
           )}
         </div>
+        {/* Select button */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onSelect(template); }}
+          className={`mt-3 w-full py-2 text-xs font-semibold rounded-lg transition-all ${
+            isSelected
+              ? "bg-[#22c55e] text-white"
+              : "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/30 hover:bg-[#22c55e]/20"
+          }`}
+        >
+          {isSelected ? "✓ Dipilih" : "Pilih Template"}
+        </button>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -227,6 +252,7 @@ export default function TemplatesPage() {
               template={template}
               onSelect={handleSelect}
               isSelected={selectedTemplate?.id === template.id}
+              onPreview={(t) => setPreviewTemplate(t)}
             />
           ))}
         </div>
