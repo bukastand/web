@@ -24,8 +24,8 @@ export default function Home() {
 
       {/* Content overlay */}
       <div className="relative z-10">
-        <HeroBuilderCTA />
         <HeroSection />
+        <HeroBuilderCTA />
         <PricingSection />
         <ServicesSection />
         <WhyUsSection />
