@@ -683,6 +683,45 @@ export default function StylePanel() {
                 {renderField("Logo / Brand", "logo", "text")}
                 {renderField("Tinggi Logo (px)", "logoHeight", "text")}
                 <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi Logo</label>
+                  <select
+                    value={selectedElement.content.logoAlign || "start"}
+                    onChange={(e) => updateContent("logoAlign", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
+                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
+                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi Menu</label>
+                  <select
+                    value={selectedElement.content.menuAlign || "center"}
+                    onChange={(e) => updateContent("menuAlign", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
+                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
+                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi CTA</label>
+                  <select
+                    value={selectedElement.content.ctaAlign || "end"}
+                    onChange={(e) => updateContent("ctaAlign", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
+                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
+                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
+                  </select>
+                </div>
+                <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Logo Gambar</label>
                   {selectedElement.content.logoImage && (
                     <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">

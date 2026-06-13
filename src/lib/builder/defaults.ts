@@ -161,6 +161,9 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       logo: "PAGODA STUDIO",
       logoImage: "",
       logoHeight: "32",
+      logoAlign: "start",
+      menuAlign: "center",
+      ctaAlign: "end",
       links: [
         { label: "Beranda", href: "#" },
         { label: "Tentang", href: "#" },
