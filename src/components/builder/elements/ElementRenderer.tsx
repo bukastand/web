@@ -73,7 +73,10 @@ function HeadingElement({ el, editing, onEdit, onBlurEditing }: ElementComponent
   if (!styles.textAlign && align) styles.textAlign = align;
 
   const sizeMap: Record<string, string> = { h1: "text-4xl md:text-5xl", h2: "text-3xl md:text-4xl", h3: "text-2xl md:text-3xl", h4: "text-xl md:text-2xl", h5: "text-lg md:text-xl", h6: "text-base md:text-lg" };
-  const cls = `${sizeMap[level] || "text-3xl"} font-bold leading-tight outline-none`;
+  // If custom fontSize is set, don't add the heading level Tailwind size class
+  // so there's no conflict with the inline fontSize style
+  const hasCustomFontSize = !!el.styles.fontSize;
+  const cls = `${hasCustomFontSize ? "" : sizeMap[level] || "text-3xl"} font-bold leading-tight outline-none`.trim();
   const content = text || "Heading";
 
   const handleBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
@@ -463,8 +466,9 @@ function NavbarElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
   const logoH = el.content.logoHeight || "32";
+  const elStyles = applyStyles(el);
   return (
-    <nav className="flex items-center justify-between py-4 px-6">
+    <nav className="flex items-center justify-between py-4 px-6" style={elStyles}>
       {logoImg ? (
         <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
       ) : (

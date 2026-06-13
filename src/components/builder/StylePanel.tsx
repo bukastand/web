@@ -774,7 +774,39 @@ export default function StylePanel() {
                   <button onClick={handleAddLink} className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Link</button>
                 </div>
                 {renderField("Copyright", "copyright", "text")}
-                <p className="text-[10px] text-gray-600 mb-1">Social Media (edit di kode default dulu)</p>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Sosial Media ({selectedElement.content.socials?.length || 0})</label>
+                  {selectedElement.content.socials?.map((s: any, i: number) => (
+                    <div key={i} className="flex items-center gap-1 mb-1">
+                      <input
+                        value={s.platform || ""}
+                        onChange={(e) => handleItemChange("socials", i, "platform", e.target.value)}
+                        className="flex-[0.4] px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs"
+                        placeholder="Platform"
+                      />
+                      <input
+                        value={s.url || ""}
+                        onChange={(e) => handleItemChange("socials", i, "url", e.target.value)}
+                        className="flex-[0.6] px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs"
+                        placeholder="https://..."
+                      />
+                      <button onClick={() => {
+                        const items = [...(selectedElement.content.socials || [])];
+                        items.splice(i, 1);
+                        updateContent("socials", items);
+                      }} className="text-red-400 hover:text-red-300 text-xs px-1">×</button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => {
+                      const items = [...(selectedElement.content.socials || []), { platform: "instagram", url: "#" }];
+                      updateContent("socials", items);
+                    }}
+                    className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
+                  >
+                    + Tambah Sosial Media
+                  </button>
+                </div>
               </>
             )}
           </div>
