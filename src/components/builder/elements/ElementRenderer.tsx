@@ -467,8 +467,18 @@ function NavbarElement({ el }: ElementComponentProps) {
   const logoImg = el.content.logoImage;
   const logoH = el.content.logoHeight || "32";
   const elStyles = applyStyles(el);
+  // Map textAlign to justifyContent for flex navbar layout
+  let justifyClass = "justify-between";
+  if (el.styles.textAlign === "center") {
+    justifyClass = "justify-center";
+  } else if (el.styles.textAlign === "right") {
+    justifyClass = "justify-end";
+  }
+  // Remove textAlign from inline style since it doesn't affect flex containers
+  const navStyle = { ...elStyles };
+  delete navStyle.textAlign;
   return (
-    <nav className="flex items-center justify-between py-4 px-6" style={elStyles}>
+    <nav className={`flex items-center ${justifyClass} py-4 px-6`} style={navStyle}>
       {logoImg ? (
         <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
       ) : (
