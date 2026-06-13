@@ -497,7 +497,7 @@ function NavbarElement({ el }: ElementComponentProps) {
 
   return (
     <>
-      <nav className="flex items-center py-4 px-6" style={navStyle}>
+      <nav className="flex items-center gap-4 py-4 px-6" style={navStyle}>
         {/* Logo - natural width */}
         <div className="flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(logoAlign) }}>
           {logoImg ? (
