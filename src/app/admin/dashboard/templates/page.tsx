@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchAllTemplates, approveTemplate, rejectTemplate, type CommunityTemplate } from "@/lib/supabase/community-templates";
 import { createPageFromTemplate } from "@/lib/builder/templates";
+import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 
 export default function AdminTemplatesPage() {
   const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
@@ -119,36 +120,64 @@ export default function AdminTemplatesPage() {
         </div>
       )}
 
-      {/* Preview Modal */}
+      {/* Preview Modal — Full Website Scrollable */}
       {preview && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6">
-          <div className="bg-[#1e293b] border border-white/10 rounded-2xl w-full max-w-3xl max-h-[80vh] overflow-y-auto">
-            <div className="sticky top-0 bg-[#1e293b] z-10 p-4 border-b border-white/10 flex items-center justify-between">
-              <h3 className="text-white font-semibold">{preview.title}</h3>
-              <button onClick={() => setPreview(null)} className="text-gray-400 hover:text-white p-1">
+        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
+          {/* Preview toolbar */}
+          <div className="flex items-center justify-between px-6 py-3 bg-[#0f172a] border-b border-white/10 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setPreview(null)}
+                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-400 mb-4">{preview.description}</p>
-              <div className="space-y-2 mb-4">
-                <p className="text-xs text-gray-500">Kategori: {preview.category}</p>
-                <p className="text-xs text-gray-500">Section: {preview.data?.sections?.length || 0}</p>
-                <p className="text-xs text-gray-500">Dibuat: {new Date(preview.created_at).toLocaleDateString("id-ID")}</p>
+              <div className="w-px h-5 bg-white/10" />
+              <span className="text-2xl">{preview.icon}</span>
+              <div>
+                <p className="text-white font-semibold text-sm">{preview.title}</p>
+                <p className="text-[10px] text-gray-500">{preview.data?.sections?.length || 0} section • Scroll untuk lihat semua</p>
               </div>
-              {preview.data?.sections?.slice(0, 3).map((sec: any, i: number) => (
-                <div key={i} className="mb-3 p-3 rounded-lg bg-white/5 border border-white/10">
-                  <p className="text-xs text-gray-400 font-medium mb-1">Section {i + 1}</p>
-                  <p className="text-[10px] text-gray-500">
-                    {sec.columns?.length || 0} kolom • {sec.columns?.reduce((s: number, c: any) => s + (c.elements?.length || 0), 0) || 0} element
-                  </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                preview.is_approved
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "bg-amber-500/20 text-amber-400"
+              }`}>
+                {preview.is_approved ? "Disetujui" : "Pending"}
+              </span>
+              <span className="text-[10px] text-gray-500">{preview.category}</span>
+            </div>
+          </div>
+
+          {/* Preview content — full website, scrollable */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            <div className="max-w-[1200px] mx-auto">
+              {preview.data?.sections?.map((section: any, idx: number) => (
+                <div key={section.id || idx}>
+                  {section.columns?.map((col: any, ci: number) => (
+                    <div key={col.id || ci} className="max-w-[1200px] mx-auto px-4" style={{ paddingTop: "40px", paddingBottom: "40px" }}>
+                      <div className="flex gap-4">
+                        <div
+                          key={col.id || ci}
+                          style={{ flex: col.width || 12, maxWidth: `${((col.width || 12) / 12) * 100}%` }}
+                        >
+                          <div className="space-y-2">
+                            {col.elements?.map((el: any) => (
+                              <div key={el.id}>
+                                <ElementRenderer element={el} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
-              {preview.data?.sections?.length > 3 && (
-                <p className="text-xs text-gray-600 text-center">...dan {preview.data.sections.length - 3} section lainnya</p>
-              )}
             </div>
           </div>
         </div>
