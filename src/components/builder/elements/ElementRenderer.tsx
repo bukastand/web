@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { BuilderElement } from "@/lib/builder/types";
 import { applyBgOpacity } from "@/lib/builder/utils";
 
@@ -470,6 +471,7 @@ function NavbarElement({ el }: ElementComponentProps) {
   const menuAlign = el.content.menuAlign || "center";
   const ctaAlign = el.content.ctaAlign || "end";
   const elStyles = applyStyles(el);
+  const [menuOpen, setMenuOpen] = useState(false);
   // Remove textAlign from nav since it's handled by individual alignment fields
   const navStyle = { ...elStyles };
   delete navStyle.textAlign;
@@ -486,40 +488,94 @@ function NavbarElement({ el }: ElementComponentProps) {
   if (el.styles.fontSize) childStyle.fontSize = el.styles.fontSize;
   if (el.styles.fontFamily) childStyle.fontFamily = el.styles.fontFamily;
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <nav className="flex items-center py-4 px-6" style={navStyle}>
-      {/* Logo */}
-      <div className="flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(logoAlign) }}>
-        {logoImg ? (
-          <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
-        ) : (
-          <span className="text-xl font-bold" style={childStyle}>
-            {el.content.logo || "Logo"}
-          </span>
-        )}
-      </div>
-      {/* Menu Links */}
-      <div className="hidden md:flex items-center gap-6" style={{ flex: "1 1 0%", justifyContent: mapAlign(menuAlign) }}>
-        {links.map((link: any, i: number) => (
-          <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={childStyle}>
-            {link.label}
+    <>
+      <nav className="flex items-center py-4 px-6" style={navStyle}>
+        {/* Logo */}
+        <div className="flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(logoAlign) }}>
+          {logoImg ? (
+            <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain" style={{ height: `${logoH}px` }} />
+          ) : (
+            <span className="text-xl font-bold" style={childStyle}>
+              {el.content.logo || "Logo"}
+            </span>
+          )}
+        </div>
+        {/* Menu Links - Desktop */}
+        <div className="hidden md:flex items-center gap-6" style={{ flex: "1 1 0%", justifyContent: mapAlign(menuAlign) }}>
+          {links.map((link: any, i: number) => (
+            <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={childStyle}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+        {/* CTA - Desktop */}
+        <div className="hidden md:flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(ctaAlign) }}>
+          <a href={el.content.ctaHref || "#"} target="_blank" rel="noopener noreferrer"
+            className="px-5 py-2.5 font-semibold rounded-xl hover:opacity-90 transition-all"
+            style={{
+              backgroundColor: "#22c55e",
+              color: el.styles.color || "#ffffff",
+              ...(el.styles.fontSize ? { fontSize: el.styles.fontSize } : {}),
+              ...(el.styles.fontFamily ? { fontFamily: el.styles.fontFamily } : {}),
+            }}>
+            {el.content.ctaText || "Hubungi"}
           </a>
-        ))}
-      </div>
-      {/* CTA */}
-      <div className="flex items-center" style={{ flex: "1 1 0%", justifyContent: mapAlign(ctaAlign) }}>
-        <a href={el.content.ctaHref || "#"} target="_blank" rel="noopener noreferrer"
-          className="px-5 py-2.5 font-semibold rounded-xl hover:opacity-90 transition-all"
-          style={{
-            backgroundColor: "#22c55e",
-            color: el.styles.color || "#ffffff",
-            ...(el.styles.fontSize ? { fontSize: el.styles.fontSize } : {}),
-            ...(el.styles.fontFamily ? { fontFamily: el.styles.fontFamily } : {}),
-          }}>
-          {el.content.ctaText || "Hubungi"}
-        </a>
-      </div>
-    </nav>
+        </div>
+        {/* Hamburger Button - Mobile */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+          style={{ color: el.styles.color || "#ffffff" }}
+        >
+          {menuOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
+      </nav>
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-white/10" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
+          <div className="px-6 py-4 space-y-3">
+            {links.map((link: any, i: number) => (
+              <a
+                key={i}
+                href={link.href || "#"}
+                onClick={closeMenu}
+                className="block py-2 hover:opacity-80 transition-colors"
+                style={childStyle}
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href={el.content.ctaHref || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+              className="block w-full text-center px-5 py-3 font-semibold rounded-xl hover:opacity-90 transition-all mt-2"
+              style={{
+                backgroundColor: "#22c55e",
+                color: el.styles.color || "#ffffff",
+                ...(el.styles.fontSize ? { fontSize: el.styles.fontSize } : {}),
+                ...(el.styles.fontFamily ? { fontFamily: el.styles.fontFamily } : {}),
+              }}
+            >
+              {el.content.ctaText || "Hubungi"}
+            </a>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
