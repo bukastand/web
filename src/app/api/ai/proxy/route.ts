@@ -5,7 +5,7 @@ const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 // Creative freedom settings
-const CREATIVE_TEMPERATURE = 0.9;  // High creativity — balanced for structured JSON output
+const CREATIVE_TEMPERATURE = 1.0;  // Maximum creativity - AI bebas berimajinasi
 const MAX_OUTPUT_TOKENS = 4096;    // Allow larger, more detailed generations
 
 export async function POST(request: Request) {
@@ -150,7 +150,7 @@ async function handleGroq(apiKey: string, prompt: string, action: string) {
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [
-        { role: "system", content: "Anda adalah desainer website visioner dan copywriter jenius. Bebas berkreasi tanpa batasan template. Setiap output harus original, kreatif, dan memukau. Jangan gunakan placeholder atau klise." },
+        { role: "system", content: "Anda adalah seniman web visioner dan copywriter puitis. Bebas total — tidak ada template, tidak ada batasan. Ciptakan desain yang orisinil, konten yang bermakna, dan layout yang belum pernah dilihat orang sebelumnya. Beranilah berbeda." },
         { role: "user", content: prompt },
       ],
       temperature: 1.0,

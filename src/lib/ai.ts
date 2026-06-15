@@ -43,24 +43,30 @@ export function clearAIConfig() {
 }
 
 /**
- * Build a smart prompt for different element types — kreatif & open-ended
+ * Build a smart prompt for different element types — truly creative, no constraints
  */
 function buildPrompt(elementType: string, userPrompt: string, currentContent?: string): string {
-  const prompt = `Anda adalah copywriter jenius dan puitis. Bukan sekadar menulis — Anda menciptakan emosi, koneksi, dan kenangan lewat kata-kata.
+  const prompt = `Anda adalah penulis ulung — campuran antara Pramoedya Ananta Toer, Ernest Hemingway, dan kreator iklan ternama. Setiap kata yang Anda tulis adalah puisi yang hidup.
 
-Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING/JUDUL" : elementType === "text" ? "SEBUAH PARAGRAF DESKRIPSI" : elementType === "button" ? "SEBUAH TEKS TOMBOL/CTA" : `KONTEN ${elementType.toUpperCase()}`} yang TIDAK TERDUGA.
+Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING YANG MENGHANTUI PIKIRAN" : elementType === "text" ? "SEBUAH PARAGRAF YANG MEMBUAT ORANG TERHARU" : elementType === "button" ? "SEBUAH TEKS TOMBOL YANG SULIT DITOLAK" : `KONTEN ${elementType.toUpperCase()} YANG TAK TERLUPAKAN`}.
 
-Aturan main:
-- JANGAN pernah menulis "Selamat datang di..." atau "Kami adalah..." atau klise lainnya
-- Gunakan metafora, personifikasi, permainan kata, atau sudut pandang unik
-- Buat pembaca berhenti scroll. Buat mereka merasa sesuatu.
-- Tulis seperti manusia kreatif, bukan seperti template AI
-- Bebas, liar, tapi tetap relevan dengan konteks bisnis
+LARANGAN MUTLAK:
+- "Selamat datang di..." — TIDAK BOLEH
+- "Kami adalah..." — TIDAK BOLEH  
+- "Solusi terbaik untuk..." — TIDAK BOLEH
+- Kalimat klise, basa-basi, atau template — TIDAK BOLEH
+- Menulis seperti robot AI — TIDAK BOLEH
 
-Konteks bisnis: "${userPrompt}"
-${currentContent ? `Konten saat ini (jadikan inspirasi, bisa diabaikan jika tidak relevan): "${currentContent}"` : ""}
+KEBEBASAN KREATIF:
+- Boleh provokatif, puitis, lucu, sarkastik, atau puitis — SESUAI KONTEKS
+- Gunakan metafora yang tidak biasa, permainan kata, aliterasi
+- Bisa pendek dan tajam, atau panjang dan mendalam
+- Buat orang yang membaca BERHENTI SEJENAK dan berpikir
 
-Output HANYA konten utamanya saja (tanpa markdown, backticks, atau kutipan). Buat masterpiece!`;
+Konteks: "${userPrompt}"
+${currentContent ? `Konten saat ini (abaikan jika mau, jadikan inspirasi jika suka): "${currentContent}"` : ""}
+
+Output HANYA kontennya saja. Tanpa markdown, tanpa kutipan, tanpa embel-embel. Sebuah masterpiece.`;
 
   return prompt;
 }
@@ -132,117 +138,150 @@ export function getApiKeyUrl(provider: AIProvider): string {
 
 /**
  * Prompt AI to generate a single creative section (via proxy)
- * No rigid templates — AI is free to design its own layout and elements
+ * True creative freedom — no element type enumeration, no rigid templates
  */
 export async function generateSection(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah desainer website visioner — gabungan antara seniman dan pengembang. Bukan sekadar membuat section, Anda menciptakan pengalaman visual yang memukau.
+  const prompt = `Anda adalah seniman web visioner — perpaduan antara desainer grafis, arsitek, dan penyair. Ketika orang melihat hasil kerja Anda, mereka berkata "Ini bukan website, ini karya seni."
 
-Tugas: Buatlah SATU section website yang OUTSTANDING.
+Tugas: Buatlah SATU section website yang SPEKTAKULER untuk permintaan berikut:
 
-Permintaan klien: "${userPrompt}"
+"${userPrompt}"
 
-KEBEBASAN KREATIF:
-- Anda BEBAS menentukan layout, komposisi, dan elemen apa pun
-- Bisa 1 kolom, 2 kolom, 3 kolom, atau apapun yang Anda rasa paling tepat
-- Gunakan heading, teks, gambar, tombol, ikon, atau apapun yang Anda mau
-- Mainkan warna-warna berani, gradien, bayangan, atau efek visual lainnya
-- Layout tidak harus simetris — asimetris bisa lebih menarik
-- KONTEN harus orisinil, kreatif, dan relevan — jangan gunakan placeholder text
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ KEBEBASAN TOTAL ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
 
-FORMAT OUTPUT:
-Output HANYA JSON (tanpa markdown, backticks, atau teks lain) dengan struktur:
+Anda tidak terikat pada elemen, layout, atau pola apapun. Ciptakan sesuatu yang BELUM PERNAH ADA SEBELUMNYA.
+
+TEKNIK KREATIF YANG BISA DIGUNAKAN (pilih yang paling cocok):
+→ Broken grid: elemen melompat keluar dari kolom standar
+→ Overlapping: tumpuk elemen untuk depth dan dimensi
+→ Slanted/Diagonal: section atau elemen miring 5-15 derajat
+→ Organic shapes: background dengan bentuk organik (lingkaran, kurva, blob)
+→ Glassmorphism: efek kaca buram dengan backdrop blur
+→ Neubrutalism: border tebal, warna berani, shadow kasar
+→ Typo-centric: tipografi BESAR sebagai hero visual
+→ Split screen: dua sisi yang kontras
+→ Floating elements: elemen yang terasa melayang dengan shadow
+→ Gradient mesh: gradien kompleks multi-warna
+→ Monochromatic: satu warna dengan berbagai shade
+→ Color blocks: blok warna berani sebagai pemisah
+→ Minimalist: banyak white space, satu fokus utama
+→ Playful: ilustrasi, ikon besar, warna cerah, tipografi fun
+→ Editorial: layout seperti majalah fashion
+
+KONTEN:
+- Setiap teks harus BERMAKNA dan ORISINIL — seolah ditulis oleh copywriter ternama
+- Jika perlu gambar: https://placehold.co/800x600/1e293b/64748b?text=Judul
+- Jangan gunakan teks placeholder apapun
+
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ FORMAT OUTPUT ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+
+Output HANYA JSON, tanpa markdown atau backticks. Strukturnya minimal:
 
 {
-  "sectionType": "hero | features | testimonial | pricing | cta | about | contact | gallery | stats | custom | atau apapun yang kreatif!",
-  "title": "Nama section yang deskriptif",
+  "sectionType": "nama_kreatif_untuk_section_ini",
+  "title": "Judul section",
   "styles": {
-    "backgroundColor": "#... (kode hex, atau transparan)",
+    "backgroundColor": "#hexcolor",
     "padding": "...px 0",
     "containerWidth": "narrow | boxed | wide | full"
   },
   "columns": [
     {
-      "width": 12 (atau 6+6, 4+4+4, 3+3+3+3, 7+5, 8+4, atau apapun yang totalnya 12),
+      "width": 12,
       "elements": [
         {
-          "type": "heading | text | image | button | icon | features | testimonial | pricing | stats | cta | contactForm | maps | navbar | footer | divider | spacer | carousel | accordion | team | countdown | video | atau jenis elemen kreatif lainnya",
-          "content": { ... properti konten untuk elemen tersebut },
-          "styles": { "color": "...", "fontSize": "...", "textAlign": "...", "backgroundColor": "...", dll }
+          "type": "heading | text | image | button | atau jenis elemen apapun yang ANDA pilih",
+          "content": { ... },
+          "styles": { "color": "#...", "fontSize": "...", dll }
         }
       ]
     }
   ]
 }
 
-KREATIVITAS ADALAH PRIORITAS UTAMA:
-- Buat section yang terlihat MAHAL dan profesional
-- Gunakan gradien, shadow, efek kaca (glassmorphism), atau gaya modern lainnya
-- Pilih warna yang KONSISTEN dengan tema/tone bisnis yang diminta
-- Setiap teks harus authentik dan bermakna — bukan Lorem Ipsum
-- Jika perlu gambar, gunakan URL placehold.co: https://placehold.co/800x600/1e293b/64748b?text=Judul+Gambar
-- Jangan takut untuk berbeda. Yang membosankan itu mudah — yang luar biasa butuh keberanian.`;
+"columns" bisa 1, 2, 3, atau lebih. "width" total harus 12.
+Gunakan jenis elemen, konten, dan gaya SESUAI IMAJINASI ANDA.
+Jangan takut BEDA. Biasa saja itu mudah — LUAR BIASA butuh nyali.`;
 
   return callAIProxy(config, prompt, "generate");
 }
 
 /**
  * Prompt AI to generate a full page with multiple sections (via proxy)
- * AI is free to design the entire page structure, layout, and content
+ * AI has total freedom to design the page structure, visual style, and content
  */
 export async function generateFullPage(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah desainer web kelas dunia — setara dengan agency termahal. Anda mendesain website yang tidak hanya indah secara visual, tetapi juga bercerita dan membangun koneksi emosional.
+  const prompt = `Anda adalah direktur kreatif dari agency desain termahal di dunia. Setiap website yang Anda ciptakan adalah mahakarya yang diperbincangkan orang. Bukan sekadar kode — ini adalah seni yang hidup.
 
-Tugas: Buatlah SATU halaman website UTUH yang spektakuler.
+Tugas: Ciptakan SATU halaman website UTUH yang TAK TERLUPAKAN.
 
-Permintaan klien: "${userPrompt}"
+BRIEF KLIEN: "${userPrompt}"
 
-PAHAMI BISNIS KLIEN:
-- Pahami esensi bisnis mereka: apa yang mereka jual, kepada siapa, dan mengapa
-- Pilih tone yang tepat: profesional, playful, mewah, minimalis, atau industrial
-- Desain harus mencerminkan KEPRIBADIAN brand, bukan template generik
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ STRATEGI KREATIF ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
 
-STRUKTUR HALAMAN:
-Buat 4-8 section yang membangun narasi visual yang kuat:
+PERTAMA, pahami esensi bisnis ini:
+→ Apa yang benar-benar mereka jual? (bukan produknya, tapi PERASAAN-nya)
+→ Siapa target audiensnya? (apa yang membuat mereka tertarik?)
+→ Apa personality brand-nya? (mewah? playful? minimalis? berani?)
 
-1. SECTION PERTAMA = Hero/Pembuka yang MENCENGANGKAN
-   - Buat first impression yang tak terlupakan
-   - Bisa dengan heading besar, visual dramatis, interaksi unik
-   
-2. SECTION KEDUA-KEEMPAT = Value Proposition & Bukti
-   - Fitur/layanan dengan cara penyajian yang kreatif
-   - Testimonial yang autentik dan menyentuh
-   - Statistik atau pencapaian yang membangun kepercayaan
-   
-3. SECTION MENJELANG AKHIR = CTA/Penutup
-   - Ajakan action yang sulit ditolak
-   - Buat pengguna merasa "Saya HARUS memiliki ini!"
-   
-4. SECTION TERAKHIR = Footer
-   - Navigasi, kontak, sosial media, copyright
+KEDUA, rencanakan 5-7 section yang membangun CERITA:
+1. PEMBUKA — section pertama harus MENCURI PERHATIAN dalam 0.5 detik
+2. VALUE — bukti sosial, fitur, atau manfaat yang membuat orang ingin terus scrolling 
+3. BUKTI — testimonial, statistik, klien, atau portofolio
+4. HARGA atau LAYANAN — dengan cara penyajian yang tidak membosankan
+5. PENUTUP — CTA yang membuat orang berkata "Saya ambil ini!"
+6. FOOTER — lengkap, informatif, tetap stylish
 
-KEBEBASAN DESAIN:
-- Setiap section BEBAS menentukan layoutnya sendiri
-- Mainkan variasi: 1 kolom, 2 kolom, split layout, grid, masonry, staggered
-- Gunakan warna yang KONSISTEN di seluruh halaman
-- Gradien, bayangan, efek kaca, border unik, SEMUANYA BOLEH!
-- Jangan ragu menggunakan gaya modern: neumorphism, glassmorphism, brutalist, atau gaya Anda sendiri
-- Layout tidak harus simetris — asimetri yang intentionaal itu indah
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ TEKNIK DESAIN ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
 
-FORMAT OUTPUT:
-Output HANYA JSON array (tanpa markdown, backticks, atau teks lain):
+Pilih dan variasikan teknik-teknik ini di setiap section:
+
+LAYOUT VARIATIONS:
+→ Split layout (50-50, 60-40, 30-70)
+→ Asymmetric grid (kolom dengan lebar berbeda)
+→ Full-bleed (full width) vs contained
+→ Zigzag pattern (gambar-kiri, teks-kanan, bergantian)
+→ Cards with varying heights (masonry-like)
+→ Centered content with max-width
+→ Two-column text (seperti majalah)
+→ Sidebar content layout
+
+VISUAL TECHNIQUES:
+→ Bold gradients sebagai background
+→ Glassmorphism (backdrop-blur, semi-transparan)
+→ Large typography sebagai visual hero
+→ Color blocking (kotak warna berani)
+→ Subtle patterns atau texture
+→ Shadow layering untuk depth
+→ Border accents (garis tipis sebagai dekorasi)
+→ Rounded corners ekstrim (30-60px)
+→ Icon atau emoji sebagai aksen visual
+
+COLOR PSYCHOLOGY:
+→ Teknologi/Startup: biru, ungu, cyan, putih
+→ Kesehatan/Kecantikan: hijau sage, pink, emas, putih
+→ Makanan/Minuman: merah, oranye, kuning, coklat
+→ Pendidikan: biru navy, emas, putih
+→ Kreatif/Agen: warna berani, gradien, hitam-putih kontras
+→ Mewah/Luxury: hitam, emas, putih, burgundy
+→ Minimalis: putih, abu-abu, satu aksen warna
+
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ FORMAT OUTPUT ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+
+Output HANYA JSON array, tanpa markdown atau backticks:
 
 [
   {
-    "sectionType": "hero | features | about | services | testimonial | pricing | stats | cta | gallery | contact | faq | team | footer | atau apapun yang kreatif",
-    "title": "Nama section",
+    "sectionType": "hero-atau-jenis-section",
+    "title": "Judul Section",
     "styles": {
-      "backgroundColor": "#...",
+      "backgroundColor": "#hexcolor",
       "padding": "...px 0",
       "containerWidth": "narrow | boxed | wide | full"
     },
@@ -251,26 +290,28 @@ Output HANYA JSON array (tanpa markdown, backticks, atau teks lain):
         "width": 12,
         "elements": [
           {
-            "type": "heading | text | image | button | icon | features | testimonial | pricing | stats | cta | contactForm | maps | navbar | footer | divider | spacer | carousel | accordion | team | countdown | video | atau jenis elemen kreatif lainnya",
-            "content": { ... },
-            "styles": { "color": "...", "fontSize": "...", dll }
+            "type": "heading | text | image | button | atau jenis elemen apapun yang paling tepat",
+            "content": { ... properti sesuai kreativitas Anda },
+            "styles": { "color": "#...", "fontSize": "...", "backgroundColor": "...", "borderRadius": "...", dll }
           }
         ]
       }
     ]
-  },
-  ... (section lainnya)
+  }
 ]
 
-PEDOMAN KREATIF:
-- Jangan gunakan placeholder text — setiap kata harus bermakna
-- Pilih skema warna yang mencerminkan emosi brand yang tepat
-- Variasikan section: ada yang terang, ada yang gelap, untuk dinamika visual
-- Hero section harus MENCURI PERHATIAN
-- Testimonial harus KEDENGARAN asli, bukan buatan
-- CTA harus MEMBUAT orang ingin klik
-- Footer harus LENGKAP tapi tidak berantakan
-- Buat orang yang melihatnya berkata: "Wow, ini keren sekali!"`;
+⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ PEDOMAN KREATIF ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+
+→ Variasikan LAYOUT setiap section — jangan semua 1 kolom
+→ Variasikan WARNA setiap section — ada gelap, ada terang, untuk dinamika
+→ Setiap TEKS harus bermakna — buat pembaca merasa sesuatu
+→ Setiap section harus PUNYA TUJUAN — jangan asal ada
+→ Section pertama harus POWERFUL — first impression menentukan segalanya
+→ Testimonial harus KEDENGARAN seperti manusia sungguhan
+→ CTA harus MEMBUAT orang ingin klik segera
+→ Buat desain yang KONSISTEN — seolah satu tangan mengerjakan semua
+
+INGAT: Anda bukan template filler. Anda adalah SENIMAN. Beranilah berbeda.`;
 
   return callAIProxy(config, prompt, "generate");
 }

@@ -418,6 +418,25 @@ export function createElement(type: ElementType, partialContent?: Record<string,
 function aiElementToBuilder(type: string, content: any, styles: any): BuilderElement {
   // Map AI's creative type names to our valid types
   const typeAliases: Record<string, ElementType> = {
+    // Section type aliases (mapped to container-like elements)
+    "custom": "heading",
+    "custom-section": "heading",
+    "unique": "heading",
+    "special": "heading",
+    // Hero variants
+    "herosection": "heading",
+    "herobanner": "heading",
+    "billboard": "heading",
+    "cover": "heading",
+    "jumbotron": "heading",
+    "masthead": "heading",
+    // About/Info variants
+    "profile": "heading",
+    "about-us": "heading",
+    "company": "heading",
+    "story": "text",
+    "mission": "text",
+    "vision": "text",
     // Heading variants
     "headline": "heading",
     "title": "heading",
