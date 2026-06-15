@@ -69,7 +69,7 @@ export interface SectionStyles {
   backgroundPosition?: string;
   backgroundOpacity?: string;
   textColor?: string;
-  containerWidth?: "full" | "boxed";
+  containerWidth?: "full" | "boxed" | "narrow" | "wide";
 }
 
 export interface BuilderSection {

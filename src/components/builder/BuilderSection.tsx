@@ -4,7 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import BuilderColumn from "./BuilderColumn";
 import type { BuilderSection as BuilderSectionType } from "@/lib/builder/types";
-import { applyBgOpacity } from "@/lib/builder/utils";
+import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
 function SectionControls({
   section,
@@ -19,11 +19,21 @@ function SectionControls({
   totalSections: number;
   isSelected: boolean;
 }) {
-  const { dispatch } = useBuilder();
+  const { dispatch, currentPage } = useBuilder();
   const quickColors = ["#0f172a", "#1e293b", "#f8fafc", "#ffffff", "transparent"];
 
+  const cw = section.styles.containerWidth || "boxed";
+  const gw = currentPage?.globalStyles.containerWidth || 1200;
+
+  const containerOptions: { key: "narrow" | "boxed" | "wide" | "full"; label: string; desc: string }[] = [
+    { key: "narrow", label: "N", desc: "Narrow" },
+    { key: "boxed", label: `${gw}px`, desc: `Boxed (${gw}px)` },
+    { key: "wide", label: "W", desc: "Wide" },
+    { key: "full", label: "F", desc: "Full Width" },
+  ];
+
   return (
-    <div className={`flex items-center gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"} ${isSelected ? "mb-2" : "absolute -top-10 left-1/2 -translate-x-1/2"}`}>
+    <div className={`flex items-center gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"} ${isSelected ? "mb-2 flex-wrap" : "absolute -top-10 left-1/2 -translate-x-1/2"}`}>
       <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
         {/* Background Color */}
         <input
@@ -42,6 +52,24 @@ function SectionControls({
               style={{ backgroundColor: c === "transparent" ? "transparent" : c }}
               title={c}
             />
+          ))}
+        </div>
+        <div className="w-px h-4 bg-white/10" />
+        {/* Container Width */}
+        <div className="flex items-center gap-0.5">
+          {containerOptions.map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { containerWidth: opt.key } })}
+              className={`px-1.5 py-0.5 text-[9px] font-medium rounded-sm transition-all ${
+                cw === opt.key
+                  ? "bg-[#22c55e]/20 text-[#22c55e]"
+                  : "text-gray-500 hover:text-white"
+              }`}
+              title={opt.desc}
+            >
+              {opt.label}
+            </button>
           ))}
         </div>
         <div className="w-px h-4 bg-white/10" />
@@ -205,7 +233,7 @@ export default function BuilderSectionComponent({
         {/* Columns */}
         <div
           className="mx-auto"
-          style={{ maxWidth: section.styles.containerWidth === "full" ? "100%" : "1200px", paddingLeft: "16px", paddingRight: "16px" }}
+          style={{ maxWidth: getContainerWidth(section.styles.containerWidth, currentPage?.globalStyles.containerWidth || 1200), paddingLeft: "16px", paddingRight: "16px" }}
         >
           <div className="flex gap-4" style={{ minHeight: "60px", flexWrap: "wrap" }}>
             {section.columns.map((column, colIndex) => (

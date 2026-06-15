@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 import { fetchPublishedPage } from "@/lib/supabase/published";
-import { applyBgOpacity } from "@/lib/builder/utils";
+import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
 const SNAPSHOTS_PREFIX = "builder_published_snapshots_";
 
@@ -133,7 +133,7 @@ export default function PublishedPage() {
         <div key={section.id} style={{ ...sectionBg(section), ...sectionPadding(section) }}>
           <div
             style={{
-              maxWidth: section.styles.containerWidth === "full" ? "100%" : `${gs.containerWidth || 1200}px`,
+              maxWidth: getContainerWidth(section.styles.containerWidth, gs.containerWidth || 1200),
               margin: "0 auto",
               paddingLeft: "16px",
               paddingRight: "16px",

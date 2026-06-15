@@ -35,3 +35,16 @@ export function applyBgOpacity(backgroundColor: string | undefined, backgroundOp
   }
   return backgroundColor;
 }
+
+/**
+ * Get the CSS max-width value for a section's container.
+ * @param containerWidth - The section's containerWidth setting
+ * @param globalWidth - The global container width in px (from page globalStyles)
+ */
+export function getContainerWidth(containerWidth: string | undefined, globalWidth: number): string {
+  if (containerWidth === "full") return "100%";
+  if (containerWidth === "narrow") return "800px";
+  if (containerWidth === "wide") return "1400px";
+  // "boxed" or undefined — use global width
+  return `${globalWidth || 1200}px`;
+}

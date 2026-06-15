@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { BuilderPage } from "@/lib/builder/types";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
-import { applyBgOpacity } from "@/lib/builder/utils";
+import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -83,7 +83,7 @@ export default function PreviewPage() {
         <div key={section.id} style={{ ...sectionBg(section), ...sectionPadding(section) }}>
           <div
             style={{
-              maxWidth: section.styles.containerWidth === "full" ? "100%" : `${gs.containerWidth || 1200}px`,
+              maxWidth: getContainerWidth(section.styles.containerWidth, gs.containerWidth || 1200),
               margin: "0 auto",
               paddingLeft: "16px",
               paddingRight: "16px",
