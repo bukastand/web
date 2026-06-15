@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { AIProvider, AIConfig } from "@/lib/ai";
+import type { AIProvider, AIConfig, AIGenerateOptions } from "@/lib/ai";
 import { getAIConfig, saveAIConfig, clearAIConfig, testApiKey, getApiKeyUrl, generateContent } from "@/lib/ai";
 
 interface AIPromptModalProps {
@@ -10,6 +10,8 @@ interface AIPromptModalProps {
   elementType: string;
   currentContent?: string;
   onApply: (content: string) => void;
+  /** Konteks section & halaman agar AI paham konteks */
+  sectionContext?: AIGenerateOptions['sectionContext'];
 }
 
 export default function AIPromptModal({
@@ -18,6 +20,7 @@ export default function AIPromptModal({
   elementType,
   currentContent,
   onApply,
+  sectionContext,
 }: AIPromptModalProps) {
   const [step, setStep] = useState<"config" | "prompt">("config");
   const [provider, setProvider] = useState<AIProvider>("gemini");
@@ -102,6 +105,7 @@ export default function AIPromptModal({
         prompt: prompt.trim(),
         elementType,
         currentContent,
+        sectionContext,
       });
       setResult(text);
     } catch (err: any) {

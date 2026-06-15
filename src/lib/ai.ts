@@ -16,6 +16,14 @@ export interface AIGenerateOptions {
   prompt: string;
   elementType: string;
   currentContent?: string;
+  /** Konteks section tempat element berada — biar AI paham konteksnya */
+  sectionContext?: {
+    sectionType?: string;
+    sectionStyles?: string; // deskripsi gaya section
+    nearbyElements: string; // deskripsi element lain di sekitar
+    pageTitle?: string;
+    pageDescription?: string;
+  };
 }
 
 const STORAGE_KEY = "pagoda_ai_config";
@@ -43,12 +51,44 @@ export function clearAIConfig() {
 }
 
 /**
- * Build a smart prompt for different element types — truly creative, no constraints
+ * Build a smart prompt for different element types — dengan FULL konteks halaman & section
  */
-function buildPrompt(elementType: string, userPrompt: string, currentContent?: string): string {
+function buildPrompt(
+  elementType: string,
+  userPrompt: string,
+  currentContent?: string,
+  sectionContext?: AIGenerateOptions['sectionContext']
+): string {
+  // Bangun narasi konteks yang kaya
+  let contextNarrative = '';
+  
+  if (sectionContext) {
+    contextNarrative += '\n📋 KONTEKS HALAMAN:\n';
+    
+    if (sectionContext.pageTitle) {
+      contextNarrative += `Halaman: ${sectionContext.pageTitle}\n`;
+    }
+    if (sectionContext.pageDescription) {
+      contextNarrative += `Deskripsi halaman: ${sectionContext.pageDescription}\n`;
+    }
+    
+    contextNarrative += `\n📍 LOKASI ELEMENT:\n`;
+    contextNarrative += `Anda sedang mengedit bagian: ${sectionContext.sectionType || '(section)'}\n`;
+    
+    if (sectionContext.sectionStyles) {
+      contextNarrative += `Gaya section: ${sectionContext.sectionStyles}\n`;
+    }
+    
+    if (sectionContext.nearbyElements) {
+      contextNarrative += `\n🌐 ELEMEN LAIN DI SECTION SAMA:\n${sectionContext.nearbyElements}\n`;
+    }
+    
+    contextNarrative += '\nPerhatikan konteks di ATAS agar konten yang Anda buat NYAMBUNG dan HARMONIS dengan elemen lain di sekitarnya.';
+  }
+
   const prompt = `Anda adalah penulis ulung — campuran antara Pramoedya Ananta Toer, Ernest Hemingway, dan kreator iklan ternama. Setiap kata yang Anda tulis adalah puisi yang hidup.
 
-Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING YANG MENGHANTUI PIKIRAN" : elementType === "text" ? "SEBUAH PARAGRAF YANG MEMBUAT ORANG TERHARU" : elementType === "button" ? "SEBUAH TEKS TOMBOL YANG SULIT DITOLAK" : `KONTEN ${elementType.toUpperCase()} YANG TAK TERLUPAKAN`}.
+Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING YANG MENGHANTUI PIKIRAN" : elementType === "text" ? "SEBUAH PARAGRAF YANG MEMBUAT ORANG TERHARU" : elementType === "button" ? "SEBUAH TEKS TOMBOL YANG SULIT DITOLAK" : `KONTEN ${elementType.toUpperCase()} YANG TAK TERLUPAKAN`}.${contextNarrative}
 
 LARANGAN MUTLAK:
 - "Selamat datang di..." — TIDAK BOLEH
@@ -63,8 +103,8 @@ KEBEBASAN KREATIF:
 - Bisa pendek dan tajam, atau panjang dan mendalam
 - Buat orang yang membaca BERHENTI SEJENAK dan berpikir
 
-Konteks: "${userPrompt}"
-${currentContent ? `Konten saat ini (abaikan jika mau, jadikan inspirasi jika suka): "${currentContent}"` : ""}
+PERINTAH USER: "${userPrompt}"
+${currentContent ? `Konten element SAAT INI (jadikan inspirasi, bisa diabaikan): "${currentContent}"` : ""}
 
 Output HANYA kontennya saja. Tanpa markdown, tanpa kutipan, tanpa embel-embel. Sebuah masterpiece.`;
 
@@ -106,7 +146,7 @@ export async function generateContent(
   config: AIConfig,
   options: AIGenerateOptions
 ): Promise<string> {
-  const prompt = buildPrompt(options.elementType, options.prompt, options.currentContent);
+  const prompt = buildPrompt(options.elementType, options.prompt, options.currentContent, options.sectionContext);
   return callAIProxy(config, prompt, "generate");
 }
 

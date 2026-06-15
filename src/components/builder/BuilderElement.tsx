@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { ElementRenderer } from "./elements/ElementRenderer";
@@ -24,6 +24,92 @@ export default function BuilderElementComponent({
   totalElements: number;
 }) {
   const { dispatch, state } = useBuilder();
+  
+  // ── Ambil konteks section untuk AI ──
+  const sectionContext = useMemo(() => {
+    const page = state.pages.find(p => p.id === pageId);
+    if (!page) return undefined;
+    
+    const section = page.sections.find(s => s.id === sectionId);
+    if (!section) return undefined;
+    
+    // Kumpulkan deskripsi element lain di section yang sama (bukan element ini)
+    const otherElements: string[] = [];
+    for (const col of section.columns) {
+      for (const el of col.elements) {
+        if (el.id === element.id) continue;
+        const content = el.type === 'heading' ? el.content.text
+          : el.type === 'text' ? el.content.text
+          : el.type === 'button' ? el.content.text
+          : el.type === 'features' ? el.content.title
+          : el.type === 'testimonial' ? el.content.title
+          : el.type === 'cta' ? el.content.title
+          : el.type === 'pricing' ? el.content.title
+          : el.type === 'contactForm' ? el.content.title
+          : el.type === 'image' ? '(gambar)'
+          : el.type === 'video' ? '(video)'
+          : el.type === 'icon' ? `ikon: ${el.content.icon || ''}`
+          : el.type === 'stats' ? 'statistik'
+          : el.type === 'divider' ? '(pemisah)'
+          : el.type === 'spacer' ? '(spasi)'
+          : el.type === 'navbar' ? 'navigasi'
+          : el.type === 'footer' ? 'footer'
+          : el.type === 'maps' ? 'peta'
+          : el.type === 'carousel' ? 'carousel gambar'
+          : el.type === 'accordion' ? 'FAQ/accordion'
+          : el.type === 'team' ? 'tim'
+          : el.type === 'countdown' ? 'countdown'
+          : `${el.type}: ${JSON.stringify(el.content).substring(0, 60)}`;
+        otherElements.push(`${el.type}: "${content}"`);
+      }
+    }
+    
+    // Deteksi section type dari konten
+    const firstHeadings = section.columns
+      .flatMap(c => c.elements)
+      .filter(e => e.type === 'heading' || e.type === 'text')
+      .map(e => e.content.text || '')
+      .filter(Boolean);
+    
+    const sectionType = firstHeadings.length > 0
+      ? firstHeadings[0]
+      : section.columns.some(c => c.elements.some(e => e.type === 'navbar'))
+      ? 'Navigasi'
+      : section.columns.some(c => c.elements.some(e => e.type === 'footer'))
+      ? 'Footer'
+      : section.columns.some(c => c.elements.some(e => e.type === 'pricing'))
+      ? 'Pricing'
+      : section.columns.some(c => c.elements.some(e => e.type === 'testimonial'))
+      ? 'Testimonial'
+      : section.columns.some(c => c.elements.some(e => e.type === 'features'))
+      ? 'Layanan/Fitur'
+      : section.columns.some(c => c.elements.some(e => e.type === 'cta'))
+      ? 'CTA'
+      : section.columns.some(c => c.elements.some(e => e.type === 'contactForm'))
+      ? 'Kontak'
+      : section.columns.some(c => c.elements.some(e => e.type === 'heading'))
+      ? 'Hero'
+      : 'Section';
+    
+    const sectionStyles = [
+      section.styles?.backgroundColor && section.styles.backgroundColor !== 'transparent'
+        ? `background ${section.styles.backgroundColor}`
+        : '',
+      section.styles?.containerWidth
+        ? `lebar: ${section.styles.containerWidth}`
+        : '',
+    ].filter(Boolean).join(', ');
+    
+    return {
+      sectionType,
+      sectionStyles: sectionStyles || undefined,
+      nearbyElements: otherElements.length > 0
+        ? otherElements.join('\n')
+        : '(tidak ada elemen lain di section ini)',
+      pageTitle: page.title,
+      pageDescription: page.slug ? `Website untuk ${page.title}` : undefined,
+    };
+  }, [state.pages, pageId, sectionId, element.id]);
   const isSelected = state.selectedElementId === element.id;
   const [inlineEditing, setInlineEditing] = useState(false);
   const isTouchDevice = typeof window !== "undefined" && 'ontouchstart' in window;
@@ -251,7 +337,7 @@ export default function BuilderElementComponent({
         </div>
       )}
 
-      {/* AI Prompt Modal */}
+      {/* AI Prompt Modal — dengan FULL konteks halaman & section */}
       {showAIModal && (
         <AIPromptModal
           isOpen={showAIModal}
@@ -266,6 +352,7 @@ export default function BuilderElementComponent({
               ? element.content.text
               : ""
           }
+          sectionContext={sectionContext}
           onApply={(content) => {
             dispatch({
               type: "UPDATE_ELEMENT",
