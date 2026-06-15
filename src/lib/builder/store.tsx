@@ -366,12 +366,35 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
 
       supabasePages.fetchPages(user.id).then((pages) => {
         if (pages.length > 0) {
+          // Data dari Supabase — langsung pakai
           dispatch({ type: "LOAD_PAGES", pages });
           saveLocalPages(user.id, pages);
           lastSavedJson.current = JSON.stringify(pages);
         } else {
-          // No pages in Supabase — try this user's own localStorage cache
-          const local = loadLocalPages(user.id);
+          // Tidak ada data di Supabase — cek localStorage user-specific
+          let local = loadLocalPages(user.id);
+          
+          if (local.length === 0) {
+            // Tidak ada data user-specific — cek anonymous localStorage
+            // Ini terjadi saat user membuat halaman tanpa login, lalu login
+            try {
+              const anonRaw = localStorage.getItem("builder_pages_anonymous");
+              if (anonRaw) {
+                const anonPages = JSON.parse(anonRaw);
+                if (Array.isArray(anonPages) && anonPages.length > 0) {
+                  local = anonPages;
+                  // Migrasi ke user-specific localStorage
+                  saveLocalPages(user.id, local);
+                  // Hapus anonymous agar tidak terpakai lagi
+                  localStorage.removeItem("builder_pages_anonymous");
+                  // Sync ke Supabase
+                  supabasePages.savePages(user.id, local);
+                  console.log(`Migrated ${local.length} page(s) from anonymous to user ${user.id}`);
+                }
+              }
+            } catch {}
+          }
+
           if (local.length > 0) {
             dispatch({ type: "LOAD_PAGES", pages: local });
           } else {
