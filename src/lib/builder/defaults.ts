@@ -358,9 +358,9 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       subtitleColor: "#94a3b8",
       subtitleSize: "16px",
       members: [
-        { name: "Andi Pratama", role: "CEO & Founder", image: "https://placehold.co/200x200/1e293b/22c55e?text=AP", socials: { instagram: "#", linkedin: "#" } },
-        { name: "Budi Santoso", role: "Lead Developer", image: "https://placehold.co/200x200/1e293b/3b82f6?text=BS", socials: { instagram: "#", linkedin: "#" } },
-        { name: "Citra Dewi", role: "UI/UX Designer", image: "https://placehold.co/200x200/1e293b/ec4899?text=CD", socials: { instagram: "#", linkedin: "#" } },
+        { name: "Andi Pratama", role: "CEO & Founder", image: "https://placehold.co/200x200/1e293b/22c55e?text=AP", socials: [{ platform: "instagram", url: "#" }, { platform: "linkedin", url: "#" }] },
+        { name: "Budi Santoso", role: "Lead Developer", image: "https://placehold.co/200x200/1e293b/3b82f6?text=BS", socials: [{ platform: "instagram", url: "#" }, { platform: "linkedin", url: "#" }] },
+        { name: "Citra Dewi", role: "UI/UX Designer", image: "https://placehold.co/200x200/1e293b/ec4899?text=CD", socials: [{ platform: "instagram", url: "#" }, { platform: "linkedin", url: "#" }] },
       ],
       cardBg: "rgba(255,255,255,0.05)",
       cardBorder: "rgba(255,255,255,0.1)",
