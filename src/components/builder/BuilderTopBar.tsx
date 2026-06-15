@@ -465,19 +465,6 @@ export default function BuilderTopBar({
           </div>
         )}
 
-        {/* ── MOBILE: Compact dropdown with all actions ── */}
-        {isMobile && (
-          <MobileMenu
-            currentPage={currentPage}
-            signOut={signOut}
-            hasPublishedSnapshot={hasPublishedSnapshot}
-            hasUnsavedChanges={hasUnsavedChanges}
-            publishedUrl={publishedUrl}
-            handlePublish={handlePublish}
-            handleUnpublish={handleUnpublish}
-          />
-        )}
-
         {/* User avatar - hide on mobile (in dropdown) */}
         {!isMobile && (
           <>
@@ -634,6 +621,19 @@ export default function BuilderTopBar({
 
 
       </div>
+
+      {/* ── MOBILE: Compact dropdown ── */}
+      {isMobile && (
+        <MobileMenu
+          currentPage={currentPage}
+          signOut={signOut}
+          hasPublishedSnapshot={hasPublishedSnapshot}
+          hasUnsavedChanges={hasUnsavedChanges}
+          publishedUrl={publishedUrl}
+          handlePublish={handlePublish}
+          handleUnpublish={handleUnpublish}
+        />
+      )}
     </header>
   );
 }
