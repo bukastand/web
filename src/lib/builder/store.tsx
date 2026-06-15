@@ -281,7 +281,6 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       return updatePage((p) => ({
         ...p,
         published: true,
-        // Save a DEEP COPY as the published snapshot
         publishedSnapshot: JSON.parse(JSON.stringify(p)),
       }));
 
@@ -426,45 +425,57 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   // currentPage must be defined here (before effects that reference it)
   const currentPage = state.pages.find((p) => p.id === state.currentPageId);
 
-  // ── Published snapshots: sync publishedSnapshot to Supabase & localStorage ──
-  const prevPublishRef = useRef<{ id: string; snapshot: BuilderPage | null } | null>(null);
+  // ── Published snapshots: sync to localStorage + Supabase ──
+  const prevSnapshotJsonRef = useRef<string>("");
 
   useEffect(() => {
-    if (!currentPage || !user) return;
-    const prev = prevPublishRef.current;
-    const curr = { id: currentPage.id, snapshot: currentPage.publishedSnapshot };
+    if (!currentPage) return;
 
-    // Only sync when publishedSnapshot actually changes (via PUBLISH_PAGE / UNPUBLISH_PAGE)
-    if (prev?.id === currentPage.id && prev.snapshot !== curr.snapshot) {
-      const uid = user.id;
-      const snapshots = loadPublishedSnapshots(uid);
+    const snapshotJson = JSON.stringify(currentPage.publishedSnapshot);
+    if (prevSnapshotJsonRef.current === snapshotJson) return;
+    prevSnapshotJsonRef.current = snapshotJson;
 
-      if (curr.snapshot) {
-        // Published: use the snapshot (frozen copy from publish time)
-        const snapshotData = curr.snapshot;
+    const uid = user?.id || null;
+    const snapshots = loadPublishedSnapshots(uid);
 
-        // Remove old slug entry if slug changed
-        for (const [slug, pg] of Object.entries(snapshots)) {
-          if (pg.id === currentPage.id && slug !== currentPage.slug) {
-            delete snapshots[slug];
-            supabasePublished.unpublishPage(uid, slug);
-          }
+    if (currentPage.publishedSnapshot) {
+      // Published: save snapshot (deep copy from publish time)
+      const snapshotData = currentPage.publishedSnapshot;
+
+      // Remove old slug entry if slug changed
+      for (const [slug, pg] of Object.entries(snapshots)) {
+        if (pg.id === currentPage.id && slug !== currentPage.slug) {
+          delete snapshots[slug];
+          if (user) supabasePublished.unpublishPage(user.id, slug);
         }
-        snapshots[currentPage.slug] = snapshotData;
-
-        // Sync to Supabase
-        supabasePublished.publishPage(uid, currentPage.slug, currentPage.title, snapshotData);
-      } else {
-        // Unpublished: remove from storage
-        delete snapshots[currentPage.slug];
-        supabasePublished.unpublishPage(uid, currentPage.slug);
       }
+      snapshots[currentPage.slug] = snapshotData;
 
+      // Always save to localStorage
       savePublishedSnapshots(uid, snapshots);
-    }
 
-    prevPublishRef.current = curr;
-  }, [currentPage?.id, currentPage?.publishedSnapshot, currentPage?.slug, user?.id]);
+      // Sync to Supabase if logged in
+      if (user) {
+        supabasePublished.publishPage(user.id, currentPage.slug, currentPage.title, snapshotData)
+          .then((ok) => {
+            if (ok) {
+              console.log("Published to live website:", currentPage.slug);
+            } else {
+              console.warn("Publish to Supabase failed. Check Supabase dashboard.");
+            }
+          });
+      } else {
+        console.log("Page saved locally. Login to publish to live website.");
+      }
+    } else {
+      // Unpublished: remove from storage
+      if (snapshots[currentPage.slug]) {
+        delete snapshots[currentPage.slug];
+        savePublishedSnapshots(uid, snapshots);
+        if (user) supabasePublished.unpublishPage(user.id, currentPage.slug);
+      }
+    }
+  }, [currentPage?.publishedSnapshot, currentPage?.id, currentPage?.slug, user?.id]);
 
   // ── Wrapped dispatch for undo/redo history ──
   const wrappedDispatch = useCallback((action: BuilderAction) => {
