@@ -380,8 +380,8 @@ function PricingElement({ el }: ElementComponentProps) {
             key={i}
             className="p-8 rounded-2xl"
             style={{
-              border: `1px solid ${item.highlighted ? (el.content.highlightBorder || "#22c55e") : (el.content.cardBorder || "rgba(255,255,255,0.1)")}`,
-              backgroundColor: item.highlighted ? (el.content.highlightBg || "rgba(34,197,94,0.05)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
+              border: `1px solid ${item.highlighted ? (el.content.highlightBorder || el.content.cardBorder || "#22c55e") : (el.content.cardBorder || "rgba(255,255,255,0.1)")}`,
+              backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.05)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
             }}
           >
             <h3 className="text-xl font-bold mb-2" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
