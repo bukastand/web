@@ -246,6 +246,7 @@ export default function BuilderElementComponent({
             onBlurEditing={handleBlur}
           />
         )}
+      </div>
     </div>
   );
 }
