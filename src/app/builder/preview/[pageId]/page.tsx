@@ -13,15 +13,20 @@ export default function PreviewPage() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("builder_pages");
-      if (raw) {
+      // Scan semua localStorage key yang berawalan "builder_pages"
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith("builder_pages")) continue;
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
         const pages: BuilderPage[] = JSON.parse(raw);
         const found = pages.find((p) => p.id === params.pageId);
-        if (found) setPage(found);
-        else setNotFound(true);
-      } else {
-        setNotFound(true);
+        if (found) {
+          setPage(found);
+          return;
+        }
       }
+      setNotFound(true);
     } catch {
       setNotFound(true);
     }
