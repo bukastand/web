@@ -828,6 +828,35 @@ export default function StylePanel() {
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Nama Author</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.authorNameColor || "#ffffff"} onChange={(v) => updateContent("authorNameColor", v)} label="Warna Nama" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Nama</label>
+                    <input type="text" value={selectedElement.content.authorNameSize || "14px"} onChange={(e) => updateContent("authorNameSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Nama</label>
+                    <select value={selectedElement.content.authorNameWeight || "600"} onChange={(e) => updateContent("authorNameWeight", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
+                      {["400","500","600","700","800","900"].map(w => <option key={w} value={w} className="bg-[#1e293b] text-white">{w}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Jabatan</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.authorRoleColor || "#6b7280"} onChange={(v) => updateContent("authorRoleColor", v)} label="Warna Jabatan" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Jabatan</label>
+                    <input type="text" value={selectedElement.content.authorRoleSize || "12px"} onChange={(e) => updateContent("authorRoleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Avatar</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.avatarBg || "rgba(34,197,94,0.2)"} onChange={(v) => updateContent("avatarBg", v)} label="Background Avatar" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.avatarColor || "#22c55e"} onChange={(v) => updateContent("avatarColor", v)} label="Warna Teks Avatar" /></div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Testimonial ({selectedElement.content.items?.length || 0})</label>
                   {selectedElement.content.items?.map((item: any, i: number) => (
                     <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">

@@ -137,6 +137,13 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       cardBg: "rgba(255,255,255,0.05)",
       cardBorder: "rgba(255,255,255,0.1)",
       cardTextColor: "#d1d5db",
+      authorNameColor: "#ffffff",
+      authorNameSize: "14px",
+      authorNameWeight: "600",
+      authorRoleColor: "#6b7280",
+      authorRoleSize: "12px",
+      avatarBg: "rgba(34,197,94,0.2)",
+      avatarColor: "#22c55e",
       items: [
         { name: "Ahmad Fauzi", role: "CEO Startup", text: "Pelayanan luar biasa! Website kami jadi jauh lebih profesional.", rating: 5, avatar: "AF" },
         { name: "Siti Rahma", role: "Owner Bisnis", text: "Proses cepat dan hasilnya memuaskan. Highly recommended!", rating: 5, avatar: "SR" },

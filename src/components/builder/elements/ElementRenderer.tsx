@@ -436,10 +436,10 @@ function TestimonialElement({ el }: ElementComponentProps) {
             </div>
             <p className="mb-4" style={{ color: el.content.cardTextColor || "#d1d5db" }}>&ldquo;{item.text}&rdquo;</p>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-sm font-bold text-[#22c55e]">{item.avatar || "U"}</div>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: el.content.avatarBg || "rgba(34,197,94,0.2)", color: el.content.avatarColor || "#22c55e" }}>{item.avatar || "U"}</div>
               <div>
-                <p className="text-sm font-semibold" style={{ color: el.styles.color || "#ffffff" }}>{item.name}</p>
-                <p className="text-xs" style={{ color: "#6b7280" }}>{item.role}</p>
+                <p style={{ color: el.content.authorNameColor || "#ffffff", fontSize: el.content.authorNameSize || "14px", fontWeight: el.content.authorNameWeight || "600" }}>{item.name}</p>
+                <p style={{ color: el.content.authorRoleColor || "#6b7280", fontSize: el.content.authorRoleSize || "12px" }}>{item.role}</p>
               </div>
             </div>
           </div>
