@@ -26,7 +26,7 @@ function MobileMenu({
 }) {
   const [showMenu, setShowMenu] = useState(false);
   return (
-    <>
+    <div className="relative">
       <button
         onClick={() => setShowMenu(!showMenu)}
         className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
@@ -38,7 +38,7 @@ function MobileMenu({
       {showMenu && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-          <div className="absolute right-2 top-full mt-1 w-48 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden py-1">
+          <div className="absolute right-0 top-full mt-1 w-48 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden py-1">
             <Link
               href={`/builder/preview/${currentPage.id}`}
               target="_blank"
@@ -106,7 +106,7 @@ function MobileMenu({
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 
