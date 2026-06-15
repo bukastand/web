@@ -330,6 +330,23 @@ export default function BuilderEditor() {
             </button>
           </div>
         )}
+
+        {/* Mobile floating + button — always visible, above style drawer */}
+        {isMobile && (
+          <button
+            onClick={() => {
+              if (closingPanel) return;
+              if (showMobilePanel === "elements") closeWithAnimation("elements");
+              else setShowMobilePanel("elements");
+            }}
+            className="fixed bottom-20 right-5 z-50 w-12 h-12 rounded-full bg-[#22c55e] text-white shadow-lg flex items-center justify-center hover:bg-[#16a34a] active:scale-95 transition-all"
+            aria-label="Tambah Element"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        )}
       </div>
       <DragOverlay>
         {activeDragType && (
