@@ -654,18 +654,60 @@ function MapsElement({ el }: ElementComponentProps) {
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
   };
+
+  // Parse embedUrl to extract coordinates for iframe
+  const embedUrl = el.content.embedUrl || "";
+  let iframeSrc = "";
+  if (embedUrl.includes("@")) {
+    // Format: https://www.google.com/maps/place/.../@-6.2088,106.8456,13z
+    const coordsMatch = embedUrl.match(/@([\d.\-]+),([\d.\-]+)/);
+    if (coordsMatch) {
+      const lat = coordsMatch[1];
+      const lng = coordsMatch[2];
+      const zoomMatch = embedUrl.match(/@[\d.\-]+,[\d.\-]+,([\d.]+)/);
+      const zoom = zoomMatch ? zoomMatch[1] : "13";
+      iframeSrc = `https://www.google.com/maps?q=${lat},${lng}&output=embed&z=${zoom}`;
+    }
+  } else if (embedUrl.includes("?q=")) {
+    // Format: https://maps.google.com/maps?q=-6.2088,106.8456
+    const qMatch = embedUrl.match(/[?&]q=([^&]+)/);
+    if (qMatch) {
+      iframeSrc = `https://www.google.com/maps?q=${encodeURIComponent(decodeURIComponent(qMatch[1]))}&output=embed`;
+    }
+  } else if (embedUrl.includes("/embed")) {
+    // Already an embed URL, use directly
+    iframeSrc = embedUrl;
+  } else if (embedUrl.includes("google.com/maps") || embedUrl.includes("maps.google")) {
+    // Other google maps URL, try to use with output=embed
+    const baseUrl = embedUrl.split("?")[0];
+    iframeSrc = `${baseUrl}?output=embed`;
+  }
+
   return (
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-6" style={titleStyle}>{el.content.title}</h2>}
-      <div className="rounded-2xl h-80 flex items-center justify-center" style={{ borderRadius: el.styles.borderRadius, backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)", border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}` }}>
-        <div className="text-center">
-          <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.addressColor || "#64748b" }}>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <p className="text-sm" style={{ color: el.content.addressColor || "#94a3b8" }}>{el.content.address || "Jakarta, Indonesia"}</p>
-          <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Google Maps Terintegrasi</p>
-        </div>
+      <div className="rounded-2xl overflow-hidden" style={{ borderRadius: el.styles.borderRadius, height: "320px" }}>
+        {iframeSrc ? (
+          <iframe
+            src={iframeSrc}
+            className="w-full h-full border-0"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Google Maps"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)", border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}` }}>
+            <div className="text-center">
+              <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.addressColor || "#64748b" }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <p className="text-sm" style={{ color: el.content.addressColor || "#94a3b8" }}>{el.content.address || "Jakarta, Indonesia"}</p>
+              <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Masukkan link Google Maps</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
