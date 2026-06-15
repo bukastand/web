@@ -16,13 +16,18 @@ export interface AIGenerateOptions {
   prompt: string;
   elementType: string;
   currentContent?: string;
+  /** Style element saat ini — biar AI bisa saranin perubahan desain */
+  currentStyles?: Record<string, string>;
   /** Konteks section tempat element berada — biar AI paham konteksnya */
   sectionContext?: {
     sectionType?: string;
-    sectionStyles?: string; // deskripsi gaya section
-    nearbyElements: string; // deskripsi element lain di sekitar
+    sectionStyles?: string;
+    nearbyElements: string;
     pageTitle?: string;
     pageDescription?: string;
+    /** Info layout kolom */
+    columnWidth?: number;
+    columnTotal?: number; // berapa kolom total di section
   };
 }
 
@@ -51,62 +56,97 @@ export function clearAIConfig() {
 }
 
 /**
- * Build a smart prompt for different element types — dengan FULL konteks halaman & section
+ * Build a smart prompt for editing elements — dengan FULL konteks + desain element
+ * AI bisa saranin perubahan konten DAN style (warna, ukuran, alignment, dll)
  */
 function buildPrompt(
   elementType: string,
   userPrompt: string,
   currentContent?: string,
-  sectionContext?: AIGenerateOptions['sectionContext']
+  sectionContext?: AIGenerateOptions['sectionContext'],
+  currentStyles?: Record<string, string>
 ): string {
   // Bangun narasi konteks yang kaya
   let contextNarrative = '';
   
   if (sectionContext) {
-    contextNarrative += '\n📋 KONTEKS HALAMAN:\n';
-    
+    contextNarrative += '\n--- KONTEKS HALAMAN ---\n';
     if (sectionContext.pageTitle) {
-      contextNarrative += `Halaman: ${sectionContext.pageTitle}\n`;
-    }
-    if (sectionContext.pageDescription) {
-      contextNarrative += `Deskripsi halaman: ${sectionContext.pageDescription}\n`;
+      contextNarrative += `Judul halaman: ${sectionContext.pageTitle}\n`;
     }
     
-    contextNarrative += `\n📍 LOKASI ELEMENT:\n`;
-    contextNarrative += `Anda sedang mengedit bagian: ${sectionContext.sectionType || '(section)'}\n`;
+    contextNarrative += `\n--- LOKASI ELEMENT ---\n`;
+    contextNarrative += `Section: ${sectionContext.sectionType || '(section)'}\n`;
     
     if (sectionContext.sectionStyles) {
-      contextNarrative += `Gaya section: ${sectionContext.sectionStyles}\n`;
+      contextNarrative += `Desain section: ${sectionContext.sectionStyles}\n`;
+    }
+    
+    if (sectionContext.columnWidth && sectionContext.columnTotal) {
+      contextNarrative += `Layout kolom: lebar ${sectionContext.columnWidth}/12 (total ${sectionContext.columnTotal} kolom)\n`;
     }
     
     if (sectionContext.nearbyElements) {
-      contextNarrative += `\n🌐 ELEMEN LAIN DI SECTION SAMA:\n${sectionContext.nearbyElements}\n`;
+      contextNarrative += `\n--- ELEMEN LAIN DI SECTION INI ---\n${sectionContext.nearbyElements}\n`;
     }
-    
-    contextNarrative += '\nPerhatikan konteks di ATAS agar konten yang Anda buat NYAMBUNG dan HARMONIS dengan elemen lain di sekitarnya.';
+  }
+  
+  // Info style element saat ini
+  let stylesNarrative = '';
+  if (currentStyles && Object.keys(currentStyles).length > 0) {
+    const styleLines = Object.entries(currentStyles)
+      .filter(([k, v]) => v && !k.includes('Id') && !k.includes('id'))
+      .map(([k, v]) => `  ${k}: "${v}"`);
+    if (styleLines.length > 0) {
+      stylesNarrative = `\n--- DESAIN ELEMENT SAAT INI ---\n${styleLines.join('\n')}\n`;
+      stylesNarrative += '\nAnda BEBAS mengubah desain ini (warna, ukuran, alignment, dll) agar lebih cocok dengan permintaan user.';
+    }
   }
 
-  const prompt = `Anda adalah penulis ulung — campuran antara Pramoedya Ananta Toer, Ernest Hemingway, dan kreator iklan ternama. Setiap kata yang Anda tulis adalah puisi yang hidup.
+  const elementLabels: Record<string, string> = {
+    heading: 'HEADING (judul besar)',
+    text: 'PARAGRAF TEKS',
+    button: 'TOMBOL/CTA',
+    features: 'SECTION FITUR',
+    testimonial: 'TESTIMONIAL',
+    pricing: 'SECTION HARGA',
+    cta: 'CALL TO ACTION',
+    stats: 'STATISTIK',
+    icon: 'IKON',
+  };
 
-Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING YANG MENGHANTUI PIKIRAN" : elementType === "text" ? "SEBUAH PARAGRAF YANG MEMBUAT ORANG TERHARU" : elementType === "button" ? "SEBUAH TEKS TOMBOL YANG SULIT DITOLAK" : `KONTEN ${elementType.toUpperCase()} YANG TAK TERLUPAKAN`}.${contextNarrative}
+  const prompt = `Anda adalah desainer + copywriter jenius. Anda tidak hanya menulis konten yang memukau, tetapi juga PAHAM DESAIN — warna, tipografi, tata letak, dan harmoni visual.
 
-LARANGAN MUTLAK:
-- "Selamat datang di..." — TIDAK BOLEH
-- "Kami adalah..." — TIDAK BOLEH  
-- "Solusi terbaik untuk..." — TIDAK BOLEH
-- Kalimat klise, basa-basi, atau template — TIDAK BOLEH
-- Menulis seperti robot AI — TIDAK BOLEH
+Tugas Anda: edit ${elementLabels[elementType] || elementType} ini berdasarkan perintah user. Anda boleh mengubah kontennya DAN/ATAU desain visualnya (warna, ukuran font, alignment, background, dll).${contextNarrative}${stylesNarrative}
 
-KEBEBASAN KREATIF:
-- Boleh provokatif, puitis, lucu, sarkastik, atau puitis — SESUAI KONTEKS
-- Gunakan metafora yang tidak biasa, permainan kata, aliterasi
-- Bisa pendek dan tajam, atau panjang dan mendalam
-- Buat orang yang membaca BERHENTI SEJENAK dan berpikir
+--- PEDOMAN KREATIF ---
+- Konten harus orisinil, bermakna, dan tidak klise
+- Desain harus HARMONIS dengan section di sekitarnya
+- Jika user minta perubahan warna/gaya, sesuaikan
+- Jangan ragu untuk mengubah style agar lebih baik
 
 PERINTAH USER: "${userPrompt}"
-${currentContent ? `Konten element SAAT INI (jadikan inspirasi, bisa diabaikan): "${currentContent}"` : ""}
+${currentContent ? `Konten element SAAT INI: "${currentContent}"` : ''}
 
-Output HANYA kontennya saja. Tanpa markdown, tanpa kutipan, tanpa embel-embel. Sebuah masterpiece.`;
+--- FORMAT OUTPUT ---
+Output HANYA JSON (tanpa markdown, backticks, atau teks lain):
+
+{
+  "content": "teks baru yang Anda buat",
+  "styles": {
+    "color": "#warna_baru",
+    "fontSize": "ukuran_baru",
+    "fontWeight": "angka_atau_nama",
+    "textAlign": "left | center | right",
+    "backgroundColor": "#warna_latar",
+    // ... properti style LAINNYA yang ingin diubah
+  }
+}
+
+Jika Anda hanya ingin mengubah konten tanpa mengubah style, kirimkan styles sebagai object KOSONG.
+Jika Anda hanya ingin mengubah style tanpa mengubah konten, kirimkan content sebagai string KOSONG.
+
+INGAT: Ini adalah element ${elementType}. Sesuaikan konten dan desain dengan perintah user dan konteks section!`;
 
   return prompt;
 }
@@ -146,7 +186,7 @@ export async function generateContent(
   config: AIConfig,
   options: AIGenerateOptions
 ): Promise<string> {
-  const prompt = buildPrompt(options.elementType, options.prompt, options.currentContent, options.sectionContext);
+  const prompt = buildPrompt(options.elementType, options.prompt, options.currentContent, options.sectionContext, options.currentStyles);
   return callAIProxy(config, prompt, "generate");
 }
 

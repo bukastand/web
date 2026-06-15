@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { AIProvider, AIConfig, AIGenerateOptions } from "@/lib/ai";
 import { getAIConfig, saveAIConfig, clearAIConfig, testApiKey, getApiKeyUrl, generateContent } from "@/lib/ai";
+
+export interface AIEditResult {
+  content: string;
+  styles?: Record<string, string>;
+}
 
 interface AIPromptModalProps {
   isOpen: boolean;
   onClose: () => void;
   elementType: string;
   currentContent?: string;
-  onApply: (content: string) => void;
+  currentStyles?: Record<string, string>;
+  onApply: (result: AIEditResult) => void;
   /** Konteks section & halaman agar AI paham konteks */
   sectionContext?: AIGenerateOptions['sectionContext'];
 }
@@ -19,6 +25,7 @@ export default function AIPromptModal({
   onClose,
   elementType,
   currentContent,
+  currentStyles,
   onApply,
   sectionContext,
 }: AIPromptModalProps) {
@@ -105,6 +112,7 @@ export default function AIPromptModal({
         prompt: prompt.trim(),
         elementType,
         currentContent,
+        currentStyles,
         sectionContext,
       });
       setResult(text);
@@ -114,12 +122,39 @@ export default function AIPromptModal({
     setLoading(false);
   };
 
+  // Parse AI result — bisa JSON {content, styles} atau plain text
+  const parsedResult = useMemo((): AIEditResult => {
+    if (!result) return { content: '' };
+    try {
+      // Coba parse JSON
+      const cleaned = result.replace(/```json\s*/gi, '').replace(/```\s*/g, '').replace(/`/g, '').trim();
+      const json = JSON.parse(cleaned);
+      if (json && typeof json === 'object') {
+        return {
+          content: json.content || json.text || '',
+          styles: json.styles || undefined,
+        };
+      }
+    } catch {
+      // Bukan JSON — treat as plain text content
+    }
+    return { content: result };
+  }, [result]);
+
   const handleApply = () => {
-    if (result) {
-      onApply(result);
+    const hasContent = !!parsedResult.content;
+    const hasStyles = parsedResult.styles && Object.keys(parsedResult.styles).length > 0;
+    if (result && (hasContent || hasStyles)) {
+      onApply(parsedResult);
       onClose();
     }
   };
+
+  // Preview styles untuk ditampilkan
+  const previewStyle = useMemo(() => {
+    if (!parsedResult.styles || Object.keys(parsedResult.styles).length === 0) return undefined;
+    return parsedResult.styles as React.CSSProperties;
+  }, [parsedResult.styles]);
 
   const elementLabels: Record<string, string> = {
     heading: "Heading",
@@ -355,8 +390,9 @@ export default function AIPromptModal({
               {/* Result */}
               {result && (
                 <div className="space-y-3">
-                  <div className="p-3 rounded-xl bg-white/5 border border-purple-500/20">
-                    <div className="flex items-center gap-2 mb-2">
+                  {/* Preview konten dengan style */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-purple-500/20">
+                    <div className="flex items-center gap-2 mb-3">
                       <span className="text-[10px] font-medium text-purple-400 uppercase tracking-wider">Hasil:</span>
                       <button
                         onClick={() => navigator.clipboard.writeText(result)}
@@ -368,18 +404,54 @@ export default function AIPromptModal({
                         </svg>
                       </button>
                     </div>
-                    <p className="text-sm text-white whitespace-pre-wrap">{result}</p>
+                    
+                    {/* Konten preview */}
+                    <div 
+                      className="p-3 rounded-lg bg-[#0f172a] border border-white/10"
+                      style={previewStyle}
+                    >
+                      <p className="text-sm whitespace-pre-wrap">{parsedResult.content}</p>
+                    </div>
+                    
+                    {/* Style changes badge */}
+                    {parsedResult.styles && Object.keys(parsedResult.styles).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        <span className="text-[10px] text-emerald-400 font-medium">🎨 Desain diubah:</span>
+                        {Object.entries(parsedResult.styles).map(([key, val]) => (
+                          <span key={key} className="text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-md">
+                            {key}: {val}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Raw JSON toggle */}
+                  <details className="text-[10px]">
+                    <summary className="text-gray-500 hover:text-gray-400 cursor-pointer">Lihat JSON mentah</summary>
+                    <pre className="mt-1 p-2 rounded-lg bg-[#0f172a] border border-white/10 text-[10px] text-gray-400 max-h-24 overflow-y-auto whitespace-pre-wrap">
+                      {(() => {
+                        try {
+                          return JSON.stringify(JSON.parse(result.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim()), null, 2);
+                        } catch {
+                          return result;
+                        }
+                      })()}
+                    </pre>
+                  </details>
 
                   {/* Apply Button */}
                   <button
                     onClick={handleApply}
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#22c55e] text-white hover:bg-[#16a34a] transition-all flex items-center justify-center gap-2"
+                    disabled={!parsedResult.content}
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#22c55e] text-white hover:bg-[#16a34a] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Terapkan ke Element
+                    {parsedResult.styles && Object.keys(parsedResult.styles).length > 0
+                      ? 'Terapkan Konten & Desain'
+                      : 'Terapkan ke Element'}
                   </button>
                 </div>
               )}

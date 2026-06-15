@@ -100,6 +100,7 @@ export default function BuilderElementComponent({
         : '',
     ].filter(Boolean).join(', ');
     
+    const col = section.columns[columnIndex];
     return {
       sectionType,
       sectionStyles: sectionStyles || undefined,
@@ -108,6 +109,8 @@ export default function BuilderElementComponent({
         : '(tidak ada elemen lain di section ini)',
       pageTitle: page.title,
       pageDescription: page.slug ? `Website untuk ${page.title}` : undefined,
+      columnWidth: col?.width,
+      columnTotal: section.columns.length,
     };
   }, [state.pages, pageId, sectionId, element.id]);
   const isSelected = state.selectedElementId === element.id;
@@ -337,37 +340,31 @@ export default function BuilderElementComponent({
         </div>
       )}
 
-      {/* AI Prompt Modal — dengan FULL konteks halaman & section */}
+      {/* AI Prompt Modal — dengan FULL konteks halaman, section, style & layout */}
       {showAIModal && (
         <AIPromptModal
           isOpen={showAIModal}
           onClose={() => setShowAIModal(false)}
           elementType={element.type}
-          currentContent={
-            element.type === "heading"
-              ? element.content.text
-              : element.type === "text"
-              ? element.content.text
-              : element.type === "button"
-              ? element.content.text
-              : ""
+          currentContent={element.type === "heading" || element.type === "text" || element.type === "button"
+            ? element.content.text || ''
+            : ''
           }
+          currentStyles={element.styles as Record<string, string>}
           sectionContext={sectionContext}
-          onApply={(content) => {
+          onApply={(result) => {
             dispatch({
               type: "UPDATE_ELEMENT",
               pageId,
               sectionId,
               columnIndex,
               elementId: element.id,
-              content:
-                element.type === "heading"
-                  ? { text: content }
-                  : element.type === "text"
-                  ? { text: content }
-                  : element.type === "button"
-                  ? { text: content }
-                  : { text: content },
+              content: result.content
+                ? element.type === "heading" || element.type === "text" || element.type === "button"
+                  ? { text: result.content }
+                  : { text: result.content }
+                : {},
+              styles: result.styles,
             });
           }}
         />
