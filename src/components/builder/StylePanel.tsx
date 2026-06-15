@@ -701,39 +701,38 @@ export default function StylePanel() {
             {/* --- NAVBAR --- */}
             {selectedElement.type === "navbar" && (
               <>
-                {renderField("Logo / Brand", "logo", "text")}
-                {renderField("Tinggi Logo (px)", "logoHeight", "text")}
+                {/* ── LOGO ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-2 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  LOGO
+                </h4>
+                {renderField("Teks Logo", "logo", "text")}
+                {renderField("Tinggi (px)", "logoHeight", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Teks Logo</label>
+                  <ColorPicker value={selectedElement.content.logoColor || "#ffffff"} onChange={(v) => updateContent("logoColor", v)} label="" />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Logo</label>
+                  <select
+                    value={selectedElement.content.logoFontWeight || "700"}
+                    onChange={(e) => updateContent("logoFontWeight", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+                    <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+                    <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+                    <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+                    <option value="800" className="bg-[#1e293b] text-white">Extra Bold (800)</option>
+                    <option value="900" className="bg-[#1e293b] text-white">Black (900)</option>
+                  </select>
+                </div>
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi Logo</label>
                   <select
                     value={selectedElement.content.logoAlign || "start"}
                     onChange={(e) => updateContent("logoAlign", e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
-                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
-                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi Menu</label>
-                  <select
-                    value={selectedElement.content.menuAlign || "center"}
-                    onChange={(e) => updateContent("menuAlign", e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
-                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
-                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi CTA</label>
-                  <select
-                    value={selectedElement.content.ctaAlign || "end"}
-                    onChange={(e) => updateContent("ctaAlign", e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
                     style={{ colorScheme: 'dark' }}
                   >
@@ -771,6 +770,69 @@ export default function StylePanel() {
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                   />
                 </div>
+
+                {/* ── MENU ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  MENU
+                </h4>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Teks Menu</label>
+                  <ColorPicker value={selectedElement.content.menuColor || "#94a3b8"} onChange={(v) => updateContent("menuColor", v)} label="" />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Font Menu</label>
+                  <input
+                    type="text"
+                    value={selectedElement.content.menuFontSize || "0.875rem"}
+                    onChange={(e) => updateContent("menuFontSize", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0.875rem"
+                  />
+                  <div className="flex gap-1 mt-1.5 flex-wrap">
+                    {["0.75rem", "0.875rem", "1rem", "1.125rem"].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => updateContent("menuFontSize", s)}
+                        className={`px-1.5 py-0.5 text-[10px] rounded-md border transition-all ${
+                          (selectedElement.content.menuFontSize || "0.875rem") === s
+                            ? "bg-[#22c55e]/20 border-[#22c55e]/40 text-[#22c55e]"
+                            : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Menu</label>
+                  <select
+                    value={selectedElement.content.menuFontWeight || "500"}
+                    onChange={(e) => updateContent("menuFontWeight", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="300" className="bg-[#1e293b] text-white">Light (300)</option>
+                    <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+                    <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+                    <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+                    <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi Menu</label>
+                  <select
+                    value={selectedElement.content.menuAlign || "center"}
+                    onChange={(e) => updateContent("menuAlign", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
+                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
+                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
+                  </select>
+                </div>
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Menu Links ({selectedElement.content.links?.length || 0})</label>
                   {selectedElement.content.links?.map((link: any, i: number) => (
@@ -782,8 +844,75 @@ export default function StylePanel() {
                   ))}
                   <button onClick={handleAddLink} className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Link</button>
                 </div>
-                {renderField("CTA Text", "ctaText", "text")}
-                {renderField("CTA Link", "ctaHref", "text")}
+
+                {/* ── CTA ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  CTA BUTTON
+                </h4>
+                {renderField("Teks CTA", "ctaText", "text")}
+                {renderField("Link CTA", "ctaHref", "text")}
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Background CTA</label>
+                  <ColorPicker value={selectedElement.content.ctaBgColor || "#22c55e"} onChange={(v) => updateContent("ctaBgColor", v)} label="" />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Teks CTA</label>
+                  <ColorPicker value={selectedElement.content.ctaColor || "#ffffff"} onChange={(v) => updateContent("ctaColor", v)} label="" />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Font CTA</label>
+                  <input
+                    type="text"
+                    value={selectedElement.content.ctaFontSize || "0.875rem"}
+                    onChange={(e) => updateContent("ctaFontSize", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="0.875rem"
+                  />
+                  <div className="flex gap-1 mt-1.5 flex-wrap">
+                    {["0.75rem", "0.875rem", "1rem", "1.125rem"].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => updateContent("ctaFontSize", s)}
+                        className={`px-1.5 py-0.5 text-[10px] rounded-md border transition-all ${
+                          (selectedElement.content.ctaFontSize || "0.875rem") === s
+                            ? "bg-[#22c55e]/20 border-[#22c55e]/40 text-[#22c55e]"
+                            : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan CTA</label>
+                  <select
+                    value={selectedElement.content.ctaFontWeight || "600"}
+                    onChange={(e) => updateContent("ctaFontWeight", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+                    <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+                    <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+                    <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+                    <option value="800" className="bg-[#1e293b] text-white">Extra Bold (800)</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Posisi CTA</label>
+                  <select
+                    value={selectedElement.content.ctaAlign || "end"}
+                    onChange={(e) => updateContent("ctaAlign", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="start" className="bg-[#1e293b] text-white">Kiri</option>
+                    <option value="center" className="bg-[#1e293b] text-white">Tengah</option>
+                    <option value="end" className="bg-[#1e293b] text-white">Kanan</option>
+                  </select>
+                </div>
               </>
             )}
 

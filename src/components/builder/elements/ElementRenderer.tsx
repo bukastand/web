@@ -567,11 +567,28 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
     return "center";
   };
 
-  // Apply style values directly to children (Tailwind classes would override inheritance)
-  const childStyle: React.CSSProperties = {};
-  if (el.styles.color) childStyle.color = el.styles.color;
-  if (el.styles.fontSize) childStyle.fontSize = el.styles.fontSize;
-  if (el.styles.fontFamily) childStyle.fontFamily = el.styles.fontFamily;
+  // ── Per-component styles ──
+  const logoStyle: React.CSSProperties = {
+    color: el.content.logoColor || "#ffffff",
+    fontWeight: el.content.logoFontWeight || "700",
+    fontSize: el.content.logoFontSize || undefined,
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const menuStyle: React.CSSProperties = {
+    color: el.content.menuColor || "#94a3b8",
+    fontWeight: el.content.menuFontWeight || "500",
+    fontSize: el.content.menuFontSize || "0.875rem",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const ctaStyle: React.CSSProperties = {
+    backgroundColor: el.content.ctaBgColor || "#22c55e",
+    color: el.content.ctaColor || "#ffffff",
+    fontWeight: el.content.ctaFontWeight || "600",
+    fontSize: el.content.ctaFontSize || "0.875rem",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -594,12 +611,12 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
                 if (e.key === "Enter") (e.target as HTMLInputElement).blur();
                 if (e.key === "Escape") onBlurEditing?.();
               }}
-              className="text-xl font-bold bg-transparent border-b border-white/30 outline-none w-40"
-              style={childStyle}
+              className="bg-transparent border-b border-white/30 outline-none"
+              style={{ ...logoStyle, fontSize: logoStyle.fontSize || "1.25rem" }}
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <span className="text-xl font-bold" style={childStyle}>
+            <span style={logoStyle}>
               {el.content.logo || "Logo"}
             </span>
           )}
@@ -607,7 +624,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* Menu Links - Desktop - fills remaining space */}
         <div className="hidden md:flex items-center gap-6 flex-1" style={{ justifyContent: mapAlign(menuAlign) }}>
           {links.map((link: any, i: number) => (
-            <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={childStyle}>
+            <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={menuStyle}>
               {link.label}
             </a>
           ))}
@@ -615,13 +632,8 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* CTA - Desktop - natural width */}
         <div className="hidden md:flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(ctaAlign) }}>
           <a href={el.content.ctaHref || "#"} target="_blank" rel="noopener noreferrer"
-            className="px-5 py-2.5 font-semibold rounded-xl hover:opacity-90 transition-all"
-            style={{
-              backgroundColor: "#22c55e",
-              color: el.styles.color || "#ffffff",
-              ...(el.styles.fontSize ? { fontSize: el.styles.fontSize } : {}),
-              ...(el.styles.fontFamily ? { fontFamily: el.styles.fontFamily } : {}),
-            }}>
+            className="px-5 py-2.5 rounded-xl hover:opacity-90 transition-all"
+            style={ctaStyle}>
             {el.content.ctaText || "Hubungi"}
           </a>
         </div>
@@ -630,7 +642,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
           aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
-          style={{ color: el.styles.color || "#ffffff" }}
+          style={{ color: el.content.menuColor || "#94a3b8" }}
         >
           {menuOpen ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -653,7 +665,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
                 href={link.href || "#"}
                 onClick={closeMenu}
                 className="block py-2 hover:opacity-80 transition-colors"
-                style={childStyle}
+                style={menuStyle}
               >
                 {link.label}
               </a>
@@ -663,13 +675,8 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}
-              className="block w-full text-center px-5 py-3 font-semibold rounded-xl hover:opacity-90 transition-all mt-2"
-              style={{
-                backgroundColor: "#22c55e",
-                color: el.styles.color || "#ffffff",
-                ...(el.styles.fontSize ? { fontSize: el.styles.fontSize } : {}),
-                ...(el.styles.fontFamily ? { fontFamily: el.styles.fontFamily } : {}),
-              }}
+              className="block w-full text-center px-5 py-3 rounded-xl hover:opacity-90 transition-all mt-2"
+              style={ctaStyle}
             >
               {el.content.ctaText || "Hubungi"}
             </a>

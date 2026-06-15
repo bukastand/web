@@ -17,23 +17,23 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-white/5">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* ── LOGO – bold, prominent, brand-first ── */}
           <Link
             href="/"
             className="flex items-center gap-3 group"
           >
             <Logo className="w-9 h-9 transition-transform duration-300 group-hover:scale-110" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-white leading-tight">
+              <span className="text-xl font-extrabold tracking-tight text-white leading-tight">
                 PAGODA<span className="text-[#22c55e]"> STUDIO</span>
               </span>
-              <span className="text-[10px] text-gray-500 tracking-[0.2em] uppercase leading-tight">
+              <span className="text-[9px] text-gray-500 tracking-[0.25em] uppercase leading-tight">
                 Web Development
               </span>
             </div>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* ── MENU – muted, clean, hover-underline effect ── */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) =>
               link.external ? (
@@ -42,27 +42,31 @@ export default function Navbar() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-400 hover:text-white transition-colors relative group"
+                  className="text-sm font-medium text-slate-400 hover:text-[#22c55e] transition-colors duration-200 relative group"
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#22c55e] transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#22c55e] rounded-full transition-all duration-300 group-hover:w-full" />
                 </a>
               ) : (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-gray-400 hover:text-white transition-colors relative group"
+                  className="text-sm font-medium text-slate-400 hover:text-[#22c55e] transition-colors duration-200 relative group"
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#22c55e] transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#22c55e] rounded-full transition-all duration-300 group-hover:w-full" />
                 </Link>
               )
             )}
+          </nav>
+
+          {/* ── CTA – bold green button with WhatsApp icon ── */}
+          <div className="hidden md:flex items-center flex-shrink-0">
             <a
               href="https://wa.me/6282210099969"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-5 py-2 bg-[#22c55e] text-white text-sm font-semibold rounded-xl hover:bg-[#16a34a] transition-all duration-300 hover:shadow-lg hover:shadow-[#22c55e]/25"
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white text-sm font-bold rounded-xl hover:from-[#16a34a] hover:to-[#15803d] transition-all duration-300 hover:shadow-lg hover:shadow-[#22c55e]/30 active:scale-95"
             >
               <svg
                 className="w-4 h-4"
@@ -73,7 +77,7 @@ export default function Navbar() {
               </svg>
               Konsultasi Gratis
             </a>
-          </nav>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
