@@ -72,6 +72,11 @@ export default function BuilderEditor() {
 
   const closeWithAnimation = (panel: "style" | "elements") => {
     setClosingPanel(panel);
+    // When closing style panel via X on mobile, deselect element too
+    // so the auto-show effect doesn't immediately re-open the panel
+    if (panel === "style") {
+      dispatch({ type: "SELECT_ELEMENT", elementId: null });
+    }
     setTimeout(() => {
       setShowMobilePanel("none");
       setClosingPanel(null);
