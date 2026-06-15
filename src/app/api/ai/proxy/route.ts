@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-const GEMINI_MODEL = "gemini-3.5-flash";
+// Model names — fallback jika model utama error/timeout
+const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 export async function POST(request: Request) {
@@ -41,53 +42,82 @@ export async function POST(request: Request) {
   }
 }
 
+/**
+ * Try each Gemini model in order until one works
+ */
+async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens: number, temperature: number = 0.8): Promise<{ ok: boolean; content?: string; error?: string }> {
+  for (const model of GEMINI_MODELS) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout per model
+
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          signal: controller.signal,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature,
+              maxOutputTokens: maxTokens,
+              topP: 0.95,
+            },
+            safetySettings: [
+              { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
+              { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
+            ],
+          }),
+        }
+      );
+
+      clearTimeout(timeout);
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        return { ok: true, content: text.trim() };
+      }
+
+      // If model returns 4xx (not found, not allowed), try next model
+      if (res.status >= 400 && res.status < 500) {
+        const err = await res.text();
+        console.warn(`Gemini model ${model} failed (${res.status}): ${err.substring(0, 200)}`);
+        continue; // Try next model
+      }
+
+      // Server errors — return error immediately
+      const err = await res.text();
+      return { ok: false, error: `Gemini ${model} error (${res.status}): ${err.substring(0, 300)}` };
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        console.warn(`Gemini model ${model} timed out, trying next...`);
+        continue; // Timeout, try next model
+      }
+      return { ok: false, error: `Gemini ${model} error: ${err.message}` };
+    }
+  }
+
+  return { ok: false, error: "Semua model Gemini tidak tersedia. Coba lagi nanti atau ganti provider." };
+}
+
 async function handleGemini(apiKey: string, prompt: string, action: string) {
   if (action === "test") {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: "OK" }] }],
-          generationConfig: { maxOutputTokens: 5 },
-        }),
-      }
-    );
-    return NextResponse.json({ ok: res.ok });
+    const result = await callGeminiWithFallback(apiKey, "OK", 5, 0.5);
+    return NextResponse.json({ ok: result.ok });
   }
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2048,
-          topP: 0.95,
-        },
-        safetySettings: [
-          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
-          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
-        ],
-      }),
-    }
-  );
+  const result = await callGeminiWithFallback(apiKey, prompt, 2048, 0.8);
 
-  if (!res.ok) {
-    const err = await res.text();
+  if (!result.ok) {
     return NextResponse.json(
-      { error: `Gemini API error (${res.status}): ${err}` },
-      { status: res.status }
+      { error: result.error || "Gemini API error" },
+      { status: 500 }
     );
   }
 
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  return NextResponse.json({ content: text.trim() });
+  return NextResponse.json({ content: result.content || "" });
 }
 
 async function handleGroq(apiKey: string, prompt: string, action: string) {
@@ -116,10 +146,10 @@ async function handleGroq(apiKey: string, prompt: string, action: string) {
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [
-        { role: "system", content: "Anda adalah copywriter profesional untuk website. Output harus sesuai permintaan." },
+        { role: "system", content: "Anda adalah copywriter kreatif kelas dunia. Output harus kreatif, engaging, dan orisinil." },
         { role: "user", content: prompt },
       ],
-      temperature: 0.7,
+      temperature: 0.8,
       max_tokens: 2048,
       top_p: 0.95,
     }),
