@@ -1372,21 +1372,23 @@ function CountdownElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="flex items-center justify-center gap-4 md:gap-6">
+      {/* Mobile: 2x2 grid | Desktop: single row */}
+      <div className="grid grid-cols-2 md:flex md:items-center md:justify-center gap-3 md:gap-6 max-w-sm mx-auto md:max-w-none">
         {boxes.map((box, i) => (
-          <div key={i} className="flex items-center gap-4 md:gap-6">
+          <div key={i} className="flex flex-col items-center md:flex-row md:items-center gap-0 md:gap-6">
             <div
-              className="flex flex-col items-center rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[100px]"
+              className="flex flex-col items-center rounded-2xl w-full md:w-auto p-3 md:p-6"
               style={{
                 backgroundColor: el.content.boxBg || "rgba(255,255,255,0.05)",
                 border: `1px solid ${el.content.boxBorder || "rgba(255,255,255,0.1)"}`,
               }}
             >
-              <span style={numStyle}>{String(box.value).padStart(2, "0")}</span>
+              <span style={{ ...numStyle, fontSize: numStyle.fontSize || "clamp(24px, 8vw, 48px)" }}>{String(box.value).padStart(2, "0")}</span>
               <span style={labelStyle}>{box.label}</span>
             </div>
+            {/* Separator - hide on mobile (grid handles spacing), show on desktop between items */}
             {i < boxes.length - 1 && (
-              <span className="text-2xl md:text-3xl font-bold self-start pt-4 md:pt-6" style={{ color: el.content.separatorColor || "rgba(255,255,255,0.1)" }}>:</span>
+              <span className="hidden md:inline text-2xl md:text-3xl font-bold self-start pt-4 md:pt-6" style={{ color: el.content.separatorColor || "rgba(255,255,255,0.1)" }}>:</span>
             )}
           </div>
         ))}
