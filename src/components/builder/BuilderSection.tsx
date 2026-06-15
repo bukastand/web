@@ -11,17 +11,19 @@ function SectionControls({
   pageId,
   sectionIndex,
   totalSections,
+  isSelected,
 }: {
   section: BuilderSectionType;
   pageId: string;
   sectionIndex: number;
   totalSections: number;
+  isSelected: boolean;
 }) {
   const { dispatch } = useBuilder();
   const quickColors = ["#0f172a", "#1e293b", "#f8fafc", "#ffffff", "transparent"];
 
   return (
-    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+    <div className={`flex items-center gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"} ${isSelected ? "mb-2" : "absolute -top-10 left-1/2 -translate-x-1/2"}`}>
       <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
         {/* Background Color */}
         <input
@@ -157,6 +159,7 @@ export default function BuilderSectionComponent({
         pageId={pageId}
         sectionIndex={sectionIndex}
         totalSections={totalSections}
+        isSelected={isSelected}
       />
 
       {/* Section content with padding */}
@@ -165,7 +168,7 @@ export default function BuilderSectionComponent({
         className="rounded-xl"
       >
         {/* Section Padding Controls */}
-        <div className="flex items-center justify-center gap-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className={`flex items-center justify-center gap-4 py-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"}`}>
           <button
             onClick={() => {
               const current = parseInt(section.styles.padding || "80px") || 80;
