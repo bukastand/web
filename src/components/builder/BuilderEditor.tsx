@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
-import { createElement } from "@/lib/builder/defaults";
+import { createElement, aiSectionToBuilder } from "@/lib/builder/defaults";
 import BuilderTopBar from "./BuilderTopBar";
 import ElementSidebar from "./ElementSidebar";
 import BuilderCanvas from "./BuilderCanvas";
 import StylePanel from "./StylePanel";
+import AIGeneratorModal from "./AIGeneratorModal";
 import type { ElementType } from "@/lib/builder/types";
 
 export default function BuilderEditor() {
@@ -19,6 +20,8 @@ export default function BuilderEditor() {
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
+  const [aiGeneratorMode, setAiGeneratorMode] = useState<"section" | "website">("section");
 
   // Detect mobile screen size
   useEffect(() => {
@@ -155,6 +158,10 @@ export default function BuilderEditor() {
             onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
             isMobile={isMobile}
             showStylePanel={!!state.selectedElementId}
+            onOpenWebsiteAI={() => {
+              setAiGeneratorMode("website");
+              setAiGeneratorOpen(true);
+            }}
           />
         )}
         <div className="flex-1 flex overflow-hidden relative">
@@ -187,6 +194,70 @@ export default function BuilderEditor() {
             />
           </>
         )}
+
+        {/* AI Generate Section button (floating, always visible) */}
+        {!isFullscreen && (
+          <div className="fixed bottom-6 right-6 z-30 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setAiGeneratorMode("section");
+                setAiGeneratorOpen(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-semibold rounded-xl shadow-lg hover:from-emerald-600 hover:to-teal-600 transition-all hover:scale-105 active:scale-95"
+              title="Generate Section dengan AI"
+            >
+              <span>🧩</span>
+              <span>AI Section</span>
+            </button>
+            <button
+              onClick={() => {
+                setAiGeneratorMode("website");
+                setAiGeneratorOpen(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition-all hover:scale-105 active:scale-95"
+              title="Generate Full Website dengan AI"
+            >
+              <span>🌐</span>
+              <span>AI Website</span>
+            </button>
+          </div>
+        )}
+
+        {/* AI Generator Modal */}
+        <AIGeneratorModal
+          isOpen={aiGeneratorOpen}
+          onClose={() => setAiGeneratorOpen(false)}
+          mode={aiGeneratorMode}
+          onApplySection={(sectionJson) => {
+            try {
+              const sectionData = JSON.parse(sectionJson);
+              const builderSection = aiSectionToBuilder(sectionData);
+              dispatch({
+                type: "ADD_TEMPLATE_SECTION",
+                pageId: currentPage.id,
+                section: builderSection,
+              });
+            } catch (e) {
+              console.warn("AI section apply failed:", e);
+            }
+          }}
+          onApplyWebsite={(sectionsJson) => {
+            try {
+              const sectionsData = JSON.parse(sectionsJson);
+              const sections = Array.isArray(sectionsData) ? sectionsData : [sectionsData];
+              const builderSections = sections.map((s: any) => aiSectionToBuilder(s));
+              for (const sec of builderSections) {
+                dispatch({
+                  type: "ADD_TEMPLATE_SECTION",
+                  pageId: currentPage.id,
+                  section: sec,
+                });
+              }
+            } catch (e) {
+              console.warn("AI website apply failed:", e);
+            }
+          }}
+        />
 
         {/* Mobile add section button (hanya saat belum ada section) */}
         {isMobile && currentPage.sections.length === 0 && (

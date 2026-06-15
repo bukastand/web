@@ -411,3 +411,49 @@ export function createElement(type: ElementType, partialContent?: Record<string,
     styles: { ...def.styles },
   };
 }
+
+/**
+ * Convert AI-generated JSON element to a proper BuilderElement with valid ID
+ */
+function aiElementToBuilder(type: string, content: any, styles: any): BuilderElement {
+  // Validate type
+  const validTypes: ElementType[] = [
+    "heading", "text", "image", "button", "video", "spacer", "divider", "icon",
+    "features", "pricing", "testimonial", "cta", "stats", "contactForm", "maps",
+    "navbar", "footer", "three-background", "carousel", "accordion", "team", "countdown"
+  ];
+  const elType = validTypes.includes(type as ElementType) ? type as ElementType : "text";
+  
+  return {
+    id: genId(),
+    type: elType,
+    content: content || {},
+    styles: styles || {},
+  };
+}
+
+/**
+ * Convert AI-generated JSON column to a proper BuilderColumn
+ */
+function aiColumnToBuilder(col: any): BuilderColumn {
+  return {
+    id: genId("col"),
+    width: col.width || 12,
+    elements: (col.elements || []).map((el: any) => aiElementToBuilder(el.type, el.content, el.styles)),
+  };
+}
+
+/**
+ * Convert AI-generated JSON section to a proper BuilderSection
+ */
+export function aiSectionToBuilder(section: any): BuilderSection {
+  return {
+    id: genId("sec"),
+    columns: (section.columns || [{ width: 12, elements: [] }]).map(aiColumnToBuilder),
+    styles: {
+      padding: section.styles?.padding || "0",
+      backgroundColor: section.styles?.backgroundColor || "transparent",
+      containerWidth: section.styles?.containerWidth || "boxed",
+    },
+  };
+}

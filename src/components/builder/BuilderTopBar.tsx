@@ -123,6 +123,7 @@ export default function BuilderTopBar({
   onShowElements,
   onShowStyle,
   showStylePanel = false,
+  onOpenWebsiteAI,
 }: {
   showSidebar: boolean;
   onToggleSidebar: () => void;
@@ -134,6 +135,7 @@ export default function BuilderTopBar({
   onShowElements?: () => void;
   onShowStyle?: () => void;
   showStylePanel?: boolean;
+  onOpenWebsiteAI?: () => void;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
   const { user, signOut } = useAuth();
@@ -416,6 +418,21 @@ export default function BuilderTopBar({
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
               </svg>
+            </button>
+          </>
+        )}
+
+        {/* AI Website Generate - hide on mobile */}
+        {!isMobile && (
+          <>
+            <div className="w-px h-5 bg-white/10 mx-1" />
+            <button
+              onClick={onOpenWebsiteAI}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/30 transition-all"
+              title="Generate full website dengan AI"
+            >
+              <span>✨</span>
+              <span>AI Website</span>
             </button>
           </>
         )}
