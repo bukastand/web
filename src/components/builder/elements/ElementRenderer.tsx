@@ -311,25 +311,43 @@ function getTitleStyles(el: BuilderElement): React.CSSProperties {
 function FeaturesElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const cols = el.content.columns || 3;
-  const primaryColor = el.styles.color || "#22c55e";
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cols > 2 ? "280px" : "200px"}, 1fr))` }}>
         {items.map((item: any, i: number) => {
           const iconDef = FEATURE_ICONS[item.icon];
           return (
-            <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <div className="flex items-center justify-center mb-3" style={{ color: primaryColor }}>
+            <div
+              key={i}
+              className="p-6 rounded-2xl text-center"
+              style={{
+                backgroundColor: el.content.itemBg || "rgba(255,255,255,0.05)",
+                borderColor: el.content.itemBorder || "rgba(255,255,255,0.1)",
+                borderWidth: "1px",
+                borderStyle: "solid",
+              }}
+            >
+              <div className="flex items-center justify-center mb-3" style={{ color: el.styles.color || "#22c55e" }}>
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                   {iconDef ? iconDef.icon : FEATURE_ICONS.star.icon}
                 </svg>
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-400">{item.desc}</p>
+              <h3 className="text-lg font-bold mb-2" style={{ color: el.content.itemTitleColor || "#ffffff" }}>{item.title}</h3>
+              <p className="text-sm" style={{ color: el.content.itemTextColor || "#94a3b8" }}>{item.desc}</p>
             </div>
           );
         })}
@@ -340,29 +358,46 @@ function FeaturesElement({ el }: ElementComponentProps) {
 
 function PricingElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-10" style={titleStyles}>{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {items.map((item: any, i: number) => (
-          <div key={i} className={`p-8 rounded-2xl border ${item.highlighted ? "border-[#22c55e] bg-[#22c55e]/5" : "border-white/10 bg-white/5"}`}>
-            <h3 className="text-xl font-bold text-white mb-2">{item.name}</h3>
-            <p className="text-gray-400 text-sm mb-4">{item.desc}</p>
-            <p className="text-3xl font-extrabold text-white mb-6">{item.price}</p>
+          <div
+            key={i}
+            className="p-8 rounded-2xl"
+            style={{
+              border: `1px solid ${item.highlighted ? (el.content.highlightBorder || "#22c55e") : (el.content.cardBorder || "rgba(255,255,255,0.1)")}`,
+              backgroundColor: item.highlighted ? (el.content.highlightBg || "rgba(34,197,94,0.05)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
+            }}
+          >
+            <h3 className="text-xl font-bold mb-2" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
+            <p className="text-sm mb-4" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
+            <p className="text-3xl font-extrabold mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
             <ul className="space-y-2 mb-8">
               {(item.features || []).map((f: string, fi: number) => (
-                <li key={fi} className="flex items-center gap-2 text-sm text-gray-300">
-                  <svg className="w-4 h-4 text-[#22c55e] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={fi} className="flex items-center gap-2 text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                   {f}
                 </li>
               ))}
             </ul>
-            <button className="w-full py-3 rounded-xl bg-[#22c55e] text-white font-semibold hover:bg-[#16a34a] transition-colors">{item.cta || "Pilih Paket"}</button>
+            <button className="w-full py-3 rounded-xl font-semibold hover:opacity-90 transition-all" style={{ backgroundColor: "#22c55e", color: "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
           </div>
         ))}
       </div>
@@ -372,14 +407,26 @@ function PricingElement({ el }: ElementComponentProps) {
 
 function TestimonialElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-10" style={titleStyles}>{el.content.title}</h2>}
+      {el.content.title && <h2 className="text-center mb-10" style={titleStyle}>{el.content.title}</h2>}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {items.map((item: any, i: number) => (
-          <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div
+            key={i}
+            className="p-6 rounded-2xl"
+            style={{
+              backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)",
+              border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
+            }}
+          >
             <div className="flex gap-1 mb-3">
               {Array.from({ length: item.rating || 5 }).map((_, ri) => (
                 <svg key={ri} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -387,12 +434,12 @@ function TestimonialElement({ el }: ElementComponentProps) {
                 </svg>
               ))}
             </div>
-            <p className="text-gray-300 mb-4">&ldquo;{item.text}&rdquo;</p>
+            <p className="mb-4" style={{ color: el.content.cardTextColor || "#d1d5db" }}>&ldquo;{item.text}&rdquo;</p>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-sm font-bold text-[#22c55e]">{item.avatar || "U"}</div>
               <div>
-                <p className="text-white font-semibold text-sm">{item.name}</p>
-                <p className="text-xs text-gray-500">{item.role}</p>
+                <p className="text-sm font-semibold" style={{ color: el.styles.color || "#ffffff" }}>{item.name}</p>
+                <p className="text-xs" style={{ color: "#6b7280" }}>{item.role}</p>
               </div>
             </div>
           </div>
@@ -403,11 +450,22 @@ function TestimonialElement({ el }: ElementComponentProps) {
 }
 
 function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
   if (!elStyles.backgroundColor) {
     elStyles.backgroundColor = "#22c55e";
   }
+
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "36px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "rgba(255,255,255,0.8)",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -419,7 +477,6 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
         onBlurEditing?.();
       }
     };
-    // Delay to avoid the same click that triggered editing
     const timer = setTimeout(() => {
       document.addEventListener("mousedown", handleClickOutside);
     }, 0);
@@ -443,8 +500,8 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
   return (
     <div ref={containerRef} className="text-center py-16 px-6 rounded-2xl" style={elStyles}>
       <h2
-        className="text-3xl md:text-4xl font-bold text-white mb-4 outline-none"
-        style={titleStyles}
+        className="mb-4 outline-none"
+        style={titleStyle}
         contentEditable={editing || undefined}
         suppressContentEditableWarning
         onBlur={editing ? (e) => handleFieldBlur("title", e) : undefined}
@@ -453,8 +510,8 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
         {el.content.title || "Siap Memulai?"}
       </h2>
       <p
-        className="text-white/80 mb-8 max-w-xl mx-auto outline-none"
-        style={titleStyles}
+        className="mb-8 max-w-xl mx-auto outline-none"
+        style={subtitleStyle}
         contentEditable={editing || undefined}
         suppressContentEditableWarning
         onBlur={editing ? (e) => handleFieldBlur("subtitle", e) : undefined}
@@ -463,7 +520,11 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
         {el.content.subtitle || "Hubungi kami sekarang"}
       </p>
       <span
-        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-bold rounded-xl outline-none"
+        className="inline-flex items-center gap-2 px-8 py-4 font-bold rounded-xl outline-none"
+        style={{
+          backgroundColor: el.content.buttonBg || "#ffffff",
+          color: el.content.buttonTextColor || "#1e293b",
+        }}
         contentEditable={editing || undefined}
         suppressContentEditableWarning
         onBlur={editing ? (e) => handleFieldBlur("buttonText", e) : undefined}
@@ -483,8 +544,8 @@ function StatsElement({ el }: ElementComponentProps) {
     <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))`, ...elStyles }}>
       {items.map((item: any, i: number) => (
         <div key={i} className="text-center">
-          <div className="text-3xl md:text-4xl font-extrabold text-[#22c55e] mb-1">{item.value}</div>
-          <div className="text-sm text-gray-400">{item.label}</div>
+          <div className="font-extrabold mb-1" style={{ color: el.content.valueColor || "#22c55e", fontSize: el.content.valueSize || "36px", fontWeight: el.content.valueWeight || "800" }}>{item.value}</div>
+          <div style={{ color: el.content.labelColor || "#94a3b8", fontSize: el.content.labelSize || "14px" }}>{item.label}</div>
         </div>
       ))}
     </div>
@@ -502,36 +563,56 @@ function ContactFormElement({ el }: ElementComponentProps) {
     window.open(`https://wa.me/${el.content.whatsappNumber || "6282210099969"}?text=${text}`, "_blank");
   };
 
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const inputBg = el.content.inputBg || "rgba(255,255,255,0.05)";
+  const inputBorder = el.content.inputBorder || "rgba(255,255,255,0.1)";
+  const inputText = el.content.inputText || "#ffffff";
+  const buttonBg = el.content.buttonBg || "#22c55e";
+  const buttonTextColor = el.content.buttonTextColor || "#ffffff";
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-2" style={titleStyles}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-gray-500 text-center mb-8" style={titleStyles}>{el.content.subtitle}</p>}
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-8" style={subtitleStyle}>{el.content.subtitle}</p>}
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
-        <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50" />
-        <input type="email" name="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50" />
-        <textarea name="message" placeholder="Pesan" required rows={4} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50 resize-none" />
-        <button type="submit" className="w-full py-3 bg-[#22c55e] text-white font-semibold rounded-xl hover:bg-[#16a34a] transition-colors">Kirim Pesan</button>
+        <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
+        <input type="email" name="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
+        <textarea name="message" placeholder="Pesan" required rows={4} className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
+        <button type="submit" className="w-full py-3 font-semibold rounded-xl hover:opacity-90 transition-opacity" style={{ backgroundColor: buttonBg, color: buttonTextColor }}>Kirim Pesan</button>
       </form>
     </div>
   );
 }
 
 function MapsElement({ el }: ElementComponentProps) {
-  const titleStyles = getTitleStyles(el);
   const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-3xl font-bold text-center mb-6" style={titleStyles}>{el.content.title}</h2>}
-      <div className="rounded-2xl bg-white/5 border border-white/10 h-80 flex items-center justify-center" style={{ borderRadius: el.styles.borderRadius }}>
+      {el.content.title && <h2 className="text-center mb-6" style={titleStyle}>{el.content.title}</h2>}
+      <div className="rounded-2xl h-80 flex items-center justify-center" style={{ borderRadius: el.styles.borderRadius, backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)", border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}` }}>
         <div className="text-center">
-          <svg className="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.addressColor || "#64748b" }}>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <p className="text-gray-400 text-sm">{el.content.address || "Jakarta, Indonesia"}</p>
-          <p className="text-xs text-gray-600 mt-1">Google Maps Terintegrasi</p>
+          <p className="text-sm" style={{ color: el.content.addressColor || "#94a3b8" }}>{el.content.address || "Jakarta, Indonesia"}</p>
+          <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Google Maps Terintegrasi</p>
         </div>
       </div>
     </div>

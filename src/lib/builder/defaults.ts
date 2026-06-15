@@ -85,6 +85,15 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       title: "Fitur Unggulan",
       subtitle: "Mengapa memilih kami?",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
+      subtitleColor: "#94a3b8",
+      subtitleSize: "16px",
+      itemBg: "rgba(255,255,255,0.05)",
+      itemBorder: "rgba(255,255,255,0.1)",
+      itemTitleColor: "#ffffff",
+      itemTextColor: "#94a3b8",
       items: [
         { icon: "🚀", title: "Cepat & Handal", desc: "Optimasi performa terbaik untuk website Anda" },
         { icon: "🎨", title: "Desain Modern", desc: "Tampilan menarik yang disesuaikan dengan brand" },
@@ -98,6 +107,19 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       title: "Paket Harga",
       subtitle: "Pilih paket yang sesuai kebutuhan Anda",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
+      subtitleColor: "#94a3b8",
+      subtitleSize: "16px",
+      cardBg: "rgba(255,255,255,0.05)",
+      cardBorder: "rgba(255,255,255,0.1)",
+      highlightBg: "rgba(34,197,94,0.05)",
+      highlightBorder: "#22c55e",
+      cardNameColor: "#ffffff",
+      cardPriceColor: "#ffffff",
+      cardDescColor: "#94a3b8",
+      cardFeatureColor: "#d1d5db",
       items: [
         { name: "Basic", price: "Rp 99K", desc: "Cocok untuk pemula", features: ["1 Halaman", "Hosting Gratis", "Support Email"], highlighted: false, cta: "Pilih Paket" },
         { name: "Pro", price: "Rp 299K", desc: "Untuk bisnis berkembang", features: ["5 Halaman", "Custom Domain", "Priority Support", "Analytics"], highlighted: true, cta: "Pilih Paket" },
@@ -109,6 +131,12 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   testimonial: {
     content: {
       title: "Apa Kata Klien",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
+      cardBg: "rgba(255,255,255,0.05)",
+      cardBorder: "rgba(255,255,255,0.1)",
+      cardTextColor: "#d1d5db",
       items: [
         { name: "Ahmad Fauzi", role: "CEO Startup", text: "Pelayanan luar biasa! Website kami jadi jauh lebih profesional.", rating: 5, avatar: "AF" },
         { name: "Siti Rahma", role: "Owner Bisnis", text: "Proses cepat dan hasilnya memuaskan. Highly recommended!", rating: 5, avatar: "SR" },
@@ -120,13 +148,25 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       title: "Siap Memulai?",
       subtitle: "Hubungi kami sekarang untuk konsultasi gratis",
+      titleColor: "#ffffff",
+      titleSize: "36px",
+      titleWeight: "700",
+      subtitleColor: "rgba(255,255,255,0.8)",
+      subtitleSize: "16px",
+      buttonBg: "#ffffff",
       buttonText: "Konsultasi Gratis",
+      buttonTextColor: "#1e293b",
       buttonHref: "https://wa.me/6282210099969",
     },
     styles: { padding: "80px 0", backgroundColor: "#22c55e" },
   },
   stats: {
     content: {
+      valueColor: "#22c55e",
+      valueSize: "36px",
+      valueWeight: "800",
+      labelColor: "#94a3b8",
+      labelSize: "14px",
       items: [
         { value: "50+", label: "Project Selesai" },
         { value: "30+", label: "Klien Puas" },
@@ -141,6 +181,16 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     content: {
       title: "Hubungi Kami",
       subtitle: "Isi form di bawah dan kami akan menghubungi Anda",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
+      subtitleColor: "#94a3b8",
+      subtitleSize: "16px",
+      inputBg: "rgba(255,255,255,0.05)",
+      inputBorder: "rgba(255,255,255,0.1)",
+      inputText: "#ffffff",
+      buttonBg: "#22c55e",
+      buttonTextColor: "#ffffff",
       whatsappNumber: "6282210099969",
       fields: ["name", "email", "phone", "message"],
     },
@@ -149,7 +199,11 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   maps: {
     content: {
       title: "Lokasi Kami",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
       address: "Jakarta, Indonesia",
+      addressColor: "#94a3b8",
       lat: "-6.2088",
       lng: "106.8456",
       zoom: 13,

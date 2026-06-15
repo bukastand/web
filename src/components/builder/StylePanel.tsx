@@ -686,7 +686,39 @@ export default function StylePanel() {
               <>
                 {renderField("Judul Section", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Judul</label>
+                    <select value={selectedElement.content.titleWeight || "700"} onChange={(e) => updateContent("titleWeight", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
+                      {["400","500","600","700","800","900"].map(w => <option key={w} value={w} className="bg-[#1e293b] text-white">{w}</option>)}
+                    </select>
+                  </div>
+                </div>
                 <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
+                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Kartu</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.itemBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("itemBg", v)} label="Background Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.itemBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("itemBorder", v)} label="Border Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.itemTitleColor || "#ffffff"} onChange={(v) => updateContent("itemTitleColor", v)} label="Warna Judul Item" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.itemTextColor || "#94a3b8"} onChange={(v) => updateContent("itemTextColor", v)} label="Warna Teks Item" /></div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Items ({selectedElement.content.items?.length || 0})</label>
                   {selectedElement.content.items?.map((item: any, i: number) => (
                     <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
@@ -694,12 +726,7 @@ export default function StylePanel() {
                         <span className="text-xs text-gray-400">#{i + 1}</span>
                         <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
                       </div>
-                      <select
-                        value={item.icon || ""}
-                        onChange={(e) => handleItemChange("items", i, "icon", e.target.value)}
-                        className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
-                        style={{ colorScheme: 'dark' }}
-                      >
+                      <select value={item.icon || ""} onChange={(e) => handleItemChange("items", i, "icon", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
                         <option value="" className="bg-[#1e293b] text-white">Pilih Icon</option>
                         <option value="star" className="bg-[#1e293b] text-white">⭐ Star</option>
                         <option value="heart" className="bg-[#1e293b] text-white">❤️ Heart</option>
@@ -712,27 +739,11 @@ export default function StylePanel() {
                         <option value="cog" className="bg-[#1e293b] text-white">⚙️ Cog</option>
                         <option value="check" className="bg-[#1e293b] text-white">✓ Check</option>
                       </select>
-                      <input
-                        value={item.title || ""}
-                        onChange={(e) => handleItemChange("items", i, "title", e.target.value)}
-                        className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50"
-                        placeholder="Judul"
-                      />
-                      <textarea
-                        value={item.desc || ""}
-                        onChange={(e) => handleItemChange("items", i, "desc", e.target.value)}
-                        className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50 resize-none"
-                        rows={2}
-                        placeholder="Deskripsi"
-                      />
+                      <input value={item.title || ""} onChange={(e) => handleItemChange("items", i, "title", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Judul" />
+                      <textarea value={item.desc || ""} onChange={(e) => handleItemChange("items", i, "desc", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
                     </div>
                   ))}
-                  <button
-                    onClick={() => handleAddItem("items", { icon: "🚀", title: "Fitur Baru", desc: "Deskripsi fitur" })}
-                    className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
-                  >
-                    + Tambah Item
-                  </button>
+                  <button onClick={() => handleAddItem("items", { icon: "🚀", title: "Fitur Baru", desc: "Deskripsi fitur" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Item</button>
                 </div>
               </>
             )}
@@ -742,7 +753,37 @@ export default function StylePanel() {
               <>
                 {renderField("Judul Section", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
                 <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
+                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Kartu</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("cardBg", v)} label="Background Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("cardBorder", v)} label="Border Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.highlightBg || "rgba(34,197,94,0.05)"} onChange={(v) => updateContent("highlightBg", v)} label="Background Highlight" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.highlightBorder || "#22c55e"} onChange={(v) => updateContent("highlightBorder", v)} label="Border Highlight" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardNameColor || "#ffffff"} onChange={(v) => updateContent("cardNameColor", v)} label="Warna Nama Paket" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardPriceColor || "#ffffff"} onChange={(v) => updateContent("cardPriceColor", v)} label="Warna Harga" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardDescColor || "#94a3b8"} onChange={(v) => updateContent("cardDescColor", v)} label="Warna Deskripsi" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardFeatureColor || "#d1d5db"} onChange={(v) => updateContent("cardFeatureColor", v)} label="Warna Fitur" /></div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Paket ({selectedElement.content.items?.length || 0})</label>
                   {selectedElement.content.items?.map((item: any, i: number) => (
                     <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
@@ -753,22 +794,14 @@ export default function StylePanel() {
                       <input value={item.name || ""} onChange={(e) => handleItemChange("items", i, "name", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Nama Paket" />
                       <input value={item.price || ""} onChange={(e) => handleItemChange("items", i, "price", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Harga" />
                       <input value={item.desc || ""} onChange={(e) => handleItemChange("items", i, "desc", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Deskripsi" />
-                      <textarea
-                        value={(item.features || []).join("\n")}
-                        onChange={(e) => handleItemChange("items", i, "features", e.target.value.split("\n"))}
-                        className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none"
-                        rows={3}
-                        placeholder="Fitur (pisahkan dengan enter)"
-                      />
+                      <textarea value={(item.features || []).join("\n")} onChange={(e) => handleItemChange("items", i, "features", e.target.value.split("\n"))} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={3} placeholder="Fitur (pisahkan dengan enter)" />
                       <label className="flex items-center gap-2 mt-1">
                         <input type="checkbox" checked={item.highlighted || false} onChange={(e) => handleItemChange("items", i, "highlighted", e.target.checked)} className="rounded bg-white/5 border-white/20" />
                         <span className="text-xs text-gray-400">Highlight (unggulan)</span>
                       </label>
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem("items", { name: "Paket Baru", price: "Rp 0", desc: "Deskripsi", features: ["Fitur 1"], highlighted: false, cta: "Pilih Paket" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
-                    + Tambah Paket
-                  </button>
+                  <button onClick={() => handleAddItem("items", { name: "Paket Baru", price: "Rp 0", desc: "Deskripsi", features: ["Fitur 1"], highlighted: false, cta: "Pilih Paket" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Paket</button>
                 </div>
               </>
             )}
@@ -777,7 +810,24 @@ export default function StylePanel() {
             {selectedElement.type === "testimonial" && (
               <>
                 {renderField("Judul Section", "title", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
                 <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Kartu</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("cardBg", v)} label="Background Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("cardBorder", v)} label="Border Kartu" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardTextColor || "#d1d5db"} onChange={(v) => updateContent("cardTextColor", v)} label="Warna Teks Testimonial" /></div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Testimonial ({selectedElement.content.items?.length || 0})</label>
                   {selectedElement.content.items?.map((item: any, i: number) => (
                     <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
@@ -790,9 +840,7 @@ export default function StylePanel() {
                       <input value={item.role || ""} onChange={(e) => handleItemChange("items", i, "role", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Role / Jabatan" />
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem("items", { name: "Klien Baru", role: "CEO", text: "Testimonial...", rating: 5, avatar: "KB" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
-                    + Tambah Testimonial
-                  </button>
+                  <button onClick={() => handleAddItem("items", { name: "Klien Baru", role: "CEO", text: "Testimonial...", rating: 5, avatar: "KB" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Testimonial</button>
                 </div>
               </>
             )}
@@ -804,6 +852,29 @@ export default function StylePanel() {
                 {renderField("Subtitle", "subtitle", "text")}
                 {renderField("Teks Tombol", "buttonText", "text")}
                 {renderField("Link Tombol", "buttonHref", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "36px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
+                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.buttonBg || "#ffffff"} onChange={(v) => updateContent("buttonBg", v)} label="Background Tombol" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.buttonTextColor || "#1e293b"} onChange={(v) => updateContent("buttonTextColor", v)} label="Warna Teks Tombol" /></div>
+                </div>
               </>
             )}
 
@@ -811,6 +882,30 @@ export default function StylePanel() {
             {selectedElement.type === "stats" && (
               <>
                 <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Angka</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.valueColor || "#22c55e"} onChange={(v) => updateContent("valueColor", v)} label="Warna Angka" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Angka</label>
+                    <input type="text" value={selectedElement.content.valueSize || "36px"} onChange={(e) => updateContent("valueSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Angka</label>
+                    <select value={selectedElement.content.valueWeight || "800"} onChange={(e) => updateContent("valueWeight", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
+                      {["400","500","600","700","800","900"].map(w => <option key={w} value={w} className="bg-[#1e293b] text-white">{w}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Label</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.labelColor || "#94a3b8"} onChange={(v) => updateContent("labelColor", v)} label="Warna Label" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Label</label>
+                    <input type="text" value={selectedElement.content.labelSize || "14px"} onChange={(e) => updateContent("labelSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Statistik ({selectedElement.content.items?.length || 0})</label>
                   {selectedElement.content.items?.map((item: any, i: number) => (
                     <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
@@ -822,9 +917,7 @@ export default function StylePanel() {
                       <input value={item.label || ""} onChange={(e) => handleItemChange("items", i, "label", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem("items", { value: "0", label: "Item Baru" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">
-                    + Tambah Statistik
-                  </button>
+                  <button onClick={() => handleAddItem("items", { value: "0", label: "Item Baru" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Statistik</button>
                 </div>
               </>
             )}
@@ -834,7 +927,36 @@ export default function StylePanel() {
               <>
                 {renderField("Title", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
-                {renderField("No. WhatsApp (dengan kode negara, tanpa +)", "whatsappNumber", "text")}
+                {renderField("No. WhatsApp", "whatsappNumber", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
+                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Input</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.inputBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("inputBg", v)} label="Background Input" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.inputBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("inputBorder", v)} label="Border Input" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.inputText || "#ffffff"} onChange={(v) => updateContent("inputText", v)} label="Warna Teks Input" /></div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.buttonBg || "#22c55e"} onChange={(v) => updateContent("buttonBg", v)} label="Background Tombol" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.buttonText || "#ffffff"} onChange={(v) => updateContent("buttonText", v)} label="Warna Teks Tombol" /></div>
+                </div>
               </>
             )}
 
@@ -845,6 +967,21 @@ export default function StylePanel() {
                 {renderField("Alamat", "address", "text")}
                 {renderField("Latitude", "lat", "text")}
                 {renderField("Longitude", "lng", "text")}
+                <div className="mb-3 mt-3">
+                  <div className="h-px bg-white/10 mb-3" />
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
+                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Placeholder</h4>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("cardBg", v)} label="Background" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.cardBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("cardBorder", v)} label="Border" /></div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.addressColor || "#94a3b8"} onChange={(v) => updateContent("addressColor", v)} label="Warna Alamat" /></div>
+                </div>
               </>
             )}
 
