@@ -15,6 +15,8 @@ function MobileMenu({
   publishedUrl,
   handlePublish,
   handleUnpublish,
+  onOpenSectionAI,
+  onOpenWebsiteAI,
 }: {
   currentPage: any;
   signOut: () => void;
@@ -23,6 +25,8 @@ function MobileMenu({
   publishedUrl: string;
   handlePublish: () => void;
   handleUnpublish: () => void;
+  onOpenSectionAI?: () => void;
+  onOpenWebsiteAI?: () => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
   return (
@@ -96,6 +100,22 @@ function MobileMenu({
               </a>
             )}
             <div className="h-px bg-white/10 mx-3" />
+            {/* Mobile: AI Section Button */}
+            <button
+              onClick={() => { setShowMenu(false); onOpenSectionAI?.(); }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+            >
+              <span className="text-base">🧩</span>
+              AI Section
+            </button>
+            <button
+              onClick={() => { setShowMenu(false); onOpenWebsiteAI?.(); }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-purple-400 hover:bg-purple-500/10 transition-colors"
+            >
+              <span className="text-base">🌐</span>
+              AI Website
+            </button>
+            <div className="h-px bg-white/10 mx-3" />
             <button
               onClick={() => { setShowMenu(false); signOut(); }}
               className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
@@ -124,6 +144,7 @@ export default function BuilderTopBar({
   onShowStyle,
   showStylePanel = false,
   onOpenWebsiteAI,
+  onOpenSectionAI,
 }: {
   showSidebar: boolean;
   onToggleSidebar: () => void;
@@ -136,6 +157,7 @@ export default function BuilderTopBar({
   onShowStyle?: () => void;
   showStylePanel?: boolean;
   onOpenWebsiteAI?: () => void;
+  onOpenSectionAI?: () => void;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
   const { user, signOut } = useAuth();
@@ -649,6 +671,8 @@ export default function BuilderTopBar({
           publishedUrl={publishedUrl}
           handlePublish={handlePublish}
           handleUnpublish={handleUnpublish}
+          onOpenSectionAI={onOpenSectionAI}
+          onOpenWebsiteAI={onOpenWebsiteAI}
         />
       )}
     </header>

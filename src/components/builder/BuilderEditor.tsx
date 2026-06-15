@@ -162,6 +162,10 @@ export default function BuilderEditor() {
               setAiGeneratorMode("website");
               setAiGeneratorOpen(true);
             }}
+            onOpenSectionAI={() => {
+              setAiGeneratorMode("section");
+              setAiGeneratorOpen(true);
+            }}
           />
         )}
         <div className="flex-1 flex overflow-hidden relative">
@@ -195,8 +199,8 @@ export default function BuilderEditor() {
           </>
         )}
 
-        {/* AI Generate Section button (floating, always visible) */}
-        {!isFullscreen && (
+        {/* AI Generate Section button (floating, always visible) - hide on mobile */}
+        {!isFullscreen && !isMobile && (
           <div className="fixed bottom-6 right-6 z-30 flex flex-col gap-2">
             <button
               onClick={() => {
