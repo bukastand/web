@@ -1181,6 +1181,11 @@ export default function StylePanel() {
             {/* --- FOOTER --- */}
             {selectedElement.type === "footer" && (
               <>
+                {/* ── LOGO ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-2 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  LOGO
+                </h4>
                 {renderField("Logo / Brand", "logo", "text")}
                 {renderField("Tinggi Logo (px)", "logoHeight", "text")}
                 <div className="mb-3">
@@ -1212,7 +1217,56 @@ export default function StylePanel() {
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                   />
                 </div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.logoColor || "#ffffff"} onChange={(v) => updateContent("logoColor", v)} label="Warna Logo" /></div>
+                <div className="mb-2">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Logo</label>
+                  <input type="text" value={selectedElement.content.logoFontSize || "20px"} onChange={(e) => updateContent("logoFontSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Logo</label>
+                  <select
+                    value={selectedElement.content.logoFontWeight || "700"}
+                    onChange={(e) => updateContent("logoFontWeight", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+                    <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+                    <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+                    <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+                    <option value="800" className="bg-[#1e293b] text-white">Extra Bold (800)</option>
+                  </select>
+                </div>
+
+                {/* ── DESKRIPSI ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  DESKRIPSI
+                </h4>
                 {renderField("Deskripsi", "description", "textarea")}
+                <div className="mb-2"><ColorPicker value={selectedElement.content.descColor || "#6b7280"} onChange={(v) => updateContent("descColor", v)} label="Warna Deskripsi" /></div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Deskripsi</label>
+                  <input type="text" value={selectedElement.content.descSize || "14px"} onChange={(e) => updateContent("descSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                </div>
+
+                {/* ── LINKS ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  MENU LINKS
+                </h4>
+                <div className="mb-2">{renderField("Judul Links", "linksHeading", "text")}</div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.linkHeadingColor || "#9ca3af"} onChange={(v) => updateContent("linkHeadingColor", v)} label="Warna Judul Links" /></div>
+                <div className="mb-2">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul Links</label>
+                  <input type="text" value={selectedElement.content.linkHeadingSize || "12px"} onChange={(e) => updateContent("linkHeadingSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                </div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.linkColor || "#6b7280"} onChange={(v) => updateContent("linkColor", v)} label="Warna Link" /></div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.linkHoverColor || "#ffffff"} onChange={(v) => updateContent("linkHoverColor", v)} label="Warna Hover Link" /></div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Link</label>
+                  <input type="text" value={selectedElement.content.linkSize || "14px"} onChange={(e) => updateContent("linkSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                </div>
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Footer Links ({selectedElement.content.links?.length || 0})</label>
                   {selectedElement.content.links?.map((link: any, i: number) => (
@@ -1224,7 +1278,17 @@ export default function StylePanel() {
                   ))}
                   <button onClick={handleAddLink} className="w-full py-1 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Link</button>
                 </div>
-                {renderField("Copyright", "copyright", "text")}
+
+                {/* ── SOSIAL MEDIA ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  SOSIAL MEDIA
+                </h4>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.socialIconBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("socialIconBg", v)} label="Background Ikon" /></div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.socialIconBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("socialIconBorder", v)} label="Border Ikon" /></div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.socialIconColor || "#9ca3af"} onChange={(v) => updateContent("socialIconColor", v)} label="Warna Ikon" /></div>
+                <div className="mb-2"><ColorPicker value={selectedElement.content.socialIconHoverColor || "#22c55e"} onChange={(v) => updateContent("socialIconHoverColor", v)} label="Warna Hover Ikon" /></div>
+                <div className="mb-3"><ColorPicker value={selectedElement.content.socialIconHoverBorder || "rgba(34,197,94,0.4)"} onChange={(v) => updateContent("socialIconHoverBorder", v)} label="Border Hover Ikon" /></div>
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Sosial Media ({selectedElement.content.socials?.length || 0})</label>
                   {selectedElement.content.socials?.map((s: any, i: number) => (
@@ -1257,6 +1321,18 @@ export default function StylePanel() {
                   >
                     + Tambah Sosial Media
                   </button>
+                </div>
+
+                {/* ── COPYRIGHT ── */}
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4 px-1 flex items-center gap-2">
+                  <span className="w-4 h-px bg-white/10" />
+                  COPYRIGHT
+                </h4>
+                {renderField("Copyright", "copyright", "text")}
+                <div className="mb-2"><ColorPicker value={selectedElement.content.copyrightColor || "#4b5563"} onChange={(v) => updateContent("copyrightColor", v)} label="Warna Copyright" /></div>
+                <div className="mb-3">
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Copyright</label>
+                  <input type="text" value={selectedElement.content.copyrightSize || "14px"} onChange={(e) => updateContent("copyrightSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
                 </div>
               </>
             )}

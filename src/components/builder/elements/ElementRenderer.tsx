@@ -837,6 +837,46 @@ function FooterElement({ el }: ElementComponentProps) {
   const links = el.content.links || [];
   const logoImg = el.content.logoImage;
   const logoH = el.content.logoHeight || "40";
+
+  // ── Per-component styles ──
+  const logoStyle: React.CSSProperties = {
+    color: el.content.logoColor || "#ffffff",
+    fontSize: el.content.logoFontSize || "20px",
+    fontWeight: el.content.logoFontWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const descStyle: React.CSSProperties = {
+    color: el.content.descColor || "#6b7280",
+    fontSize: el.content.descSize || "14px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const linkHeadingStyle: React.CSSProperties = {
+    color: el.content.linkHeadingColor || "#9ca3af",
+    fontSize: el.content.linkHeadingSize || "12px",
+    fontWeight: "600",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const linkHoverColor = el.content.linkHoverColor || "#ffffff";
+  const linkColor = el.content.linkColor || "#6b7280";
+  const linkSize = el.content.linkSize || "14px";
+
+  const socialIconStyle: React.CSSProperties = {
+    backgroundColor: el.content.socialIconBg || "rgba(255,255,255,0.05)",
+    borderColor: el.content.socialIconBorder || "rgba(255,255,255,0.1)",
+    color: el.content.socialIconColor || "#9ca3af",
+  };
+  const socialHoverBorder = el.content.socialIconHoverBorder || "rgba(34,197,94,0.4)";
+  const socialHoverColor = el.content.socialIconHoverColor || "#22c55e";
+
+  const copyrightStyle: React.CSSProperties = {
+    color: el.content.copyrightColor || "#4b5563",
+    fontSize: el.content.copyrightSize || "14px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
   return (
     <div className="py-12 px-6">
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -844,23 +884,49 @@ function FooterElement({ el }: ElementComponentProps) {
           {logoImg ? (
             <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain mb-2" style={{ height: `${logoH}px` }} />
           ) : (
-            <span className="text-xl font-bold text-white">{el.content.logo || "Logo"}</span>
+            <span style={logoStyle}>
+              {el.content.logo || "Logo"}
+            </span>
           )}
-          <p className="text-sm text-gray-500 mt-2">{el.content.description || ""}</p>
+          <p className="mt-2" style={descStyle}>{el.content.description || ""}</p>
         </div>
         <div>
-          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Links</h4>
+          <h4 className="uppercase tracking-wider mb-4" style={linkHeadingStyle}>{el.content.linksHeading || "Links"}</h4>
           <div className="space-y-2">
             {links.map((link: any, i: number) => (
-              <a key={i} href={link.href || "#"} className="block text-sm text-gray-500 hover:text-white transition-colors">{link.label}</a>
+              <a
+                key={i}
+                href={link.href || "#"}
+                className="block transition-colors"
+                style={{ color: linkColor, fontSize: linkSize }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = linkHoverColor; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = linkColor; }}
+              >
+                {link.label}
+              </a>
             ))}
           </div>
         </div>
         <div>
-          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Ikuti Kami</h4>
+          <h4 className="uppercase tracking-wider mb-4" style={linkHeadingStyle}>Ikuti Kami</h4>
           <div className="flex gap-3">
             {[el.content.socials || []].flat().map((s: any, i: number) => (
-              <a key={i} href={s.url || "#"} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-[#22c55e]/40 transition-all">
+              <a
+                key={i}
+                href={s.url || "#"}
+                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                style={socialIconStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = socialHoverColor + "20";
+                  e.currentTarget.style.borderColor = socialHoverBorder;
+                  e.currentTarget.style.color = socialHoverColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = socialIconStyle.backgroundColor || "rgba(255,255,255,0.05)";
+                  e.currentTarget.style.borderColor = socialIconStyle.borderColor || "rgba(255,255,255,0.1)";
+                  e.currentTarget.style.color = socialIconStyle.color || "#9ca3af";
+                }}
+              >
                 <span className="text-sm">{s.platform?.charAt(0).toUpperCase() || "S"}</span>
               </a>
             ))}
@@ -868,7 +934,7 @@ function FooterElement({ el }: ElementComponentProps) {
         </div>
       </div>
       <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-8 max-w-5xl mx-auto" />
-      <p className="text-center text-sm text-gray-600">{el.content.copyright || `© ${new Date().getFullYear()}. All rights reserved.`}</p>
+      <p className="text-center" style={copyrightStyle}>{el.content.copyright || `© ${new Date().getFullYear()}. All rights reserved.`}</p>
     </div>
   );
 }
