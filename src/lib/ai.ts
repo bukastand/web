@@ -43,31 +43,24 @@ export function clearAIConfig() {
 }
 
 /**
- * Build a smart prompt for different element types
+ * Build a smart prompt for different element types — kreatif & open-ended
  */
 function buildPrompt(elementType: string, userPrompt: string, currentContent?: string): string {
-  const typeDescriptions: Record<string, string> = {
-    heading: "Buatkan HEADING/JUDUL yang powerful, kreatif, dan menggugah. Gunakan bahasa yang menarik, metafora jika perlu, dan buat calon pelanggan merasa tertarik. Output hanya teks heading.",
-    text: "Buatkan PARAGRAF deskripsi yang engaging, persuasif, dan kreatif. Gunakan storytelling, bahasa yang hidup dan emosional. Buat pembaca merasa terhubung dan ingin tahu lebih lanjut. Output hanya teks paragraf.",
-    button: "Buatkan teks TOMBOL/CTA yang kreatif dan membuat orang ingin klik. Bisa playful, urgent, atau emosional. Contoh kreatif: 'Mulai Petualanganmu', 'Wujudkan Impianmu', 'Gabung Sekarang'. Output hanya teks tombol.",
-    cta: "Buatkan konten untuk CTA (Call to Action) section yang meyakinkan dan emosional. Output JSON: { \"title\": \"...\", \"subtitle\": \"...\" }",
-    testimonial: "Buatkan TESTIMONIAL yang autentik dan menyentuh. Output JSON array: [{ \"name\": \"...\", \"role\": \"...\", \"text\": \"...\", \"rating\": 5 }]",
-    features: "Buatkan konten FITUR/LAYANAN yang meyakinkan. Output JSON: { \"title\": \"...\", \"items\": [{ \"title\": \"...\", \"desc\": \"...\" }] }",
-    heading_text: "Buatkan HEADING dan PARAGRAF yang saling melengkapi. Output JSON: { \"heading\": \"...\", \"text\": \"...\" }",
-  };
+  const prompt = `Anda adalah copywriter jenius dan puitis. Bukan sekadar menulis — Anda menciptakan emosi, koneksi, dan kenangan lewat kata-kata.
 
-  const typeInstruction = typeDescriptions[elementType] || `Buatkan konten untuk ${elementType} yang kreatif dan engaging.`;
+Tugas Anda: tulis ${elementType === "heading" ? "SEBUAH HEADING/JUDUL" : elementType === "text" ? "SEBUAH PARAGRAF DESKRIPSI" : elementType === "button" ? "SEBUAH TEKS TOMBOL/CTA" : `KONTEN ${elementType.toUpperCase()}`} yang TIDAK TERDUGA.
 
-  let prompt = `Anda adalah copywriter kreatif kelas dunia. Anda ahli dalam menulis konten website yang memikat, persuasif, dan berkonversi tinggi.\n\n`;
-  prompt += `Tugas: ${typeInstruction}\n\n`;
-  prompt += `Kontek bisnis/pesanan user: "${userPrompt}"\n\n`;
+Aturan main:
+- JANGAN pernah menulis "Selamat datang di..." atau "Kami adalah..." atau klise lainnya
+- Gunakan metafora, personifikasi, permainan kata, atau sudut pandang unik
+- Buat pembaca berhenti scroll. Buat mereka merasa sesuatu.
+- Tulis seperti manusia kreatif, bukan seperti template AI
+- Bebas, liar, tapi tetap relevan dengan konteks bisnis
 
-  if (currentContent) {
-    prompt += `Konten saat ini (jadikan inspirasi, bisa diabaikan jika tidak relevan): "${currentContent}"\n\n`;
-  }
+Konteks bisnis: "${userPrompt}"
+${currentContent ? `Konten saat ini (jadikan inspirasi, bisa diabaikan jika tidak relevan): "${currentContent}"` : ""}
 
-  prompt += "Bebaslah berkreasi! Buat konten yang benar-benar menarik dan profesional. Jangan takut untuk berbeda dan kreatif.\n";
-  prompt += "Output hanya konten utamanya saja (tanpa markdown, backticks, atau kutipan).";
+Output HANYA konten utamanya saja (tanpa markdown, backticks, atau kutipan). Buat masterpiece!`;
 
   return prompt;
 }
@@ -138,104 +131,146 @@ export function getApiKeyUrl(provider: AIProvider): string {
 // ─── SECTION & PAGE GENERATION ───
 
 /**
- * Prompt AI to generate a section structure (via proxy)
+ * Prompt AI to generate a single creative section (via proxy)
+ * No rigid templates — AI is free to design its own layout and elements
  */
 export async function generateSection(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah desainer website kreatif kelas dunia. Buatkan SATU section website yang memukau berdasarkan permintaan berikut.
+  const prompt = `Anda adalah desainer website visioner — gabungan antara seniman dan pengembang. Bukan sekadar membuat section, Anda menciptakan pengalaman visual yang memukau.
 
-Permintaan: ${userPrompt}
+Tugas: Buatlah SATU section website yang OUTSTANDING.
 
-Gunakan elemen-elemen yang paling tepat: heading, text, image, button, icon, features, testimonial, stats, cta, divider, spacer.
+Permintaan klien: "${userPrompt}"
 
-Berikut contoh format JSON yang harus diikuti. KONTEN-nya silakan buat sekreatif mungkin!
+KEBEBASAN KREATIF:
+- Anda BEBAS menentukan layout, komposisi, dan elemen apa pun
+- Bisa 1 kolom, 2 kolom, 3 kolom, atau apapun yang Anda rasa paling tepat
+- Gunakan heading, teks, gambar, tombol, ikon, atau apapun yang Anda mau
+- Mainkan warna-warna berani, gradien, bayangan, atau efek visual lainnya
+- Layout tidak harus simetris — asimetris bisa lebih menarik
+- KONTEN harus orisinil, kreatif, dan relevan — jangan gunakan placeholder text
+
+FORMAT OUTPUT:
+Output HANYA JSON (tanpa markdown, backticks, atau teks lain) dengan struktur:
+
 {
-  "sectionType": "hero",
-  "title": "Nama Section",
+  "sectionType": "hero | features | testimonial | pricing | cta | about | contact | gallery | stats | custom | atau apapun yang kreatif!",
+  "title": "Nama section yang deskriptif",
   "styles": {
-    "backgroundColor": "#0f172a",
-    "padding": "80px 0",
-    "containerWidth": "boxed"
+    "backgroundColor": "#... (kode hex, atau transparan)",
+    "padding": "...px 0",
+    "containerWidth": "narrow | boxed | wide | full"
   },
   "columns": [
     {
-      "width": 12,
+      "width": 12 (atau 6+6, 4+4+4, 3+3+3+3, 7+5, 8+4, atau apapun yang totalnya 12),
       "elements": [
-        { "type": "heading", "content": { "text": "Judul Kreatif di Sini", "level": "h1", "align": "center" }, "styles": { "color": "#ffffff", "fontSize": "48px", "fontWeight": "800", "textAlign": "center" } },
-        { "type": "text", "content": { "text": "Deskripsi yang menarik dan persuasif..." }, "styles": { "color": "#94a3b8", "fontSize": "18px", "textAlign": "center" } },
-        { "type": "button", "content": { "text": "CTA Kreatif", "href": "#", "variant": "primary" }, "styles": { "backgroundColor": "#22c55e", "color": "#ffffff", "padding": "14px 32px", "borderRadius": "12px" } }
+        {
+          "type": "heading | text | image | button | icon | features | testimonial | pricing | stats | cta | contactForm | maps | navbar | footer | divider | spacer | carousel | accordion | team | countdown | video | atau jenis elemen kreatif lainnya",
+          "content": { ... properti konten untuk elemen tersebut },
+          "styles": { "color": "...", "fontSize": "...", "textAlign": "...", "backgroundColor": "...", dll }
+        }
       ]
     }
   ]
 }
 
-PENTING:
-- Output HANYA JSON, tanpa markdown, backticks, atau teks lain
-- KONTEN harus KREATIF dan orisinil, jangan pakai placeholder
-- Warna harus sesuai dengan tema bisnis yang diminta user
-- Konten relevan dengan permintaan user
-- Gunakan placehold.co untuk gambar jika perlu: https://placehold.co/800x500/1e293b/64748b?text=Judul`;
+KREATIVITAS ADALAH PRIORITAS UTAMA:
+- Buat section yang terlihat MAHAL dan profesional
+- Gunakan gradien, shadow, efek kaca (glassmorphism), atau gaya modern lainnya
+- Pilih warna yang KONSISTEN dengan tema/tone bisnis yang diminta
+- Setiap teks harus authentik dan bermakna — bukan Lorem Ipsum
+- Jika perlu gambar, gunakan URL placehold.co: https://placehold.co/800x600/1e293b/64748b?text=Judul+Gambar
+- Jangan takut untuk berbeda. Yang membosankan itu mudah — yang luar biasa butuh keberanian.`;
 
   return callAIProxy(config, prompt, "generate");
 }
 
 /**
  * Prompt AI to generate a full page with multiple sections (via proxy)
+ * AI is free to design the entire page structure, layout, and content
  */
 export async function generateFullPage(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah desainer website kreatif kelas dunia. Buatkan halaman website LENGKAP yang memukau berdasarkan permintaan berikut.
+  const prompt = `Anda adalah desainer web kelas dunia — setara dengan agency termahal. Anda mendesain website yang tidak hanya indah secara visual, tetapi juga bercerita dan membangun koneksi emosional.
 
-Permintaan: ${userPrompt}
+Tugas: Buatlah SATU halaman website UTUH yang spektakuler.
 
-Buat 4-6 section yang membangun cerita yang kohesif. Setiap section harus punya tujuan jelas dan mengalir dengan natural.
+Permintaan klien: "${userPrompt}"
 
-Gunakan elemen yang paling tepat: heading, text, image, button, icon, features, testimonial, stats, cta, divider, spacer, navbar, footer, pricing, contactForm.
+PAHAMI BISNIS KLIEN:
+- Pahami esensi bisnis mereka: apa yang mereka jual, kepada siapa, dan mengapa
+- Pilih tone yang tepat: profesional, playful, mewah, minimalis, atau industrial
+- Desain harus mencerminkan KEPRIBADIAN brand, bukan template generik
 
-Berikut format JSON yang harus diikuti. KONTEN-nya bebas sekreatif mungkin!
+STRUKTUR HALAMAN:
+Buat 4-8 section yang membangun narasi visual yang kuat:
+
+1. SECTION PERTAMA = Hero/Pembuka yang MENCENGANGKAN
+   - Buat first impression yang tak terlupakan
+   - Bisa dengan heading besar, visual dramatis, interaksi unik
+   
+2. SECTION KEDUA-KEEMPAT = Value Proposition & Bukti
+   - Fitur/layanan dengan cara penyajian yang kreatif
+   - Testimonial yang autentik dan menyentuh
+   - Statistik atau pencapaian yang membangun kepercayaan
+   
+3. SECTION MENJELANG AKHIR = CTA/Penutup
+   - Ajakan action yang sulit ditolak
+   - Buat pengguna merasa "Saya HARUS memiliki ini!"
+   
+4. SECTION TERAKHIR = Footer
+   - Navigasi, kontak, sosial media, copyright
+
+KEBEBASAN DESAIN:
+- Setiap section BEBAS menentukan layoutnya sendiri
+- Mainkan variasi: 1 kolom, 2 kolom, split layout, grid, masonry, staggered
+- Gunakan warna yang KONSISTEN di seluruh halaman
+- Gradien, bayangan, efek kaca, border unik, SEMUANYA BOLEH!
+- Jangan ragu menggunakan gaya modern: neumorphism, glassmorphism, brutalist, atau gaya Anda sendiri
+- Layout tidak harus simetris — asimetri yang intentionaal itu indah
+
+FORMAT OUTPUT:
+Output HANYA JSON array (tanpa markdown, backticks, atau teks lain):
+
 [
   {
-    "sectionType": "hero",
-    "styles": { "backgroundColor": "#0f172a", "padding": "100px 0", "containerWidth": "boxed" },
+    "sectionType": "hero | features | about | services | testimonial | pricing | stats | cta | gallery | contact | faq | team | footer | atau apapun yang kreatif",
+    "title": "Nama section",
+    "styles": {
+      "backgroundColor": "#...",
+      "padding": "...px 0",
+      "containerWidth": "narrow | boxed | wide | full"
+    },
     "columns": [
       {
         "width": 12,
         "elements": [
-          { "type": "heading", "content": { "text": "Judul Hero Kreatif", "level": "h1", "align": "center" }, "styles": { "color": "#ffffff", "fontSize": "48px", "fontWeight": "800", "textAlign": "center" } },
-          { "type": "text", "content": { "text": "Deskripsi yang memikat..." }, "styles": { "color": "#94a3b8", "textAlign": "center" } },
-          { "type": "button", "content": { "text": "CTA Menarik", "href": "#", "variant": "primary" }, "styles": { "backgroundColor": "#22c55e", "color": "#ffffff", "padding": "14px 32px", "borderRadius": "12px" } }
+          {
+            "type": "heading | text | image | button | icon | features | testimonial | pricing | stats | cta | contactForm | maps | navbar | footer | divider | spacer | carousel | accordion | team | countdown | video | atau jenis elemen kreatif lainnya",
+            "content": { ... },
+            "styles": { "color": "...", "fontSize": "...", dll }
+          }
         ]
       }
     ]
   },
-  {
-    "sectionType": "features",
-    "styles": { "backgroundColor": "transparent", "padding": "80px 0", "containerWidth": "boxed" },
-    "columns": [
-      {
-        "width": 12,
-        "elements": [
-          { "type": "features", "content": { "title": "Fitur Unggulan", "subtitle": "Mengapa memilih kami", "titleColor": "#1e293b", "titleSize": "36px", "items": [ { "icon": "🚀", "title": "Inovasi", "desc": "Deskripsi unik dan kreatif..." } ] }, "styles": { "padding": "0" } }
-        ]
-      }
-    ]
-  }
+  ... (section lainnya)
 ]
 
-PENTING:
-- Output HANYA JSON array, tanpa markdown, backticks, atau teks lain
-- KONTEN harus KREATIF dan orisinil, jangan gunakan teks placeholder
-- Gunakan skema warna KONSISTEN di semua section
-- Section pertama = hero yang kuat
-- Features/testimonial/pricing untuk showcasing value
-- CTA section untuk ajakan action
-- Footer di akhir
-- Konten relevan dengan permintaan user
-- placehold.co untuk gambar: https://placehold.co/800x500/1e293b/64748b?text=Judul`;
+PEDOMAN KREATIF:
+- Jangan gunakan placeholder text — setiap kata harus bermakna
+- Pilih skema warna yang mencerminkan emosi brand yang tepat
+- Variasikan section: ada yang terang, ada yang gelap, untuk dinamika visual
+- Hero section harus MENCURI PERHATIAN
+- Testimonial harus KEDENGARAN asli, bukan buatan
+- CTA harus MEMBUAT orang ingin klik
+- Footer harus LENGKAP tapi tidak berantakan
+- Buat orang yang melihatnya berkata: "Wow, ini keren sekali!"`;
 
   return callAIProxy(config, prompt, "generate");
 }

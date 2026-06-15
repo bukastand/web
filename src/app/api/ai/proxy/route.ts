@@ -4,6 +4,10 @@ import { NextResponse } from "next/server";
 const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
+// Creative freedom settings
+const CREATIVE_TEMPERATURE = 0.9;  // High creativity — balanced for structured JSON output
+const MAX_OUTPUT_TOKENS = 4096;    // Allow larger, more detailed generations
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -45,7 +49,7 @@ export async function POST(request: Request) {
 /**
  * Try each Gemini model in order until one works
  */
-async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens: number, temperature: number = 0.8): Promise<{ ok: boolean; content?: string; error?: string }> {
+async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens: number, temperature: number = CREATIVE_TEMPERATURE): Promise<{ ok: boolean; content?: string; error?: string }> {
   for (const model of GEMINI_MODELS) {
     try {
       const controller = new AbortController();
@@ -108,7 +112,7 @@ async function handleGemini(apiKey: string, prompt: string, action: string) {
     return NextResponse.json({ ok: result.ok });
   }
 
-  const result = await callGeminiWithFallback(apiKey, prompt, 2048, 0.8);
+  const result = await callGeminiWithFallback(apiKey, prompt, MAX_OUTPUT_TOKENS, CREATIVE_TEMPERATURE);
 
   if (!result.ok) {
     return NextResponse.json(
@@ -146,11 +150,11 @@ async function handleGroq(apiKey: string, prompt: string, action: string) {
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [
-        { role: "system", content: "Anda adalah copywriter kreatif kelas dunia. Output harus kreatif, engaging, dan orisinil." },
+        { role: "system", content: "Anda adalah desainer website visioner dan copywriter jenius. Bebas berkreasi tanpa batasan template. Setiap output harus original, kreatif, dan memukau. Jangan gunakan placeholder atau klise." },
         { role: "user", content: prompt },
       ],
-      temperature: 0.8,
-      max_tokens: 2048,
+      temperature: 1.0,
+      max_tokens: MAX_OUTPUT_TOKENS,
       top_p: 0.95,
     }),
   });

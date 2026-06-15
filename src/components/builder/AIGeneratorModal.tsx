@@ -82,38 +82,73 @@ export default function AIGeneratorModal({
 
   const parseResultToSections = (raw: string): any[] => {
     try {
-      // Remove markdown code blocks if present
-      let cleaned = raw.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+      // Step 1: Remove markdown code blocks (```json, ```, etc)
+      let cleaned = raw
+        .replace(/```json\s*/gi, "")
+        .replace(/```\s*/g, "")
+        .replace(/`+/g, "")
+        .trim();
+
+      // Step 2: Try direct JSON parse first
+      const tryParse = (str: string): any | null => {
+        try {
+          return JSON.parse(str);
+        } catch {
+          return null;
+        }
+      };
+
+      // Step 3: Try different extraction strategies
+      // Strategy A: Direct parse
+      let data = tryParse(cleaned);
       
-      // Try parsing as array first (full page) or single object (section)
-      let data = JSON.parse(cleaned);
+      if (!data) {
+        // Strategy B: Find array in text (most common for full page)
+        const arrayMatch = cleaned.match(/\[[\s\S]*\]/);
+        if (arrayMatch) data = tryParse(arrayMatch[0]);
+      }
       
+      if (!data) {
+        // Strategy C: Find object in text (common for single section)
+        const objMatch = cleaned.match(/\{[\s\S]*\}(?!\s*[{\[])/);
+        if (objMatch) data = tryParse(objMatch[0]);
+      }
+      
+      if (!data) {
+        // Strategy D: Try to find anything JSON-like with lenient extraction
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace >= 0 && lastBrace > firstBrace) {
+          const jsonText = cleaned.substring(firstBrace, lastBrace + 1);
+          data = tryParse(jsonText);
+        }
+      }
+      
+      if (!data) return [];
+
+      // Step 4: Normalize to array of sections
       if (Array.isArray(data)) {
-        // Full page: array of sections
-        return data.filter((s: any) => s.styles && s.columns);
-      } else if (data.sections && Array.isArray(data.sections)) {
+        return data.filter((s: any) =>
+          s && typeof s === 'object' && (s.columns || s.styles)
+        );
+      }
+      
+      if (data.sections && Array.isArray(data.sections)) {
         return data.sections;
-      } else if (data.styles && data.columns) {
-        // Single section
+      }
+      
+      if (data.styles || data.columns || data.sectionType) {
         return [data];
       }
+      
+      // Step 5: If nothing matched, check if it's a page object containing a sections key
+      const possibleSections = Object.values(data).find(v => Array.isArray(v));
+      if (possibleSections) {
+        return possibleSections.filter((s: any) => s && typeof s === 'object');
+      }
+      
       return [];
     } catch {
-      // If parsing fails, try to extract JSON from the text
-      const jsonMatch = raw.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        try {
-          const data = JSON.parse(jsonMatch[0]);
-          return Array.isArray(data) ? data : [data];
-        } catch {}
-      }
-      const objMatch = raw.match(/\{[\s\S]*\}/);
-      if (objMatch) {
-        try {
-          const data = JSON.parse(objMatch[0]);
-          return data.sections || (data.styles && data.columns ? [data] : []);
-        } catch {}
-      }
       return [];
     }
   };

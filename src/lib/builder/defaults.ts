@@ -416,13 +416,106 @@ export function createElement(type: ElementType, partialContent?: Record<string,
  * Convert AI-generated JSON element to a proper BuilderElement with valid ID
  */
 function aiElementToBuilder(type: string, content: any, styles: any): BuilderElement {
-  // Validate type
+  // Map AI's creative type names to our valid types
+  const typeAliases: Record<string, ElementType> = {
+    // Heading variants
+    "headline": "heading",
+    "title": "heading",
+    "judul": "heading",
+    "header": "heading",
+    "subheading": "heading",
+    "tagline": "heading",
+    // Text variants
+    "paragraph": "text",
+    "description": "text",
+    "deskripsi": "text",
+    "content": "text",
+    "body": "text",
+    // Button variants
+    "cta-button": "button",
+    "ctabutton": "button",
+    "link": "button",
+    "tombol": "button",
+    // Icon variants
+    "icon-box": "icon",
+    "iconbox": "icon",
+    "iconCard": "icon",
+    // Features variants
+    "feature": "features",
+    "services": "features",
+    "fitur": "features",
+    "layanan": "features",
+    // Testimonial variants
+    "testimonials": "testimonial",
+    "review": "testimonial",
+    "reviews": "testimonial",
+    // Pricing variants
+    "price": "pricing",
+    "paket": "pricing",
+    "pricing-table": "pricing",
+    // CTA variants
+    "call-to-action": "cta",
+    "calltoaction": "cta",
+    "hero-cta": "cta",
+    // Stats variants
+    "statistics": "stats",
+    "counter": "stats",
+    "counters": "stats",
+    "achievements": "stats",
+    // Image variants
+    "photo": "image",
+    "gambar": "image",
+    "illustration": "image",
+    "illustrasi": "image",
+    // Video variants
+    "youtube": "video",
+    "embed": "video",
+    // Contact variants
+    "contact": "contactForm",
+    "kontak": "contactForm",
+    "form": "contactForm",
+    "contact-form": "contactForm",
+    // Maps variants
+    "map": "maps",
+    "location": "maps",
+    "lokasi": "maps",
+    // Nav variants
+    "navigation": "navbar",
+    "nav": "navbar",
+    "menu": "navbar",
+    // Footer variant
+    "foot": "footer",
+    // Divider variants
+    "separator": "divider",
+    "hr": "divider",
+    "line": "divider",
+    // Accordion/FAQ variants
+    "faq": "accordion",
+    "questions": "accordion",
+    // Team variants
+    "teams": "team",
+    "members": "team",
+    "people": "team",
+    // Carousel variants
+    "slider": "carousel",
+    "gallery": "carousel",
+    "galeri": "carousel",
+    // Countdown variants
+    "timer": "countdown",
+    "coming-soon": "countdown",
+    "event-date": "countdown",
+  };
+
   const validTypes: ElementType[] = [
     "heading", "text", "image", "button", "video", "spacer", "divider", "icon",
     "features", "pricing", "testimonial", "cta", "stats", "contactForm", "maps",
     "navbar", "footer", "three-background", "carousel", "accordion", "team", "countdown"
   ];
-  const elType = validTypes.includes(type as ElementType) ? type as ElementType : "text";
+  
+  // Check alias first, then valid types, fallback to heading for visual emphasis
+  const normalizedType = (type || "").toLowerCase();
+  const elType = typeAliases[normalizedType] || 
+    (validTypes.includes(type as ElementType) ? type as ElementType : "heading");
   
   return {
     id: genId(),
