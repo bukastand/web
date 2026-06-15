@@ -520,10 +520,14 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
         {el.content.subtitle || "Hubungi kami sekarang"}
       </p>
       <span
-        className="inline-flex items-center gap-2 px-8 py-4 font-bold rounded-xl outline-none"
+        className="inline-flex items-center gap-2 font-bold rounded-xl outline-none"
         style={{
           backgroundColor: el.content.buttonBg || "#ffffff",
           color: el.content.buttonTextColor || "#1e293b",
+          paddingLeft: el.content.buttonPaddingX || "32px",
+          paddingRight: el.content.buttonPaddingX || "32px",
+          paddingTop: el.content.buttonPaddingY || "16px",
+          paddingBottom: el.content.buttonPaddingY || "16px",
         }}
         contentEditable={editing || undefined}
         suppressContentEditableWarning

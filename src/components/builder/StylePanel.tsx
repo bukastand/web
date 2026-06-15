@@ -903,6 +903,14 @@ export default function StylePanel() {
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</h4>
                   <div className="mb-2"><ColorPicker value={selectedElement.content.buttonBg || "#ffffff"} onChange={(v) => updateContent("buttonBg", v)} label="Background Tombol" /></div>
                   <div className="mb-2"><ColorPicker value={selectedElement.content.buttonTextColor || "#1e293b"} onChange={(v) => updateContent("buttonTextColor", v)} label="Warna Teks Tombol" /></div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Padding Horizontal (px)</label>
+                    <input type="text" value={selectedElement.content.buttonPaddingX || "32px"} onChange={(e) => updateContent("buttonPaddingX", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" placeholder="32px" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Padding Vertikal (px)</label>
+                    <input type="text" value={selectedElement.content.buttonPaddingY || "16px"} onChange={(e) => updateContent("buttonPaddingY", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" placeholder="16px" />
+                  </div>
                 </div>
               </>
             )}

@@ -163,6 +163,8 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       buttonBg: "#ffffff",
       buttonText: "Konsultasi Gratis",
       buttonTextColor: "#1e293b",
+      buttonPaddingX: "32px",
+      buttonPaddingY: "16px",
       buttonHref: "https://wa.me/6282210099969",
     },
     styles: { padding: "80px 0", backgroundColor: "#22c55e" },
