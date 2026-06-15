@@ -218,51 +218,55 @@ export function getApiKeyUrl(provider: AIProvider): string {
 
 /**
  * Prompt AI to generate a single creative section (via proxy)
- * True creative freedom — no element type enumeration, no rigid templates
+ * True creative freedom — no rigid templates
+ * CRITICAL: AI MUST fill all element content — no empty objects!
  */
 export async function generateSection(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah seniman web visioner — perpaduan antara desainer grafis, arsitek, dan penyair. Ketika orang melihat hasil kerja Anda, mereka berkata "Ini bukan website, ini karya seni."
+  const prompt = `Anda adalah seniman web visioner — perpaduan antara desainer grafis, arsitek, dan penyair.
 
-Tugas: Buatlah SATU section website yang SPEKTAKULER untuk permintaan berikut:
+Tugas: Buatlah SATU section website yang SPEKTAKULER.
 
-"${userPrompt}"
+PERMINTAAN: "${userPrompt}"
 
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ KEBEBASAN TOTAL ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+⚠️ ATURAN PALING PENTING — SETIAP ELEMEN HARUS PUNYA KONTEN! ⚠️
 
-Anda tidak terikat pada elemen, layout, atau pola apapun. Ciptakan sesuatu yang BELUM PERNAH ADA SEBELUMNYA.
+JANGAN PERNAH membuat element dengan content kosong! Ini contoh SALAH:
+❌ { "type": "heading", "content": {}, "styles": {} }
+❌ { "type": "text", "content": {}, "styles": {} }
 
-TEKNIK KREATIF YANG BISA DIGUNAKAN (pilih yang paling cocok):
-→ Broken grid: elemen melompat keluar dari kolom standar
-→ Overlapping: tumpuk elemen untuk depth dan dimensi
-→ Slanted/Diagonal: section atau elemen miring 5-15 derajat
-→ Organic shapes: background dengan bentuk organik (lingkaran, kurva, blob)
-→ Glassmorphism: efek kaca buram dengan backdrop blur
-→ Neubrutalism: border tebal, warna berani, shadow kasar
-→ Typo-centric: tipografi BESAR sebagai hero visual
-→ Split screen: dua sisi yang kontras
-→ Floating elements: elemen yang terasa melayang dengan shadow
-→ Gradient mesh: gradien kompleks multi-warna
-→ Monochromatic: satu warna dengan berbagai shade
-→ Color blocks: blok warna berani sebagai pemisah
-→ Minimalist: banyak white space, satu fokus utama
-→ Playful: ilustrasi, ikon besar, warna cerah, tipografi fun
-→ Editorial: layout seperti majalah fashion
+Ini contoh BENAR — setiap element HARUS punya konten yang diisi:
+✅ heading → { "type": "heading", "content": { "text": "Heading Kreatif di Sini", "level": "h2", "align": "center" }, "styles": { "color": "#ffffff", "fontSize": "48px", "fontWeight": "800" } }
+✅ text → { "type": "text", "content": { "text": "Paragraf deskripsi yang bermakna dan orisinal..." }, "styles": { "color": "#94a3b8", "fontSize": "18px" } }
+✅ button → { "type": "button", "content": { "text": "Mulai Sekarang", "href": "#", "variant": "primary" }, "styles": { "backgroundColor": "#22c55e", "color": "#ffffff" } }
+✅ image → { "type": "image", "content": { "src": "https://placehold.co/800x600/1e293b/64748b?text=Judul+Gambar", "alt": "Deskripsi gambar" }, "styles": { "borderRadius": "12px" } }
+✅ features → { "type": "features", "content": { "title": "Judul Fitur", "subtitle": "Subtitle", "items": [{ "icon": "🚀", "title": "Nama Fitur", "desc": "Deskripsi fitur" }], "columns": 3 }, "styles": {} }
+✅ testimonial → { "type": "testimonial", "content": { "title": "Apa Kata Klien", "items": [{ "name": "Nama", "role": "Role", "text": "Testimoni asli...", "rating": 5, "avatar": "NA" }] }, "styles": {} }
+✅ cta → { "type": "cta", "content": { "title": "Judul CTA", "subtitle": "Subtitle", "buttonText": "Teks Tombol", "buttonHref": "#" }, "styles": { "backgroundColor": "#22c55e" } }
+✅ stats → { "type": "stats", "content": { "items": [{ "value": "50+", "label": "Project" }], "columns": 4 }, "styles": {} }
+✅ icon → { "type": "icon", "content": { "icon": "star", "size": "48px", "color": "#22c55e" }, "styles": {} }
+✅ pricing → { "type": "pricing", "content": { "title": "Paket Harga", "items": [{ "name": "Basic", "price": "Rp 99K", "desc": "Pemula", "features": ["1 Halaman"], "highlighted": false, "cta": "Pilih" }] }, "styles": {} }
+✅ contactForm → { "type": "contactForm", "content": { "title": "Hubungi Kami", "subtitle": "Isi form", "fields": ["name", "email", "phone", "message"] }, "styles": {} }
+✅ navbar → { "type": "navbar", "content": { "logo": "NAMA BRAND", "links": [{ "label": "Beranda", "href": "#" }], "ctaText": "Hubungi", "ctaHref": "#" }, "styles": {} }
+✅ footer → { "type": "footer", "content": { "logo": "NAMA BRAND", "description": "Deskripsi", "links": [{ "label": "Tentang", "href": "#" }], "socials": [{ "platform": "instagram", "url": "#" }], "copyright": "© 2025 Nama Brand. All rights reserved." }, "styles": {} }
 
-KONTEN:
-- Setiap teks harus BERMAKNA dan ORISINIL — seolah ditulis oleh copywriter ternama
-- Jika perlu gambar: https://placehold.co/800x600/1e293b/64748b?text=Judul
-- Jangan gunakan teks placeholder apapun
+⚠️ LARANGAN MUTLAK: content KOSONG! ⚠️
+Setiap element.type HARUS punya content yang diisi dengan properti yang sesuai.
 
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ FORMAT OUTPUT ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+--- TEKNIK KREATIF (pilih yang cocok) ---
+→ Broken grid, Overlapping, Slanted/Diagonal, Glassmorphism
+→ Typo-centric, Split screen, Floating elements
+→ Gradient mesh, Monochromatic, Color blocks
+→ Minimalist, Playful, Editorial
 
-Output HANYA JSON, tanpa markdown atau backticks. Strukturnya minimal:
+--- FORMAT OUTPUT ---
+Output HANYA JSON, tanpa markdown/backticks:
 
 {
-  "sectionType": "nama_kreatif_untuk_section_ini",
-  "title": "Judul section",
+  "sectionType": "nama_section",
+  "title": "Judul Section",
   "styles": {
     "backgroundColor": "#hexcolor",
     "padding": "...px 0",
@@ -273,92 +277,74 @@ Output HANYA JSON, tanpa markdown atau backticks. Strukturnya minimal:
       "width": 12,
       "elements": [
         {
-          "type": "heading | text | image | button | atau jenis elemen apapun yang ANDA pilih",
-          "content": { ... },
-          "styles": { "color": "#...", "fontSize": "...", dll }
+          "type": "heading",
+          "content": { "text": "ISI KONTEN DI SINI — JANGAN KOSONG!", "level": "h2", "align": "center" },
+          "styles": { "color": "#ffffff", "fontSize": "36px", "fontWeight": "700", "textAlign": "center" }
         }
       ]
     }
   ]
 }
 
-"columns" bisa 1, 2, 3, atau lebih. "width" total harus 12.
-Gunakan jenis elemen, konten, dan gaya SESUAI IMAJINASI ANDA.
-Jangan takut BEDA. Biasa saja itu mudah — LUAR BIASA butuh nyali.`;
+INGAT: content TIDAK BOLEH kosong! Setiap element HARUS punya konten! Jangan buat user kecewa.`;
 
   return callAIProxy(config, prompt, "generate");
 }
 
 /**
  * Prompt AI to generate a full page with multiple sections (via proxy)
- * AI has total freedom to design the page structure, visual style, and content
+ * AI has total freedom — but CRITICAL: all elements MUST have filled content!
  */
 export async function generateFullPage(
   config: AIConfig,
   userPrompt: string
 ): Promise<string> {
-  const prompt = `Anda adalah direktur kreatif dari agency desain termahal di dunia. Setiap website yang Anda ciptakan adalah mahakarya yang diperbincangkan orang. Bukan sekadar kode — ini adalah seni yang hidup.
+  const prompt = `Anda adalah direktur kreatif dari agency desain termahal. Setiap website yang Anda ciptakan adalah mahakarya. Bukan sekadar kode — ini adalah seni yang hidup.
 
 Tugas: Ciptakan SATU halaman website UTUH yang TAK TERLUPAKAN.
 
 BRIEF KLIEN: "${userPrompt}"
 
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ STRATEGI KREATIF ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+⚠️ ATURAN PALING PENTING — SETIAP ELEMEN HARUS PUNYA KONTEN! ⚠️
 
-PERTAMA, pahami esensi bisnis ini:
-→ Apa yang benar-benar mereka jual? (bukan produknya, tapi PERASAAN-nya)
-→ Siapa target audiensnya? (apa yang membuat mereka tertarik?)
-→ Apa personality brand-nya? (mewah? playful? minimalis? berani?)
+JANGAN PERNAH membuat element dengan content kosong! Ini contoh SALAH:
+❌ { "type": "heading", "content": {}, "styles": {} }
+❌ { "type": "text", "content": {}, "styles": {} }
+❌ { "type": "button", "content": { "text": "" }, "styles": {} }
 
-KEDUA, rencanakan 5-7 section yang membangun CERITA:
-1. PEMBUKA — section pertama harus MENCURI PERHATIAN dalam 0.5 detik
-2. VALUE — bukti sosial, fitur, atau manfaat yang membuat orang ingin terus scrolling 
-3. BUKTI — testimonial, statistik, klien, atau portofolio
-4. HARGA atau LAYANAN — dengan cara penyajian yang tidak membosankan
-5. PENUTUP — CTA yang membuat orang berkata "Saya ambil ini!"
-6. FOOTER — lengkap, informatif, tetap stylish
+WAJIB — setiap element HARUS punya konten seperti contoh di bawah:
+✅ heading → content: { "text": "Teks Heading Asli", "level": "h2", "align": "center" }
+✅ text → content: { "text": "Paragraf deskripsi yang orisinal dan bermakna..." }
+✅ button → content: { "text": "Aksi yang Diinginkan", "href": "#", "variant": "primary" }
+✅ image → content: { "src": "https://placehold.co/800x600/1e293b/64748b?text=Judul", "alt": "Deskripsi" }
+✅ features → content: { "title": "Judul Fitur", "items": [{ "icon": "🚀", "title": "Nama Fitur", "desc": "Deskripsi" }], "columns": 3 }
+✅ testimonial → content: { "items": [{ "name": "Nama", "role": "Role", "text": "Testimoni...", "rating": 5 }] }
+✅ pricing → content: { "items": [{ "name": "Paket", "price": "Rp 99K", "desc": "...", "features": ["Fitur 1"], "highlighted": false, "cta": "Pilih" }] }
+✅ stats → content: { "items": [{ "value": "50+", "label": "Project" }] }
+✅ cta → content: { "title": "Judul CTA", "subtitle": "Subtitle", "buttonText": "Teks", "buttonHref": "#" }
+✅ navbar → content: { "logo": "NAMA BRAND", "links": [{ "label": "Beranda", "href": "#" }], "ctaText": "Hubungi", "ctaHref": "#" }
+✅ footer → content: { "logo": "NAMA BRAND", "description": "...", "links": [...], "socials": [...], "copyright": "© 2025..." }
+✅ contactForm → content: { "title": "Hubungi Kami", "subtitle": "Isi form", "fields": ["name", "email", "phone", "message"] }
 
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ TEKNIK DESAIN ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
+⚠️ LARANGAN: content {} KOSONG! Setiap element HARUS diisi konten! ⚠️
 
-Pilih dan variasikan teknik-teknik ini di setiap section:
+--- STRATEGI HALAMAN ---
+Buat 5-7 section:
+1. PEMBUKA — hero yang mencengangkan
+2-4. VALUE — fitur/layanan, testimonial, statistik
+5. PENUTUP — CTA yang membuat orang ingin action
+6. FOOTER — lengkap dengan links & sosial media
 
-LAYOUT VARIATIONS:
-→ Split layout (50-50, 60-40, 30-70)
-→ Asymmetric grid (kolom dengan lebar berbeda)
-→ Full-bleed (full width) vs contained
-→ Zigzag pattern (gambar-kiri, teks-kanan, bergantian)
-→ Cards with varying heights (masonry-like)
-→ Centered content with max-width
-→ Two-column text (seperti majalah)
-→ Sidebar content layout
+--- TEKNIK DESAIN ---
+Layout: Split, Asymmetric, Full-bleed, Zigzag, Masonry, Sidebar
+Visual: Gradients, Glassmorphism, Color blocking, Large typography, Shadow layering
 
-VISUAL TECHNIQUES:
-→ Bold gradients sebagai background
-→ Glassmorphism (backdrop-blur, semi-transparan)
-→ Large typography sebagai visual hero
-→ Color blocking (kotak warna berani)
-→ Subtle patterns atau texture
-→ Shadow layering untuk depth
-→ Border accents (garis tipis sebagai dekorasi)
-→ Rounded corners ekstrim (30-60px)
-→ Icon atau emoji sebagai aksen visual
-
-COLOR PSYCHOLOGY:
-→ Teknologi/Startup: biru, ungu, cyan, putih
-→ Kesehatan/Kecantikan: hijau sage, pink, emas, putih
-→ Makanan/Minuman: merah, oranye, kuning, coklat
-→ Pendidikan: biru navy, emas, putih
-→ Kreatif/Agen: warna berani, gradien, hitam-putih kontras
-→ Mewah/Luxury: hitam, emas, putih, burgundy
-→ Minimalis: putih, abu-abu, satu aksen warna
-
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ FORMAT OUTPUT ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
-
-Output HANYA JSON array, tanpa markdown atau backticks:
+--- FORMAT OUTPUT ---
+Output HANYA JSON array, tanpa markdown/backticks:
 
 [
   {
-    "sectionType": "hero-atau-jenis-section",
+    "sectionType": "hero",
     "title": "Judul Section",
     "styles": {
       "backgroundColor": "#hexcolor",
@@ -370,9 +356,9 @@ Output HANYA JSON array, tanpa markdown atau backticks:
         "width": 12,
         "elements": [
           {
-            "type": "heading | text | image | button | atau jenis elemen apapun yang paling tepat",
-            "content": { ... properti sesuai kreativitas Anda },
-            "styles": { "color": "#...", "fontSize": "...", "backgroundColor": "...", "borderRadius": "...", dll }
+            "type": "heading",
+            "content": { "text": "ISI KONTEN — JANGAN KOSONG!", "level": "h2", "align": "center" },
+            "styles": { "color": "#ffffff", "fontSize": "36px", "fontWeight": "700", "textAlign": "center" }
           }
         ]
       }
@@ -380,18 +366,7 @@ Output HANYA JSON array, tanpa markdown atau backticks:
   }
 ]
 
-⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶ PEDOMAN KREATIF ⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶⊶
-
-→ Variasikan LAYOUT setiap section — jangan semua 1 kolom
-→ Variasikan WARNA setiap section — ada gelap, ada terang, untuk dinamika
-→ Setiap TEKS harus bermakna — buat pembaca merasa sesuatu
-→ Setiap section harus PUNYA TUJUAN — jangan asal ada
-→ Section pertama harus POWERFUL — first impression menentukan segalanya
-→ Testimonial harus KEDENGARAN seperti manusia sungguhan
-→ CTA harus MEMBUAT orang ingin klik segera
-→ Buat desain yang KONSISTEN — seolah satu tangan mengerjakan semua
-
-INGAT: Anda bukan template filler. Anda adalah SENIMAN. Beranilah berbeda.`;
+INGAT: setiap element WAJIB punya content terisi! Content {} kosong itu TIDAK BOLEH!`;
 
   return callAIProxy(config, prompt, "generate");
 }

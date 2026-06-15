@@ -536,12 +536,47 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
   const elType = typeAliases[normalizedType] || 
     (validTypes.includes(type as ElementType) ? type as ElementType : "heading");
   
+  // Fill empty content with defaults — AI sering lupa isi konten!
+  const mergedContent = fillContentDefaults(elType, content);
+  
   return {
     id: genId(),
     type: elType,
-    content: content || {},
+    content: mergedContent,
     styles: styles || {},
   };
+}
+
+/**
+ * Fallback content — jika AI lupa/kosong, isi dengan konten default
+ * Menggunakan elementDefaults sebagai single source of truth
+ */
+function fillContentDefaults(elType: ElementType, aiContent: any): Record<string, any> {
+  const defaults = elementDefaults[elType]?.content || {};
+  const content = aiContent || {};
+  const isEmpty = Object.keys(content).length === 0;
+  
+  if (isEmpty) {
+    return JSON.parse(JSON.stringify(defaults));
+  }
+  
+  // Isi field yang kosong dengan default
+  for (const key of Object.keys(defaults)) {
+    const val = content[key];
+    if (val === undefined || val === null || val === '') {
+      content[key] = defaults[key];
+    }
+  }
+  
+  // Untuk field array khusus — isi jika kosong
+  const arrayFields = ['items', 'links', 'socials', 'slides', 'members', 'fields'];
+  for (const field of arrayFields) {
+    if (Array.isArray(content[field]) && content[field].length === 0 && defaults[field]) {
+      content[field] = JSON.parse(JSON.stringify(defaults[field]));
+    }
+  }
+  
+  return content;
 }
 
 /**
