@@ -13,7 +13,7 @@ export const defaultGlobalStyles: GlobalStyles = {
 
 export function defaultSectionStyles() {
   return {
-    padding: "80px 0",
+    padding: "0",
     backgroundColor: "transparent",
     containerWidth: "boxed" as const,
   };

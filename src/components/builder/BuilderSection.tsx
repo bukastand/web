@@ -171,12 +171,12 @@ export default function BuilderSectionComponent({
         <div className={`flex items-center justify-center gap-4 py-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"}`}>
           <button
             onClick={() => {
-              const current = parseInt(section.styles.padding || "80px") || 80;
+              const current = parseInt(section.styles.padding || "0") || 0;
               dispatch({
                 type: "UPDATE_SECTION_STYLES",
                 pageId,
                 sectionId: section.id,
-                styles: { padding: `${Math.max(20, current - 20)}px 0` },
+                styles: { padding: `${Math.max(0, current - 20)}px 0` },
               });
             }}
             className="text-[10px] text-gray-500 hover:text-white transition-colors"
@@ -184,10 +184,10 @@ export default function BuilderSectionComponent({
           >
             ▲ Kurangi
           </button>
-          <span className="text-[10px] text-gray-600">{section.styles.padding || "80px 0"}</span>
+          <span className="text-[10px] text-gray-600">{section.styles.padding || "0"}</span>
           <button
             onClick={() => {
-              const current = parseInt(section.styles.padding || "80px") || 80;
+              const current = parseInt(section.styles.padding || "0") || 0;
               dispatch({
                 type: "UPDATE_SECTION_STYLES",
                 pageId,

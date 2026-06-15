@@ -116,7 +116,7 @@ export default function PublishedPage() {
   };
 
   const sectionPadding = (s: any) => {
-    const p = s.styles.padding || "60px 0";
+    const p = s.styles.padding || "0";
     return { padding: p };
   };
 
