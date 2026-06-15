@@ -1607,7 +1607,32 @@ export default function StylePanel() {
                       </div>
                       <input value={member.name || ""} onChange={(e) => handleItemChange("members", i, "name", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Nama" />
                       <input value={member.role || ""} onChange={(e) => handleItemChange("members", i, "role", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Jabatan" />
-                      <input value={member.image || ""} onChange={(e) => handleItemChange("members", i, "image", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Foto" />
+                      {member.image && (
+                        <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                          <img src={member.image} alt="" className="w-full h-24 object-cover" />
+                          <button
+                            onClick={() => handleItemChange("members", i, "image", "")}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (ev) => {
+                            const dataUrl = ev.target?.result as string;
+                            handleItemChange("members", i, "image", dataUrl);
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                        className="w-full mb-1 text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+                      />
                       <div className="flex gap-2">
                         <input value={member.socials?.instagram || ""} onChange={(e) => handleItemChange("members", i, "socials", { ...member.socials, instagram: e.target.value })} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Instagram URL" />
                         <input value={member.socials?.linkedin || ""} onChange={(e) => handleItemChange("members", i, "socials", { ...member.socials, linkedin: e.target.value })} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="LinkedIn URL" />
