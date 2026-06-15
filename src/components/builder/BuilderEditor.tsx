@@ -249,14 +249,9 @@ export default function BuilderEditor() {
           </>
         )}
 
-        {/* Mobile Style Drawer */}
+        {/* Mobile Style Drawer — tanpa backdrop agar builder tetap bisa di-scroll */}
         {(isMobile && (showMobilePanel === "style" || closingPanel === "style")) && state.selectedElementId && (
           <>
-            <div 
-              className={`fixed inset-0 z-30 ${closingPanel === "style" ? "animate-backdropOut" : "animate-backdropIn"}`}
-              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-              onClick={() => closeWithAnimation("style")} 
-            />
             <div className={`fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-2xl ${closingPanel === "style" ? "animate-slideDown" : "animate-slideUp"}`}>
               <div className="sticky top-0 bg-[#0f172a] z-10 px-4 py-3 border-b border-white/10 flex items-center justify-between rounded-t-2xl">
                 <h3 className="text-sm font-semibold text-white">Style Element</h3>
@@ -268,6 +263,11 @@ export default function BuilderEditor() {
               </div>
               <StylePanel />
             </div>
+            {/* Half-transparent overlay agar canvas tetap terlihat tapi tidak bisa diklik — pointer-events-none agar scroll tetap jalan */}
+            <div 
+              className={`fixed inset-0 z-30 pointer-events-none ${closingPanel === "style" ? "animate-backdropOut" : "animate-backdropIn"}`}
+              style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
+            />
           </>
         )}
 
