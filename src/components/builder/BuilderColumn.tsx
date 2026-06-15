@@ -91,7 +91,37 @@ export default function BuilderColumnComponent({
         </button>
       )}
 
-      {/* Inline element picker (shown when picker is open) */}
+      {/* Elements */}
+      <div className="space-y-1 p-2">
+        {column.elements.map((element, elIndex) => (
+          <BuilderElement
+            key={element.id}
+            element={element}
+            elementIndex={elIndex}
+            columnIndex={columnIndex}
+            sectionId={sectionId}
+            pageId={pageId}
+            totalElements={column.elements.length}
+          />
+        ))}
+      </div>
+
+      {/* Add element button / inline picker at bottom */}
+      {column.elements.length > 0 && !showElementPicker && (
+        <div className="px-2 pb-2">
+          <button
+            onClick={() => setShowElementPicker(true)}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-gray-300/50 text-gray-400 hover:text-[#22c55e] hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all text-xs font-medium active:scale-[0.99]"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Element
+          </button>
+        </div>
+      )}
+
+      {/* Inline picker — muncul di tempat yang sama dengan tombol "Tambah Element" */}
       {showElementPicker && (
         <div className={column.elements.length === 0 ? "p-2" : "px-2 pb-2"}>
           <div className="p-3 rounded-xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-sm">
@@ -123,36 +153,6 @@ export default function BuilderColumnComponent({
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Elements */}
-      <div className="space-y-1 p-2">
-        {column.elements.map((element, elIndex) => (
-          <BuilderElement
-            key={element.id}
-            element={element}
-            elementIndex={elIndex}
-            columnIndex={columnIndex}
-            sectionId={sectionId}
-            pageId={pageId}
-            totalElements={column.elements.length}
-          />
-        ))}
-      </div>
-
-      {/* Add element button at bottom — hidden when picker is open */}
-      {column.elements.length > 0 && !showElementPicker && (
-        <div className="px-2 pb-2">
-          <button
-            onClick={() => setShowElementPicker(true)}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-gray-300/50 text-gray-400 hover:text-[#22c55e] hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all text-xs font-medium active:scale-[0.99]"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Tambah Element
-          </button>
         </div>
       )}
     </div>
