@@ -999,6 +999,338 @@ function ThreeBackgroundElement({ el }: ElementComponentProps) {
   );
 }
 
+function CarouselElement({ el }: ElementComponentProps) {
+  const slides = el.content.slides || [];
+  const [activeIdx, setActiveIdx] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoPlay = el.content.autoPlay !== false;
+  const interval = el.content.interval || 4000;
+
+  const goTo = (idx: number) => {
+    const total = slides.length;
+    if (total === 0) return;
+    setActiveIdx(((idx % total) + total) % total);
+  };
+
+  useEffect(() => {
+    if (!autoPlay || slides.length <= 1) return;
+    timerRef.current = setInterval(() => goTo(activeIdx + 1), interval);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [autoPlay, interval, activeIdx, slides.length]);
+
+  const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const carouselHeight = el.content.height || "400px";
+
+  if (slides.length === 0) {
+    return <div className="text-center text-gray-500 py-10">Tambah slide untuk memulai carousel</div>;
+  }
+
+  return (
+    <div style={elStyles}>
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-6" style={subtitleStyle}>{el.content.subtitle}</p>}
+      <div className="relative overflow-hidden rounded-2xl" style={{ height: carouselHeight }}>
+        {/* Slides */}
+        {slides.map((slide: any, i: number) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-all duration-700 ease-in-out"
+            style={{
+              opacity: i === activeIdx ? 1 : 0,
+              transform: `translateX(${(i - activeIdx) * 100}%)`,
+              transition: "opacity 0.7s ease-in-out, transform 0.7s ease-in-out",
+              zIndex: i === activeIdx ? 1 : 0,
+            }}
+          >
+            <img
+              src={slide.image || "https://placehold.co/800x500/1e293b/64748b?text=Slide"}
+              alt={slide.caption || ""}
+              className="w-full h-full object-cover"
+            />
+            {slide.caption && (
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                <p style={{ color: el.content.captionColor || "#ffffff", fontSize: el.content.captionSize || "14px" }}>
+                  {slide.caption}
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Arrows */}
+        {slides.length > 1 && (
+          <>
+            <button
+              onClick={() => goTo(activeIdx - 1)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+              style={{ backgroundColor: el.content.arrowBg || "rgba(0,0,0,0.3)", color: el.content.arrowColor || "#ffffff" }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => goTo(activeIdx + 1)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+              style={{ backgroundColor: el.content.arrowBg || "rgba(0,0,0,0.3)", color: el.content.arrowColor || "#ffffff" }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </>
+        )}
+
+        {/* Dots */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {slides.map((_: any, i: number) => (
+              <button
+                key={i}
+                onClick={() => setActiveIdx(i)}
+                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor: i === activeIdx ? (el.content.dotActiveColor || "#22c55e") : (el.content.dotColor || "rgba(255,255,255,0.3)"),
+                  transform: i === activeIdx ? "scale(1.3)" : "scale(1)",
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AccordionElement({ el }: ElementComponentProps) {
+  const items = el.content.items || [];
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  return (
+    <div style={elStyles}>
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-6" style={subtitleStyle}>{el.content.subtitle}</p>}
+      <div className="max-w-2xl mx-auto space-y-3">
+        {items.map((item: any, i: number) => (
+          <div
+            key={i}
+            className="rounded-2xl overflow-hidden"
+            style={{
+              backgroundColor: el.content.itemBg || "rgba(255,255,255,0.05)",
+              border: `1px solid ${el.content.itemBorder || "rgba(255,255,255,0.1)"}`,
+            }}
+          >
+            <button
+              onClick={() => setOpenIdx(openIdx === i ? null : i)}
+              className="w-full flex items-center justify-between p-5 text-left transition-colors"
+              style={{ color: el.content.questionColor || "#ffffff", fontSize: el.content.questionSize || "16px", fontWeight: el.content.questionWeight || "600" }}
+            >
+              <span>{item.question}</span>
+              <svg
+                className="w-5 h-5 flex-shrink-0 transition-transform duration-300"
+                style={{
+                  transform: openIdx === i ? "rotate(45deg)" : "rotate(0deg)",
+                  color: el.content.iconColor || "#22c55e",
+                }}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <div
+              className="overflow-hidden transition-all duration-300"
+              style={{
+                maxHeight: openIdx === i ? "500px" : "0px",
+                opacity: openIdx === i ? 1 : 0,
+              }}
+            >
+              <div className="px-5 pb-5" style={{ color: el.content.answerColor || "#94a3b8", fontSize: el.content.answerSize || "14px" }}>
+                {item.answer}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TeamElement({ el }: ElementComponentProps) {
+  const members = el.content.members || [];
+  const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  return (
+    <div style={elStyles}>
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
+      <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {members.map((member: any, i: number) => (
+          <div
+            key={i}
+            className="p-6 rounded-2xl text-center"
+            style={{
+              backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)",
+              border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
+            }}
+          >
+            <img
+              src={member.image || "https://placehold.co/200x200/1e293b/64748b?text=Team"}
+              alt={member.name}
+              className="mx-auto rounded-full object-cover mb-4"
+              style={{ width: el.content.avatarSize || "120px", height: el.content.avatarSize || "120px" }}
+            />
+            <h3 style={{ color: el.content.nameColor || "#ffffff", fontSize: el.content.nameSize || "18px", fontWeight: el.content.nameWeight || "700" }}>
+              {member.name}
+            </h3>
+            <p style={{ color: el.content.roleColor || "#94a3b8", fontSize: el.content.roleSize || "14px" }} className="mb-4">
+              {member.role}
+            </p>
+            <div className="flex justify-center gap-3">
+              {member.socials?.instagram && (
+                <a href={member.socials.instagram} target="_blank" rel="noopener noreferrer"
+                  className="hover:scale-110 transition-transform"
+                  style={{ color: el.content.socialIconColor || "#64748b" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = el.content.socialIconHoverColor || "#22c55e"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = el.content.socialIconColor || "#64748b"; }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+              )}
+              {member.socials?.linkedin && (
+                <a href={member.socials.linkedin} target="_blank" rel="noopener noreferrer"
+                  className="hover:scale-110 transition-transform"
+                  style={{ color: el.content.socialIconColor || "#64748b" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = el.content.socialIconHoverColor || "#22c55e"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = el.content.socialIconColor || "#64748b"; }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CountdownElement({ el }: ElementComponentProps) {
+  const targetDate = el.content.targetDate ? new Date(el.content.targetDate).getTime() : Date.now() + 30 * 24 * 60 * 60 * 1000;
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const calc = () => {
+      const diff = targetDate - Date.now();
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    calc();
+    const timer = setInterval(calc, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  const elStyles = applyStyles(el);
+  const titleStyle: React.CSSProperties = {
+    color: el.content.titleColor || "#ffffff",
+    fontSize: el.content.titleSize || "30px",
+    fontWeight: el.content.titleWeight || "700",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const subtitleStyle: React.CSSProperties = {
+    color: el.content.subtitleColor || "#94a3b8",
+    fontSize: el.content.subtitleSize || "16px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const numStyle: React.CSSProperties = {
+    color: el.content.numberColor || "#22c55e",
+    fontSize: el.content.numberSize || "48px",
+    fontWeight: el.content.numberWeight || "800",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+  const labelStyle: React.CSSProperties = {
+    color: el.content.labelColor || "#94a3b8",
+    fontSize: el.content.labelSize || "14px",
+    fontFamily: el.styles.fontFamily || undefined,
+  };
+
+  const boxes = [
+    { value: timeLeft.days, label: el.content.labelDays || "Hari" },
+    { value: timeLeft.hours, label: el.content.labelHours || "Jam" },
+    { value: timeLeft.minutes, label: el.content.labelMinutes || "Menit" },
+    { value: timeLeft.seconds, label: el.content.labelSeconds || "Detik" },
+  ];
+
+  return (
+    <div style={elStyles}>
+      {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
+      <div className="flex items-center justify-center gap-4 md:gap-6">
+        {boxes.map((box, i) => (
+          <div key={i} className="flex items-center gap-4 md:gap-6">
+            <div
+              className="flex flex-col items-center rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[100px]"
+              style={{
+                backgroundColor: el.content.boxBg || "rgba(255,255,255,0.05)",
+                border: `1px solid ${el.content.boxBorder || "rgba(255,255,255,0.1)"}`,
+              }}
+            >
+              <span style={numStyle}>{String(box.value).padStart(2, "0")}</span>
+              <span style={labelStyle}>{box.label}</span>
+            </div>
+            {i < boxes.length - 1 && (
+              <span className="text-2xl md:text-3xl font-bold self-start pt-4 md:pt-6" style={{ color: el.content.separatorColor || "rgba(255,255,255,0.1)" }}>:</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   heading: HeadingElement,
   text: TextElement,
@@ -1018,6 +1350,10 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   navbar: NavbarElement,
   footer: FooterElement,
   "three-background": ThreeBackgroundElement,
+  carousel: CarouselElement,
+  accordion: AccordionElement,
+  team: TeamElement,
+  countdown: CountdownElement,
 };
 
 export function ElementRenderer({

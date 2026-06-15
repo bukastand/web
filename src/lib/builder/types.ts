@@ -1,7 +1,8 @@
 export type ElementType =
   | "heading" | "text" | "image" | "button" | "video" | "spacer" | "divider" | "icon"
   | "features" | "pricing" | "testimonial" | "cta" | "stats" | "contactForm" | "maps"
-  | "navbar" | "footer" | "three-background";
+  | "navbar" | "footer" | "three-background"
+  | "carousel" | "accordion" | "team" | "countdown";
 
 export interface ElementStyles {
   // Shorthand (backward compatible)

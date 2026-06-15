@@ -31,6 +31,10 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
   { type: "maps", label: "Maps", icon: "📍" },
   { type: "navbar", label: "Navbar", icon: "⊞" },
   { type: "footer", label: "Footer", icon: "⊟" },
+  { type: "carousel", label: "Carousel", icon: "🎠" },
+  { type: "accordion", label: "FAQ", icon: "📋" },
+  { type: "team", label: "Team", icon: "👥" },
+  { type: "countdown", label: "Countdown", icon: "⏱" },
 ];
 
 export { MOBILE_ELEMENTS };
@@ -58,6 +62,10 @@ const elements: ElementItem[] = [
   { type: "stats", label: "Stats Counter", icon: "📈", category: "Konten" },
   { type: "contactForm", label: "Contact Form", icon: "📝", category: "Konten" },
   { type: "maps", label: "Google Maps", icon: "📍", category: "Konten" },
+  { type: "accordion", label: "FAQ Accordion", icon: "📋", category: "Konten" },
+  { type: "team", label: "Tim Kami", icon: "👥", category: "Konten" },
+  { type: "carousel", label: "Carousel", icon: "🎠", category: "Konten" },
+  { type: "countdown", label: "Countdown", icon: "⏱", category: "Konten" },
 
   // Structure
   { type: "navbar", label: "Navbar", icon: "⊞", category: "Struktur" },
