@@ -192,6 +192,8 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       buttonBg: "#22c55e",
       buttonTextColor: "#ffffff",
       whatsappNumber: "6282210099969",
+      recipientEmail: "",
+      siteName: "",
       fields: ["name", "email", "phone", "message"],
     },
     styles: { padding: "0", backgroundColor: "transparent" },

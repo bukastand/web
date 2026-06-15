@@ -928,6 +928,18 @@ export default function StylePanel() {
                 {renderField("Title", "title", "text")}
                 {renderField("Subtitle", "subtitle", "text")}
                 {renderField("No. WhatsApp", "whatsappNumber", "text")}
+                <div className="mb-3 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                  <label className="block text-[11px] font-medium text-yellow-400 uppercase tracking-wider mb-1.5">📧 Email Penerima</label>
+                  <input
+                    type="email"
+                    value={selectedElement.content.recipientEmail || ""}
+                    onChange={(e) => updateContent("recipientEmail", e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+                    placeholder="email@anda.com"
+                  />
+                  <p className="text-[10px] text-yellow-500/70 mt-1">Pesan akan dikirim ke email ini. Dapatkan <strong>Resend API key</strong> di resend.com</p>
+                  {renderField("Nama Website", "siteName", "text")}
+                </div>
                 <div className="mb-3 mt-3">
                   <div className="h-px bg-white/10 mb-3" />
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>

@@ -553,14 +553,58 @@ function StatsElement({ el }: ElementComponentProps) {
 }
 
 function ContactFormElement({ el }: ElementComponentProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const data = new FormData(form);
-    const text = encodeURIComponent(
-      `Halo,\n\nNama: ${data.get("name") || ""}\nEmail: ${data.get("email") || ""}\nPesan: ${data.get("message") || ""}`
+    const name = (data.get("name") || "") as string;
+    const email = (data.get("email") || "") as string;
+    const phone = (data.get("phone") || "") as string;
+    const message = (data.get("message") || "") as string;
+
+    // Also open WhatsApp as fallback
+    const waText = encodeURIComponent(
+      `Halo,\n\nNama: ${name}\nEmail: ${email}\nPesan: ${message}`
     );
-    window.open(`https://wa.me/${el.content.whatsappNumber || "6282210099969"}?text=${text}`, "_blank");
+    window.open(`https://wa.me/${el.content.whatsappNumber || "6282210099969"}?text=${waText}`, "_blank");
+
+    // Send email via API if recipient email is configured
+    const recipientEmail = el.content.recipientEmail;
+    if (recipientEmail) {
+      setSending(true);
+      setError("");
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            message,
+            recipientEmail,
+            siteName: el.content.siteName || "",
+          }),
+        });
+        const result = await res.json();
+        if (result.success) {
+          setSent(true);
+          setTimeout(() => setSent(false), 5000);
+        } else {
+          setError(result.error || "Gagal mengirim email");
+        }
+      } catch (err) {
+        setError("Gagal mengirim email. Coba lagi.");
+      } finally {
+        setSending(false);
+      }
+    }
+
+    form.reset();
   };
 
   const elStyles = applyStyles(el);
@@ -588,7 +632,11 @@ function ContactFormElement({ el }: ElementComponentProps) {
         <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
         <input type="email" name="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
         <textarea name="message" placeholder="Pesan" required rows={4} className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
-        <button type="submit" className="w-full py-3 font-semibold rounded-xl hover:opacity-90 transition-opacity" style={{ backgroundColor: buttonBg, color: buttonTextColor }}>Kirim Pesan</button>
+        <button type="submit" disabled={sending} className="w-full py-3 font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50" style={{ backgroundColor: buttonBg, color: buttonTextColor }}>
+          {sending ? "Mengirim..." : sent ? "✓ Pesan Terkirim!" : error ? "Coba Lagi" : "Kirim Pesan"}
+        </button>
+        {error && <p className="text-xs text-red-400 text-center mt-2">{error}</p>}
+        {sent && <p className="text-xs text-green-400 text-center mt-2">Pesan berhasil dikirim via email & WhatsApp!</p>}
       </form>
     </div>
   );
