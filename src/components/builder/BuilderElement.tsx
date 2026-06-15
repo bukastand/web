@@ -110,8 +110,8 @@ export default function BuilderElementComponent({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
     >
-      {/* Drag handle & controls - appears on hover, always visible when hidden */}
-      <div className={`absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 transition-opacity z-10 ${isHidden ? "opacity-100" : "md:opacity-0 md:group-hover/element:opacity-100"}`}>
+      {/* Drag handle & controls - desktop: hover, mobile: only when selected/hidden */}
+      <div className={`absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 transition-opacity z-10 ${isHidden || isSelected ? "opacity-100" : "opacity-0 md:group-hover/element:opacity-100"}`}>
         <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[#1e293b] border border-white/10 shadow-lg">
           <button
             {...listeners}
