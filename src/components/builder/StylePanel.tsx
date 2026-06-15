@@ -1651,7 +1651,7 @@ export default function StylePanel() {
                       />
                       <div className="mb-1">
                         <label className="text-[9px] text-gray-600 block mb-0.5">Sosial Media</label>
-                        {(Array.isArray(member.socials) ? member.socials : []).map((s, si) => (
+                        {(Array.isArray(member.socials) ? member.socials : []).map((s: any, si: number) => (
                           <div key={si} className="flex items-center gap-1 mb-0.5">
                             <select
                               value={(s && s.platform) || "instagram"}
