@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { createElement } from "@/lib/builder/defaults";
+import { MOBILE_ELEMENTS } from "./ElementSidebar";
 import BuilderElement from "./BuilderElement";
 import type { BuilderColumn as BuilderColumnType, ElementType } from "@/lib/builder/types";
 
@@ -41,18 +42,7 @@ export default function BuilderColumnComponent({
     setShowElementPicker(false);
   };
 
-  // Element types shown in the inline picker (most commonly used first)
-  const QUICK_ELEMENTS = [
-    { type: "heading" as ElementType, icon: "H", label: "Heading" },
-    { type: "text" as ElementType, icon: "¶", label: "Text" },
-    { type: "image" as ElementType, icon: "🖼", label: "Image" },
-    { type: "button" as ElementType, icon: "▣", label: "Button" },
-    { type: "divider" as ElementType, icon: "―", label: "Divider" },
-    { type: "spacer" as ElementType, icon: "⬜", label: "Spacer" },
-    { type: "features" as ElementType, icon: "📊", label: "Features" },
-    { type: "cta" as ElementType, icon: "📢", label: "CTA" },
-    { type: "testimonial" as ElementType, icon: "💬", label: "Testimonial" },
-  ];
+  // All element types from MOBILE_ELEMENTS (22 types), with scroll for long list
 
   return (
     <div
@@ -114,8 +104,8 @@ export default function BuilderColumnComponent({
                 ✕
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-1.5">
-              {QUICK_ELEMENTS.map((item) => (
+            <div className="grid grid-cols-3 gap-1.5 max-h-[200px] overflow-y-auto pr-0.5">
+              {MOBILE_ELEMENTS.map((item) => (
                 <button
                   key={item.type}
                   onClick={() => addElement(item.type)}
