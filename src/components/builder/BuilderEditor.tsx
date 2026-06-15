@@ -258,6 +258,14 @@ export default function BuilderEditor() {
               onClick={() => closeWithAnimation("style")} 
             />
             <div className={`fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a] border-t border-white/10 rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-2xl ${closingPanel === "style" ? "animate-slideDown" : "animate-slideUp"}`}>
+              <div className="sticky top-0 bg-[#0f172a] z-10 px-4 py-3 border-b border-white/10 flex items-center justify-between rounded-t-2xl">
+                <h3 className="text-sm font-semibold text-white">Style Element</h3>
+                <button onClick={() => closeWithAnimation("style")} className="p-1 text-gray-400 hover:text-white transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               <StylePanel />
             </div>
           </>
