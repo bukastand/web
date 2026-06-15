@@ -292,6 +292,15 @@ export default function BuilderEditor() {
               </svg>
               <span className="text-[10px]">Element</span>
             </button>
+            <button
+              onClick={() => dispatch({ type: "ADD_SECTION", pageId: currentPage.id })}
+              className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-gray-400 hover:text-[#22c55e] transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              <span className="text-[10px]">Section</span>
+            </button>
           {state.selectedElementId && (
               <button
                 onClick={() => {

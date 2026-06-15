@@ -314,19 +314,6 @@ export default function BuilderTopBar({
         {/* Divider */}
         {!isMobile && <div className="w-px h-5 bg-white/10 mx-1" />}
 
-        {/* ── MOBILE: Compact dropdown with all actions ── */}
-        {isMobile && (
-          <MobileMenu
-            currentPage={currentPage}
-            signOut={signOut}
-            hasPublishedSnapshot={hasPublishedSnapshot}
-            hasUnsavedChanges={hasUnsavedChanges}
-            publishedUrl={publishedUrl}
-            handlePublish={handlePublish}
-            handleUnpublish={handleUnpublish}
-          />
-        )}
-
         {/* ── DESKTOP: Standard buttons ── */}
 
         {/* Publish Link - slug (hide on mobile) */}
@@ -476,6 +463,19 @@ export default function BuilderTopBar({
               </button>
             )}
           </div>
+        )}
+
+        {/* ── MOBILE: Compact dropdown with all actions ── */}
+        {isMobile && (
+          <MobileMenu
+            currentPage={currentPage}
+            signOut={signOut}
+            hasPublishedSnapshot={hasPublishedSnapshot}
+            hasUnsavedChanges={hasUnsavedChanges}
+            publishedUrl={publishedUrl}
+            handlePublish={handlePublish}
+            handleUnpublish={handleUnpublish}
+          />
         )}
 
         {/* User avatar - hide on mobile (in dropdown) */}
