@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useDraggable } from "@dnd-kit/core";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { ElementRenderer } from "./elements/ElementRenderer";
 import type { BuilderElement as BuilderElementType } from "@/lib/builder/types";
@@ -30,6 +30,17 @@ export default function BuilderElementComponent({
     id: `el-${element.id}`,
     data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex },
   });
+
+  const { setNodeRef: setDroppableRef, isOver } = useDroppable({
+    id: `drop-${element.id}`,
+    data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex },
+  });
+
+  // Merge draggable + droppable refs onto the same outer element to avoid nested issues
+  const mergedRef = useCallback((node: HTMLDivElement | null) => {
+    setNodeRef(node);
+    setDroppableRef(node);
+  }, [setNodeRef, setDroppableRef]);
 
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
@@ -91,16 +102,16 @@ export default function BuilderElementComponent({
 
   return (
     <div
-      ref={setNodeRef}
+      ref={mergedRef}
       style={style}
       className={`group/element relative rounded-lg transition-all ${
         isDragging ? "opacity-50 z-50" : ""
-      } ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-gray-100" : "hover:ring-1 hover:ring-gray-300"} ${isHidden ? "opacity-30" : ""}`}
+      } ${isOver ? "!ring-2 !ring-[#22c55e]/50 !bg-[#22c55e]/5" : ""} ${isSelected ? "ring-2 ring-[#22c55e] ring-offset-2 ring-offset-gray-100" : "hover:ring-1 hover:ring-gray-300"} ${isHidden ? "opacity-30" : ""}`}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
     >
       {/* Drag handle & controls - appears on hover, always visible when hidden */}
-      <div className={`absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 transition-opacity z-10 ${isHidden ? "opacity-100" : "opacity-0 group-hover/element:opacity-100"}`}>
+      <div className={`absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 transition-opacity z-10 ${isHidden ? "opacity-100" : "md:opacity-0 md:group-hover/element:opacity-100"}`}>
         <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[#1e293b] border border-white/10 shadow-lg">
           <button
             {...listeners}
@@ -235,7 +246,6 @@ export default function BuilderElementComponent({
             onBlurEditing={handleBlur}
           />
         )}
-      </div>
     </div>
   );
 }
