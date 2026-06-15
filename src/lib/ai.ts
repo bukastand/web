@@ -7,6 +7,10 @@
 
 export type AIProvider = "gemini" | "groq";
 
+// Model names — updated for 2026 compatibility
+const GEMINI_MODEL = "gemini-2.5-flash";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+
 export interface AIConfig {
   provider: AIProvider;
   apiKey: string;
@@ -77,7 +81,7 @@ function buildPrompt(elementType: string, userPrompt: string, currentContent?: s
  */
 async function callGemini(config: AIConfig, prompt: string): Promise<string> {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${config.apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${config.apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -117,7 +121,7 @@ async function callGroq(config: AIConfig, prompt: string): Promise<string> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
+      model: GROQ_MODEL,
       messages: [
         { role: "system", content: "Anda adalah copywriter profesional untuk website. Output harus sesuai permintaan." },
         { role: "user", content: prompt },
@@ -164,7 +168,7 @@ export async function testApiKey(config: AIConfig): Promise<boolean> {
   try {
     if (config.provider === "gemini") {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${config.apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${config.apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -183,7 +187,7 @@ export async function testApiKey(config: AIConfig): Promise<boolean> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+          model: GROQ_MODEL,
           messages: [{ role: "user", content: "Say OK" }],
           max_tokens: 10,
         }),
