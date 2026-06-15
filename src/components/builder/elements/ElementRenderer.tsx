@@ -657,29 +657,57 @@ function MapsElement({ el }: ElementComponentProps) {
 
   // Parse embedUrl to extract coordinates for iframe
   const embedUrl = el.content.embedUrl || "";
+  const [resolvedUrl, setResolvedUrl] = useState(embedUrl);
+  const [resolving, setResolving] = useState(false);
+
+  // Resolve share.google links client-side via API
+  useEffect(() => {
+    const abort = new AbortController();
+    if (embedUrl.includes("share.google")) {
+      setResolving(true);
+      fetch(`/api/resolve-url?url=${encodeURIComponent(embedUrl)}`, { signal: abort.signal })
+        .then((r) => r.json())
+        .then((data) => {
+          if (!abort.signal.aborted && data.url) {
+            setResolvedUrl(data.url);
+          }
+        })
+        .catch(() => {
+          if (!abort.signal.aborted) setResolvedUrl(embedUrl);
+        })
+        .finally(() => {
+          if (!abort.signal.aborted) setResolving(false);
+        });
+    } else {
+      setResolvedUrl(embedUrl);
+    }
+    return () => abort.abort();
+  }, [embedUrl]);
+
   let iframeSrc = "";
-  if (embedUrl.includes("@")) {
+  const urlToParse = resolvedUrl;
+  if (urlToParse.includes("@")) {
     // Format: https://www.google.com/maps/place/.../@-6.2088,106.8456,13z
-    const coordsMatch = embedUrl.match(/@([\d.\-]+),([\d.\-]+)/);
+    const coordsMatch = urlToParse.match(/@([\d.\-]+),([\d.\-]+)/);
     if (coordsMatch) {
       const lat = coordsMatch[1];
       const lng = coordsMatch[2];
-      const zoomMatch = embedUrl.match(/@[\d.\-]+,[\d.\-]+,([\d.]+)/);
+      const zoomMatch = urlToParse.match(/@[\d.\-]+,[\d.\-]+,([\d.]+)/);
       const zoom = zoomMatch ? zoomMatch[1] : "13";
       iframeSrc = `https://www.google.com/maps?q=${lat},${lng}&output=embed&z=${zoom}`;
     }
-  } else if (embedUrl.includes("?q=")) {
+  } else if (urlToParse.includes("?q=")) {
     // Format: https://maps.google.com/maps?q=-6.2088,106.8456
-    const qMatch = embedUrl.match(/[?&]q=([^&]+)/);
+    const qMatch = urlToParse.match(/[?&]q=([^&]+)/);
     if (qMatch) {
       iframeSrc = `https://www.google.com/maps?q=${encodeURIComponent(decodeURIComponent(qMatch[1]))}&output=embed`;
     }
-  } else if (embedUrl.includes("/embed")) {
+  } else if (urlToParse.includes("/embed")) {
     // Already an embed URL, use directly
-    iframeSrc = embedUrl;
-  } else if (embedUrl.includes("google.com/maps") || embedUrl.includes("maps.google")) {
+    iframeSrc = urlToParse;
+  } else if (urlToParse.includes("google.com/maps") || urlToParse.includes("maps.google")) {
     // Other google maps URL, try to use with output=embed
-    const baseUrl = embedUrl.split("?")[0];
+    const baseUrl = urlToParse.split("?")[0];
     iframeSrc = `${baseUrl}?output=embed`;
   }
 
