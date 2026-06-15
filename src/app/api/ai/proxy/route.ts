@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.5-flash";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 export async function POST(request: Request) {
