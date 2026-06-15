@@ -578,15 +578,17 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
   const menuStyle: React.CSSProperties = {
     color: el.content.menuColor || "#94a3b8",
     fontWeight: el.content.menuFontWeight || "500",
-    fontSize: el.content.menuFontSize || "0.875rem",
+    fontSize: el.content.menuFontSize || "14px",
     fontFamily: el.styles.fontFamily || undefined,
   };
+
+  const menuHoverColor = el.content.menuHoverColor || "#22c55e";
 
   const ctaStyle: React.CSSProperties = {
     backgroundColor: el.content.ctaBgColor || "#22c55e",
     color: el.content.ctaColor || "#ffffff",
     fontWeight: el.content.ctaFontWeight || "600",
-    fontSize: el.content.ctaFontSize || "0.875rem",
+    fontSize: el.content.ctaFontSize || "14px",
     fontFamily: el.styles.fontFamily || undefined,
   };
 
@@ -624,8 +626,21 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* Menu Links - Desktop - fills remaining space */}
         <div className="hidden md:flex items-center gap-6 flex-1" style={{ justifyContent: mapAlign(menuAlign) }}>
           {links.map((link: any, i: number) => (
-            <a key={i} href={link.href || "#"} className="hover:opacity-80 transition-colors" style={menuStyle}>
+            <a
+              key={i}
+              href={link.href || "#"}
+              className="relative transition-colors duration-200"
+              style={menuStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.color = menuHoverColor; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#94a3b8'; }}
+            >
               {link.label}
+              <span
+                className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300"
+                style={{ backgroundColor: menuHoverColor, width: '0' }}
+                onMouseEnter={(e) => { e.currentTarget.style.width = '100%'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.width = '0'; }}
+              />
             </a>
           ))}
         </div>
@@ -664,8 +679,10 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
                 key={i}
                 href={link.href || "#"}
                 onClick={closeMenu}
-                className="block py-2 hover:opacity-80 transition-colors"
+                className="block py-2 transition-colors duration-200"
                 style={menuStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.color = menuHoverColor; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#94a3b8'; }}
               >
                 {link.label}
               </a>

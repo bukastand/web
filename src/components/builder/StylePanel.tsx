@@ -781,30 +781,14 @@ export default function StylePanel() {
                   <ColorPicker value={selectedElement.content.menuColor || "#94a3b8"} onChange={(v) => updateContent("menuColor", v)} label="" />
                 </div>
                 <div className="mb-3">
-                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Font Menu</label>
-                  <input
-                    type="text"
-                    value={selectedElement.content.menuFontSize || "0.875rem"}
-                    onChange={(e) => updateContent("menuFontSize", e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                    placeholder="0.875rem"
-                  />
-                  <div className="flex gap-1 mt-1.5 flex-wrap">
-                    {["0.75rem", "0.875rem", "1rem", "1.125rem"].map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => updateContent("menuFontSize", s)}
-                        className={`px-1.5 py-0.5 text-[10px] rounded-md border transition-all ${
-                          (selectedElement.content.menuFontSize || "0.875rem") === s
-                            ? "bg-[#22c55e]/20 border-[#22c55e]/40 text-[#22c55e]"
-                            : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Hover Menu</label>
+                  <ColorPicker value={selectedElement.content.menuHoverColor || "#22c55e"} onChange={(v) => updateContent("menuHoverColor", v)} label="" />
+                  <p className="text-[9px] text-gray-600 mt-1">Warna saat cursor diarahkan ke menu link + garis underline</p>
                 </div>
+                <FontSizeSlider
+                  value={selectedElement.content.menuFontSize || "14px"}
+                  onChange={(v) => updateContent("menuFontSize", v)}
+                />
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Menu</label>
                   <select
@@ -860,31 +844,10 @@ export default function StylePanel() {
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Warna Teks CTA</label>
                   <ColorPicker value={selectedElement.content.ctaColor || "#ffffff"} onChange={(v) => updateContent("ctaColor", v)} label="" />
                 </div>
-                <div className="mb-3">
-                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Font CTA</label>
-                  <input
-                    type="text"
-                    value={selectedElement.content.ctaFontSize || "0.875rem"}
-                    onChange={(e) => updateContent("ctaFontSize", e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
-                    placeholder="0.875rem"
-                  />
-                  <div className="flex gap-1 mt-1.5 flex-wrap">
-                    {["0.75rem", "0.875rem", "1rem", "1.125rem"].map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => updateContent("ctaFontSize", s)}
-                        className={`px-1.5 py-0.5 text-[10px] rounded-md border transition-all ${
-                          (selectedElement.content.ctaFontSize || "0.875rem") === s
-                            ? "bg-[#22c55e]/20 border-[#22c55e]/40 text-[#22c55e]"
-                            : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <FontSizeSlider
+                  value={selectedElement.content.ctaFontSize || "14px"}
+                  onChange={(v) => updateContent("ctaFontSize", v)}
+                />
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan CTA</label>
                   <select
