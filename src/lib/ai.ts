@@ -1,15 +1,11 @@
 /**
- * AI Service — client-side API calls to Gemini & Groq
+ * AI Service — calls AI providers through our server-side proxy
  *
- * Both providers support CORS, so we call them directly from the browser.
- * User's API key is stored in localStorage and never sent to our server.
+ * API key is stored in localStorage but routed through our Next.js API
+ * to avoid CORS issues (especially for Groq).
  */
 
 export type AIProvider = "gemini" | "groq";
-
-// Model names — updated for 2026 compatibility
-const GEMINI_MODEL = "gemini-2.5-flash";
-const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 export interface AIConfig {
   provider: AIProvider;
@@ -23,6 +19,8 @@ export interface AIGenerateOptions {
 }
 
 const STORAGE_KEY = "pagoda_ai_config";
+
+const PROXY_URL = "/api/ai/proxy";
 
 export function getAIConfig(): AIConfig | null {
   if (typeof window === "undefined") return null;
@@ -77,123 +75,51 @@ function buildPrompt(elementType: string, userPrompt: string, currentContent?: s
 }
 
 /**
- * Call Gemini API from browser
+ * Call the AI provider through our server-side proxy
  */
-async function callGemini(config: AIConfig, prompt: string): Promise<string> {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${config.apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 1024,
-          topP: 0.95,
-        },
-        safetySettings: [
-          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
-          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
-        ],
-      }),
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Gemini API error (${res.status}): ${err}`);
-  }
-
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  return text.trim();
-}
-
-/**
- * Call Groq API from browser
- */
-async function callGroq(config: AIConfig, prompt: string): Promise<string> {
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+async function callAIProxy(config: AIConfig, prompt: string, action: "generate" | "test" = "generate"): Promise<string> {
+  const res = await fetch(PROXY_URL, {
     method: "POST",
-    headers: {
-      "Authorization": `Bearer ${config.apiKey}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: GROQ_MODEL,
-      messages: [
-        { role: "system", content: "Anda adalah copywriter profesional untuk website. Output harus sesuai permintaan." },
-        { role: "user", content: prompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 1024,
-      top_p: 0.95,
+      provider: config.provider,
+      apiKey: config.apiKey,
+      prompt,
+      action,
     }),
   });
 
+  const data = await res.json();
+
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Groq API error (${res.status}): ${err}`);
+    throw new Error(data.error || `AI request failed (${res.status})`);
   }
 
-  const data = await res.json();
-  const text = data?.choices?.[0]?.message?.content || "";
-  return text.trim();
+  if (action === "test") {
+    return data.ok ? "ok" : "";
+  }
+
+  return data.content || "";
 }
 
 /**
- * Generate content using the configured AI provider
+ * Generate content using the configured AI provider (via proxy)
  */
 export async function generateContent(
   config: AIConfig,
   options: AIGenerateOptions
 ): Promise<string> {
   const prompt = buildPrompt(options.elementType, options.prompt, options.currentContent);
-
-  switch (config.provider) {
-    case "gemini":
-      return callGemini(config, prompt);
-    case "groq":
-      return callGroq(config, prompt);
-    default:
-      throw new Error(`Unknown AI provider: ${config.provider}`);
-  }
+  return callAIProxy(config, prompt, "generate");
 }
 
 /**
- * Test API key by making a simple call
+ * Test API key by making a simple call through the proxy
  */
 export async function testApiKey(config: AIConfig): Promise<boolean> {
   try {
-    if (config.provider === "gemini") {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${config.apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: "Katakan 'OK' jika API key berfungsi." }] }],
-            generationConfig: { maxOutputTokens: 10 },
-          }),
-        }
-      );
-      return res.ok;
-    } else {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${config.apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: [{ role: "user", content: "Say OK" }],
-          max_tokens: 10,
-        }),
-      });
-      return res.ok;
-    }
+    const result = await callAIProxy(config, "OK", "test");
+    return result === "ok";
   } catch {
     return false;
   }
@@ -214,7 +140,7 @@ export function getApiKeyUrl(provider: AIProvider): string {
 // ─── SECTION & PAGE GENERATION ───
 
 /**
- * Prompt AI to generate a section structure
+ * Prompt AI to generate a section structure (via proxy)
  */
 export async function generateSection(
   config: AIConfig,
@@ -253,16 +179,11 @@ PENTING:
 - Konten HARUS relevan dengan permintaan user
 - Gunakan placehold.co untuk gambar jika perlu: https://placehold.co/800x500/1e293b/64748b?text=Gambar`;
 
-  switch (config.provider) {
-    case "gemini":
-      return callGemini(config, prompt);
-    case "groq":
-      return callGroq(config, prompt);
-  }
+  return callAIProxy(config, prompt, "generate");
 }
 
 /**
- * Prompt AI to generate a full page with multiple sections
+ * Prompt AI to generate a full page with multiple sections (via proxy)
  */
 export async function generateFullPage(
   config: AIConfig,
@@ -316,10 +237,5 @@ PENTING:
 - Konten HARUS relevan dengan permintaan user
 - Gunakan placehold.co untuk gambar: https://placehold.co/800x500/1e293b/64748b?text=Nama`;
 
-  switch (config.provider) {
-    case "gemini":
-      return callGemini(config, prompt);
-    case "groq":
-      return callGroq(config, prompt);
-  }
+  return callAIProxy(config, prompt, "generate");
 }
