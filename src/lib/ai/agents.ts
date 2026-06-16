@@ -14,9 +14,18 @@
  * - Reviewer & Stylist memoles hasil akhir
  */
 
-import type { AIConfig } from "@/lib/ai";
+import type { AIConfig, AIProvider } from "@/lib/ai";
+import { getAllAIConfigs } from "@/lib/ai";
 import { buildResearcherPrompt, buildPlannerPrompt, buildWriterPrompt, buildCoderPrompt, buildReviewerPrompt, buildStylistPrompt } from "./prompts";
 import { queryBestMemories, loadUserPreferences, buildFewShotExamples, buildPreferenceString } from "./memory";
+
+// ─── Fallback Provider Types ───────────────────────
+
+interface ProviderEntry {
+  provider: AIProvider;
+  apiKey: string;
+  model?: string;
+}
 
 // ─── Types ───────────────────────────────────────────
 
@@ -52,18 +61,50 @@ export interface PipelineConfig {
 
 // ─── AI Proxy Call ─────────────────────────────────
 
+/**
+ * Get the list of all available provider configs for fallback
+ * Primary config comes first, then other providers
+ */
+function getFallbackProviders(config: AIConfig): ProviderEntry[] {
+  const allConfigs = getAllAIConfigs();
+  const providers: ProviderEntry[] = [];
+  const added = new Set<string>();
+
+  // Primary provider first (explicitly passed)
+  providers.push({
+    provider: config.provider,
+    apiKey: config.apiKey,
+  });
+  added.add(config.provider);
+
+  // Then all others from storage
+  for (const cfg of allConfigs) {
+    if (!added.has(cfg.provider) && cfg.apiKey) {
+      providers.push({
+        provider: cfg.provider,
+        apiKey: cfg.apiKey,
+      });
+      added.add(cfg.provider);
+    }
+  }
+
+  return providers;
+}
+
 async function callAgent(
   config: AIConfig,
   prompt: string
 ): Promise<string> {
   const proxyUrl = "/api/ai/proxy";
 
+  // Build fallback provider list from all stored keys
+  const providers = getFallbackProviders(config);
+
   const res = await fetch(proxyUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      provider: config.provider,
-      apiKey: config.apiKey,
+      providers,
       prompt,
       action: "generate",
     }),
@@ -72,7 +113,12 @@ async function callAgent(
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.error || `AI request failed (${res.status})`);
+    // Include fallback errors in the message
+    const errorMsg = data.error || `AI request failed (${res.status})`;
+    const fallbackInfo = data.fallbackErrors
+      ? `\n\nFallback details:\n${data.fallbackErrors.join("\n")}`
+      : "";
+    throw new Error(errorMsg + fallbackInfo);
   }
 
   return data.content || "";

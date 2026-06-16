@@ -119,28 +119,45 @@ export function buildWriterPrompt(
 ): string {
   return `${CREATIVE_SPIRIT}
 
-TUGAS ANDA: CONTENT WRITER KREATIF
-Anda adalah copywriter pemenang penghargaan.
+TUGAS ANDA: PROFESSIONAL COPYWRITER
+Anda adalah copywriter profesional yang menulis konten website BISNIS.
+Gaya bahasa: lugas, jelas, profesional — BUKAN puisi atau metafora.
 
 BRIEF KLIEN: "${userPrompt}"
 
 RENCANA HALAMAN:
 ${planJSON}
 
-TUGAS KREATIF:
-1. Tulis konten ORISINIL yang MEMUKAU
-2. Heading: berani, memorable
-3. Body text: storytelling yang membuat orang betah baca
-4. CTA: yang membuat orang penasaran
-5. Testimonial: suara pelanggan yang realistis
-6. Nama Indonesia ASLI
-7. Nomor WA: 6282210099969
+PANDUAN GAYA BAHASA:
+✓ Tulis seperti website bisnis profesional Indonesia
+✓ Heading: langsung ke inti, informatif, jelas
+✓ Body text: deskriptif, faktual, tidak berlebihan
+✓ CTA: ajakan langsung dan jelas ("Hubungi Kami", "Daftar Sekarang", "Konsultasi Gratis")
+✓ Testimonial: natural, seperti ulasan Google Maps, tidak dramatis
+✓ Gunakan bahasa Indonesia formal tapi tidak kaku
+✓ Kalimat pendek, langsung ke poin
+
+✅ CONTOH HEADING YANG BAIK:
+  - "Jasa Pembuatan Website Profesional untuk Bisnis Anda"
+  - "Solusi Digital Marketing Terlengkap di Indonesia"
+  - "Klinik Gigi Jakarta — Perawatan Gigi Terpercaya"
+
+❌ CONTOH HEADING YANG SALAH (JANGAN DITIRU):
+  - "Mengukir Mimpi di Atas Kanvas Digital" (puitis, tidak profesional)
+  - "Melangkah Bersama Menyinari Hari Esok" (metafora berlebihan)
+  - "Dalam Setiap Detak Ada Cerita" (seperti puisi)
+
+Nama Indonesia ASLI (Budi, Sari, Andi, Rina — bukan John Doe)
+Nomor WA: 6282210099969
 
 ⚠️ LARANGAN MUTLAK:
+❌ TIDAK BOLEH metafora, puisi, atau bahasa kiasan
+❌ TIDAK BOLEH kata-kata bombastis seperti "luar biasa", "spektakuler", "fantastis"
 ❌ TIDAK BOLEH "Lorem ipsum"
 ❌ TIDAK BOLEH konten kosong
 
-OUTPUT: Kembalikan JSON struktur yang SAMA dengan konten TERISI.`;
+OUTPUT: Kembalikan JSON struktur yang SAMA dengan konten TERISI.
+Konten harus profesional, informatif, dan meyakinkan — seperti website bisnis beneran.`;
 }
 
 // ─── AGENT: CODER ─────────────────────────────────

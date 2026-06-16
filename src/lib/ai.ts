@@ -34,8 +34,11 @@ export interface AIGenerateOptions {
 }
 
 const STORAGE_KEY = "pagoda_ai_config";
+const PROVIDER_KEYS_KEY = "pagoda_provider_keys";
 
 const PROXY_URL = "/api/ai/proxy";
+
+// ─── Single config (backward compat) ────────────
 
 export function getAIConfig(): AIConfig | null {
   if (typeof window === "undefined") return null;
@@ -50,11 +53,87 @@ export function getAIConfig(): AIConfig | null {
 export function saveAIConfig(config: AIConfig) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  // Also save to multi-provider store
+  saveProviderKey(config.provider, config.apiKey);
 }
 
 export function clearAIConfig() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
+}
+
+// ─── Multi-provider key storage (for auto-fallback) ────
+
+type ProviderKeys = Partial<Record<AIProvider, string>>;
+
+function loadProviderKeys(): ProviderKeys {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(PROVIDER_KEYS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveProviderKeys(keys: ProviderKeys) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PROVIDER_KEYS_KEY, JSON.stringify(keys));
+}
+
+/**
+ * Save an API key for a specific provider
+ */
+export function saveProviderKey(provider: AIProvider, apiKey: string) {
+  const keys = loadProviderKeys();
+  keys[provider] = apiKey;
+  saveProviderKeys(keys);
+}
+
+/**
+ * Get API key for a specific provider
+ */
+export function getProviderKey(provider: AIProvider): string | undefined {
+  const keys = loadProviderKeys();
+  return keys[provider];
+}
+
+/**
+ * Remove API key for a specific provider
+ */
+export function removeProviderKey(provider: AIProvider) {
+  const keys = loadProviderKeys();
+  delete keys[provider];
+  saveProviderKeys(keys);
+}
+
+/**
+ * Get ALL configured AIConfigs — returns array sorted by priority:
+ * 1. Current primary config first
+ * 2. Then all other providers that have keys
+ */
+export function getAllAIConfigs(): AIConfig[] {
+  if (typeof window === "undefined") return [];
+  const keys = loadProviderKeys();
+  const configs: AIConfig[] = [];
+  const added = new Set<AIProvider>();
+
+  // Primary config first
+  const primary = getAIConfig();
+  if (primary && keys[primary.provider]) {
+    configs.push(primary);
+    added.add(primary.provider);
+  }
+
+  // Then all other providers that have keys
+  for (const [provider, apiKey] of Object.entries(keys)) {
+    if (!added.has(provider as AIProvider) && apiKey) {
+      configs.push({ provider: provider as AIProvider, apiKey });
+      added.add(provider as AIProvider);
+    }
+  }
+
+  return configs;
 }
 
 /**

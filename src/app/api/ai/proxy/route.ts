@@ -69,18 +69,24 @@ const SYSTEM_PROMPT = "Anda adalah seniman web visioner dan copywriter puitis. B
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { provider, apiKey, prompt, action, model } = body;
-
-    if (!provider || !apiKey) {
-      return NextResponse.json(
-        { error: "Provider dan API Key wajib diisi" },
-        { status: 400 }
-      );
-    }
+    const { provider, apiKey, prompt, action, model, providers } = body;
 
     if (action === "generate" && !prompt) {
       return NextResponse.json(
         { error: "Prompt wajib diisi" },
+        { status: 400 }
+      );
+    }
+
+    // ── New format: array of providers (with auto-fallback) ──
+    if (providers && Array.isArray(providers) && providers.length > 0) {
+      return handleWithFallback(providers, prompt, action);
+    }
+
+    // ── Old format: single provider ──
+    if (!provider || !apiKey) {
+      return NextResponse.json(
+        { error: "Provider dan API Key wajib diisi" },
         { status: 400 }
       );
     }
@@ -95,24 +101,13 @@ export async function POST(request: Request) {
 
     // Test action: simple call to verify API key
     if (action === "test") {
-      return handleTest(provider, apiKey, config);
+      const ok = await testSingleProvider(provider, apiKey, config);
+      return NextResponse.json({ ok });
     }
 
-    // Generate action
+    // Generate action with single provider
     const selectedModel = model || config.models[0];
-
-    if (provider === "gemini") {
-      return handleGemini(apiKey, prompt, config, selectedModel);
-    } else if (config.anthropicFormat) {
-      return handleAnthropic(apiKey, prompt, config, selectedModel);
-    } else if (config.openaiCompatible) {
-      return handleOpenAICompatible(provider, apiKey, prompt, config, selectedModel);
-    }
-
-    return NextResponse.json(
-      { error: `Unhandled provider: ${provider}` },
-      { status: 400 }
-    );
+    return callProviderAndRespond(provider, apiKey, prompt, config, selectedModel);
   } catch (err: any) {
     console.error("AI Proxy error:", err);
     return NextResponse.json(
@@ -122,17 +117,94 @@ export async function POST(request: Request) {
   }
 }
 
-// ─── Test Handler ─────────────────────────────────
+// ─── Auto-Fallback Handler ────────────────────────
 
-async function handleTest(provider: string, apiKey: string, config: typeof PROVIDER_CONFIGS['gemini']) {
-  const selectedModel = config.models[0];
+interface ProviderEntry {
+  provider: string;
+  apiKey: string;
+  model?: string;
+}
 
+async function handleWithFallback(
+  providers: ProviderEntry[],
+  prompt: string,
+  action: string
+) {
+  const errors: string[] = [];
+
+  for (const entry of providers) {
+    const config = PROVIDER_CONFIGS[entry.provider];
+    if (!config) {
+      errors.push(`${entry.provider}: unknown provider`);
+      continue;
+    }
+
+    if (action === "test") {
+      const ok = await testSingleProvider(entry.provider, entry.apiKey, config);
+      if (ok) {
+        return NextResponse.json({ ok: true, provider: entry.provider });
+      }
+      errors.push(`${entry.provider}: invalid key`);
+      continue;
+    }
+
+    try {
+      const selectedModel = entry.model || config.models[0];
+      const result = await callSingleProvider(
+        entry.provider,
+        entry.apiKey,
+        prompt,
+        config,
+        selectedModel
+      );
+
+      if (result.ok && result.content) {
+        return NextResponse.json({
+          content: result.content,
+          provider: entry.provider,
+          model: selectedModel,
+        });
+      }
+
+      // Check if we should try next provider
+      if (result.shouldRetry) {
+        errors.push(`${entry.provider}: ${result.error || "rate limited"}`);
+        console.warn(`[AutoFallback] ${entry.provider} failed, trying next...`);
+        continue;
+      }
+
+      // Fatal error (not rate limit) — return immediately
+      return NextResponse.json(
+        { error: `${entry.provider} API error: ${result.error}` },
+        { status: 500 }
+      );
+    } catch (err: any) {
+      errors.push(`${entry.provider}: ${err.message}`);
+      console.warn(`[AutoFallback] ${entry.provider} threw, trying next...`);
+      continue;
+    }
+  }
+
+  // All providers failed
+  return NextResponse.json(
+    {
+      error: `Semua provider gagal.\n\n${errors.join("\n")}\n\nCoba tambah API Key provider lain atau tunggu rate limit reset.`,
+      fallbackErrors: errors,
+    },
+    { status: 429 }
+  );
+}
+
+async function testSingleProvider(
+  provider: string,
+  apiKey: string,
+  config: typeof PROVIDER_CONFIGS['groq']
+): Promise<boolean> {
   try {
-    let ok = false;
-
+    const model = config.models[0];
     if (provider === "gemini") {
       const res = await fetch(
-        `${config.baseUrl}/${selectedModel}:generateContent?key=${apiKey}`,
+        `${config.baseUrl}/${model}:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -142,7 +214,7 @@ async function handleTest(provider: string, apiKey: string, config: typeof PROVI
           }),
         }
       );
-      ok = res.ok;
+      return res.ok;
     } else if (config.anthropicFormat) {
       const res = await fetch(config.baseUrl, {
         method: "POST",
@@ -152,13 +224,13 @@ async function handleTest(provider: string, apiKey: string, config: typeof PROVI
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: selectedModel,
+          model,
           max_tokens: 5,
           messages: [{ role: "user", content: "OK" }],
         }),
       });
-      ok = res.ok;
-    } else if (config.openaiCompatible) {
+      return res.ok;
+    } else {
       const res = await fetch(config.baseUrl, {
         method: "POST",
         headers: {
@@ -166,105 +238,126 @@ async function handleTest(provider: string, apiKey: string, config: typeof PROVI
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: selectedModel,
+          model,
           messages: [{ role: "user", content: "OK" }],
           max_tokens: 5,
         }),
       });
-      ok = res.ok;
+      return res.ok;
     }
-
-    return NextResponse.json({ ok });
   } catch {
-    return NextResponse.json({ ok: false });
+    return false;
   }
 }
 
-// ─── Gemini Handler ─────────────────────────────
-
-async function handleGemini(apiKey: string, prompt: string, config: typeof PROVIDER_CONFIGS['gemini'], model: string) {
-  const result = await callGeminiWithFallback(apiKey, prompt, config, config.models);
-  if (!result.ok) {
-    return NextResponse.json(
-      { error: result.error || "Gemini API error" },
-      { status: 500 }
-    );
-  }
-  return NextResponse.json({ content: result.content || "" });
+interface ProviderCallResult {
+  ok: boolean;
+  content?: string;
+  error?: string;
+  shouldRetry: boolean;
 }
 
-async function callGeminiWithFallback(
+async function callSingleProvider(
+  provider: string,
+  apiKey: string,
+  prompt: string,
+  config: typeof PROVIDER_CONFIGS['groq'],
+  model: string
+): Promise<ProviderCallResult> {
+  try {
+    if (provider === "gemini") {
+      return await callGeminiProvider(apiKey, prompt, config, model);
+    } else if (config.anthropicFormat) {
+      return await callAnthropicProvider(apiKey, prompt, config, model);
+    } else if (config.openaiCompatible) {
+      return await callOpenAICompatibleProvider(provider, apiKey, prompt, config, model);
+    }
+    return { ok: false, error: `Unhandled provider: ${provider}`, shouldRetry: false };
+  } catch (err: any) {
+    return { ok: false, error: err.message, shouldRetry: true };
+  }
+}
+
+/**
+ * Check if an error response indicates we should retry with another provider
+ */
+function isRateLimitError(status: number, errorText: string): boolean {
+  if (status === 429) return true;
+  if (status === 403) {
+    const lower = errorText.toLowerCase();
+    if (lower.includes("rate limit") || lower.includes("quota") || lower.includes("insufficient") || lower.includes("resource exhausted")) return true;
+  }
+  return false;
+}
+
+// ─── Gemini Provider Call ───────────────────────
+
+async function callGeminiProvider(
   apiKey: string,
   prompt: string,
   config: typeof PROVIDER_CONFIGS['gemini'],
-  models: string[]
-): Promise<{ ok: boolean; content?: string; error?: string }> {
-  for (const model of models) {
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
+  model: string
+): Promise<ProviderCallResult> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-      const res = await fetch(
-        `${config.baseUrl}/${model}:generateContent?key=${apiKey}`,
-        {
-          signal: controller.signal,
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: config.defaultTemperature,
-              maxOutputTokens: config.maxTokens,
-              topP: 0.95,
-            },
-            safetySettings: [
-              { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
-              { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
-            ],
-          }),
-        }
-      );
-
-      clearTimeout(timeout);
-
-      if (res.ok) {
-        const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-        return { ok: true, content: text.trim() };
+  try {
+    const res = await fetch(
+      `${config.baseUrl}/${model}:generateContent?key=${apiKey}`,
+      {
+        signal: controller.signal,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: config.defaultTemperature,
+            maxOutputTokens: config.maxTokens,
+            topP: 0.95,
+          },
+          safetySettings: [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
+          ],
+        }),
       }
+    );
 
-      if (res.status >= 400 && res.status < 500) {
-        const err = await res.text();
-        console.warn(`Gemini ${model} failed (${res.status}): ${err.substring(0, 200)}`);
-        continue;
-      }
+    clearTimeout(timeout);
 
-      const err = await res.text();
-      return { ok: false, error: `Gemini error (${res.status}): ${err.substring(0, 300)}` };
-    } catch (err: any) {
-      if (err.name === "AbortError") {
-        console.warn(`Gemini ${model} timed out`);
-        continue;
-      }
-      return { ok: false, error: `Gemini error: ${err.message}` };
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      return { ok: true, content: text.trim(), shouldRetry: false };
     }
+
+    const errText = await res.text();
+    if (isRateLimitError(res.status, errText)) {
+      return { ok: false, error: errText.substring(0, 200), shouldRetry: true };
+    }
+    return { ok: false, error: errText.substring(0, 300), shouldRetry: false };
+  } catch (err: any) {
+    clearTimeout(timeout);
+    if (err.name === "AbortError") {
+      return { ok: false, error: "Timeout", shouldRetry: true };
+    }
+    return { ok: false, error: err.message, shouldRetry: true };
   }
-  return { ok: false, error: "Semua model Gemini tidak tersedia. Coba ganti provider atau cek kuota API Key Anda." };
 }
 
-// ─── OpenAI-Compatible Handler ──────────────────
+// ─── OpenAI-Compatible Provider Call ────────────
 
-async function handleOpenAICompatible(
+async function callOpenAICompatibleProvider(
   provider: string,
   apiKey: string,
   prompt: string,
   config: typeof PROVIDER_CONFIGS['openai'],
   model: string
-) {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+): Promise<ProviderCallResult> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
 
+  try {
     const res = await fetch(config.baseUrl, {
       signal: controller.signal,
       method: "POST",
@@ -286,37 +379,38 @@ async function handleOpenAICompatible(
 
     clearTimeout(timeout);
 
-    if (!res.ok) {
-      const err = await res.text();
-      return NextResponse.json(
-        { error: `${provider} API error (${res.status}): ${err.substring(0, 300)}` },
-        { status: res.status }
-      );
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content || "";
+      return { ok: true, content: text.trim(), shouldRetry: false };
     }
 
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content || "";
-    return NextResponse.json({ content: text.trim() });
+    const errText = await res.text();
+    if (isRateLimitError(res.status, errText)) {
+      return { ok: false, error: errText.substring(0, 200), shouldRetry: true };
+    }
+    return { ok: false, error: errText.substring(0, 300), shouldRetry: false };
   } catch (err: any) {
-    return NextResponse.json(
-      { error: `${provider} API error: ${err.message}` },
-      { status: 500 }
-    );
+    clearTimeout(timeout);
+    if (err.name === "AbortError") {
+      return { ok: false, error: "Timeout", shouldRetry: true };
+    }
+    return { ok: false, error: err.message, shouldRetry: true };
   }
 }
 
-// ─── Anthropic Claude Handler ─────────────────────
+// ─── Anthropic Provider Call ────────────────────
 
-async function handleAnthropic(
+async function callAnthropicProvider(
   apiKey: string,
   prompt: string,
   config: typeof PROVIDER_CONFIGS['claude'],
   model: string
-) {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+): Promise<ProviderCallResult> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
 
+  try {
     const res = await fetch(config.baseUrl, {
       signal: controller.signal,
       method: "POST",
@@ -329,9 +423,7 @@ async function handleAnthropic(
         model,
         max_tokens: config.maxTokens,
         system: SYSTEM_PROMPT,
-        messages: [
-          { role: "user", content: prompt },
-        ],
+        messages: [{ role: "user", content: prompt }],
         temperature: config.defaultTemperature,
         top_p: 0.95,
       }),
@@ -339,21 +431,44 @@ async function handleAnthropic(
 
     clearTimeout(timeout);
 
-    if (!res.ok) {
-      const err = await res.text();
-      return NextResponse.json(
-        { error: `Claude API error (${res.status}): ${err.substring(0, 300)}` },
-        { status: res.status }
-      );
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.content?.[0]?.text || "";
+      return { ok: true, content: text.trim(), shouldRetry: false };
     }
 
-    const data = await res.json();
-    const text = data?.content?.[0]?.text || "";
-    return NextResponse.json({ content: text.trim() });
+    const errText = await res.text();
+    if (isRateLimitError(res.status, errText)) {
+      return { ok: false, error: errText.substring(0, 200), shouldRetry: true };
+    }
+    return { ok: false, error: errText.substring(0, 300), shouldRetry: false };
   } catch (err: any) {
+    clearTimeout(timeout);
+    if (err.name === "AbortError") {
+      return { ok: false, error: "Timeout", shouldRetry: true };
+    }
+    return { ok: false, error: err.message, shouldRetry: true };
+  }
+}
+
+/**
+ * Legacy: call single provider and return NextResponse
+ */
+async function callProviderAndRespond(
+  provider: string,
+  apiKey: string,
+  prompt: string,
+  config: typeof PROVIDER_CONFIGS['groq'],
+  model: string
+) {
+  const result = await callSingleProvider(provider, apiKey, prompt, config, model);
+  if (!result.ok) {
     return NextResponse.json(
-      { error: `Claude API error: ${err.message}` },
+      { error: `${provider} API error: ${result.error}` },
       { status: 500 }
     );
   }
+  return NextResponse.json({ content: result.content || "" });
 }
+
+
