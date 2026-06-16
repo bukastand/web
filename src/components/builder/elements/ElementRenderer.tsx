@@ -2005,6 +2005,644 @@ function CountdownElement({ el }: ElementComponentProps) {
   );
 }
 
+function OffCanvasElement({ el }: ElementComponentProps) {
+  const {
+    title = "Menu",
+    position = "right",
+    width = "320px",
+    overlay = true,
+    overlayColor = "rgba(0,0,0,0.5)",
+    closeButton = true,
+    panelBg = "#0f172a",
+    panelTextColor = "#ffffff",
+    panelLinkColor = "#94a3b8",
+    panelLinkHoverColor = "#22c55e",
+    items = [],
+  } = el.content;
+  const [open, setOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const sideClasses = position === "left" ? "left-0" : "right-0";
+  const translate = open ? "translate-x-0" : (position === "left" ? "-translate-x-full" : "translate-x-full");
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open]);
+
+  return (
+    <>
+      {/* Toggle button */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl transition-all hover:opacity-80"
+        style={{ backgroundColor: "#22c55e", color: "#ffffff", fontSize: "14px", fontWeight: 500 }}
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        {title}
+      </button>
+
+      {/* Overlay */}
+      {overlay && open && (
+        <div
+          className="fixed inset-0 z-40 transition-opacity duration-300"
+          style={{ backgroundColor: overlayColor }}
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* Panel */}
+      <div
+        ref={panelRef}
+        className={`fixed top-0 ${sideClasses} z-50 h-full overflow-y-auto transition-transform duration-300 shadow-2xl`}
+        style={{
+          width,
+          backgroundColor: panelBg,
+          transform: open ? "translateX(0)" : (position === "left" ? "translateX(-100%)" : "translateX(100%)"),
+        }}
+      >
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h3 style={{ color: panelTextColor, fontSize: "18px", fontWeight: 700 }}>{title}</h3>
+            {closeButton && (
+              <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: panelTextColor }}>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Items */}
+          <div className="space-y-2">
+            {items.map((item: any, i: number) => (
+              <a
+                key={i}
+                href={item.href || "#"}
+                className="block px-4 py-3 rounded-xl transition-all text-sm"
+                style={{ color: panelLinkColor }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = panelLinkHoverColor; e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = panelLinkColor; e.currentTarget.style.backgroundColor = "transparent"; }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function SlidesElement({ el }: ElementComponentProps) {
+  const {
+    slides = [],
+    slideHeight = "600px",
+    autoplay = true,
+    interval = 5000,
+    navigation = "arrows",
+    pagination = true,
+    kenBurns = true,
+    arrowColor = "#ffffff",
+    arrowBg = "rgba(0,0,0,0.3)",
+    dotColor = "rgba(255,255,255,0.3)",
+    dotActiveColor = "#22c55e",
+    slideTitleColor = "#ffffff",
+    slideTitleSize = "48px",
+    slideDescColor = "rgba(255,255,255,0.8)",
+    slideDescSize = "18px",
+    buttonBg = "#22c55e",
+    buttonColor = "#ffffff",
+    buttonText = "Pelajari",
+  } = el.content;
+  const [activeIdx, setActiveIdx] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goTo = (idx: number) => {
+    const total = slides.length;
+    if (total === 0) return;
+    setActiveIdx(((idx % total) + total) % total);
+  };
+
+  useEffect(() => {
+    if (!autoplay || slides.length <= 1) return;
+    timerRef.current = setInterval(() => goTo(activeIdx + 1), interval);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [autoplay, interval, activeIdx, slides.length]);
+
+  if (slides.length === 0) {
+    return <div className="text-center text-gray-500 py-10">Tambah slide untuk slideshow</div>;
+  }
+
+  return (
+    <div className="relative overflow-hidden w-full" style={{ height: slideHeight }}>
+      {slides.map((slide: any, i: number) => (
+        <div
+          key={i}
+          className="absolute inset-0 transition-all duration-1000"
+          style={{
+            opacity: i === activeIdx ? 1 : 0,
+            transform: `scale(${kenBurns && i === activeIdx ? 1.05 : 1})`,
+            transition: "opacity 1s ease-in-out, transform 8s ease-in-out",
+            zIndex: i === activeIdx ? 1 : 0,
+          }}
+        >
+          <img
+            src={slide.image || "https://placehold.co/1400x600/1e293b/64748b?text=Slide"}
+            alt={slide.title || ""}
+            className="w-full h-full object-cover"
+            style={{
+              transform: kenBurns && i === activeIdx ? "scale(1.15)" : "scale(1)",
+              transition: "transform 8s ease-in-out",
+            }}
+          />
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          {/* Content */}
+          <div className="absolute inset-0 flex items-center justify-center p-8">
+            <div className="text-center max-w-2xl">
+              {slide.title && (
+                <h2 className="font-bold mb-4" style={{ color: slideTitleColor, fontSize: slideTitleSize }}>
+                  {slide.title}
+                </h2>
+              )}
+              {slide.description && (
+                <p className="mb-8" style={{ color: slideDescColor, fontSize: slideDescSize }}>
+                  {slide.description}
+                </p>
+              )}
+              <a
+                href={slide.buttonLink || "#"}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
+                style={{ backgroundColor: buttonBg, color: buttonColor }}
+              >
+                {slide.buttonText || buttonText}
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {/* Navigation arrows */}
+      {navigation !== "none" && slides.length > 1 && (
+        <>
+          <button
+            onClick={() => goTo(activeIdx - 1)}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: arrowBg, color: arrowColor }}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={() => goTo(activeIdx + 1)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: arrowBg, color: arrowColor }}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
+
+      {/* Dots */}
+      {pagination && slides.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+          {slides.map((_: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => setActiveIdx(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: i === activeIdx ? "24px" : "10px",
+                height: "10px",
+                backgroundColor: i === activeIdx ? dotActiveColor : dotColor,
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NestedCarouselElement({ el }: ElementComponentProps) {
+  const {
+    slides = [],
+    slidesPerView = 3,
+    autoplay = true,
+    interval = 4000,
+    loop = true,
+    navigation = "arrows",
+    pagination = true,
+    gap = 20,
+    arrowColor = "#ffffff",
+    arrowBg = "rgba(0,0,0,0.3)",
+    dotColor = "rgba(255,255,255,0.3)",
+    dotActiveColor = "#22c55e",
+    slideBg = "rgba(255,255,255,0.05)",
+    slideBorder = "rgba(255,255,255,0.1)",
+    slideBorderRadius = "12px",
+  } = el.content;
+  const [activeIdx, setActiveIdx] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const totalSlides = slides.length;
+  const goTo = (idx: number) => {
+    if (totalSlides === 0) return;
+    setActiveIdx(((idx % totalSlides) + totalSlides) % totalSlides);
+  };
+
+  useEffect(() => {
+    if (!autoplay || totalSlides <= slidesPerView) return;
+    timerRef.current = setInterval(() => goTo(activeIdx + 1), interval);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [autoplay, interval, activeIdx, totalSlides, slidesPerView]);
+
+  if (totalSlides === 0) {
+    return <div className="text-center text-gray-500 py-10">Tambah slide untuk carousel</div>;
+  }
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden">
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateX(-${activeIdx * (100 / Math.min(slidesPerView, 3))}%)`,
+            gap: `${gap}px`,
+          }}
+        >
+          {slides.map((slide: any, i: number) => (
+            <div
+              key={i}
+              className="flex-shrink-0 p-4 rounded-2xl flex flex-col"
+              style={{
+                flexBasis: `calc(${100 / Math.min(slidesPerView, 3)}% - ${gap * (1 - 1 / Math.min(slidesPerView, 3))}px)`,
+                backgroundColor: slideBg,
+                border: `1px solid ${slideBorder}`,
+                borderRadius: slideBorderRadius,
+              }}
+            >
+              {slide.image && (
+                <img
+                  src={slide.image}
+                  alt={slide.title || ""}
+                  className="w-full h-40 object-cover rounded-xl mb-4"
+                />
+              )}
+              {slide.title && (
+                <h3 className="font-bold mb-2" style={{ color: "#ffffff", fontSize: "16px" }}>{slide.title}</h3>
+              )}
+              {slide.description && (
+                <p className="text-sm" style={{ color: "#94a3b8" }}>{slide.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Arrows */}
+      {navigation !== "none" && totalSlides > slidesPerView && (
+        <>
+          <button
+            onClick={() => goTo(activeIdx - 1)}
+            className="absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
+            style={{ backgroundColor: arrowBg, color: arrowColor }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={() => goTo(activeIdx + 1)}
+            className="absolute -right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
+            style={{ backgroundColor: arrowBg, color: arrowColor }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
+
+      {/* Dots */}
+      {pagination && totalSlides > slidesPerView && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          {slides.map((_: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => setActiveIdx(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: i === activeIdx ? "20px" : "8px",
+                height: "8px",
+                backgroundColor: i === activeIdx ? dotActiveColor : dotColor,
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function VideoPlaylistElement({ el }: ElementComponentProps) {
+  const {
+    title = "Video Playlist",
+    titleColor = "#ffffff",
+    titleSize = "20px",
+    playlistBg = "#0f172a",
+    playlistItemBg = "rgba(255,255,255,0.03)",
+    playlistItemHoverBg = "rgba(255,255,255,0.08)",
+    playlistItemActiveBg = "rgba(34,197,94,0.1)",
+    playlistTitleColor = "#ffffff",
+    playlistDescColor = "#94a3b8",
+    thumbnailWidth = "120px",
+    playerBg = "#000000",
+    accentColor = "#22c55e",
+    videos = [],
+  } = el.content;
+  const [activeVideo, setActiveVideo] = useState(0);
+
+  const currentVideo = videos[activeVideo] || {};
+
+  return (
+    <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden" style={{ backgroundColor: playlistBg }}>
+      {/* Player */}
+      <div className="md:flex-1 relative" style={{ backgroundColor: playerBg, minHeight: "300px" }}>
+        {currentVideo.url ? (
+          <iframe
+            src={currentVideo.url}
+            className="w-full h-full absolute inset-0"
+            allowFullScreen
+            title={currentVideo.title || "Video"}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: accentColor }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        )}
+        {title && (
+          <div className="absolute top-3 left-3 z-10">
+            <span className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#ffffff" }}>
+              {currentVideo.title || title}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Playlist sidebar */}
+      <div className="w-full md:w-72 overflow-y-auto" style={{ maxHeight: "400px", backgroundColor: playlistBg }}>
+        {title && (
+          <div className="px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+            <h3 style={{ color: titleColor, fontSize: titleSize, fontWeight: 700 }}>{title}</h3>
+          </div>
+        )}
+        <div className="p-2 space-y-1">
+          {videos.map((video: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => setActiveVideo(i)}
+              className="w-full text-left flex gap-3 p-2 rounded-xl transition-all"
+              style={{
+                backgroundColor: i === activeVideo ? playlistItemActiveBg : playlistItemBg,
+              }}
+              onMouseEnter={(e) => {
+                if (i !== activeVideo) e.currentTarget.style.backgroundColor = playlistItemHoverBg;
+              }}
+              onMouseLeave={(e) => {
+                if (i !== activeVideo) e.currentTarget.style.backgroundColor = playlistItemBg;
+              }}
+            >
+              {/* Thumbnail placeholder */}
+              <div
+                className="flex-shrink-0 rounded-lg overflow-hidden flex items-center justify-center"
+                style={{ width: thumbnailWidth, height: "68px", backgroundColor: "rgba(255,255,255,0.05)" }}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: accentColor }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate" style={{ color: playlistTitleColor }}>{video.title || `Video ${i + 1}`}</p>
+                {video.description && (
+                  <p className="text-xs mt-0.5 line-clamp-2" style={{ color: playlistDescColor }}>{video.description}</p>
+                )}
+                {video.duration && (
+                  <p className="text-[10px] mt-1" style={{ color: accentColor }}>{video.duration}</p>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TableOfContentsElement({ el }: ElementComponentProps) {
+  const {
+    title = "Daftar Isi",
+    markers = "numbers",
+    titleColor = "#ffffff",
+    titleSize = "18px",
+    linkColor = "#94a3b8",
+    linkHoverColor = "#22c55e",
+    linkActiveColor = "#22c55e",
+    linkSize = "14px",
+    markerColor = "#22c55e",
+    backgroundColor = "rgba(255,255,255,0.03)",
+    borderColor = "rgba(255,255,255,0.1)",
+    borderRadius = "12px",
+    padding = "20px",
+    minimizeBox = true,
+    items = [],
+  } = el.content;
+  const [minimized, setMinimized] = useState(false);
+  const [activeHref, setActiveHref] = useState("");
+
+  return (
+    <div
+      className="rounded-2xl"
+      style={{
+        backgroundColor,
+        border: `1px solid ${borderColor}`,
+        borderRadius,
+      }}
+    >
+      {/* Header */}
+      <div
+        className="flex items-center justify-between px-5 py-3 cursor-pointer select-none"
+        onClick={() => minimizeBox && setMinimized(!minimized)}
+      >
+        <h3 style={{ color: titleColor, fontSize: titleSize, fontWeight: 700 }}>{title}</h3>
+        {minimizeBox && (
+          <svg
+            className="w-4 h-4 transition-transform duration-200"
+            style={{ color: markerColor, transform: minimized ? "rotate(-90deg)" : "rotate(0deg)" }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+          </svg>
+        )}
+      </div>
+
+      {/* Items */}
+      {!minimized && (
+        <div className="px-5 pb-5 space-y-1">
+          {items.length === 0 ? (
+            <p className="text-xs" style={{ color: linkColor }}>Tidak ada heading ditemukan</p>
+          ) : (
+            items.map((item: any, i: number) => (
+              <a
+                key={i}
+                href={item.href || "#"}
+                className="flex items-center gap-3 py-1.5 rounded-lg transition-all text-sm"
+                style={{
+                  color: activeHref === item.href ? linkActiveColor : linkColor,
+                  fontSize: linkSize,
+                  paddingLeft: `${(item.level || 2) * 12}px`,
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = linkHoverColor; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = activeHref === item.href ? linkActiveColor : linkColor; }}
+                onClick={(e) => { e.preventDefault(); setActiveHref(item.href || "#"); }}
+              >
+                {markers === "numbers" && (
+                  <span className="text-[10px] font-semibold flex-shrink-0" style={{ color: markerColor }}>{i + 1}.</span>
+                )}
+                {markers === "bullets" && (
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: markerColor }} />
+                )}
+                {item.text}
+              </a>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SocialEmbedElement({ el }: ElementComponentProps) {
+  const {
+    type = "facebook-page",
+    url = "https://www.facebook.com/facebook",
+    layout = "timeline",
+    smallHeader = false,
+    hideCover = false,
+    showFacepile = true,
+    width = "340px",
+    height = "500px",
+    colorScheme = "light",
+    title = "Facebook",
+    titleColor = "#ffffff",
+    titleSize = "18px",
+  } = el.content;
+  const styles = applyStyles(el);
+
+  const embedTypes: Record<string, { label: string; icon: React.ReactNode }> = {
+    "facebook-page": {
+      label: "Facebook Page",
+      icon: <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />,
+    },
+    "facebook-post": {
+      label: "Facebook Post",
+      icon: <path d="M19 2H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4a2 2 0 002-2V4a2 2 0 00-2-2zm-7 3.3c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7S9.3 9.49 9.3 8s1.21-2.7 2.7-2.7zM18 16H6v-.9c0-2 4-3.1 6-3.1s6 1.1 6 3.1v.9z" />,
+    },
+    "facebook-comments": {
+      label: "Facebook Comments",
+      icon: <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" />,
+    },
+    "facebook-button": {
+      label: "Facebook Button",
+      icon: <path d="M14 9V5a3 3 0 00-3-3H5a3 3 0 00-3 3v14a3 3 0 003 3h6a3 3 0 003-3v-4" />,
+    },
+  };
+
+  const currentType = embedTypes[type] || embedTypes["facebook-page"];
+
+  return (
+    <div style={styles}>
+      {title && (
+        <h3 className="mb-4 font-bold" style={{ color: titleColor, fontSize: titleSize }}>{title}</h3>
+      )}
+      <div
+        className="mx-auto rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6"
+        style={{
+          width,
+          minHeight: height,
+          backgroundColor: colorScheme === "dark" ? "#1e293b" : "#ffffff",
+          border: `1px solid ${colorScheme === "dark" ? "rgba(255,255,255,0.1)" : "#e2e8f0"}`,
+          borderRadius: "12px",
+        }}
+      >
+        <div className="text-center mb-4">
+          <svg
+            className="w-12 h-12 mx-auto mb-3"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            style={{ color: "#1877F2" }}
+          >
+            {currentType.icon}
+          </svg>
+          <p className="text-sm font-semibold" style={{ color: colorScheme === "dark" ? "#ffffff" : "#1e293b" }}>
+            {currentType.label}
+          </p>
+          <p className="text-xs mt-1" style={{ color: colorScheme === "dark" ? "#94a3b8" : "#64748b" }}>
+            {url}
+          </p>
+          {!hideCover && type === "facebook-page" && (
+            <div
+              className="mt-4 rounded-xl w-full"
+              style={{
+                height: "130px",
+                backgroundColor: "#1877F2",
+                opacity: 0.3,
+              }}
+            />
+          )}
+          {showFacepile && (
+            <div className="flex justify-center -space-x-2 mt-3">
+              {[1, 2, 3, 4, 5].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-bold"
+                  style={{
+                    backgroundColor: ["#1877F2", "#e4405f", "#1da1f2", "#0a66c2", "#fffc00"][i],
+                    borderColor: colorScheme === "dark" ? "#1e293b" : "#ffffff",
+                    color: "#ffffff",
+                  }}
+                >
+                  {["F", "I", "T", "L", "S"][i]}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {smallHeader && (
+          <p className="text-[10px]" style={{ color: colorScheme === "dark" ? "#64748b" : "#94a3b8" }}>
+            Small header mode
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   heading: HeadingElement,
   text: TextElement,
@@ -2042,6 +2680,12 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   search: SearchElement,
   "floating-buttons": FloatingButtonsElement,
   breadcrumbs: BreadcrumbsElement,
+  "off-canvas": OffCanvasElement,
+  slides: SlidesElement,
+  "nested-carousel": NestedCarouselElement,
+  "video-playlist": VideoPlaylistElement,
+  "table-of-contents": TableOfContentsElement,
+  "social-embed": SocialEmbedElement
 };
 
 export function ElementRenderer({

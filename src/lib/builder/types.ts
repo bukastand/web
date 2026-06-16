@@ -6,7 +6,9 @@ export type ElementType =
   // Elementor Pro ports:
   | "animated-headline" | "blockquote" | "code-highlight" | "flip-box" | "hotspot"
   | "progress-tracker" | "share-buttons" | "checklist" | "gallery" | "lottie"
-  | "star-rating" | "search" | "floating-buttons" | "breadcrumbs";
+  | "star-rating" | "search" | "floating-buttons" | "breadcrumbs"
+  // Elementor Pro ports — batch 2:
+  | "off-canvas" | "slides" | "nested-carousel" | "video-playlist" | "table-of-contents" | "social-embed";
 
 export interface ElementStyles {
   // Shorthand (backward compatible)
