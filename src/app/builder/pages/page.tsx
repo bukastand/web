@@ -219,7 +219,7 @@ export default function BuilderPages() {
                 {/* Delete button */}
                 <button
                   onClick={(e) => { e.preventDefault(); setDeleteConfirm(page.id); }}
-                  className="absolute top-3 right-3 p-2 rounded-lg bg-red-500/80 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all shadow-lg"
+                  className="absolute top-3 right-3 p-2 rounded-lg bg-red-500/80 backdrop-blur-sm text-white md:opacity-0 md:group-hover:opacity-100 hover:bg-red-500 transition-all shadow-lg"
                   title="Hapus proyek"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
