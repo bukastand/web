@@ -1,17 +1,75 @@
 import { NextResponse } from "next/server";
 
-// Model names — fallback jika model utama error/timeout
-const GEMINI_MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
-const GROQ_MODEL = "llama-3.3-70b-versatile";
+// ─── Model Configuration ────────────────────────────
 
-// Creative freedom settings
-const CREATIVE_TEMPERATURE = 1.0;  // Maximum creativity - AI bebas berimajinasi
-const MAX_OUTPUT_TOKENS = 4096;    // Allow larger, more detailed generations
+const PROVIDER_CONFIGS: Record<string, {
+  models: string[];
+  baseUrl: string;
+  defaultTemperature: number;
+  maxTokens: number;
+  /** If true, uses OpenAI-compatible format */
+  openaiCompatible: boolean;
+  /** If true, uses Anthropic Messages API format */
+  anthropicFormat: boolean;
+}> = {
+  gemini: {
+    models: ["gemini-3.5-flash", "gemini-3.1-flash-lite"],
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: false,
+    anthropicFormat: false,
+  },
+  groq: {
+    models: ["llama-3.3-70b-versatile"],
+    baseUrl: "https://api.groq.com/openai/v1/chat/completions",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: true,
+    anthropicFormat: false,
+  },
+  openai: {
+    models: ["gpt-4o", "gpt-4o-mini", "gpt-4.1"],
+    baseUrl: "https://api.openai.com/v1/chat/completions",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: true,
+    anthropicFormat: false,
+  },
+  claude: {
+    models: ["claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
+    baseUrl: "https://api.anthropic.com/v1/messages",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: false,
+    anthropicFormat: true,
+  },
+  deepseek: {
+    models: ["deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat"],
+    baseUrl: "https://api.deepseek.com/chat/completions",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: true,
+    anthropicFormat: false,
+  },
+  mistral: {
+    models: ["mistral-large-3", "mistral-small-4"],
+    baseUrl: "https://api.mistral.ai/v1/chat/completions",
+    defaultTemperature: 1.0,
+    maxTokens: 4096,
+    openaiCompatible: true,
+    anthropicFormat: false,
+  },
+};
+
+const SYSTEM_PROMPT = "Anda adalah seniman web visioner dan copywriter puitis. Bebas total — tidak ada template, tidak ada batasan. Ciptakan desain yang orisinil, konten yang bermakna, dan layout yang belum pernah dilihat orang sebelumnya. Beranilah berbeda. Output JSON saja, tanpa markdown atau backticks.";
+
+// ─── Main Handler ──────────────────────────────────
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { provider, apiKey, prompt, action } = body;
+    const { provider, apiKey, prompt, action, model } = body;
 
     if (!provider || !apiKey) {
       return NextResponse.json(
@@ -27,16 +85,34 @@ export async function POST(request: Request) {
       );
     }
 
-    if (provider === "gemini") {
-      return handleGemini(apiKey, prompt, action);
-    } else if (provider === "groq") {
-      return handleGroq(apiKey, prompt, action);
-    } else {
+    const config = PROVIDER_CONFIGS[provider];
+    if (!config) {
       return NextResponse.json(
         { error: `Unknown provider: ${provider}` },
         { status: 400 }
       );
     }
+
+    // Test action: simple call to verify API key
+    if (action === "test") {
+      return handleTest(provider, apiKey, config);
+    }
+
+    // Generate action
+    const selectedModel = model || config.models[0];
+
+    if (provider === "gemini") {
+      return handleGemini(apiKey, prompt, config, selectedModel);
+    } else if (config.anthropicFormat) {
+      return handleAnthropic(apiKey, prompt, config, selectedModel);
+    } else if (config.openaiCompatible) {
+      return handleOpenAICompatible(provider, apiKey, prompt, config, selectedModel);
+    }
+
+    return NextResponse.json(
+      { error: `Unhandled provider: ${provider}` },
+      { status: 400 }
+    );
   } catch (err: any) {
     console.error("AI Proxy error:", err);
     return NextResponse.json(
@@ -46,17 +122,90 @@ export async function POST(request: Request) {
   }
 }
 
-/**
- * Try each Gemini model in order until one works
- */
-async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens: number, temperature: number = CREATIVE_TEMPERATURE): Promise<{ ok: boolean; content?: string; error?: string }> {
-  for (const model of GEMINI_MODELS) {
+// ─── Test Handler ─────────────────────────────────
+
+async function handleTest(provider: string, apiKey: string, config: typeof PROVIDER_CONFIGS['gemini']) {
+  const selectedModel = config.models[0];
+
+  try {
+    let ok = false;
+
+    if (provider === "gemini") {
+      const res = await fetch(
+        `${config.baseUrl}/${selectedModel}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "OK" }] }],
+            generationConfig: { maxOutputTokens: 5, temperature: 0.5 },
+          }),
+        }
+      );
+      ok = res.ok;
+    } else if (config.anthropicFormat) {
+      const res = await fetch(config.baseUrl, {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: selectedModel,
+          max_tokens: 5,
+          messages: [{ role: "user", content: "OK" }],
+        }),
+      });
+      ok = res.ok;
+    } else if (config.openaiCompatible) {
+      const res = await fetch(config.baseUrl, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: selectedModel,
+          messages: [{ role: "user", content: "OK" }],
+          max_tokens: 5,
+        }),
+      });
+      ok = res.ok;
+    }
+
+    return NextResponse.json({ ok });
+  } catch {
+    return NextResponse.json({ ok: false });
+  }
+}
+
+// ─── Gemini Handler ─────────────────────────────
+
+async function handleGemini(apiKey: string, prompt: string, config: typeof PROVIDER_CONFIGS['gemini'], model: string) {
+  const result = await callGeminiWithFallback(apiKey, prompt, config, config.models);
+  if (!result.ok) {
+    return NextResponse.json(
+      { error: result.error || "Gemini API error" },
+      { status: 500 }
+    );
+  }
+  return NextResponse.json({ content: result.content || "" });
+}
+
+async function callGeminiWithFallback(
+  apiKey: string,
+  prompt: string,
+  config: typeof PROVIDER_CONFIGS['gemini'],
+  models: string[]
+): Promise<{ ok: boolean; content?: string; error?: string }> {
+  for (const model of models) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout per model
+      const timeout = setTimeout(() => controller.abort(), 15000);
 
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        `${config.baseUrl}/${model}:generateContent?key=${apiKey}`,
         {
           signal: controller.signal,
           method: "POST",
@@ -64,8 +213,8 @@ async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens:
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              temperature,
-              maxOutputTokens: maxTokens,
+              temperature: config.defaultTemperature,
+              maxOutputTokens: config.maxTokens,
               topP: 0.95,
             },
             safetySettings: [
@@ -84,90 +233,127 @@ async function callGeminiWithFallback(apiKey: string, prompt: string, maxTokens:
         return { ok: true, content: text.trim() };
       }
 
-      // If model returns 4xx (not found, not allowed), try next model
       if (res.status >= 400 && res.status < 500) {
         const err = await res.text();
-        console.warn(`Gemini model ${model} failed (${res.status}): ${err.substring(0, 200)}`);
-        continue; // Try next model
+        console.warn(`Gemini ${model} failed (${res.status}): ${err.substring(0, 200)}`);
+        continue;
       }
 
-      // Server errors — return error immediately
       const err = await res.text();
-      return { ok: false, error: `Gemini ${model} error (${res.status}): ${err.substring(0, 300)}` };
+      return { ok: false, error: `Gemini error (${res.status}): ${err.substring(0, 300)}` };
     } catch (err: any) {
       if (err.name === "AbortError") {
-        console.warn(`Gemini model ${model} timed out, trying next...`);
-        continue; // Timeout, try next model
+        console.warn(`Gemini ${model} timed out`);
+        continue;
       }
-      return { ok: false, error: `Gemini ${model} error: ${err.message}` };
+      return { ok: false, error: `Gemini error: ${err.message}` };
     }
   }
-
-  return { ok: false, error: "Semua model Gemini tidak tersedia. Coba lagi nanti atau ganti provider." };
+  return { ok: false, error: "Semua model Gemini tidak tersedia." };
 }
 
-async function handleGemini(apiKey: string, prompt: string, action: string) {
-  if (action === "test") {
-    const result = await callGeminiWithFallback(apiKey, "OK", 5, 0.5);
-    return NextResponse.json({ ok: result.ok });
-  }
+// ─── OpenAI-Compatible Handler ──────────────────
 
-  const result = await callGeminiWithFallback(apiKey, prompt, MAX_OUTPUT_TOKENS, CREATIVE_TEMPERATURE);
+async function handleOpenAICompatible(
+  provider: string,
+  apiKey: string,
+  prompt: string,
+  config: typeof PROVIDER_CONFIGS['openai'],
+  model: string
+) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
 
-  if (!result.ok) {
-    return NextResponse.json(
-      { error: result.error || "Gemini API error" },
-      { status: 500 }
-    );
-  }
-
-  return NextResponse.json({ content: result.content || "" });
-}
-
-async function handleGroq(apiKey: string, prompt: string, action: string) {
-  if (action === "test") {
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const res = await fetch(config.baseUrl, {
+      signal: controller.signal,
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: [{ role: "user", content: "OK" }],
-        max_tokens: 5,
+        model,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: prompt },
+        ],
+        temperature: config.defaultTemperature,
+        max_tokens: config.maxTokens,
+        top_p: 0.95,
       }),
     });
-    return NextResponse.json({ ok: res.ok });
-  }
 
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: GROQ_MODEL,
-      messages: [
-        { role: "system", content: "Anda adalah seniman web visioner dan copywriter puitis. Bebas total — tidak ada template, tidak ada batasan. Ciptakan desain yang orisinil, konten yang bermakna, dan layout yang belum pernah dilihat orang sebelumnya. Beranilah berbeda." },
-        { role: "user", content: prompt },
-      ],
-      temperature: 1.0,
-      max_tokens: MAX_OUTPUT_TOKENS,
-      top_p: 0.95,
-    }),
-  });
+    clearTimeout(timeout);
 
-  if (!res.ok) {
-    const err = await res.text();
+    if (!res.ok) {
+      const err = await res.text();
+      return NextResponse.json(
+        { error: `${provider} API error (${res.status}): ${err.substring(0, 300)}` },
+        { status: res.status }
+      );
+    }
+
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content || "";
+    return NextResponse.json({ content: text.trim() });
+  } catch (err: any) {
     return NextResponse.json(
-      { error: `Groq API error (${res.status}): ${err}` },
-      { status: res.status }
+      { error: `${provider} API error: ${err.message}` },
+      { status: 500 }
     );
   }
+}
 
-  const data = await res.json();
-  const text = data?.choices?.[0]?.message?.content || "";
-  return NextResponse.json({ content: text.trim() });
+// ─── Anthropic Claude Handler ─────────────────────
+
+async function handleAnthropic(
+  apiKey: string,
+  prompt: string,
+  config: typeof PROVIDER_CONFIGS['claude'],
+  model: string
+) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+
+    const res = await fetch(config.baseUrl, {
+      signal: controller.signal,
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: config.maxTokens,
+        system: SYSTEM_PROMPT,
+        messages: [
+          { role: "user", content: prompt },
+        ],
+        temperature: config.defaultTemperature,
+        top_p: 0.95,
+      }),
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      const err = await res.text();
+      return NextResponse.json(
+        { error: `Claude API error (${res.status}): ${err.substring(0, 300)}` },
+        { status: res.status }
+      );
+    }
+
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || "";
+    return NextResponse.json({ content: text.trim() });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: `Claude API error: ${err.message}` },
+      { status: 500 }
+    );
+  }
 }

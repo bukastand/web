@@ -22,6 +22,24 @@ export default function AIGeneratorModal({
   onApplySection,
   onApplyWebsite,
 }: AIGeneratorModalProps) {
+  const providerInfo: Record<AIProvider, { icon: string; name: string; desc: string }> = {
+    gemini: { icon: "🔮", name: "Google Gemini", desc: "Gratis 1.500 req/hari" },
+    groq: { icon: "⚡", name: "Groq", desc: "Sangat cepat, gratis" },
+    openai: { icon: "🤖", name: "OpenAI", desc: "Premium, kualitas terbaik" },
+    claude: { icon: "🧠", name: "Claude (Anthropic)", desc: "Premium, reasoning kuat" },
+    deepseek: { icon: "🐋", name: "DeepSeek", desc: "Premium, harga murah" },
+    mistral: { icon: "🏔️", name: "Mistral AI", desc: "Premium, Europe" },
+  };
+
+  const providerActiveColor: Record<AIProvider, string> = {
+    gemini: "border-blue-500/50 bg-blue-500/10",
+    groq: "border-purple-500/50 bg-purple-500/10",
+    openai: "border-green-500/50 bg-green-500/10",
+    claude: "border-orange-500/50 bg-orange-500/10",
+    deepseek: "border-cyan-500/50 bg-cyan-500/10",
+    mistral: "border-indigo-500/50 bg-indigo-500/10",
+  };
+
   const [step, setStep] = useState<"config" | "prompt">("config");
   const [provider, setProvider] = useState<AIProvider>("gemini");
   const [apiKey, setApiKey] = useState("");
@@ -253,29 +271,29 @@ export default function AIGeneratorModal({
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-2">Pilih Provider AI</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setProvider("gemini")}
-                    className={`p-3 rounded-xl border text-left transition-all ${provider === "gemini" ? "border-blue-500/50 bg-blue-500/10" : "border-white/10 bg-white/5 hover:border-white/20"}`}>
-                    <span className="text-lg">🔮</span>
-                    <p className="text-xs font-semibold text-white mt-1">Google Gemini</p>
-                    <p className="text-[10px] text-gray-500">Gratis 1.500 req/hari</p>
-                  </button>
-                  <button onClick={() => setProvider("groq")}
-                    className={`p-3 rounded-xl border text-left transition-all ${provider === "groq" ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-white/5 hover:border-white/20"}`}>
-                    <span className="text-lg">⚡</span>
-                    <p className="text-xs font-semibold text-white mt-1">Groq</p>
-                    <p className="text-[10px] text-gray-500">Sangat cepat, gratis</p>
-                  </button>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {(Object.entries(providerInfo) as [AIProvider, typeof providerInfo[AIProvider]][]).map(([key, info]) => (
+                    <button key={key} onClick={() => setProvider(key)}
+                      className={`p-3 rounded-xl border text-left transition-all ${
+                        provider === key
+                          ? providerActiveColor[key]
+                          : "border-white/10 bg-white/5 hover:border-white/20"
+                      }`}>
+                      <span className="text-lg">{info.icon}</span>
+                      <p className="text-xs font-semibold text-white mt-1">{info.name}</p>
+                      <p className="text-[10px] text-gray-500">{info.desc}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">API Key</label>
                 <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)}
-                  placeholder={provider === "gemini" ? "Masukkan Gemini API Key..." : "Masukkan Groq API Key..."}
+                  placeholder={`Masukkan ${providerInfo[provider]?.name || ""} API Key...`}
                   className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 transition-colors" />
                 <a href={getApiKeyUrl(provider)} target="_blank" rel="noopener noreferrer"
                   className="inline-block mt-1.5 text-[10px] text-emerald-400 hover:text-emerald-300 hover:underline">
-                  {provider === "gemini" ? "Dapatkan Gemini API Key gratis →" : "Dapatkan Groq API Key gratis →"}
+                  Dapatkan {providerInfo[provider]?.name || ""} API Key →
                 </a>
               </div>
               {testResult === "success" && (
@@ -298,8 +316,8 @@ export default function AIGeneratorModal({
               {/* Config indicator */}
               <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/10">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">{provider === "gemini" ? "🔮" : "⚡"}</span>
-                  <span className="text-xs text-gray-400">{provider === "gemini" ? "Google Gemini" : "Groq"}</span>
+                  <span className="text-sm">{providerInfo[provider]?.icon || "🔮"}</span>
+                  <span className="text-xs text-gray-400">{providerInfo[provider]?.name || provider}</span>
                 </div>
                 <button onClick={() => { clearAIConfig(); setStep("config"); }} className="text-[10px] text-gray-500 hover:text-white transition-colors">Ganti API Key</button>
               </div>

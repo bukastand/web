@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useBuilder } from "@/lib/builder/store";
-import { getAIConfig, getApiKeyUrl } from "@/lib/ai";
+import { getAIConfig, getApiKeyUrl, type AIProvider } from "@/lib/ai";
 import { AIPanel } from "@/components/builder/ai/AIPanel";
 import { SandboxPreview } from "@/components/builder/ai/SandboxPreview";
 import Link from "next/link";
@@ -141,7 +141,7 @@ export default function AIBuilderPage() {
  * Inline AI Config Panel component
  */
 function AIConfigPanel({ onClose }: { onClose: () => void }) {
-  const [provider, setProvider] = useState<"gemini" | "groq">("gemini");
+  const [provider, setProvider] = useState<AIProvider>("gemini");
   const [apiKey, setApiKey] = useState("");
   const [saved, setSaved] = useState(false);
 
@@ -171,31 +171,56 @@ function AIConfigPanel({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const providerInfo: Record<AIProvider, { emoji: string; label: string; desc: string }> = {
+    gemini: { emoji: "🔮", label: "Gemini", desc: "Gratis 1.500 req/hari" },
+    groq: { emoji: "⚡", label: "Groq", desc: "Super cepat, gratis" },
+    openai: { emoji: "🟢", label: "OpenAI", desc: "GPT-4o, premium" },
+    claude: { emoji: "🟣", label: "Claude", desc: "Sonnet, premium" },
+    deepseek: { emoji: "🔵", label: "DeepSeek", desc: "Murah, performa tinggi" },
+    mistral: { emoji: "🔶", label: "Mistral", desc: "Open source, premium" },
+  };
+
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          onClick={() => setProvider("gemini")}
-          className={`p-2 rounded-lg border text-left transition-all text-xs ${
-            provider === "gemini" ? "border-blue-500/50 bg-blue-500/10" : "border-white/10 bg-white/5"
-          }`}
-        >
-          <span>🔮 Gemini</span>
-        </button>
-        <button
-          onClick={() => setProvider("groq")}
-          className={`p-2 rounded-lg border text-left transition-all text-xs ${
-            provider === "groq" ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-white/5"
-          }`}
-        >
-          <span>⚡ Groq</span>
-        </button>
+      <div>
+        <label className="block text-[10px] text-gray-500 mb-1.5">Pilih Provider AI</label>
+        <div className="grid grid-cols-2 gap-1.5">
+          {Object.entries(providerInfo).map(([key, info]) => {
+            const isActive = provider === key;
+            const borderColor = isActive
+              ? key === "gemini" ? "border-blue-500/50"
+                : key === "groq" ? "border-purple-500/50"
+                : key === "openai" ? "border-emerald-500/50"
+                : key === "claude" ? "border-orange-500/50"
+                : key === "deepseek" ? "border-cyan-500/50"
+                : "border-yellow-500/50"
+              : "border-white/10";
+            const bgColor = isActive
+              ? key === "gemini" ? "bg-blue-500/10"
+                : key === "groq" ? "bg-purple-500/10"
+                : key === "openai" ? "bg-emerald-500/10"
+                : key === "claude" ? "bg-orange-500/10"
+                : key === "deepseek" ? "bg-cyan-500/10"
+                : "bg-yellow-500/10"
+              : "bg-white/5";
+            return (
+              <button
+                key={key}
+                onClick={() => setProvider(key as AIProvider)}
+                className={`p-2 rounded-lg border text-left transition-all ${borderColor} ${bgColor}`}
+              >
+                <span className="text-xs">{info.emoji} {info.label}</span>
+                <p className="text-[9px] text-gray-500 mt-0.5">{info.desc}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
       <input
         type="password"
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
-        placeholder={`${provider === "gemini" ? "Gemini" : "Groq"} API Key`}
+        placeholder={`${providerInfo[provider]?.label || "AI"} API Key`}
         className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-purple-500/50"
       />
       <a
@@ -204,7 +229,7 @@ function AIConfigPanel({ onClose }: { onClose: () => void }) {
         rel="noopener noreferrer"
         className="block text-[10px] text-purple-400 hover:text-purple-300"
       >
-        Dapatkan API Key gratis →
+        Dapatkan API Key {providerInfo[provider]?.label} →
       </a>
       <button
         onClick={handleSave}

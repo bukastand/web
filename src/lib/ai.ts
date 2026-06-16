@@ -5,11 +5,13 @@
  * to avoid CORS issues (especially for Groq).
  */
 
-export type AIProvider = "gemini" | "groq";
+export type AIProvider = "gemini" | "groq" | "openai" | "claude" | "deepseek" | "mistral";
 
 export interface AIConfig {
   provider: AIProvider;
   apiKey: string;
+  /** Optional model override for paid providers */
+  model?: string;
 }
 
 export interface AIGenerateOptions {
@@ -163,6 +165,7 @@ async function callAIProxy(config: AIConfig, prompt: string, action: "generate" 
       apiKey: config.apiKey,
       prompt,
       action,
+      model: config.model,
     }),
   });
 
@@ -211,6 +214,25 @@ export function getApiKeyUrl(provider: AIProvider): string {
       return "https://aistudio.google.com/apikey";
     case "groq":
       return "https://console.groq.com/keys";
+    case "openai":
+      return "https://platform.openai.com/api-keys";
+    case "claude":
+      return "https://console.anthropic.com/settings/keys";
+    case "deepseek":
+      return "https://platform.deepseek.com/api_keys";
+    case "mistral":
+      return "https://console.mistral.ai/api-keys";
+  }
+}
+
+export function getProviderDefaultModel(provider: AIProvider): string {
+  switch (provider) {
+    case "gemini": return "gemini-3.5-flash";
+    case "groq": return "llama-3.3-70b-versatile";
+    case "openai": return "gpt-4o";
+    case "claude": return "claude-sonnet-4-6";
+    case "deepseek": return "deepseek-v4-flash";
+    case "mistral": return "mistral-large-3";
   }
 }
 
