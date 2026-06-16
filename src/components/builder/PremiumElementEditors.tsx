@@ -267,6 +267,29 @@ function IconPicker({ value, onChange }: { value: string; onChange: (v: string) 
 export function FlipBoxEditor({ element, updateContent }: EditorProps) {
   const c = element.content;
   const frontGraphic = c.frontGraphic || "icon";
+
+  const handleFrontImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("frontImage", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleBackImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("backImage", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
       <Section title="Front">
@@ -275,14 +298,54 @@ export function FlipBoxEditor({ element, updateContent }: EditorProps) {
           <IconPicker value={c.frontIcon || "star"} onChange={(v) => updateContent("frontIcon", v)} />
         )}
         {frontGraphic === "image" && (
-          <TextInput label="URL Gambar" value={c.frontImage} onChange={(v) => updateContent("frontImage", v)} placeholder="https://example.com/image.jpg" />
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Gambar Depan</label>
+            {c.frontImage && (
+              <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                <img src={c.frontImage} alt="" className="w-full h-20 object-cover" />
+                <button
+                  onClick={() => updateContent("frontImage", "")}
+                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFrontImageUpload}
+              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
+            />
+            <input value={c.frontImage || ""} onChange={(v) => updateContent("frontImage", v.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar Depan" />
+          </div>
         )}
         <TextInput label="Judul Depan" value={c.frontTitle} onChange={(v) => updateContent("frontTitle", v)} />
         <TextArea label="Deskripsi Depan" value={c.frontDescription} onChange={(v) => updateContent("frontDescription", v)} />
         <ColorPicker value={c.frontBackground || "#1e293b"} onChange={(v) => updateContent("frontBackground", v)} label="Background Depan" />
       </Section>
       <Section title="Back">
-        <TextInput label="URL Gambar Belakang" value={c.backImage} onChange={(v) => updateContent("backImage", v)} placeholder="https://example.com/back.jpg" />
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload Gambar Belakang</label>
+          {c.backImage && (
+            <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+              <img src={c.backImage} alt="" className="w-full h-20 object-cover" />
+              <button
+                onClick={() => updateContent("backImage", "")}
+                className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleBackImageUpload}
+            className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
+          />
+          <input value={c.backImage || ""} onChange={(v) => updateContent("backImage", v.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar Belakang" />
+        </div>
         <TextInput label="Judul Belakang" value={c.backTitle} onChange={(v) => updateContent("backTitle", v)} />
         <TextArea label="Deskripsi Belakang" value={c.backDescription} onChange={(v) => updateContent("backDescription", v)} />
         <ColorPicker value={c.backBackground || "#22c55e"} onChange={(v) => updateContent("backBackground", v)} label="Background Belakang" />
