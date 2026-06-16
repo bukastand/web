@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useBuilder } from "@/lib/builder/store";
-import { getAIConfig } from "@/lib/ai";
+import { getAIConfig, getProviderList, removeProviderEntry, moveProviderPriority, type ProviderEntry } from "@/lib/ai";
 import { runPipeline, parseResultToSections, type AgentType, type AgentResult } from "@/lib/ai/agents";
 import { saveLocalMemory, saveGlobalMemory, updatePreferencesFromGeneration } from "@/lib/ai/memory";
 import { aiSectionToBuilder } from "@/lib/builder/defaults";
@@ -58,11 +58,24 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const [enableStylist, setEnableStylist] = useState(true);
   const [category, setCategory] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+  const [showProviders, setShowProviders] = useState(false);
+  const [providerList, setProviderList] = useState<ProviderEntry[]>([]);
   const [finalSections, setFinalSections] = useState<any[]>([]);
   const [lastResultJson, setLastResultJson] = useState<string>("");
   const abortRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const refreshProviders = useCallback(() => {
+    setProviderList(getProviderList());
+  }, []);
+
+  // Load provider list when settings open
+  useEffect(() => {
+    if (showSettings) {
+      refreshProviders();
+    }
+  }, [showSettings, refreshProviders]);
 
   // Load saved messages from localStorage on mount
   useEffect(() => {
@@ -402,7 +415,8 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
 
       {/* Settings Panel (compact dropdown) */}
       {showSettings && (
-        <div className="px-4 py-3 bg-[#1e293b] border-b border-white/10 space-y-2.5 flex-shrink-0">
+        <div className="px-4 py-3 bg-[#1e293b] border-b border-white/10 space-y-2.5 flex-shrink-0 max-h-[40vh] overflow-y-auto">
+          {/* Category */}
           <div className="flex items-center gap-2">
             <label className="text-[10px] text-gray-500 w-20">Kategori:</label>
             <select
@@ -418,6 +432,8 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
               <option value="Kesehatan" className="bg-[#1e293b]">🏥 Kesehatan</option>
             </select>
           </div>
+
+          {/* Agent Toggles */}
           <div className="flex items-center gap-3">
             {[
               { key: "researcher" as const, label: "🔍 Research", state: enableResearcher, set: setEnableResearcher },
@@ -434,6 +450,102 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                 <span className="text-[9px] text-gray-500">{label}</span>
               </label>
             ))}
+          </div>
+
+          {/* Provider Priority Toggle */}
+          <div>
+            <button
+              onClick={() => setShowProviders(!showProviders)}
+              className="flex items-center justify-between w-full py-1.5 text-[10px] text-gray-500 hover:text-white transition-colors"
+            >
+              <span>⚙️ Urutan Provider AI ({providerList.length})</span>
+              <svg className={`w-3 h-3 transition-transform ${showProviders ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {showProviders && (
+              <div className="space-y-1 mt-1">
+                {providerList.length === 0 ? (
+                  <div className="text-[9px] text-gray-600 text-center py-2">
+                    Belum ada provider. Tambah API Key dulu.
+                  </div>
+                ) : (
+                  providerList.map((entry, idx) => {
+                    const providerIcons: Record<string, string> = {
+                      gemini: "🔮", groq: "⚡", openai: "🤖",
+                      claude: "🧠", deepseek: "🐋", mistral: "🏔️",
+                    };
+                    return (
+                      <div key={entry.provider}
+                        className="flex items-center gap-1.5 p-1.5 rounded-lg bg-[#0f172a] border border-white/10"
+                      >
+                        {/* Priority badge */}
+                        <div className={`w-4 h-4 rounded flex items-center justify-center text-[7px] font-bold ${
+                          idx === 0
+                            ? "bg-emerald-500/20 text-emerald-400"
+                            : "bg-white/10 text-gray-500"
+                        }`}>
+                          {idx + 1}
+                        </div>
+
+                        {/* Icon + name */}
+                        <span className="text-[10px]">{providerIcons[entry.provider] || "🔮"}</span>
+                        <span className="text-[9px] text-gray-300 flex-1 truncate">
+                          {entry.provider}
+                        </span>
+
+                        {/* Move Up */}
+                        <button
+                          onClick={() => { moveProviderPriority(entry.provider, 'up'); refreshProviders(); }}
+                          disabled={idx === 0}
+                          className="p-0.5 text-gray-600 hover:text-white rounded disabled:opacity-30"
+                        >
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </button>
+
+                        {/* Move Down */}
+                        <button
+                          onClick={() => { moveProviderPriority(entry.provider, 'down'); refreshProviders(); }}
+                          disabled={idx === providerList.length - 1}
+                          className="p-0.5 text-gray-600 hover:text-white rounded disabled:opacity-30"
+                        >
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        {/* Remove */}
+                        <button
+                          onClick={() => { removeProviderEntry(entry.provider); refreshProviders(); }}
+                          className="p-0.5 text-gray-600 hover:text-red-400 rounded"
+                        >
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })
+                )}
+
+                {/* Add provider button */}
+                <button
+                  onClick={() => {
+                    setShowSettings(false);
+                    onOpenConfig();
+                  }}
+                  className="w-full py-1.5 text-[9px] text-gray-600 hover:text-purple-400 flex items-center justify-center gap-1 rounded-lg border border-dashed border-white/10 hover:border-purple-500/30 transition-colors"
+                >
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Tambah Provider
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
