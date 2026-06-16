@@ -706,6 +706,18 @@ export function OffCanvasEditor({ element, updateContent, handleAddItem, handleR
 export function SlidesEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
   const c = element.content;
   const slides = c.slides || [];
+
+  const handleImageUpload = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      handleItemChange("slides", i, "image", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
       <TextInput label="Tinggi Slide" value={c.slideHeight} onChange={(v) => updateContent("slideHeight", v)} />
@@ -727,9 +739,25 @@ export function SlidesEditor({ element, updateContent, handleAddItem, handleRemo
               <span className="text-xs text-gray-400">Slide #{i + 1}</span>
               <button onClick={() => handleRemoveItem("slides", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
             </div>
-            {slide.image && <img src={slide.image} alt="" className="w-full h-16 object-cover rounded mb-1" />}
+            {slide.image && (
+              <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                <img src={slide.image} alt="" className="w-full h-20 object-cover" />
+                <button
+                  onClick={() => handleItemChange("slides", i, "image", "")}
+                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                >
+                  ×
+                </button>
+              </div>
+            )}
             <input value={slide.title || ""} onChange={(e) => handleItemChange("slides", i, "title", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Judul" />
             <textarea value={slide.description || ""} onChange={(e) => handleItemChange("slides", i, "description", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(i, e)}
+              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
+            />
             <input value={slide.image || ""} onChange={(e) => handleItemChange("slides", i, "image", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar" />
             <input value={slide.buttonText || ""} onChange={(e) => handleItemChange("slides", i, "buttonText", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Teks Tombol" />
             <input value={slide.buttonLink || ""} onChange={(e) => handleItemChange("slides", i, "buttonLink", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Link Tombol" />
