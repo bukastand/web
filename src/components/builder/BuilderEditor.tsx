@@ -406,34 +406,6 @@ export default function BuilderEditor() {
           </>
         )}
 
-        {/* AI Generate Section button (floating, always visible) - hide on mobile */}
-        {!isFullscreen && !isMobile && (
-          <div className="fixed bottom-6 right-6 z-30 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setAiGeneratorMode("section");
-                setAiGeneratorOpen(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-semibold rounded-xl shadow-lg hover:from-emerald-600 hover:to-teal-600 transition-all hover:scale-105 active:scale-95"
-              title="Generate Section dengan AI"
-            >
-              <span>🧩</span>
-              <span>AI Section</span>
-            </button>
-            <button
-              onClick={() => {
-                setAiGeneratorMode("website");
-                setAiGeneratorOpen(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition-all hover:scale-105 active:scale-95"
-              title="Generate Full Website dengan AI"
-            >
-              <span>🌐</span>
-              <span>AI Website</span>
-            </button>
-          </div>
-        )}
-
         {/* AI Generator Modal */}
         <AIGeneratorModal
           isOpen={aiGeneratorOpen}
