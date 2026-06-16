@@ -16,7 +16,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-3.1-flash-lite"],
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: false,
     anthropicFormat: false,
   },
@@ -24,7 +24,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["llama-3.3-70b-versatile"],
     baseUrl: "https://api.groq.com/openai/v1/chat/completions",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: true,
     anthropicFormat: false,
   },
@@ -32,7 +32,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["gpt-4o", "gpt-4o-mini", "gpt-4.1"],
     baseUrl: "https://api.openai.com/v1/chat/completions",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: true,
     anthropicFormat: false,
   },
@@ -40,7 +40,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
     baseUrl: "https://api.anthropic.com/v1/messages",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: false,
     anthropicFormat: true,
   },
@@ -48,7 +48,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat"],
     baseUrl: "https://api.deepseek.com/chat/completions",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: true,
     anthropicFormat: false,
   },
@@ -56,7 +56,7 @@ const PROVIDER_CONFIGS: Record<string, {
     models: ["mistral-large-3", "mistral-small-4"],
     baseUrl: "https://api.mistral.ai/v1/chat/completions",
     defaultTemperature: 1.2,
-    maxTokens: 4096,
+    maxTokens: 8192,
     openaiCompatible: true,
     anthropicFormat: false,
   },
@@ -299,7 +299,7 @@ async function callGeminiProvider(
   model: string
 ): Promise<ProviderCallResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
   try {
     const res = await fetch(
@@ -355,7 +355,7 @@ async function callOpenAICompatibleProvider(
   model: string
 ): Promise<ProviderCallResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+  const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
   try {
     const res = await fetch(config.baseUrl, {
@@ -408,7 +408,7 @@ async function callAnthropicProvider(
   model: string
 ): Promise<ProviderCallResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+  const timeout = setTimeout(() => controller.abort(), 90000); // 90s timeout (Claude lebih lambat)
 
   try {
     const res = await fetch(config.baseUrl, {
