@@ -441,6 +441,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       frontTitle: "Front Side",
       frontDescription: "This is the front side description",
       frontBackground: "#1e293b",
+      backImage: "",
       backTitle: "Back Side",
       backDescription: "This is the back side with more info!",
       backBackground: "#22c55e",
