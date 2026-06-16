@@ -400,6 +400,185 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { padding: "60px 0", backgroundColor: "#0f172a", textAlign: "center" },
   },
+  "animated-headline": {
+    content: {
+      beforeText: "Saya adalah",
+      highlightedText: "Profesional",
+      afterText: "",
+      style: "highlight",
+      animationType: "underline",
+      tag: "h2",
+      rotatingTexts: ["Kreatif", "Inovatif", "Profesional"],
+      duration: 2000,
+      loop: true,
+    },
+    styles: { color: "#ffffff", fontSize: "36px", fontWeight: "700", textAlign: "center" },
+  },
+  blockquote: {
+    content: {
+      quoteText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      authorName: "Ahmad Fauzi",
+      skin: "border",
+      tweetButton: false,
+      tweetLabel: "Tweet",
+    },
+    styles: { color: "#d1d5db", fontSize: "18px", fontStyle: "italic", borderLeft: "4px solid #22c55e" },
+  },
+  "code-highlight": {
+    content: {
+      language: "javascript",
+      code: 'console.log("Hello, World!");',
+      showLineNumbers: true,
+      copyButton: true,
+    },
+    styles: { backgroundColor: "#1e293b", borderRadius: "12px", padding: "20px", fontSize: "14px" },
+  },
+  "flip-box": {
+    content: {
+      frontGraphic: "icon",
+      frontIcon: "star",
+      frontImage: "",
+      frontTitle: "Front Side",
+      frontDescription: "This is the front side description",
+      frontBackground: "#1e293b",
+      backTitle: "Back Side",
+      backDescription: "This is the back side with more info!",
+      backBackground: "#22c55e",
+      backButtonText: "Learn More",
+      backButtonLink: "#",
+    },
+    styles: { height: "300px", borderRadius: "12px" },
+  },
+  hotspot: {
+    content: {
+      imageSrc: "https://placehold.co/800x500/1e293b/64748b?text=Hotspot+Image",
+      items: [
+        { label: "Point 1", x: "20%", y: "30%", icon: "star", description: "Description of point 1" },
+        { label: "Point 2", x: "70%", y: "60%", icon: "star", description: "Description of point 2" },
+      ],
+    },
+    styles: { borderRadius: "12px", position: "relative" },
+  },
+  "progress-tracker": {
+    content: {
+      type: "horizontal",
+      percentage: true,
+      progress: 65,
+      label: "Progress",
+    },
+    styles: { width: "100%", height: "6px", backgroundColor: "#1e293b", accentColor: "#22c55e" },
+  },
+  "share-buttons": {
+    content: {
+      view: "icon-text",
+      skin: "gradient",
+      networks: [
+        { name: "facebook", text: "Facebook" },
+        { name: "twitter", text: "Twitter" },
+        { name: "linkedin", text: "LinkedIn" },
+      ],
+    },
+    styles: { textAlign: "center", gap: "10px" },
+  },
+  checklist: {
+    content: {
+      title: "Keunggulan Kami",
+      items: [
+        { text: "Cepat & Handal", icon: "check", checked: true },
+        { text: "Desain Modern", icon: "check", checked: true },
+        { text: "Responsive", icon: "check", checked: true },
+      ],
+      checkedColor: "#22c55e",
+      uncheckedColor: "#64748b",
+      textColor: "#ffffff",
+      textSize: "16px",
+      iconSize: "20px",
+    },
+    styles: { padding: "0", backgroundColor: "transparent" },
+  },
+  gallery: {
+    content: {
+      title: "Galeri",
+      images: [
+        { src: "https://placehold.co/600x400/1e293b/22c55e?text=Image+1", caption: "Image 1", alt: "Image 1" },
+        { src: "https://placehold.co/600x400/1e293b/3b82f6?text=Image+2", caption: "Image 2", alt: "Image 2" },
+        { src: "https://placehold.co/600x400/1e293b/ec4899?text=Image+3", caption: "Image 3", alt: "Image 3" },
+        { src: "https://placehold.co/600x400/1e293b/f59e0b?text=Image+4", caption: "Image 4", alt: "Image 4" },
+        { src: "https://placehold.co/600x400/1e293b/22c55e?text=Image+5", caption: "Image 5", alt: "Image 5" },
+        { src: "https://placehold.co/600x400/1e293b/8b5cf6?text=Image+6", caption: "Image 6", alt: "Image 6" },
+      ],
+      columns: 3,
+      lightbox: true,
+      captionColor: "#ffffff",
+      captionSize: "14px",
+    },
+    styles: { padding: "0", backgroundColor: "transparent" },
+  },
+  lottie: {
+    content: {
+      src: "https://assets2.lottiefiles.com/packages/lf20_UJNc2t.json",
+      loop: true,
+      autoplay: true,
+      speed: 1,
+      width: "300px",
+      height: "300px",
+      backgroundColor: "transparent",
+    },
+    styles: { display: "flex", justifyContent: "center", alignItems: "center" },
+  },
+  "star-rating": {
+    content: {
+      title: "Rating",
+      rating: 4.5,
+      scale: 5,
+      starColor: "#f59e0b",
+      emptyColor: "#374151",
+      showValue: true,
+      size: "24px",
+      align: "center",
+    },
+    styles: { textAlign: "center", padding: "20px 0" },
+  },
+  search: {
+    content: {
+      placeholder: "Cari...",
+      buttonText: "Cari",
+      buttonIcon: true,
+      skin: "classic",
+      backgroundColor: "rgba(255,255,255,0.05)",
+      textColor: "#ffffff",
+      borderColor: "rgba(255,255,255,0.1)",
+      buttonColor: "#22c55e",
+      buttonTextColor: "#ffffff",
+    },
+    styles: { maxWidth: "500px", margin: "0 auto" },
+  },
+  "floating-buttons": {
+    content: {
+      buttons: [
+        { icon: "chat", label: "Chat", link: "#", color: "#22c55e" },
+        { icon: "phone", label: "Call", link: "tel:+6282210099969", color: "#3b82f6" },
+        { icon: "mail", label: "Email", link: "mailto:hello@example.com", color: "#8b5cf6" },
+      ],
+      position: "bottom-right",
+    },
+    styles: { position: "fixed", bottom: "24px", right: "24px", zIndex: "50" },
+  },
+  breadcrumbs: {
+    content: {
+      items: [
+        { label: "Beranda", href: "/" },
+        { label: "Layanan", href: "/services" },
+        { label: "Halaman Saat Ini", href: "" },
+      ],
+      separator: "/",
+      textColor: "#94a3b8",
+      activeColor: "#ffffff",
+      separatorColor: "#4b5563",
+      textSize: "14px",
+    },
+    styles: { padding: "16px 0", backgroundColor: "transparent" },
+  },
 };
 
 export function createElement(type: ElementType, partialContent?: Record<string, any>): BuilderElement {
@@ -534,7 +713,10 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
   const validTypes: ElementType[] = [
     "heading", "text", "image", "button", "video", "spacer", "divider", "icon",
     "features", "pricing", "testimonial", "cta", "stats", "contactForm", "maps",
-    "navbar", "footer", "three-background", "carousel", "accordion", "team", "countdown"
+    "navbar", "footer", "three-background", "carousel", "accordion", "team", "countdown",
+    "animated-headline", "blockquote", "code-highlight", "flip-box", "hotspot",
+    "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
+    "star-rating", "search", "floating-buttons", "breadcrumbs",
   ];
   
   // Check alias first, then valid types, fallback to heading for visual emphasis

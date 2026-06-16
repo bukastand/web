@@ -2,7 +2,11 @@ export type ElementType =
   | "heading" | "text" | "image" | "button" | "video" | "spacer" | "divider" | "icon"
   | "features" | "pricing" | "testimonial" | "cta" | "stats" | "contactForm" | "maps"
   | "navbar" | "footer" | "three-background"
-  | "carousel" | "accordion" | "team" | "countdown";
+  | "carousel" | "accordion" | "team" | "countdown"
+  // Elementor Pro ports:
+  | "animated-headline" | "blockquote" | "code-highlight" | "flip-box" | "hotspot"
+  | "progress-tracker" | "share-buttons" | "checklist" | "gallery" | "lottie"
+  | "star-rating" | "search" | "floating-buttons" | "breadcrumbs";
 
 export interface ElementStyles {
   // Shorthand (backward compatible)
