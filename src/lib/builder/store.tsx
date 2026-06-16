@@ -80,7 +80,13 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
 
   switch (action.type) {
     case "LOAD_PAGES":
-      return { ...state, pages: action.pages };
+      return {
+        ...state,
+        pages: action.pages,
+        // Set currentPageId only if null (initial load).
+        // Undo/Redo also dispatch LOAD_PAGES, so we preserve existing selection.
+        currentPageId: state.currentPageId || action.pages[0]?.id || null,
+      };
 
     case "SET_CURRENT_PAGE":
       return { ...state, currentPageId: action.pageId, selectedElementId: null };
