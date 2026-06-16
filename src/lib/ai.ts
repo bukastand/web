@@ -34,9 +34,18 @@ export interface AIGenerateOptions {
 }
 
 const STORAGE_KEY = "pagoda_ai_config";
-const PROVIDER_KEYS_KEY = "pagoda_provider_keys";
+const PROVIDER_LIST_KEY = "pagoda_provider_list";
+const OLD_PROVIDER_KEYS_KEY = "pagoda_provider_keys";
 
 const PROXY_URL = "/api/ai/proxy";
+
+// ─── Types ───────────────────────────────────────────
+
+/** Provider entry with priority order (index = priority) */
+export interface ProviderEntry {
+  provider: AIProvider;
+  apiKey: string;
+}
 
 // ─── Single config (backward compat) ────────────
 
@@ -54,7 +63,7 @@ export function saveAIConfig(config: AIConfig) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   // Also save to multi-provider store
-  saveProviderKey(config.provider, config.apiKey);
+  saveProviderEntry(config.provider, config.apiKey);
 }
 
 export function clearAIConfig() {
@@ -62,78 +71,128 @@ export function clearAIConfig() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
-// ─── Multi-provider key storage (for auto-fallback) ────
+// ─── Ordered Multi-Provider Storage ──────────────
+// Stored as ordered array: index 0 = highest priority
+// Format: [{ provider: "groq", apiKey: "gsk_..." }, { provider: "gemini", apiKey: "AIza..." }]
 
-type ProviderKeys = Partial<Record<AIProvider, string>>;
-
-function loadProviderKeys(): ProviderKeys {
-  if (typeof window === "undefined") return {};
+/**
+ * Load the ordered provider list. Migrates old format on first load.
+ */
+function loadProviderList(): ProviderEntry[] {
+  if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(PROVIDER_KEYS_KEY);
-    return raw ? JSON.parse(raw) : {};
+    // Check new format first
+    const raw = localStorage.getItem(PROVIDER_LIST_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.filter((e: any) => e?.provider && e?.apiKey);
+      }
+    }
+    
+    // Migrate from old format (unordered object)
+    const oldRaw = localStorage.getItem(OLD_PROVIDER_KEYS_KEY);
+    if (oldRaw) {
+      const oldKeys = JSON.parse(oldRaw);
+      const migrated: ProviderEntry[] = [];
+      for (const [provider, apiKey] of Object.entries(oldKeys)) {
+        if (apiKey) {
+          migrated.push({ provider: provider as AIProvider, apiKey: apiKey as string });
+        }
+      }
+      // Save migrated format & remove old
+      localStorage.setItem(PROVIDER_LIST_KEY, JSON.stringify(migrated));
+      localStorage.removeItem(OLD_PROVIDER_KEYS_KEY);
+      return migrated;
+    }
+
+    return [];
   } catch {
-    return {};
+    return [];
   }
 }
 
-function saveProviderKeys(keys: ProviderKeys) {
+function saveProviderList(list: ProviderEntry[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(PROVIDER_KEYS_KEY, JSON.stringify(keys));
+  localStorage.setItem(PROVIDER_LIST_KEY, JSON.stringify(list));
 }
 
 /**
- * Save an API key for a specific provider
+ * Get the ordered provider list (index 0 = highest priority)
  */
-export function saveProviderKey(provider: AIProvider, apiKey: string) {
-  const keys = loadProviderKeys();
-  keys[provider] = apiKey;
-  saveProviderKeys(keys);
+export function getProviderList(): ProviderEntry[] {
+  return loadProviderList();
+}
+
+/**
+ * Add or update a provider's API key.
+ * If provider already exists, updates the key in-place.
+ * If new, appends to the end (lowest priority).
+ */
+export function saveProviderEntry(provider: AIProvider, apiKey: string) {
+  const list = loadProviderList();
+  const idx = list.findIndex((e) => e.provider === provider);
+  if (idx >= 0) {
+    list[idx].apiKey = apiKey;
+  } else {
+    list.push({ provider, apiKey });
+  }
+  saveProviderList(list);
 }
 
 /**
  * Get API key for a specific provider
  */
 export function getProviderKey(provider: AIProvider): string | undefined {
-  const keys = loadProviderKeys();
-  return keys[provider];
+  const list = loadProviderList();
+  return list.find((e) => e.provider === provider)?.apiKey;
 }
 
 /**
- * Remove API key for a specific provider
+ * Remove a provider entirely
  */
-export function removeProviderKey(provider: AIProvider) {
-  const keys = loadProviderKeys();
-  delete keys[provider];
-  saveProviderKeys(keys);
+export function removeProviderEntry(provider: AIProvider) {
+  const list = loadProviderList().filter((e) => e.provider !== provider);
+  saveProviderList(list);
 }
 
 /**
- * Get ALL configured AIConfigs — returns array sorted by priority:
- * 1. Current primary config first
- * 2. Then all other providers that have keys
+ * Move a provider up or down in priority order
+ * @param provider Provider to move
+ * @param direction 'up' = higher priority (lower index), 'down' = lower priority (higher index)
+ * @returns boolean whether the move was successful
+ */
+export function moveProviderPriority(provider: AIProvider, direction: 'up' | 'down'): boolean {
+  const list = loadProviderList();
+  const idx = list.findIndex((e) => e.provider === provider);
+  if (idx < 0) return false;
+
+  const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (newIdx < 0 || newIdx >= list.length) return false;
+
+  // Swap
+  [list[idx], list[newIdx]] = [list[newIdx], list[idx]];
+  saveProviderList(list);
+  return true;
+}
+
+/**
+ * Get ALL configured AIConfigs in priority order (index 0 = highest priority)
  */
 export function getAllAIConfigs(): AIConfig[] {
   if (typeof window === "undefined") return [];
-  const keys = loadProviderKeys();
-  const configs: AIConfig[] = [];
-  const added = new Set<AIProvider>();
+  const list = loadProviderList();
+  return list.map((e) => ({
+    provider: e.provider,
+    apiKey: e.apiKey,
+  }));
+}
 
-  // Primary config first
-  const primary = getAIConfig();
-  if (primary && keys[primary.provider]) {
-    configs.push(primary);
-    added.add(primary.provider);
-  }
-
-  // Then all other providers that have keys
-  for (const [provider, apiKey] of Object.entries(keys)) {
-    if (!added.has(provider as AIProvider) && apiKey) {
-      configs.push({ provider: provider as AIProvider, apiKey });
-      added.add(provider as AIProvider);
-    }
-  }
-
-  return configs;
+/**
+ * Check if a provider has been configured
+ */
+export function hasProvider(provider: AIProvider): boolean {
+  return !!getProviderKey(provider);
 }
 
 /**

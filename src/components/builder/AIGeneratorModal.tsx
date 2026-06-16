@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import type { AIProvider, AIConfig } from "@/lib/ai";
-import { getAIConfig, saveAIConfig, clearAIConfig, testApiKey, getApiKeyUrl, generateSection, generateFullPage } from "@/lib/ai";
+import { useState, useEffect, useCallback } from "react";
+import type { AIProvider, AIConfig, ProviderEntry } from "@/lib/ai";
+import { getAIConfig, saveAIConfig, clearAIConfig, testApiKey, getApiKeyUrl, getProviderList, saveProviderEntry, removeProviderEntry, moveProviderPriority, generateSection, generateFullPage } from "@/lib/ai";
 import { genId } from "@/lib/builder/defaults";
 
 type GenerationMode = "section" | "website";
@@ -22,13 +22,13 @@ export default function AIGeneratorModal({
   onApplySection,
   onApplyWebsite,
 }: AIGeneratorModalProps) {
-  const providerInfo: Record<AIProvider, { icon: string; name: string; desc: string }> = {
-    gemini: { icon: "🔮", name: "Google Gemini", desc: "Gratis 1.500 req/hari" },
-    groq: { icon: "⚡", name: "Groq", desc: "Sangat cepat, gratis" },
-    openai: { icon: "🤖", name: "OpenAI", desc: "Premium, kualitas terbaik" },
-    claude: { icon: "🧠", name: "Claude (Anthropic)", desc: "Premium, reasoning kuat" },
-    deepseek: { icon: "🐋", name: "DeepSeek", desc: "Premium, harga murah" },
-    mistral: { icon: "🏔️", name: "Mistral AI", desc: "Premium, Europe" },
+  const providerInfo: Record<AIProvider, { icon: string; name: string; desc: string; color: string }> = {
+    gemini: { icon: "🔮", name: "Google Gemini", desc: "Gratis 1.500 req/hari", color: "#4285F4" },
+    groq: { icon: "⚡", name: "Groq", desc: "Sangat cepat, gratis", color: "#F55036" },
+    openai: { icon: "🤖", name: "OpenAI", desc: "Premium, kualitas terbaik", color: "#10A37F" },
+    claude: { icon: "🧠", name: "Claude (Anthropic)", desc: "Premium, reasoning kuat", color: "#CC7831" },
+    deepseek: { icon: "🐋", name: "DeepSeek", desc: "Premium, harga murah", color: "#4F46E5" },
+    mistral: { icon: "🏔️", name: "Mistral AI", desc: "Premium, Europe", color: "#7C3AED" },
   };
 
   const providerActiveColor: Record<AIProvider, string> = {
@@ -40,7 +40,8 @@ export default function AIGeneratorModal({
     mistral: "border-indigo-500/50 bg-indigo-500/10",
   };
 
-  const [step, setStep] = useState<"config" | "prompt">("config");
+  const [providerList, setProviderList] = useState<ProviderEntry[]>([]);
+  const [step, setStep] = useState<"config" | "prompt" | "manage">("config");
   const [provider, setProvider] = useState<AIProvider>("gemini");
   const [apiKey, setApiKey] = useState("");
   const [prompt, setPrompt] = useState("");
@@ -52,6 +53,11 @@ export default function AIGeneratorModal({
   const [parsedSections, setParsedSections] = useState<any[]>([]);
   const [selectedSections, setSelectedSections] = useState<Set<number>>(new Set());
   const [resultStep, setResultStep] = useState<"generating" | "preview" | "applied">("generating");
+
+  // Refresh provider list from localStorage
+  const refreshProviderList = useCallback(() => {
+    setProviderList(getProviderList());
+  }, []);
 
   // Load saved config on mount
   useEffect(() => {
@@ -65,15 +71,19 @@ export default function AIGeneratorModal({
       setResultStep("generating");
       return;
     }
+    refreshProviderList();
     const saved = getAIConfig();
     if (saved) {
       setProvider(saved.provider);
       setApiKey(saved.apiKey);
       setStep("prompt");
+    } else if (getProviderList().length > 0) {
+      // Ada provider lain yang tersimpan, langsung ke prompt
+      setStep("prompt");
     } else {
       setStep("config");
     }
-  }, [isOpen]);
+  }, [isOpen, refreshProviderList]);
 
   if (!isOpen) return null;
 
@@ -89,8 +99,10 @@ export default function AIGeneratorModal({
     const ok = await testApiKey(config);
     if (ok) {
       saveAIConfig(config);
+      refreshProviderList();
       setTestResult("success");
-      setTimeout(() => { setStep("prompt"); setTestResult("idle"); }, 1000);
+      setApiKey("");
+      setTimeout(() => { setTestResult("idle"); }, 1500);
     } else {
       setTestResult("error");
       setError("API Key tidak valid.");
@@ -269,21 +281,145 @@ export default function AIGeneratorModal({
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {step === "config" ? (
             <div className="space-y-4">
+              {/* Existing Provider List with Priority */}
+              {providerList.length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-medium text-gray-400">
+                      Urutan Provider ({providerList.length})
+                    </label>
+                    <span className="text-[9px] text-gray-600">Prioritas: 🔽 atas = utama</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {providerList.map((entry, idx) => {
+                      const info = providerInfo[entry.provider];
+                      return (
+                        <div key={entry.provider}
+                          className="flex items-center gap-2 p-2.5 rounded-xl bg-[#0f172a] border border-white/10"
+                        >
+                          {/* Priority badge */}
+                          <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-bold ${
+                            idx === 0
+                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : "bg-white/10 text-gray-500 border border-white/20"
+                          }`}>
+                            {idx + 1}
+                          </div>
+
+                          {/* Provider info */}
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <span className="text-sm">{info?.icon || "🔮"}</span>
+                            <div className="min-w-0">
+                              <p className="text-[11px] font-medium text-white truncate">{info?.name || entry.provider}</p>
+                              <p className="text-[8px] text-gray-600 truncate">{entry.apiKey.substring(0, 12)}...{entry.apiKey.slice(-4)}</p>
+                            </div>
+                          </div>
+
+                          {/* Status indicator */}
+                          {idx === 0 && (
+                            <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              UTAMA
+                            </span>
+                          )}
+
+                          {/* Move Up */}
+                          <button
+                            onClick={() => { moveProviderPriority(entry.provider, 'up'); refreshProviderList(); }}
+                            disabled={idx === 0}
+                            className="p-1 text-gray-600 hover:text-white hover:bg-white/5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            title="Prioritas naik"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                            </svg>
+                          </button>
+
+                          {/* Move Down */}
+                          <button
+                            onClick={() => { moveProviderPriority(entry.provider, 'down'); refreshProviderList(); }}
+                            disabled={idx === providerList.length - 1}
+                            className="p-1 text-gray-600 hover:text-white hover:bg-white/5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            title="Prioritas turun"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+
+                          {/* Remove */}
+                          <button
+                            onClick={() => { removeProviderEntry(entry.provider); refreshProviderList(); }}
+                            className="p-1 text-gray-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Hapus provider"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Add New Provider */}
+              <div className="p-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02]">
+                <button
+                  onClick={() => setStep("manage")}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-[10px] text-gray-500 hover:text-white transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Tambah Provider AI Baru
+                </button>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex gap-2">
+                <button onClick={() => { if (providerList.length > 0) setStep("prompt"); }}
+                  disabled={providerList.length === 0}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500 text-white hover:bg-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Lanjutkan ke Generate
+                </button>
+              </div>
+            </div>
+          ) : step === "manage" ? (
+            <div className="space-y-4">
+              <button onClick={() => { refreshProviderList(); setStep("config"); }} className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-white transition-colors">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Kembali ke daftar provider
+              </button>
+
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-2">Pilih Provider AI</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {(Object.entries(providerInfo) as [AIProvider, typeof providerInfo[AIProvider]][]).map(([key, info]) => (
-                    <button key={key} onClick={() => setProvider(key)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
-                        provider === key
-                          ? providerActiveColor[key]
-                          : "border-white/10 bg-white/5 hover:border-white/20"
-                      }`}>
-                      <span className="text-lg">{info.icon}</span>
-                      <p className="text-xs font-semibold text-white mt-1">{info.name}</p>
-                      <p className="text-[10px] text-gray-500">{info.desc}</p>
-                    </button>
-                  ))}
+                  {(Object.entries(providerInfo) as [AIProvider, typeof providerInfo[AIProvider]][]).map(([key, info]) => {
+                    const alreadyAdded = providerList.some(e => e.provider === key);
+                    return (
+                      <button key={key} onClick={() => setProvider(key)}
+                        className={`p-3 rounded-xl border text-left transition-all ${
+                          provider === key
+                            ? providerActiveColor[key]
+                            : alreadyAdded
+                            ? "border-emerald-500/20 bg-emerald-500/5 opacity-60"
+                            : "border-white/10 bg-white/5 hover:border-white/20"
+                        }`}
+                        disabled={alreadyAdded}
+                      >
+                        <span className="text-lg">{info.icon}</span>
+                        <p className="text-xs font-semibold text-white mt-1">{info.name}</p>
+                        <p className="text-[10px] text-gray-500">{info.desc}</p>
+                        {alreadyAdded && (
+                          <span className="text-[8px] text-emerald-400 mt-1 block">✓ Sudah ditambahkan</span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div>
