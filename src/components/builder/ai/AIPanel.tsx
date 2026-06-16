@@ -7,6 +7,7 @@ import { getAIConfig, getProviderList, removeProviderEntry, moveProviderPriority
 import { runPipeline, parseResultToSections, type AgentType, type AgentResult } from "@/lib/ai/agents";
 import { saveLocalMemory, saveGlobalMemory, updatePreferencesFromGeneration } from "@/lib/ai/memory";
 import { aiSectionToBuilder } from "@/lib/builder/defaults";
+import { generateFromPromptJSON } from "@/lib/builder/template-engine";
 import type { BuilderPage } from "@/lib/builder/types";
 
 // ─── Types ───────────────────────────────────────────
@@ -197,13 +198,14 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     const abortController = new AbortController();
     abortRef.current = abortController;
 
-    try {
-      // Reset final sections
+    // ── Try AI Pipeline ──
+    let finalJSON: string;
+    let usedFallback = false;
 
-      // Check if this is a follow-up by seeing if there's previous result
+    try {
       const isFollowUp = !!lastResultJson;
 
-      const finalJSON = await runPipeline(
+      finalJSON = await runPipeline(
         config,
         {
           userId: user?.id || null,
@@ -262,110 +264,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
         },
         abortController.signal
       );
-
-      // Parse final result
-      const parsedSections = parseResultToSections(finalJSON);
-      setFinalSections(parsedSections);
-
-      // Persist finalSections to localStorage
-      try {
-        localStorage.setItem("ai_final_sections", JSON.stringify(parsedSections));
-      } catch {}
-
-      // Store for follow-up context
-      setLastResultJson(finalJSON);
-
-      // Persist to localStorage so preview survives refresh
-      try {
-        localStorage.setItem("ai_last_result_json", finalJSON);
-        localStorage.setItem("ai_last_title", promptText);
-      } catch {}
-
-      // Update preview with final result
-      onGenerate(promptText, finalJSON);
-
-      // Save to local memory
-      if (parsedSections.length > 0) {
-        saveLocalMemory(user?.id || null, {
-          prompt: promptText,
-          category: category || undefined,
-          styleTags: [],
-          pageStructure: parsedSections,
-          rating: 5,
-          timestamp: Date.now(),
-        });
-      }
-
-      // Save to Supabase global memory
-      if (user && parsedSections.length > 0 && currentPage) {
-        try {
-          const tempPage: BuilderPage = {
-            id: "temp",
-            title: promptText.substring(0, 50),
-            slug: "",
-            sections: parsedSections.map((s: any) => aiSectionToBuilder(s)),
-            globalStyles: {
-              fontFamily: "Inter, sans-serif",
-              primaryColor: "#22c55e",
-              backgroundColor: "#0f172a",
-              textColor: "#f8fafc",
-              containerWidth: 1200,
-            },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            published: false,
-            publishedSnapshot: null,
-          };
-          saveGlobalMemory(promptText, category || undefined, [], tempPage);
-          updatePreferencesFromGeneration(user.id, tempPage);
-        } catch {
-          // Non-critical
-        }
-      }
-
-      // Auto-save to page
-      if (parsedSections.length > 0 && currentPage) {
-        try {
-          for (const secData of parsedSections) {
-            const builderSection = aiSectionToBuilder(secData);
-            dispatch({
-              type: "ADD_TEMPLATE_SECTION",
-              pageId: currentPage.id,
-              section: builderSection,
-            });
-          }
-          setSavedToPage(true);
-          setTimeout(() => setSavedToPage(false), 3000);
-        } catch (e) {
-          console.warn("Auto-save failed, manual save available:", e);
-        }
-      }
-
-      // Add final summary message
-      if (parsedSections.length > 0) {
-        const sectionTypes = parsedSections.map((s: any) => s.sectionType || "section").filter(Boolean);
-        const summaryMsg: ChatMessage = {
-          id: genMsgId(),
-          role: "assistant",
-          content: `✅ **Website berhasil dibuat!** Saya membuat **${parsedSections.length} section** dan **langsung menyimpannya ke halaman Anda**.\n\n${savedToPage ? "✅ Tersimpan!" : "Klik tombol 💾 Simpan di bawah untuk menyimpan."}\n\nLanjutkan chat jika ingin revisi atau tambah section.`,
-          timestamp: Date.now(),
-          sectionCount: parsedSections.length,
-          sectionTypes,
-        };
-        setMessages((prev) => [...prev, summaryMsg]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: genMsgId(),
-            role: "assistant",
-            content: "⚠️ Website berhasil di-generate, tapi tidak ada section yang bisa diparse. Coba generate ulang dengan deskripsi yang lebih detail.",
-            timestamp: Date.now(),
-          },
-        ]);
-      }
-
-      scrollToBottom();
     } catch (err: any) {
       if (err.name === "AbortError") {
         setMessages((prev) => [
@@ -377,7 +275,27 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
             timestamp: Date.now(),
           },
         ]);
-      } else {
+        setIsRunning(false);
+        abortRef.current = null;
+        return;
+      }
+
+      // ── AI Failed — Fall back to Template Engine (0 API call) ──
+      try {
+        finalJSON = generateFromPromptJSON(promptText, category || undefined);
+        usedFallback = true;
+        // Notify user we're using offline mode
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: genMsgId(),
+            role: "system",
+            content: "⚠️ **Mode Offline:** AI provider sedang sibuk (rate limit). Website dibuat menggunakan template siap pakai. Hasil mungkin berbeda dari AI, tapi langsung bisa digunakan.",
+            timestamp: Date.now(),
+          },
+        ]);
+      } catch {
+        // Template engine also failed — show the original AI error
         const errorMsg = err.message || "Gagal generate website";
         setError(errorMsg);
         setMessages((prev) => [
@@ -389,8 +307,118 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
             timestamp: Date.now(),
           },
         ]);
+        setIsRunning(false);
+        abortRef.current = null;
+        return;
       }
     }
+
+    // ── Process Result (from AI or Template Engine) ──
+    const parsedSections = parseResultToSections(finalJSON);
+    setFinalSections(parsedSections);
+
+    // Persist finalSections to localStorage
+    try {
+      localStorage.setItem("ai_final_sections", JSON.stringify(parsedSections));
+    } catch {}
+
+    // Store for follow-up context
+    setLastResultJson(finalJSON);
+
+    // Persist to localStorage so preview survives refresh
+    try {
+      localStorage.setItem("ai_last_result_json", finalJSON);
+      localStorage.setItem("ai_last_title", promptText);
+    } catch {}
+
+    // Update preview with final result
+    onGenerate(promptText, finalJSON);
+
+    // Save to local memory
+    if (parsedSections.length > 0) {
+      saveLocalMemory(user?.id || null, {
+        prompt: promptText,
+        category: category || undefined,
+        styleTags: [],
+        pageStructure: parsedSections,
+        rating: 5,
+        timestamp: Date.now(),
+      });
+    }
+
+    // Save to Supabase global memory
+    if (user && parsedSections.length > 0 && currentPage) {
+      try {
+        const tempPage: BuilderPage = {
+          id: "temp",
+          title: promptText.substring(0, 50),
+          slug: "",
+          sections: parsedSections.map((s: any) => aiSectionToBuilder(s)),
+          globalStyles: {
+            fontFamily: "Inter, sans-serif",
+            primaryColor: "#22c55e",
+            backgroundColor: "#0f172a",
+            textColor: "#f8fafc",
+            containerWidth: 1200,
+          },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          published: false,
+          publishedSnapshot: null,
+        };
+        saveGlobalMemory(promptText, category || undefined, [], tempPage);
+        updatePreferencesFromGeneration(user.id, tempPage);
+      } catch {
+        // Non-critical
+      }
+    }
+
+    // Auto-save to page
+    if (parsedSections.length > 0 && currentPage) {
+      try {
+        for (const secData of parsedSections) {
+          const builderSection = aiSectionToBuilder(secData);
+          dispatch({
+            type: "ADD_TEMPLATE_SECTION",
+            pageId: currentPage.id,
+            section: builderSection,
+          });
+        }
+        setSavedToPage(true);
+        setTimeout(() => setSavedToPage(false), 3000);
+      } catch (e) {
+        console.warn("Auto-save failed, manual save available:", e);
+      }
+    }
+
+    // Add final summary message
+    if (parsedSections.length > 0) {
+      const sectionTypes = parsedSections.map((s: any) => s.sectionType || "section").filter(Boolean);
+      const fallbackNote = usedFallback
+        ? "\n\n📋 *Mode offline — diedit dari template* (AI sedang sibuk).\n\n💡 Tambah API Key provider lain di pengaturan agar AI bisa dipakai lagi."
+        : "";
+      const summaryMsg: ChatMessage = {
+        id: genMsgId(),
+        role: "assistant",
+        content: `✅ **Website berhasil dibuat!** Saya membuat **${parsedSections.length} section** dan **langsung menyimpannya ke halaman Anda**.${fallbackNote}`,
+        timestamp: Date.now(),
+        sectionCount: parsedSections.length,
+        sectionTypes,
+      };
+      setMessages((prev) => [...prev, summaryMsg]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: genMsgId(),
+          role: "assistant",
+          content: "⚠️ Website berhasil di-generate, tapi tidak ada section yang bisa diparse. Coba generate ulang dengan deskripsi yang lebih detail.",
+          timestamp: Date.now(),
+        },
+      ]);
+    }
+
+    scrollToBottom();
 
     setIsRunning(false);
     abortRef.current = null;
