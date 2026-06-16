@@ -35,6 +35,27 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
   { type: "accordion", label: "FAQ", icon: "📋" },
   { type: "team", label: "Team", icon: "👥" },
   { type: "countdown", label: "Countdown", icon: "⏱" },
+  // Premium Elements
+  { type: "animated-headline", label: "Animated Headline", icon: "✨" },
+  { type: "blockquote", label: "Blockquote", icon: "❝" },
+  { type: "code-highlight", label: "Code Highlight", icon: "💻" },
+  { type: "flip-box", label: "Flip Box", icon: "🔄" },
+  { type: "hotspot", label: "Hotspot", icon: "🔍" },
+  { type: "progress-tracker", label: "Progress Tracker", icon: "📊" },
+  { type: "share-buttons", label: "Share Buttons", icon: "📣" },
+  { type: "checklist", label: "Checklist", icon: "✅" },
+  { type: "gallery", label: "Gallery", icon: "🖼️" },
+  { type: "lottie", label: "Lottie Animasi", icon: "🎬" },
+  { type: "star-rating", label: "Star Rating", icon: "⭐" },
+  { type: "search", label: "Search", icon: "🔎" },
+  { type: "floating-buttons", label: "Floating Button", icon: "💬" },
+  { type: "breadcrumbs", label: "Breadcrumbs", icon: "🔗" },
+  { type: "off-canvas", label: "Off Canvas", icon: "📋" },
+  { type: "slides", label: "Hero Slides", icon: "📽️" },
+  { type: "nested-carousel", label: "Nested Carousel", icon: "🔄" },
+  { type: "video-playlist", label: "Video Playlist", icon: "▶️" },
+  { type: "table-of-contents", label: "Table of Contents", icon: "📑" },
+  { type: "social-embed", label: "Social Embed", icon: "🌐" },
 ];
 
 export { MOBILE_ELEMENTS };
@@ -70,6 +91,28 @@ const elements: ElementItem[] = [
   // Structure
   { type: "navbar", label: "Navbar", icon: "⊞", category: "Struktur" },
   { type: "footer", label: "Footer", icon: "⊟", category: "Struktur" },
+
+  // ── Premium Elements (Elementor Pro ports) ──
+  { type: "animated-headline", label: "Animated Headline", icon: "✨", category: "Premium" },
+  { type: "blockquote", label: "Blockquote", icon: "❝", category: "Premium" },
+  { type: "code-highlight", label: "Code Highlight", icon: "💻", category: "Premium" },
+  { type: "flip-box", label: "Flip Box", icon: "🔄", category: "Premium" },
+  { type: "hotspot", label: "Hotspot", icon: "🔍", category: "Premium" },
+  { type: "progress-tracker", label: "Progress Tracker", icon: "📊", category: "Premium" },
+  { type: "share-buttons", label: "Share Buttons", icon: "📣", category: "Premium" },
+  { type: "checklist", label: "Checklist", icon: "✅", category: "Premium" },
+  { type: "gallery", label: "Gallery", icon: "🖼️", category: "Premium" },
+  { type: "lottie", label: "Lottie Animasi", icon: "🎬", category: "Premium" },
+  { type: "star-rating", label: "Star Rating", icon: "⭐", category: "Premium" },
+  { type: "search", label: "Search", icon: "🔎", category: "Premium" },
+  { type: "floating-buttons", label: "Floating Button", icon: "💬", category: "Premium" },
+  { type: "breadcrumbs", label: "Breadcrumbs", icon: "🔗", category: "Premium" },
+  { type: "off-canvas", label: "Off Canvas", icon: "📋", category: "Premium" },
+  { type: "slides", label: "Hero Slides", icon: "📽️", category: "Premium" },
+  { type: "nested-carousel", label: "Nested Carousel", icon: "🔄", category: "Premium" },
+  { type: "video-playlist", label: "Video Playlist", icon: "▶️", category: "Premium" },
+  { type: "table-of-contents", label: "Table of Contents", icon: "📑", category: "Premium" },
+  { type: "social-embed", label: "Social Embed", icon: "🌐", category: "Premium" },
 ];
 
 function DraggableItem({ item }: { item: ElementItem }) {
@@ -133,18 +176,40 @@ export default function ElementSidebar() {
       ) : (
         <div className="p-3 space-y-4">
           <p className="text-[10px] text-gray-500">Drag ke canvas untuk menambahkan</p>
-          {categories.map((cat) => (
-            <div key={cat}>
-              <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
-              <div className="space-y-1">
+          {categories
+            .filter((cat) => cat !== "Premium")
+            .map((cat) => (
+              <div key={cat}>
+                <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
+                <div className="space-y-1">
+                  {elements
+                    .filter((e) => e.category === cat)
+                    .map((item) => (
+                      <DraggableItem key={item.type} item={item} />
+                    ))}
+                </div>
+              </div>
+            ))}
+
+          {/* Premium Elements Section */}
+          {categories.includes("Premium") && (
+            <div>
+              <div className="flex items-center gap-2 mb-3 px-1 mt-6 border-t border-[#f59e0b]/20 pt-4">
+                <span className="text-[10px] font-bold text-[#f59e0b] uppercase tracking-wider">✨ Premium Elements</span>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] font-medium">Pro</span>
+              </div>
+              <div className="space-y-1 relative">
                 {elements
-                  .filter((e) => e.category === cat)
+                  .filter((e) => e.category === "Premium")
                   .map((item) => (
-                    <DraggableItem key={item.type} item={item} />
+                    <div key={item.type} className="relative group">
+                      <div className="absolute -left-1 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#f59e0b] to-[#22c55e] opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+                      <DraggableItem item={item} />
+                    </div>
                   ))}
               </div>
             </div>
-          ))}
+          )}
         </div>
       )}
     </aside>
