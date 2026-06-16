@@ -183,6 +183,98 @@ html {
   animation: backdropOut 0.25s ease-in forwards;
 }
 
+/* ===== Animated Headline ===== */
+@keyframes headline-reveal {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes headline-pop-in {
+  0% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes headline-curly-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes text-slide-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes text-slide-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes text-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-headline-reveal {
+  animation: headline-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-headline-pop {
+  animation: headline-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-headline-curly {
+  stroke-dasharray: 1000;
+  animation: headline-curly-draw 1.2s ease-in-out forwards;
+}
+
+.animate-text-slide-in {
+  animation: text-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-text-slide-out {
+  animation: text-slide-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-text-fade-in {
+  animation: text-fade-in 0.5s ease-out forwards;
+}
+
 /* ===== Scroll-triggered visibility ===== */
 .reveal {
   opacity: 0;

@@ -1318,55 +1318,139 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     beforeText = "",
     highlightedText = "",
     afterText = "",
-    style = "highlight",
+    style: headlineStyle = "highlight",
     animationType = "underline",
     tag = "h2",
     rotatingTexts = [],
   } = el.content;
   const styles = applyStyles(el);
+  const [revealed, setRevealed] = useState(false);
+  const [cyclingIdx, setCyclingIdx] = useState(0);
+  const [animState, setAnimState] = useState<"entering" | "visible" | "leaving">("entering");
 
-  const headlineContent = (<>
-      {beforeText && <span className="mr-2">{beforeText}</span>}
-      {style === "highlight" ? (
-        <span className="relative inline-block">
-          <span className="relative z-10">{highlightedText}</span>
-          <span
-            className="absolute bottom-0 left-0 w-full opacity-40"
-            style={{
-              backgroundColor: styles.color || "#22c55e",
-              borderRadius: "4px",
-              height: animationType === "underline" ? "4px" : "12px",
-              bottom: animationType === "underline" ? "2px" : "0",
-            }}
+  const texts = rotatingTexts.length > 0 ? rotatingTexts : highlightedText ? [highlightedText] : [""];
+
+  // Trigger reveal animation on mount
+  useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 300);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Cycle through rotating texts
+  useEffect(() => {
+    if (headlineStyle !== "rotating" || texts.length <= 1) return;
+    
+    const cycleTime = 3000; // ms per text
+    const animDuration = 800; // ms for slide in/out
+    
+    const interval = setInterval(() => {
+      setAnimState("leaving");
+      setTimeout(() => {
+        setCyclingIdx((prev) => (prev + 1) % texts.length);
+        setAnimState("entering");
+        setTimeout(() => setAnimState("visible"), 50);
+      }, animDuration);
+    }, cycleTime);
+    
+    // Start first text visible
+    setAnimState("visible");
+    
+    return () => clearInterval(interval);
+  }, [headlineStyle, texts.length]);
+
+  // ── Highlight style: animated background reveal ──
+  const renderHighlight = () => (
+    <span className="relative inline-block">
+      <span className="relative z-10">{highlightedText}</span>
+      {animationType === "curly" ? (
+        <svg
+          className="absolute -bottom-1 left-0 w-full pointer-events-none"
+          viewBox="0 0 200 20"
+          preserveAspectRatio="none"
+          style={{ height: "0.5em" }}
+        >
+          <path
+            d="M5 15 Q 50 0, 100 15 Q 150 30, 195 10"
+            fill="none"
+            stroke={styles.color || "#22c55e"}
+            strokeWidth="3"
+            strokeLinecap="round"
+            className={`${revealed ? "animate-headline-curly" : ""}`}
           />
-        </span>
+        </svg>
+      ) : animationType === "circle" ? (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 opacity-30 rounded-full ${revealed ? "animate-headline-pop" : ""}`}
+          style={{
+            backgroundColor: styles.color || "#22c55e",
+            width: "105%",
+            height: "1.3em",
+            bottom: "-0.15em",
+          }}
+        />
       ) : (
-        <span className="rotating-text inline-flex flex-col overflow-hidden h-[1.2em]">
-          {(rotatingTexts.length > 0 ? rotatingTexts : [highlightedText]).map((text: string, i: number) => (
-            <span
-              key={i}
-              className="animate-slide-up"
-              style={{
-                animationDelay: `${i * 2}s`,
-                animationDuration: "1.5s",
-              }}
-            >
-              {text}
-            </span>
-          ))}
-        </span>
+        /* underline */
+        <span
+          className={`absolute bottom-0 left-0 h-1 rounded-full ${revealed ? "animate-headline-reveal" : ""}`}
+          style={{
+            backgroundColor: styles.color || "#22c55e",
+            width: revealed ? "100%" : "0%",
+          }}
+        />
       )}
+    </span>
+  );
+
+  // ── Rotating style: cycle through texts ──
+  const renderRotating = () => {
+    if (texts.length === 0 || (texts.length === 1 && !texts[0])) {
+      return <span>{highlightedText}</span>;
+    }
+    
+    const currentText = texts[cyclingIdx];
+    
+    return (
+      <span className="relative inline-flex flex-col overflow-hidden" style={{ height: "1.2em" }}>
+        <span
+          key={`${cyclingIdx}-${animState}`}
+          className={`${
+            animState === "entering"
+              ? "animate-text-fade-in"
+              : animState === "leaving"
+              ? "animate-text-slide-out absolute inset-0"
+              : ""
+          }`}
+          style={{
+            color: styles.color || "#22c55e",
+          }}
+        >
+          {currentText}
+        </span>
+      </span>
+    );
+  };
+
+  const headlineContent = (
+    <>
+      {beforeText && <span className="mr-2">{beforeText}</span>}
+      {headlineStyle === "highlight"
+        ? renderHighlight()
+        : renderRotating()
+      }
       {afterText && <span className="ml-2">{afterText}</span>}
-    </>);
+    </>
+  );
+
+  const cls = "animated-headline leading-tight";
 
   switch (tag) {
-    case "h1": return <h1 className="animated-headline leading-tight" style={styles}>{headlineContent}</h1>;
-    case "h3": return <h3 className="animated-headline leading-tight" style={styles}>{headlineContent}</h3>;
-    case "h4": return <h4 className="animated-headline leading-tight" style={styles}>{headlineContent}</h4>;
-    case "h5": return <h5 className="animated-headline leading-tight" style={styles}>{headlineContent}</h5>;
-    case "h6": return <h6 className="animated-headline leading-tight" style={styles}>{headlineContent}</h6>;
-    case "p": return <p className="animated-headline leading-tight" style={styles}>{headlineContent}</p>;
-    default: return <h2 className="animated-headline leading-tight" style={styles}>{headlineContent}</h2>;
+    case "h1": return <h1 className={cls} style={styles}>{headlineContent}</h1>;
+    case "h3": return <h3 className={cls} style={styles}>{headlineContent}</h3>;
+    case "h4": return <h4 className={cls} style={styles}>{headlineContent}</h4>;
+    case "h5": return <h5 className={cls} style={styles}>{headlineContent}</h5>;
+    case "h6": return <h6 className={cls} style={styles}>{headlineContent}</h6>;
+    case "p": return <p className={cls} style={styles}>{headlineContent}</p>;
+    default: return <h2 className={cls} style={styles}>{headlineContent}</h2>;
   }
 }
 
