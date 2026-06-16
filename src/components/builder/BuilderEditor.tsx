@@ -11,7 +11,24 @@ import StylePanel from "./StylePanel";
 import AIGeneratorModal from "./AIGeneratorModal";
 import type { ElementType } from "@/lib/builder/types";
 
-const QUICK_SECTION_COLORS = ["#0f172a", "#1e293b", "#f8fafc", "#ffffff", "transparent"];
+const SECTION_COLOR_PALETTE = [
+  // Dark / Neutral
+  "#0f172a", "#1e293b", "#334155", "#475569", "#000000",
+  // Green / Teal
+  "#22c55e", "#16a34a", "#059669", "#10b981", "#14b8a6",
+  // Blue / Cyan
+  "#3b82f6", "#2563eb", "#1d4ed8", "#06b6d4", "#0284c7",
+  // Purple / Magenta
+  "#8b5cf6", "#7c3aed", "#a855f7", "#d946ef",
+  // Red / Orange / Yellow
+  "#ef4444", "#dc2626", "#f97316", "#ea580c", "#eab308",
+  // Pink / Rose
+  "#ec4899", "#db2777", "#f43f5e",
+  // Light / Gray
+  "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#d1d5db", "#9ca3af", "#64748b",
+  // Transparent
+  "transparent",
+];
 
 export default function BuilderEditor() {
   const { currentPage, dispatch, state, undo, redo } = useBuilder();
@@ -248,7 +265,7 @@ export default function BuilderEditor() {
                       title="Warna Background"
                     />
                     <div className="flex gap-1 flex-wrap">
-                      {QUICK_SECTION_COLORS.map((c) => (
+                      {SECTION_COLOR_PALETTE.map((c) => (
                         <button
                           key={c}
                           onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: c } })}

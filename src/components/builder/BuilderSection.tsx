@@ -6,6 +6,25 @@ import BuilderColumn from "./BuilderColumn";
 import type { BuilderSection as BuilderSectionType } from "@/lib/builder/types";
 import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
+const SECTION_COLORS = [
+  // Dark/Neutral
+  "#0f172a", "#1e293b", "#334155", "#475569", "#000000",
+  // Green / Teal
+  "#22c55e", "#16a34a", "#059669", "#10b981", "#14b8a6",
+  // Blue / Cyan
+  "#3b82f6", "#2563eb", "#1d4ed8", "#06b6d4", "#0284c7",
+  // Purple / Magenta
+  "#8b5cf6", "#7c3aed", "#a855f7", "#d946ef",
+  // Red / Orange / Yellow
+  "#ef4444", "#dc2626", "#f97316", "#ea580c", "#eab308",
+  // Pink / Rose
+  "#ec4899", "#db2777", "#f43f5e",
+  // Light / Gray
+  "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#d1d5db", "#9ca3af", "#64748b",
+  // Transparent
+  "transparent",
+];
+
 function SectionControls({
   section,
   pageId,
@@ -20,7 +39,6 @@ function SectionControls({
   isSelected: boolean;
 }) {
   const { dispatch, currentPage } = useBuilder();
-  const quickColors = ["#0f172a", "#1e293b", "#f8fafc", "#ffffff", "transparent"];
 
   const cw = section.styles.containerWidth || "boxed";
   const gw = currentPage?.globalStyles.containerWidth || 1200;
@@ -43,8 +61,8 @@ function SectionControls({
           className="w-8 h-8 md:w-5 md:h-5 rounded-lg md:rounded cursor-pointer border-0 p-0"
           title="Warna Background"
         />
-        <div className="flex gap-0.5">
-          {quickColors.map((c) => (
+        <div className="flex gap-0.5 flex-wrap">
+          {SECTION_COLORS.map((c) => (
             <button
               key={c}
               onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: c } })}
@@ -56,7 +74,7 @@ function SectionControls({
         </div>
         <div className="w-px h-4 bg-white/10" />
         {/* Container Width */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5 flex-shrink-0">
           {containerOptions.map((opt) => (
             <button
               key={opt.key}
