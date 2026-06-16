@@ -59,7 +59,7 @@ function SectionControls({
           className="w-8 h-8 md:w-5 md:h-5 rounded-lg md:rounded cursor-pointer border-0 p-0 flex-shrink-0"
           title="Warna Background (pilih dengan pen)"
         />
-        <div className="flex gap-0.5 flex-wrap">
+        <div className="hidden md:flex gap-0.5 flex-wrap">
           {SECTION_QUICK_COLORS.map((c) => (
             <button
               key={c.value}
