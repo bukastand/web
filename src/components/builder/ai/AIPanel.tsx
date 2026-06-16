@@ -77,17 +77,46 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     }
   }, [showSettings, refreshProviders]);
 
-  // Load saved messages from localStorage on mount
+  // Load saved state from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("ai_chat_messages");
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      const savedMessages = localStorage.getItem("ai_chat_messages");
+      if (savedMessages) {
+        const parsed = JSON.parse(savedMessages);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setMessages(parsed);
         }
       }
+
+      const savedLastResult = localStorage.getItem("ai_last_result_json");
+      if (savedLastResult) {
+        setLastResultJson(savedLastResult);
+      }
+
+      const savedFinalSections = localStorage.getItem("ai_final_sections");
+      if (savedFinalSections) {
+        const parsed = JSON.parse(savedFinalSections);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setFinalSections(parsed);
+        }
+      }
     } catch {}
+  }, []);
+
+  // Restore preview on mount if saved data exists
+  useEffect(() => {
+    try {
+      const savedLastResult = localStorage.getItem("ai_last_result_json");
+      const savedTitle = localStorage.getItem("ai_last_title");
+      if (savedLastResult && savedTitle) {
+        // Give parent a moment to mount before triggering preview restore
+        const timer = setTimeout(() => {
+          onGenerate(savedTitle!, savedLastResult);
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Save messages to localStorage on change (debounced via timeout)
@@ -238,8 +267,19 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       const parsedSections = parseResultToSections(finalJSON);
       setFinalSections(parsedSections);
 
+      // Persist finalSections to localStorage
+      try {
+        localStorage.setItem("ai_final_sections", JSON.stringify(parsedSections));
+      } catch {}
+
       // Store for follow-up context
       setLastResultJson(finalJSON);
+
+      // Persist to localStorage so preview survives refresh
+      try {
+        localStorage.setItem("ai_last_result_json", finalJSON);
+        localStorage.setItem("ai_last_title", promptText);
+      } catch {}
 
       // Update preview with final result
       onGenerate(promptText, finalJSON);
@@ -396,6 +436,13 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     setLastResultJson("");
     setFinalSections([]);
     setSavedToPage(false);
+    // Clear persisted preview data
+    try {
+      localStorage.removeItem("ai_last_result_json");
+      localStorage.removeItem("ai_last_title");
+      localStorage.removeItem("ai_final_sections");
+      localStorage.removeItem("ai_chat_messages");
+    } catch {}
     inputRef.current?.focus();
   }, []);
 
