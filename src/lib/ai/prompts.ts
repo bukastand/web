@@ -164,9 +164,18 @@ GUIDELINES KONTEN:
 ✓ Nama: Gunakan nama Indonesia asli (Andi, Sari, Budi, dll)
 ✓ Nomor WA: Gunakan 6282210099969 untuk CTA
 
-OUTPUT: KEMBALIKAN RENCANA JSON YANG SAMA dengan konten TERISI penuh.
+OUTPUT HANYA JSON (tanpa markdown, backticks, atau teks lain):
+{
+  "pageTitle": "Judul Halaman",
+  "pageDescription": "...",
+  "sections": [...],
+  "globalStyles": {...}
+}
+
+WAJIB: KEMBALIKAN RENCANA JSON YANG SAMA dengan konten TERISI penuh.
 Untuk setiap element di setiap section, tambahkan konten realistis.
-Jangan ubah struktur section — hanya isi kontennya!`;
+Jangan ubah struktur section — hanya isi kontennya!
+Jangan gunakan markdown, backticks, atau teks apapun selain JSON murni!`;
 }
 
 // ─── AGENT: CODER ─────────────────────────────────

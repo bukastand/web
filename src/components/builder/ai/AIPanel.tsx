@@ -9,6 +9,52 @@ import { saveLocalMemory, saveGlobalMemory, updatePreferencesFromGeneration } fr
 import { aiSectionToBuilder } from "@/lib/builder/defaults";
 import type { BuilderPage } from "@/lib/builder/types";
 
+// ─── Chat History Types ─────────────────────────────
+
+interface ChatHistoryEntry {
+  prompt: string;
+  category?: string;
+  sectionsJson: string;
+  sectionCount: number;
+  sectionTypes: string[];
+  timestamp: number;
+  success: boolean;
+  error?: string;
+}
+
+const CHAT_HISTORY_KEY = "ai_chat_history";
+const MAX_CHAT_HISTORY = 50;
+
+function loadChatHistory(userId: string | null): ChatHistoryEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const key = userId ? `${CHAT_HISTORY_KEY}_${userId}` : `${CHAT_HISTORY_KEY}_anonymous`;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveChatHistoryEntry(userId: string | null, entry: ChatHistoryEntry): void {
+  if (typeof window === "undefined") return;
+  try {
+    const key = userId ? `${CHAT_HISTORY_KEY}_${userId}` : `${CHAT_HISTORY_KEY}_anonymous`;
+    const history = loadChatHistory(userId);
+    history.unshift(entry);
+    if (history.length > MAX_CHAT_HISTORY) history.length = MAX_CHAT_HISTORY;
+    localStorage.setItem(key, JSON.stringify(history));
+  } catch {}
+}
+
+function clearChatHistory(userId: string | null): void {
+  if (typeof window === "undefined") return;
+  try {
+    const key = userId ? `${CHAT_HISTORY_KEY}_${userId}` : `${CHAT_HISTORY_KEY}_anonymous`;
+    localStorage.removeItem(key);
+  } catch {}
+}
+
+// ─── Component ──────────────────────────────────────
+
 interface AIPanelProps {
   onGenerate: (title: string, sectionsJson: string) => void;
   onOpenConfig: () => void;
@@ -39,6 +85,14 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const [saving, setSaving] = useState(false);
   const [savedToPage, setSavedToPage] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [chatHistory, setChatHistory] = useState<ChatHistoryEntry[]>([]);
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
+
+  // Load chat history on mount
+  useEffect(() => {
+    setChatHistory(loadChatHistory(user?.id || null));
+  }, [user]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -129,6 +183,18 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       // Update preview with final result
       onGenerate(prompt.trim(), finalJSON);
 
+      // Save to chat history (success)
+      const sectionTypes = sections.map((s: any) => s.sectionType || "section").filter(Boolean);
+      saveChatHistoryEntry(user?.id || null, {
+        prompt: prompt.trim(),
+        category: category || undefined,
+        sectionsJson: finalJSON,
+        sectionCount: sections.length,
+        sectionTypes,
+        timestamp: Date.now(),
+        success: true,
+      });
+
       // Save to local memory
       if (sections.length > 0) {
         saveLocalMemory(user?.id || null, {
@@ -180,10 +246,22 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     } catch (err: any) {
       if (err.name === "AbortError") {
         setError("Generate dibatalkan");
-      } else {
-        setError(err.message || "Gagal generate website");
       }
+      // Save failed attempt to history
+      saveChatHistoryEntry(user?.id || null, {
+        prompt: prompt.trim(),
+        category: category || undefined,
+        sectionsJson: "",
+        sectionCount: 0,
+        sectionTypes: [],
+        timestamp: Date.now(),
+        success: false,
+        error: err.name === "AbortError" ? "Dibatalkan" : (err.message || "Gagal generate"),
+      });
     }
+
+    // Reload chat history
+    setChatHistory(loadChatHistory(user?.id || null));
 
     setIsRunning(false);
     abortRef.current = null;
@@ -218,6 +296,27 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     setFinalSections([]);
     setPrompt("");
   }, []);
+
+  const handleRestoreHistory = useCallback((entry: ChatHistoryEntry) => {
+    setPrompt(entry.prompt);
+    if (entry.success && entry.sectionsJson) {
+      const sections = parseResultToSections(entry.sectionsJson);
+      setFinalSections(sections);
+      setShowResult(true);
+      onGenerate(entry.prompt, entry.sectionsJson);
+    }
+    setShowHistory(false);
+  }, [onGenerate]);
+
+  const handleDeleteHistory = useCallback((index: number) => {
+    const updated = [...chatHistory];
+    updated.splice(index, 1);
+    setChatHistory(updated);
+    if (typeof window !== "undefined") {
+      const key = user?.id ? `${CHAT_HISTORY_KEY}_${user.id}` : `${CHAT_HISTORY_KEY}_anonymous`;
+      localStorage.setItem(key, JSON.stringify(updated));
+    }
+  }, [chatHistory, user]);
 
   return (
     <div className="flex flex-col h-full">
@@ -298,6 +397,115 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
               </button>
             </div>
           </div>
+        )}
+
+        {/* Chat History Toggle */}
+        {chatHistory.length > 0 && !isRunning && (
+          <>
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-gray-400 transition-colors"
+            >
+              <svg className={`w-3 h-3 transition-transform ${showHistory ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              Riwayat Chat ({chatHistory.length})
+            </button>
+
+            {/* History Panel */}
+            {showHistory && (
+              <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                {chatHistory.length === 0 ? (
+                  <p className="text-[10px] text-gray-600 text-center py-4">Belum ada riwayat chat</p>
+                ) : (
+                  chatHistory.map((entry, i) => (
+                    <div
+                      key={entry.timestamp + "_" + i}
+                      className={`group flex items-start gap-2 p-2.5 rounded-lg border transition-all cursor-pointer ${
+                        entry.success
+                          ? "border-white/10 bg-white/5 hover:border-purple-500/30 hover:bg-purple-500/5"
+                          : "border-red-500/10 bg-red-500/5 hover:border-red-500/20"
+                      }`}
+                      onClick={() => handleRestoreHistory(entry)}
+                    >
+                      {/* Status indicator */}
+                      <div className="flex-shrink-0 mt-0.5">
+                        {entry.success ? (
+                          <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] text-white truncate font-medium">
+                          {entry.prompt.substring(0, 80)}
+                          {entry.prompt.length > 80 ? "..." : ""}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {entry.success ? (
+                            <span className="text-[9px] text-emerald-500/70">
+                              {entry.sectionCount} section
+                            </span>
+                          ) : (
+                            <span className="text-[9px] text-red-500/70">
+                              {entry.error || "Gagal"}
+                            </span>
+                          )}
+                          <span className="text-[8px] text-gray-600">
+                            {new Date(entry.timestamp).toLocaleDateString("id-ID", {
+                              day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+                            })}
+                          </span>
+                        </div>
+                        {entry.success && entry.sectionTypes.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {entry.sectionTypes.slice(0, 4).map((t, ti) => (
+                              <span key={ti} className="text-[8px] px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400/70">
+                                {t}
+                              </span>
+                            ))}
+                            {entry.sectionTypes.length > 4 && (
+                              <span className="text-[8px] text-gray-600">+{entry.sectionTypes.length - 4}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Delete button */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDeleteHistory(i); }}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-gray-600 hover:text-red-400 transition-all"
+                        title="Hapus"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))
+                )}
+
+                {/* Clear all button */}
+                {chatHistory.length > 0 && (
+                  <button
+                    onClick={() => {
+                      clearChatHistory(user?.id || null);
+                      setChatHistory([]);
+                    }}
+                    className="w-full py-1.5 text-[9px] text-gray-600 hover:text-red-400 transition-colors"
+                  >
+                    Hapus semua riwayat
+                  </button>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {/* Generate Button */}

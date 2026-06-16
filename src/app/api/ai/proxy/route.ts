@@ -13,7 +13,7 @@ const PROVIDER_CONFIGS: Record<string, {
   anthropicFormat: boolean;
 }> = {
   gemini: {
-    models: ["gemini-3.5-flash", "gemini-3.1-flash-lite"],
+    models: ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-3.1-flash-lite"],
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
     defaultTemperature: 1.0,
     maxTokens: 4096,
@@ -249,7 +249,7 @@ async function callGeminiWithFallback(
       return { ok: false, error: `Gemini error: ${err.message}` };
     }
   }
-  return { ok: false, error: "Semua model Gemini tidak tersedia." };
+  return { ok: false, error: "Semua model Gemini tidak tersedia. Coba ganti provider atau cek kuota API Key Anda." };
 }
 
 // ─── OpenAI-Compatible Handler ──────────────────
