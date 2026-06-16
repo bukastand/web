@@ -11,23 +11,19 @@ import StylePanel from "./StylePanel";
 import AIGeneratorModal from "./AIGeneratorModal";
 import type { ElementType } from "@/lib/builder/types";
 
-const SECTION_COLOR_PALETTE = [
-  // Dark / Neutral
-  "#0f172a", "#1e293b", "#334155", "#475569", "#000000",
-  // Green / Teal
-  "#22c55e", "#16a34a", "#059669", "#10b981", "#14b8a6",
-  // Blue / Cyan
-  "#3b82f6", "#2563eb", "#1d4ed8", "#06b6d4", "#0284c7",
-  // Purple / Magenta
-  "#8b5cf6", "#7c3aed", "#a855f7", "#d946ef",
-  // Red / Orange / Yellow
-  "#ef4444", "#dc2626", "#f97316", "#ea580c", "#eab308",
-  // Pink / Rose
-  "#ec4899", "#db2777", "#f43f5e",
-  // Light / Gray
-  "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#d1d5db", "#9ca3af", "#64748b",
-  // Transparent
-  "transparent",
+const SECTION_QUICK_COLORS = [
+  { label: "Hijau", value: "#22c55e" },
+  { label: "Biru", value: "#3b82f6" },
+  { label: "Ungu", value: "#8b5cf6" },
+  { label: "Merah", value: "#ef4444" },
+  { label: "Kuning", value: "#eab308" },
+  { label: "Pink", value: "#ec4899" },
+  { label: "Orange", value: "#f97316" },
+  { label: "Teal", value: "#14b8a6" },
+  { label: "Putih", value: "#ffffff" },
+  { label: "Hitam", value: "#000000" },
+  { label: "Abu", value: "#64748b" },
+  { label: "Dark", value: "#0f172a" },
 ];
 
 export default function BuilderEditor() {
@@ -256,25 +252,32 @@ export default function BuilderEditor() {
                 {/* Background Color */}
                 <div>
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Background</label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mb-2">
                     <input
                       type="color"
                       value={selectedSection.styles.backgroundColor && selectedSection.styles.backgroundColor !== "transparent" ? selectedSection.styles.backgroundColor : "#0f172a"}
                       onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: e.target.value } })}
                       className="w-10 h-10 rounded-lg cursor-pointer border-0 p-0 flex-shrink-0"
-                      title="Warna Background"
+                      title="Pilih warna dengan pen"
                     />
-                    <div className="flex gap-1 flex-wrap">
-                      {SECTION_COLOR_PALETTE.map((c) => (
-                        <button
-                          key={c}
-                          onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: c } })}
-                          className={`w-6 h-6 rounded-sm border ${c === "transparent" ? "border-dashed border-white/30 bg-transparent" : "border-white/10"}`}
-                          style={{ backgroundColor: c === "transparent" ? "transparent" : c }}
-                          title={c}
-                        />
-                      ))}
-                    </div>
+                    <input
+                      type="text"
+                      value={selectedSection.styles.backgroundColor || ""}
+                      onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: e.target.value } })}
+                      className="flex-1 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50 font-mono"
+                      placeholder="#000000"
+                    />
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {SECTION_QUICK_COLORS.map((c) => (
+                      <button
+                        key={c.value}
+                        onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: c.value } })}
+                        className="w-6 h-6 rounded-md border border-white/10 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: c.value }}
+                        title={c.label}
+                      />
+                    ))}
                   </div>
                 </div>
 

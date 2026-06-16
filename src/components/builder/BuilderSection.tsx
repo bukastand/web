@@ -6,23 +6,21 @@ import BuilderColumn from "./BuilderColumn";
 import type { BuilderSection as BuilderSectionType } from "@/lib/builder/types";
 import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
-const SECTION_COLORS = [
-  // Dark/Neutral
-  "#0f172a", "#1e293b", "#334155", "#475569", "#000000",
-  // Green / Teal
-  "#22c55e", "#16a34a", "#059669", "#10b981", "#14b8a6",
-  // Blue / Cyan
-  "#3b82f6", "#2563eb", "#1d4ed8", "#06b6d4", "#0284c7",
-  // Purple / Magenta
-  "#8b5cf6", "#7c3aed", "#a855f7", "#d946ef",
-  // Red / Orange / Yellow
-  "#ef4444", "#dc2626", "#f97316", "#ea580c", "#eab308",
-  // Pink / Rose
-  "#ec4899", "#db2777", "#f43f5e",
-  // Light / Gray
-  "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#d1d5db", "#9ca3af", "#64748b",
-  // Transparent
-  "transparent",
+const SECTION_QUICK_COLORS = [
+  { label: "Dark", value: "#0f172a" },
+  { label: "Slate", value: "#1e293b" },
+  { label: "Light", value: "#f8fafc" },
+  { label: "Putih", value: "#ffffff" },
+  { label: "Hijau", value: "#22c55e" },
+  { label: "Biru", value: "#3b82f6" },
+  { label: "Ungu", value: "#8b5cf6" },
+  { label: "Merah", value: "#ef4444" },
+  { label: "Kuning", value: "#eab308" },
+  { label: "Pink", value: "#ec4899" },
+  { label: "Orange", value: "#f97316" },
+  { label: "Teal", value: "#14b8a6" },
+  { label: "Abu", value: "#64748b" },
+  { label: "Hitam", value: "#000000" },
 ];
 
 function SectionControls({
@@ -58,17 +56,17 @@ function SectionControls({
           type="color"
           value={section.styles.backgroundColor && section.styles.backgroundColor !== "transparent" ? section.styles.backgroundColor : "#0f172a"}
           onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: e.target.value } })}
-          className="w-8 h-8 md:w-5 md:h-5 rounded-lg md:rounded cursor-pointer border-0 p-0"
-          title="Warna Background"
+          className="w-8 h-8 md:w-5 md:h-5 rounded-lg md:rounded cursor-pointer border-0 p-0 flex-shrink-0"
+          title="Warna Background (pilih dengan pen)"
         />
         <div className="flex gap-0.5 flex-wrap">
-          {SECTION_COLORS.map((c) => (
+          {SECTION_QUICK_COLORS.map((c) => (
             <button
-              key={c}
-              onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: c } })}
-              className={`w-6 h-6 md:w-3 md:h-3 rounded-md md:rounded-sm border ${c === "transparent" ? "border-dashed border-white/30 bg-transparent" : "border-white/10"}`}
-              style={{ backgroundColor: c === "transparent" ? "transparent" : c }}
-              title={c}
+              key={c.value}
+              onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: c.value } })}
+              className="w-5 h-5 md:w-3 md:h-3 rounded-md md:rounded-sm border border-white/10 hover:scale-110 transition-transform"
+              style={{ backgroundColor: c.value }}
+              title={c.label}
             />
           ))}
         </div>
