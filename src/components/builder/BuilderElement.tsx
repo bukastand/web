@@ -142,7 +142,13 @@ export default function BuilderElementComponent({
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
   };
 
-  const editableTypes = ["heading", "text", "button", "cta", "navbar"];
+  const editableTypes = [
+    "heading", "text", "button", "cta", "navbar",
+    "animated-headline", "blockquote", "code-highlight", "flip-box", "hotspot",
+    "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
+    "star-rating", "search", "floating-buttons", "breadcrumbs",
+    "off-canvas", "slides", "nested-carousel", "video-playlist", "table-of-contents", "social-embed",
+  ];
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
