@@ -7,23 +7,40 @@ import { getAIConfig, getApiKeyUrl, type AIProvider } from "@/lib/ai";
 import { AIPanel } from "@/components/builder/ai/AIPanel";
 import { SandboxPreview } from "@/components/builder/ai/SandboxPreview";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function AIBuilderPage() {
   const { user, loading: authLoading } = useAuth();
-  const { currentPage, createNewPage } = useBuilder();
+  const { state, dispatch, currentPage, createNewPage } = useBuilder();
   const [pageCreated, setPageCreated] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  // Wait for client-side hydration to complete before acting on search params
+  useEffect(() => { setMounted(true); }, []);
+
+  const searchParams = useSearchParams();
+  const pageIdParam = searchParams.get("pageId");
+
   const [aiConfigOpen, setAiConfigOpen] = useState(false);
   const [generatedSectionsJson, setGeneratedSectionsJson] = useState<string>("");
   const [showPreview, setShowPreview] = useState(false);
   const [pendingPageTitle, setPendingPageTitle] = useState("");
 
-  // Auto-create page so there's always a target to save sections to
+  // Single effect to handle both cases without race condition:
+  // - If pageId is provided → set existing page as current
+  // - If no pageId → create a fresh new page
   useEffect(() => {
-    if (!pageCreated && !authLoading && user && !currentPage) {
-      createNewPage("AI Generated Page");
+    if (!authLoading && user && !pageCreated && mounted) {
+      if (pageIdParam) {
+        const targetPage = state.pages.find(p => p.id === pageIdParam);
+        if (targetPage) {
+          dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
+        }
+      } else {
+        createNewPage("AI Generated Page");
+      }
       setPageCreated(true);
     }
-  }, [pageCreated, authLoading, user, currentPage, createNewPage]);
+  }, [pageIdParam, authLoading, user, pageCreated, mounted, state.pages, dispatch, createNewPage]);
 
   // Check if AI is configured
   useEffect(() => {

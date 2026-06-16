@@ -2,7 +2,9 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useBuilder } from "@/lib/builder/store";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { SOCIAL_PLATFORMS, SocialIcon } from "@/lib/builder/social-platforms";
+import { compressAndUploadImage } from "@/lib/upload-image";
 import { AnimatedHeadlineEditor, BlockquoteEditor, CodeHighlightEditor, FlipBoxEditor, HotspotEditor, ProgressTrackerEditor, ShareButtonsEditor, ChecklistEditor, GalleryEditor, LottieEditor, StarRatingEditor, SearchEditor, FloatingButtonsEditor, BreadcrumbsEditor, OffCanvasEditor, SlidesEditor, NestedCarouselEditor, VideoPlaylistEditor, TableOfContentsEditor, SocialEmbedEditor } from "./PremiumElementEditors";
 
 const elementLabels: Record<string, string> = {
@@ -338,6 +340,7 @@ function FontSizeSlider({ value, onChange }: { value: string; onChange: (v: stri
 
 export default function StylePanel() {
   const { currentPage, dispatch, state } = useBuilder();
+  const { user } = useAuth();
   const [tab, setTab] = useState<"content" | "style">("content");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -397,15 +400,20 @@ export default function StylePanel() {
     dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: {}, styles: { [key]: value } });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      updateContent("src", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, user?.id ?? null);
+      updateContent("src", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        updateContent("src", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleAddItem = (field: string, defaultItem: any) => {
@@ -1161,15 +1169,20 @@ export default function StylePanel() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = (ev) => {
-                        const dataUrl = ev.target?.result as string;
-                        updateContent("logoImage", dataUrl);
-                      };
-                      reader.readAsDataURL(file);
+                      try {
+                        const url = await compressAndUploadImage(file, user?.id ?? null);
+                        updateContent("logoImage", url);
+                      } catch {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          const dataUrl = ev.target?.result as string;
+                          updateContent("logoImage", dataUrl);
+                        };
+                        reader.readAsDataURL(file);
+                      }
                     }}
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                   />
@@ -1309,15 +1322,20 @@ export default function StylePanel() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = (ev) => {
-                        const dataUrl = ev.target?.result as string;
-                        updateContent("logoImage", dataUrl);
-                      };
-                      reader.readAsDataURL(file);
+                      try {
+                        const url = await compressAndUploadImage(file, user?.id ?? null);
+                        updateContent("logoImage", url);
+                      } catch {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          const dataUrl = ev.target?.result as string;
+                          updateContent("logoImage", dataUrl);
+                        };
+                        reader.readAsDataURL(file);
+                      }
                     }}
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                   />
@@ -1523,15 +1541,20 @@ export default function StylePanel() {
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
-                          const reader = new FileReader();
-                          reader.onload = (ev) => {
-                            const dataUrl = ev.target?.result as string;
-                            handleItemChange("slides", i, "image", dataUrl);
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const url = await compressAndUploadImage(file, user?.id ?? null);
+                            handleItemChange("slides", i, "image", url);
+                          } catch {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              const dataUrl = ev.target?.result as string;
+                              handleItemChange("slides", i, "image", dataUrl);
+                            };
+                            reader.readAsDataURL(file);
+                          }
                         }}
                         className="w-full mb-1 text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                       />
@@ -1694,15 +1717,20 @@ export default function StylePanel() {
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
-                          const reader = new FileReader();
-                          reader.onload = (ev) => {
-                            const dataUrl = ev.target?.result as string;
-                            handleItemChange("members", i, "image", dataUrl);
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const url = await compressAndUploadImage(file, user?.id ?? null);
+                            handleItemChange("members", i, "image", url);
+                          } catch {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              const dataUrl = ev.target?.result as string;
+                              handleItemChange("members", i, "image", dataUrl);
+                            };
+                            reader.readAsDataURL(file);
+                          }
                         }}
                         className="w-full mb-1 text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
                       />
@@ -1835,26 +1863,26 @@ export default function StylePanel() {
               </>
             )}
             {/* --- PREMIUM ELEMENTS --- */}
-          {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "blockquote" && <BlockquoteEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "code-highlight" && <CodeHighlightEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "flip-box" && <FlipBoxEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "hotspot" && <HotspotEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "progress-tracker" && <ProgressTrackerEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "share-buttons" && <ShareButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "checklist" && <ChecklistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "gallery" && <GalleryEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "lottie" && <LottieEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "star-rating" && <StarRatingEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "search" && <SearchEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "floating-buttons" && <FloatingButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "breadcrumbs" && <BreadcrumbsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "off-canvas" && <OffCanvasEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "slides" && <SlidesEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "nested-carousel" && <NestedCarouselEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "video-playlist" && <VideoPlaylistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "table-of-contents" && <TableOfContentsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "social-embed" && <SocialEmbedEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "blockquote" && <BlockquoteEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "code-highlight" && <CodeHighlightEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "flip-box" && <FlipBoxEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "hotspot" && <HotspotEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "progress-tracker" && <ProgressTrackerEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "share-buttons" && <ShareButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "checklist" && <ChecklistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "gallery" && <GalleryEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "lottie" && <LottieEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "star-rating" && <StarRatingEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "search" && <SearchEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "floating-buttons" && <FloatingButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "breadcrumbs" && <BreadcrumbsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "off-canvas" && <OffCanvasEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "slides" && <SlidesEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "nested-carousel" && <NestedCarouselEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "video-playlist" && <VideoPlaylistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "table-of-contents" && <TableOfContentsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+          {selectedElement.type === "social-embed" && <SocialEmbedEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
           </div>
         ) : (
           <div>
@@ -1997,15 +2025,20 @@ export default function StylePanel() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = (ev) => {
-                        const dataUrl = ev.target?.result as string;
-                        updateStyle("backgroundImage", `url("${dataUrl}")`);
-                      };
-                      reader.readAsDataURL(file);
+                      try {
+                        const url = await compressAndUploadImage(file, user?.id ?? null);
+                        updateStyle("backgroundImage", `url("${url}")`);
+                      } catch {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          const dataUrl = ev.target?.result as string;
+                          updateStyle("backgroundImage", `url("${dataUrl}")`);
+                        };
+                        reader.readAsDataURL(file);
+                      }
                     }}
                     className="w-full text-xs text-gray-400 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-[10px] file:font-medium hover:file:bg-[#22c55e]/30"
                   />

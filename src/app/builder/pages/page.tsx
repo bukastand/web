@@ -3,10 +3,12 @@
 import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { templates } from "@/lib/builder/templates";
 
 export default function BuilderPages() {
+  const router = useRouter();
   const { state, dispatch, createNewPage } = useBuilder();
   const { user, loading } = useAuth();
   const [showNew, setShowNew] = useState(false);
@@ -197,8 +199,8 @@ export default function BuilderPages() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {state.pages.map((page) => (
-              <div key={page.id} className="group relative rounded-2xl border border-white/10 bg-white/5 hover:border-[#22c55e]/40 transition-all overflow-hidden">
-                <Link href={`/builder/${page.id}`} className="block p-6">
+              <div key={page.id} className="group relative rounded-2xl border border-white/10 bg-white/5 hover:border-[#22c55e]/40 transition-all overflow-hidden cursor-pointer" onClick={() => router.push(`/builder/${page.id}`)}>
+                <div className="p-6 pb-3">
                   <div className="w-full h-32 rounded-xl bg-gradient-to-br from-[#22c55e]/10 to-blue-500/10 border border-white/10 flex items-center justify-center mb-4 relative">
                     <svg className="w-12 h-12 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -215,7 +217,30 @@ export default function BuilderPages() {
                       </span>
                     )}
                   </div>
-                </Link>
+                </div>
+                {/* Action buttons - stopPropagation prevents card click */}
+                <div className="px-6 pb-4 flex items-center gap-2">
+                  <Link
+                    href={`/builder/${page.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-lg bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30 hover:bg-[#22c55e]/30 hover:border-[#22c55e]/50 transition-all"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                    </svg>
+                    Drag & Drop
+                  </Link>
+                  <Link
+                    href={`/builder/ai?pageId=${page.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400 border border-purple-500/30 hover:from-purple-500/30 hover:to-pink-500/30 hover:border-purple-500/50 transition-all"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI Builder
+                  </Link>
+                </div>
                 {/* Delete button */}
                 <button
                   onClick={(e) => { e.preventDefault(); setDeleteConfirm(page.id); }}

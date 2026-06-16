@@ -1,5 +1,6 @@
 "use client";
 
+import { compressAndUploadImage } from "@/lib/upload-image";
 import { useState, useEffect } from "react";
 
 // ── Shared UI Components ──
@@ -83,6 +84,7 @@ interface EditorProps {
   handleAddItem: (field: string, defaultItem: any) => void;
   handleRemoveItem: (field: string, index: number) => void;
   handleItemChange: (field: string, index: number, key: string, value: any) => void;
+  userId: string | null;
 }
 
 function TextInput({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
@@ -264,30 +266,40 @@ function IconPicker({ value, onChange }: { value: string; onChange: (v: string) 
   );
 }
 
-export function FlipBoxEditor({ element, updateContent }: EditorProps) {
+export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
   const c = element.content;
   const frontGraphic = c.frontGraphic || "icon";
 
-  const handleFrontImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFrontImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      updateContent("frontImage", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      updateContent("frontImage", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        updateContent("frontImage", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleBackImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      updateContent("backImage", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      updateContent("backImage", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        updateContent("backImage", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -356,19 +368,24 @@ export function FlipBoxEditor({ element, updateContent }: EditorProps) {
   );
 }
 
-export function HotspotEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
+export function HotspotEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange, userId }: EditorProps) {
   const c = element.content;
   const items = c.items || [];
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      updateContent("imageSrc", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      updateContent("imageSrc", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        updateContent("imageSrc", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -503,19 +520,24 @@ export function ChecklistEditor({ element, updateContent, handleAddItem, handleR
   );
 }
 
-export function GalleryEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
+export function GalleryEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange, userId }: EditorProps) {
   const c = element.content;
   const images = c.images || [];
 
-  const handleImageUpload = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      handleItemChange("images", i, "src", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      handleItemChange("images", i, "src", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        handleItemChange("images", i, "src", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -766,19 +788,24 @@ export function OffCanvasEditor({ element, updateContent, handleAddItem, handleR
   );
 }
 
-export function SlidesEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
+export function SlidesEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange, userId }: EditorProps) {
   const c = element.content;
   const slides = c.slides || [];
 
-  const handleImageUpload = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      handleItemChange("slides", i, "image", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      handleItemChange("slides", i, "image", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        handleItemChange("slides", i, "image", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -832,19 +859,24 @@ export function SlidesEditor({ element, updateContent, handleAddItem, handleRemo
   );
 }
 
-export function NestedCarouselEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
+export function NestedCarouselEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange, userId }: EditorProps) {
   const c = element.content;
   const slides = c.slides || [];
 
-  const handleImageUpload = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      handleItemChange("slides", i, "image", dataUrl);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const url = await compressAndUploadImage(file, userId);
+      handleItemChange("slides", i, "image", url);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        handleItemChange("slides", i, "image", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
