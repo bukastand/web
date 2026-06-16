@@ -33,14 +33,14 @@ function SectionControls({
   ];
 
   return (
-    <div className={`flex items-center gap-1 transition-opacity z-20 ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"} ${isSelected ? "mb-2 flex-wrap" : "absolute -top-10 left-1/2 -translate-x-1/2"}`}>
+    <div className={`flex items-center gap-1 transition-opacity z-20 ${isSelected ? "opacity-100 mb-2 flex-wrap" : "opacity-60 mb-2 flex-wrap md:opacity-0 md:group-hover:opacity-100 md:absolute md:-top-10 md:left-1/2 md:-translate-x-1/2"}`}>
       <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg">
         {/* Background Color */}
         <input
           type="color"
           value={section.styles.backgroundColor && section.styles.backgroundColor !== "transparent" ? section.styles.backgroundColor : "#0f172a"}
           onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: e.target.value } })}
-          className="w-5 h-5 rounded cursor-pointer border-0 p-0"
+          className="w-8 h-8 md:w-5 md:h-5 rounded-lg md:rounded cursor-pointer border-0 p-0"
           title="Warna Background"
         />
         <div className="flex gap-0.5">
@@ -48,7 +48,7 @@ function SectionControls({
             <button
               key={c}
               onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { backgroundColor: c } })}
-              className={`w-3 h-3 rounded-sm border ${c === "transparent" ? "border-dashed border-white/30 bg-transparent" : "border-white/10"}`}
+              className={`w-6 h-6 md:w-3 md:h-3 rounded-md md:rounded-sm border ${c === "transparent" ? "border-dashed border-white/30 bg-transparent" : "border-white/10"}`}
               style={{ backgroundColor: c === "transparent" ? "transparent" : c }}
               title={c}
             />
@@ -61,7 +61,7 @@ function SectionControls({
             <button
               key={opt.key}
               onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId, sectionId: section.id, styles: { containerWidth: opt.key } })}
-              className={`px-1.5 py-0.5 text-[9px] font-medium rounded-sm transition-all ${
+              className={`px-2.5 py-1.5 md:px-1.5 md:py-0.5 text-[10px] md:text-[9px] font-medium rounded-lg md:rounded-sm transition-all ${
                 cw === opt.key
                   ? "bg-[#22c55e]/20 text-[#22c55e]"
                   : "text-gray-500 hover:text-white"
@@ -76,10 +76,10 @@ function SectionControls({
         {/* Tambah Kolom */}
         <button
           onClick={() => dispatch({ type: "ADD_COLUMN", pageId, sectionId: section.id })}
-          className="p-1 text-gray-400 hover:text-white transition-colors"
+          className="p-1.5 md:p-1 text-gray-400 hover:text-white transition-colors"
           title="Tambah Kolom"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         </button>
@@ -87,10 +87,10 @@ function SectionControls({
         {/* Duplicate */}
         <button
           onClick={() => dispatch({ type: "DUPLICATE_SECTION", pageId, sectionId: section.id })}
-          className="p-1 text-gray-400 hover:text-white transition-colors"
+          className="p-1.5 md:p-1 text-gray-400 hover:text-white transition-colors"
           title="Duplikat Section"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
         </button>
@@ -103,10 +103,10 @@ function SectionControls({
             }
           }}
           disabled={sectionIndex === 0}
-          className="p-1 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-1.5 md:p-1 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Pindah ke Atas"
         >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
           </svg>
         </button>
@@ -117,10 +117,10 @@ function SectionControls({
             }
           }}
           disabled={sectionIndex === totalSections - 1}
-          className="p-1 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-1.5 md:p-1 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Pindah ke Bawah"
         >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
@@ -128,10 +128,10 @@ function SectionControls({
         {/* Hapus */}
         <button
           onClick={() => dispatch({ type: "REMOVE_SECTION", pageId, sectionId: section.id })}
-          className="p-1 text-red-400 hover:text-red-300 transition-colors"
+          className="p-1.5 md:p-1 text-red-400 hover:text-red-300 transition-colors"
           title="Hapus Section"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         </button>
@@ -174,6 +174,7 @@ export default function BuilderSectionComponent({
   return (
     <div
       ref={setNodeRef}
+      id={`section-${section.id}`}
       onClick={(e) => {
         // Only select section if no element was clicked (element handles stopPropagation)
         dispatch({ type: "SELECT_SECTION", sectionId: section.id });
@@ -196,7 +197,7 @@ export default function BuilderSectionComponent({
         className="rounded-xl"
       >
         {/* Section Padding Controls */}
-        <div className={`flex items-center justify-center gap-4 py-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"}`}>
+        <div className={`flex items-center justify-center gap-4 py-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-60 md:opacity-0 md:group-hover:opacity-100"}`}>
           <button
             onClick={() => {
               const current = parseInt(section.styles.padding || "0") || 0;

@@ -459,6 +459,29 @@ export default function BuilderEditor() {
             </button>
           </div>
         )}
+
+        {/* Mobile: floating button untuk buka section controls */}
+        {isMobile && currentPage.sections.length > 0 && !state.selectedSectionId && !state.selectedElementId && (
+          <div className="fixed bottom-8 right-4 z-20">
+            <button
+              onClick={() => {
+                const firstId = currentPage.sections[0].id;
+                dispatch({ type: "SELECT_SECTION", sectionId: firstId });
+                // Scroll ke section yang dipilih
+                setTimeout(() => {
+                  document.getElementById(`section-${firstId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, 100);
+              }}
+              className="flex items-center gap-2 px-3 py-2.5 bg-[#1e293b] border border-white/10 text-white rounded-xl shadow-xl hover:bg-[#334155] transition-all active:scale-95"
+              title="Buka Section Controls"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              <span className="text-xs font-medium">Section</span>
+            </button>
+          </div>
+        )}
       </div>
       <DragOverlay>
         {activeDragType && (
