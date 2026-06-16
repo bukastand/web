@@ -11,6 +11,23 @@ import StylePanel from "./StylePanel";
 import AIGeneratorModal from "./AIGeneratorModal";
 import type { ElementType } from "@/lib/builder/types";
 
+const SECTION_QUICK_COLORS = [
+  { label: "Dark", value: "#0f172a" },
+  { label: "Slate", value: "#1e293b" },
+  { label: "Light", value: "#f8fafc" },
+  { label: "Putih", value: "#ffffff" },
+  { label: "Hijau", value: "#22c55e" },
+  { label: "Biru", value: "#3b82f6" },
+  { label: "Ungu", value: "#8b5cf6" },
+  { label: "Merah", value: "#ef4444" },
+  { label: "Kuning", value: "#eab308" },
+  { label: "Pink", value: "#ec4899" },
+  { label: "Orange", value: "#f97316" },
+  { label: "Teal", value: "#14b8a6" },
+  { label: "Abu", value: "#64748b" },
+  { label: "Hitam", value: "#000000" },
+];
+
 export default function BuilderEditor() {
   const { currentPage, dispatch, state, undo, redo } = useBuilder();
   const [activeDragType, setActiveDragType] = useState<ElementType | null>(null);
@@ -252,6 +269,17 @@ export default function BuilderEditor() {
                       className="flex-1 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50 font-mono"
                       placeholder="#000000"
                     />
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {SECTION_QUICK_COLORS.map((c) => (
+                      <button
+                        key={c.value}
+                        onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: c.value } })}
+                        className="w-6 h-6 rounded-md border border-white/10 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: c.value }}
+                        title={c.label}
+                      />
+                    ))}
                   </div>
                 </div>
 
