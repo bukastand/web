@@ -579,6 +579,9 @@ export function StarRatingEditor({ element, updateContent }: EditorProps) {
       <ColorPicker value={c.starColor || "#f59e0b"} onChange={(v) => updateContent("starColor", v)} label="Warna Bintang" />
       <ColorPicker value={c.emptyColor || "#374151"} onChange={(v) => updateContent("emptyColor", v)} label="Warna Bintang Kosong" />
       <Checkbox label="Tampilkan Nilai" checked={!!c.showValue} onChange={(v) => updateContent("showValue", v)} />
+      <ColorPicker value={c.titleColor || "#94a3b8"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
       <TextInput label="Ukuran" value={c.size} onChange={(v) => updateContent("size", v)} />
       <SelectInput label="Posisi" value={c.align} onChange={(v) => updateContent("align", v)} options={["left", "center", "right"]} />
     </div>

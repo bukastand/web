@@ -1991,7 +1991,7 @@ function LottieElement({ el }: ElementComponentProps) {
 }
 
 function StarRatingElement({ el }: ElementComponentProps) {
-  const { title, rating = 5, scale = 5, starColor = "#f59e0b", emptyColor = "#374151", showValue, size = "24px", align = "center" } = el.content;
+  const { title, rating = 5, scale = 5, starColor = "#f59e0b", emptyColor = "#374151", showValue, size = "24px", align = "center", titleColor = "#94a3b8", titleSize = "14px", titleWeight = "500" } = el.content;
   const styles = applyStyles(el);
   const fullStars = Math.floor(rating);
   const hasHalf = rating - fullStars >= 0.25 && rating - fullStars < 0.75;
@@ -1999,7 +1999,7 @@ function StarRatingElement({ el }: ElementComponentProps) {
 
   return (
     <div style={{ ...styles, textAlign: align as any }}>
-      {title && <p className="text-sm mb-2 font-medium" style={{ color: "#94a3b8" }}>{title}</p>}
+      {title && <p className="mb-2" style={{ color: titleColor, fontSize: titleSize, fontWeight: titleWeight }}>{title}</p>}
       <div className="inline-flex items-center gap-1">
         {Array.from({ length: scale }).map((_, i) => {
           const isFull = i < Math.floor(roundedRating);
