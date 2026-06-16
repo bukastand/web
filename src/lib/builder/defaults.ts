@@ -476,6 +476,9 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
     "call-to-action": "cta",
     "calltoaction": "cta",
     "hero-cta": "cta",
+    "banner": "cta",
+    "promo": "cta",
+    "newsletter": "cta",
     // Stats variants
     "statistics": "stats",
     "counter": "stats",
@@ -519,6 +522,9 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
     "slider": "carousel",
     "gallery": "carousel",
     "galeri": "carousel",
+    "showcase": "carousel",
+    "portfolio-gallery": "carousel",
+    "work": "features",
     // Countdown variants
     "timer": "countdown",
     "coming-soon": "countdown",

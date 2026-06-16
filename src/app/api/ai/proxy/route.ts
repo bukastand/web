@@ -15,7 +15,7 @@ const PROVIDER_CONFIGS: Record<string, {
   gemini: {
     models: ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-3.1-flash-lite"],
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: false,
     anthropicFormat: false,
@@ -23,7 +23,7 @@ const PROVIDER_CONFIGS: Record<string, {
   groq: {
     models: ["llama-3.3-70b-versatile"],
     baseUrl: "https://api.groq.com/openai/v1/chat/completions",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: true,
     anthropicFormat: false,
@@ -31,7 +31,7 @@ const PROVIDER_CONFIGS: Record<string, {
   openai: {
     models: ["gpt-4o", "gpt-4o-mini", "gpt-4.1"],
     baseUrl: "https://api.openai.com/v1/chat/completions",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: true,
     anthropicFormat: false,
@@ -39,7 +39,7 @@ const PROVIDER_CONFIGS: Record<string, {
   claude: {
     models: ["claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
     baseUrl: "https://api.anthropic.com/v1/messages",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: false,
     anthropicFormat: true,
@@ -47,7 +47,7 @@ const PROVIDER_CONFIGS: Record<string, {
   deepseek: {
     models: ["deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat"],
     baseUrl: "https://api.deepseek.com/chat/completions",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: true,
     anthropicFormat: false,
@@ -55,7 +55,7 @@ const PROVIDER_CONFIGS: Record<string, {
   mistral: {
     models: ["mistral-large-3", "mistral-small-4"],
     baseUrl: "https://api.mistral.ai/v1/chat/completions",
-    defaultTemperature: 1.0,
+    defaultTemperature: 1.2,
     maxTokens: 4096,
     openaiCompatible: true,
     anthropicFormat: false,

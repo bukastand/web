@@ -2,14 +2,20 @@
  * Multi-Agent AI Pipeline
  *
  * Agent flow:
- *   Planner → (Writer → Coder → Reviewer → Stylist) → Preview
+ *   Researcher → Planner → (Writer → Coder → Reviewer → Stylist) → Preview
  *
  * Each agent builds on the output of the previous one.
  * Results are streamed to the frontend via callbacks for live preview.
+ * 
+ * CREATIVE FREEDOM:
+ * - Researcher mencari referensi dari training knowledge AI
+ * - Planner bebas berimajinasi, tidak terikat template
+ * - Writer & Coder mengubah visi jadi kenyataan
+ * - Reviewer & Stylist memoles hasil akhir
  */
 
 import type { AIConfig } from "@/lib/ai";
-import { buildPlannerPrompt, buildWriterPrompt, buildCoderPrompt, buildReviewerPrompt, buildStylistPrompt } from "./prompts";
+import { buildResearcherPrompt, buildPlannerPrompt, buildWriterPrompt, buildCoderPrompt, buildReviewerPrompt, buildStylistPrompt } from "./prompts";
 import { queryBestMemories, loadUserPreferences, buildFewShotExamples, buildPreferenceString } from "./memory";
 
 // ─── Types ───────────────────────────────────────────
@@ -24,7 +30,7 @@ export interface AgentResult {
   completedAt?: number;
 }
 
-export type AgentType = "planner" | "writer" | "coder" | "reviewer" | "stylist";
+export type AgentType = "researcher" | "planner" | "writer" | "coder" | "reviewer" | "stylist";
 
 export interface PipelineCallbacks {
   onAgentStart: (agent: AgentType) => void;
@@ -39,6 +45,7 @@ export interface PipelineConfig {
   category?: string;
   enableWriter?: boolean;
   enableStylist?: boolean;
+  enableResearcher?: boolean;
 }
 
 // ─── AI Proxy Call ─────────────────────────────────
@@ -144,7 +151,7 @@ export async function runPipeline(
   callbacks: PipelineCallbacks,
   signal?: AbortSignal
 ): Promise<string> {
-  const { userId, userPrompt, category, enableWriter = true, enableStylist = true } = pipelineConfig;
+  const { userId, userPrompt, category, enableWriter = true, enableStylist = true, enableResearcher = true } = pipelineConfig;
 
   // ── Step 0: Gather context from memory ──
   let fewShotExamples = "";
@@ -161,8 +168,19 @@ export async function runPipeline(
     console.warn("Memory query failed, continuing without examples:", err);
   }
 
-  // ── Step 1: Planner ──
-  const plannerPrompt = buildPlannerPrompt(userPrompt, fewShotExamples, userPrefString);
+  let researchResult = "";
+
+  // ── Step 1: Researcher (NEW!) ──
+  if (enableResearcher) {
+    const researcherPrompt = buildResearcherPrompt(userPrompt);
+    const researcherRaw = await runAgent(aiConfig, "researcher", researcherPrompt, callbacks, signal);
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+    researchResult = researcherRaw;
+    // Note: Researcher output is natural language, not JSON — used as context for Planner
+  }
+
+  // ── Step 2: Planner ──
+  const plannerPrompt = buildPlannerPrompt(userPrompt, researchResult, fewShotExamples, userPrefString);
   const planRaw = await runAgent(aiConfig, "planner", plannerPrompt, callbacks, signal);
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 
@@ -172,7 +190,7 @@ export async function runPipeline(
 
   let currentJSON = planJSON;
 
-  // ── Step 2: Writer & Curator (optional) ──
+  // ── Step 3: Writer & Curator (optional) ──
   if (enableWriter) {
     const writerPrompt = buildWriterPrompt(userPrompt, currentJSON);
     const writerRaw = await runAgent(aiConfig, "writer", writerPrompt, callbacks, signal);
@@ -182,7 +200,7 @@ export async function runPipeline(
     callbacks.onPreviewUpdate(currentJSON);
   }
 
-  // ── Step 3: Coder ──
+  // ── Step 4: Coder ──
   const coderPrompt = buildCoderPrompt(userPrompt, currentJSON);
   const coderRaw = await runAgent(aiConfig, "coder", coderPrompt, callbacks, signal);
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
@@ -190,7 +208,7 @@ export async function runPipeline(
   currentJSON = extractJSON(coderRaw);
   callbacks.onPreviewUpdate(currentJSON);
 
-  // ── Step 4: Reviewer ──
+  // ── Step 5: Reviewer ──
   const reviewerPrompt = buildReviewerPrompt(userPrompt, currentJSON);
   const reviewerRaw = await runAgent(aiConfig, "reviewer", reviewerPrompt, callbacks, signal);
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
@@ -198,7 +216,7 @@ export async function runPipeline(
   currentJSON = extractJSON(reviewerRaw);
   callbacks.onPreviewUpdate(currentJSON);
 
-  // ── Step 5: Stylist (optional) ──
+  // ── Step 6: Stylist (optional) ──
   if (enableStylist) {
     const stylistPrompt = buildStylistPrompt(userPrompt, currentJSON);
     const stylistRaw = await runAgent(aiConfig, "stylist", stylistPrompt, callbacks, signal);

@@ -61,7 +61,8 @@ interface AIPanelProps {
 }
 
 const AGENT_LABELS: Record<AgentType, { label: string; desc: string; emoji: string }> = {
-  planner: { label: "Planner", desc: "Merencanakan struktur halaman", emoji: "📐" },
+  researcher: { label: "Researcher", desc: "Mencari referensi website", emoji: "🔍" },
+  planner: { label: "Planner", desc: "Merancang struktur kreatif", emoji: "📐" },
   writer: { label: "Writer", desc: "Menulis konten kreatif", emoji: "✍️" },
   coder: { label: "Coder", desc: "Mengubah ke komponen", emoji: "⚡" },
   reviewer: { label: "Reviewer", desc: "Memeriksa kualitas", emoji: "✅" },
@@ -76,6 +77,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const [agentResults, setAgentResults] = useState<AgentResult[]>([]);
   const [currentAgent, setCurrentAgent] = useState<AgentType | null>(null);
   const [error, setError] = useState("");
+  const [enableResearcher, setEnableResearcher] = useState(true);
   const [enableWriter, setEnableWriter] = useState(true);
   const [enableStylist, setEnableStylist] = useState(true);
   const [category, setCategory] = useState("");
@@ -138,6 +140,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
           userId: user?.id || null,
           userPrompt: prompt.trim(),
           category: category || undefined,
+          enableResearcher,
           enableWriter,
           enableStylist,
         },
@@ -265,7 +268,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
 
     setIsRunning(false);
     abortRef.current = null;
-  }, [prompt, category, enableWriter, enableStylist, user, currentPage, onGenerate, onOpenConfig]);
+  }, [prompt, category, enableResearcher, enableWriter, enableStylist, user, currentPage, onGenerate, onOpenConfig]);
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
@@ -327,7 +330,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
           AI Agent Pipeline
         </h2>
         <p className="text-[10px] text-gray-500 mt-0.5">
-          5 agent AI bekerja sama membangun website Anda
+          6 agent AI bekerja sama membangun website Anda: Researcher → Planner → Coder
         </p>
       </div>
 
@@ -377,6 +380,15 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                 <option value="Kesehatan" className="bg-[#1e293b]">🏥 Kesehatan</option>
                 <option value="Pendidikan" className="bg-[#1e293b]">📚 Pendidikan</option>
               </select>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-gray-500">🔍 Researcher Agent (cari referensi)</span>
+              <button
+                onClick={() => setEnableResearcher(!enableResearcher)}
+                className={`relative w-8 h-4 rounded-full transition-colors ${enableResearcher ? "bg-amber-500" : "bg-white/20"}`}
+              >
+                <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${enableResearcher ? "translate-x-4" : "translate-x-0.5"}`} />
+              </button>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-500">✍️ Writer Agent</span>
