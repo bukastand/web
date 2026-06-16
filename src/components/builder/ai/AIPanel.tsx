@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useBuilder } from "@/lib/builder/store";
 import { getAIConfig, getProviderList, removeProviderEntry, moveProviderPriority, type ProviderEntry } from "@/lib/ai";
-import { runPipeline, parseResultToSections, type AgentType, type AgentResult } from "@/lib/ai/agents";
+import { generateWebsite, parseResultToSections, type GenerateCallbacks } from "@/lib/ai/agents";
 import { saveLocalMemory, saveGlobalMemory, updatePreferencesFromGeneration } from "@/lib/ai/memory";
 import { aiSectionToBuilder } from "@/lib/builder/defaults";
 import { generateFromPromptJSON } from "@/lib/builder/template-engine";
@@ -14,23 +14,12 @@ import type { BuilderPage } from "@/lib/builder/types";
 
 interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "system" | "agent";
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: number;
-  agent?: AgentType;
-  agentStatus?: "running" | "success" | "error";
   sectionCount?: number;
   sectionTypes?: string[];
 }
-
-const AGENT_INFO: Record<AgentType, { label: string; emoji: string; startMsg: string; doneMsg: string }> = {
-  researcher: { label: "Researcher", emoji: "🔍", startMsg: "Mencari referensi website terbaik dari training data saya...", doneMsg: "Menemukan referensi website yang relevan sebagai inspirasi!" },
-  planner: { label: "Planner", emoji: "📐", startMsg: "Merancang struktur halaman yang unik dan kreatif...", doneMsg: "Rencana halaman selesai! Struktur dan layout sudah ditentukan." },
-  writer: { label: "Writer", emoji: "✍️", startMsg: "Menulis konten orisinal dan copywriting yang memukau...", doneMsg: "Konten website selesai ditulis dengan gaya yang persuasif." },
-  coder: { label: "Coder", emoji: "⚡", startMsg: "Mengkonversi desain ke komponen website yang siap render...", doneMsg: "Semua komponen berhasil di-generate!" },
-  reviewer: { label: "Reviewer", emoji: "✅", startMsg: "Memeriksa kualitas dan memperbaiki masalah...", doneMsg: "Review selesai! Kualitas sudah terjamin." },
-  stylist: { label: "Stylist", emoji: "🎨", startMsg: "Memoles visual dengan sentuhan desain profesional...", doneMsg: "Visual sudah di-polish! Website siap dilihat." },
-};
 
 function genMsgId() {
   return "msg_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
@@ -54,9 +43,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedToPage, setSavedToPage] = useState(false);
-  const [enableResearcher, setEnableResearcher] = useState(true);
-  const [enableWriter, setEnableWriter] = useState(true);
-  const [enableStylist, setEnableStylist] = useState(true);
   const [category, setCategory] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [showProviders, setShowProviders] = useState(false);
@@ -110,7 +96,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       const savedLastResult = localStorage.getItem("ai_last_result_json");
       const savedTitle = localStorage.getItem("ai_last_title");
       if (savedLastResult && savedTitle) {
-        // Give parent a moment to mount before triggering preview restore
         const timer = setTimeout(() => {
           onGenerate(savedTitle!, savedLastResult);
         }, 100);
@@ -120,7 +105,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Save messages to localStorage on change (debounced via timeout)
+  // Save messages to localStorage on change (debounced)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     if (messages.length === 0) return;
@@ -132,7 +117,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     }, 500);
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      // Save immediately on cleanup
       try {
         localStorage.setItem("ai_chat_messages", JSON.stringify(messages));
       } catch {}
@@ -198,72 +182,50 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     const abortController = new AbortController();
     abortRef.current = abortController;
 
-    // ── Try AI Pipeline ──
+    // ── Generate Website ──
     let finalJSON: string;
     let usedFallback = false;
 
     try {
+      const statusMsg: ChatMessage = {
+        id: genMsgId(),
+        role: "system",
+        content: "🏗️ **Membangun website...**",
+        timestamp: Date.now(),
+      };
+      setMessages((prev) => [...prev, statusMsg]);
+      scrollToBottom();
+
       const isFollowUp = !!lastResultJson;
 
-      finalJSON = await runPipeline(
+      const callbacks: GenerateCallbacks = {
+        onStatus: (status) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === statusMsg.id
+                ? { ...m, content: `🏗️ **${status}**` }
+                : m
+            )
+          );
+        },
+        onPreviewUpdate: (jsonOutput) => {
+          onGenerate(promptText, jsonOutput);
+        },
+        onError: (errorMsg) => {
+          setError(errorMsg);
+        },
+      };
+
+      finalJSON = await generateWebsite(
         config,
-        {
-          userId: user?.id || null,
-          userPrompt: promptText,
-          category: category || undefined,
-          enableResearcher,
-          enableWriter,
-          enableStylist,
-          previousResult: isFollowUp ? lastResultJson : undefined,
-        },
-        {
-          onAgentStart: (agent) => {
-            const info = AGENT_INFO[agent];
-            const msg: ChatMessage = {
-              id: genMsgId(),
-              role: "agent",
-              content: info.startMsg,
-              timestamp: Date.now(),
-              agent,
-              agentStatus: "running",
-            };
-            setMessages((prev) => [...prev, msg]);
-            scrollToBottom();
-          },
-          onAgentComplete: (result) => {
-            const info = AGENT_INFO[result.agent];
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.agent === result.agent && m.agentStatus === "running"
-                  ? {
-                      ...m,
-                      content: info.doneMsg,
-                      agentStatus: "success" as const,
-                    }
-                  : m
-              )
-            );
-            scrollToBottom();
-          },
-          onAgentError: (agent, errorMsg) => {
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.agent === agent && m.agentStatus === "running"
-                  ? {
-                      ...m,
-                      content: `Gagal: ${errorMsg}`,
-                      agentStatus: "error" as const,
-                    }
-                  : m
-              )
-            );
-          },
-          onPreviewUpdate: (jsonOutput) => {
-            onGenerate(promptText, jsonOutput);
-          },
-        },
-        abortController.signal
+        promptText,
+        callbacks,
+        abortController.signal,
+        isFollowUp ? lastResultJson : undefined
       );
+
+      // Remove the status message on success
+      setMessages((prev) => prev.filter((m) => m.id !== statusMsg.id));
     } catch (err: any) {
       if (err.name === "AbortError") {
         setMessages((prev) => [
@@ -284,7 +246,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       try {
         finalJSON = generateFromPromptJSON(promptText, category || undefined);
         usedFallback = true;
-        // Notify user we're using offline mode
         setMessages((prev) => [
           ...prev,
           {
@@ -295,7 +256,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
           },
         ]);
       } catch {
-        // Template engine also failed — show the original AI error
         const errorMsg = err.message || "Gagal generate website";
         setError(errorMsg);
         setMessages((prev) => [
@@ -313,25 +273,21 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       }
     }
 
-    // ── Process Result (from AI or Template Engine) ──
+    // ── Process Result ──
     const parsedSections = parseResultToSections(finalJSON);
     setFinalSections(parsedSections);
 
-    // Persist finalSections to localStorage
     try {
       localStorage.setItem("ai_final_sections", JSON.stringify(parsedSections));
     } catch {}
 
-    // Store for follow-up context
     setLastResultJson(finalJSON);
 
-    // Persist to localStorage so preview survives refresh
     try {
       localStorage.setItem("ai_last_result_json", finalJSON);
       localStorage.setItem("ai_last_title", promptText);
     } catch {}
 
-    // Update preview with final result
     onGenerate(promptText, finalJSON);
 
     // Save to local memory
@@ -419,10 +375,9 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     }
 
     scrollToBottom();
-
     setIsRunning(false);
     abortRef.current = null;
-  }, [input, category, enableResearcher, enableWriter, enableStylist, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson]);
+  }, [input, category, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson]);
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
@@ -464,7 +419,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     setLastResultJson("");
     setFinalSections([]);
     setSavedToPage(false);
-    // Clear persisted preview data
     try {
       localStorage.removeItem("ai_last_result_json");
       localStorage.removeItem("ai_last_title");
@@ -526,25 +480,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
             </select>
           </div>
 
-          {/* Agent Toggles */}
-          <div className="flex items-center gap-3">
-            {[
-              { key: "researcher" as const, label: "🔍 Research", state: enableResearcher, set: setEnableResearcher },
-              { key: "writer" as const, label: "✍️ Writer", state: enableWriter, set: setEnableWriter },
-              { key: "stylist" as const, label: "🎨 Stylist", state: enableStylist, set: setEnableStylist },
-            ].map(({ key, label, state, set }) => (
-              <label key={key} className="flex items-center gap-1.5 cursor-pointer">
-                <button
-                  onClick={() => set(!state)}
-                  className={`relative w-7 h-3.5 rounded-full transition-colors ${state ? "bg-purple-500" : "bg-white/20"}`}
-                >
-                  <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-transform ${state ? "translate-x-3.5" : "translate-x-0.5"}`} />
-                </button>
-                <span className="text-[9px] text-gray-500">{label}</span>
-              </label>
-            ))}
-          </div>
-
           {/* Provider Priority Toggle */}
           <div>
             <button
@@ -573,7 +508,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                       <div key={entry.provider}
                         className="flex items-center gap-1.5 p-1.5 rounded-lg bg-[#0f172a] border border-white/10"
                       >
-                        {/* Priority badge */}
                         <div className={`w-4 h-4 rounded flex items-center justify-center text-[7px] font-bold ${
                           idx === 0
                             ? "bg-emerald-500/20 text-emerald-400"
@@ -581,14 +515,10 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                         }`}>
                           {idx + 1}
                         </div>
-
-                        {/* Icon + name */}
                         <span className="text-[10px]">{providerIcons[entry.provider] || "🔮"}</span>
                         <span className="text-[9px] text-gray-300 flex-1 truncate">
                           {entry.provider}
                         </span>
-
-                        {/* Move Up */}
                         <button
                           onClick={() => { moveProviderPriority(entry.provider, 'up'); refreshProviders(); }}
                           disabled={idx === 0}
@@ -598,8 +528,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                           </svg>
                         </button>
-
-                        {/* Move Down */}
                         <button
                           onClick={() => { moveProviderPriority(entry.provider, 'down'); refreshProviders(); }}
                           disabled={idx === providerList.length - 1}
@@ -609,8 +537,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </button>
-
-                        {/* Remove */}
                         <button
                           onClick={() => { removeProviderEntry(entry.provider); refreshProviders(); }}
                           className="p-0.5 text-gray-600 hover:text-red-400 rounded"
@@ -624,7 +550,6 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                   })
                 )}
 
-                {/* Add provider button */}
                 <button
                   onClick={() => {
                     setShowSettings(false);
@@ -655,12 +580,8 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
               Tulis deskripsi website yang Anda inginkan, dan AI akan membangunnya langsung untuk Anda.
             </p>
             <div className="mt-6 flex flex-wrap gap-1.5 justify-center">
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">🔍 Research</span>
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">📐 Plan</span>
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">✍️ Write</span>
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">⚡ Code</span>
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">✅ Review</span>
-              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">🎨 Style</span>
+              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">📐 Template Engine</span>
+              <span className="px-2 py-1 text-[9px] rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">✍️ AI Content</span>
             </div>
           </div>
         ) : (
@@ -672,13 +593,9 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-[12px]">
                     {user?.email?.charAt(0).toUpperCase() || "U"}
                   </div>
-                ) : msg.role === "agent" && msg.agent ? (
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                    msg.agentStatus === "running" ? "bg-purple-500/20 animate-pulse" :
-                    msg.agentStatus === "error" ? "bg-red-500/20" :
-                    "bg-emerald-500/20"
-                  }`}>
-                    <span className="text-xs">{AGENT_INFO[msg.agent]?.emoji || "🤖"}</span>
+                ) : msg.role === "system" ? (
+                  <div className="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center animate-pulse">
+                    <span className="text-xs">🤖</span>
                   </div>
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center">
@@ -689,32 +606,11 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                {/* Agent label */}
-                {msg.role === "agent" && msg.agent && (
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className={`text-[9px] font-semibold uppercase tracking-wider ${
-                      msg.agentStatus === "running" ? "text-purple-400" :
-                      msg.agentStatus === "error" ? "text-red-400" :
-                      "text-emerald-400"
-                    }`}>
-                      {AGENT_INFO[msg.agent]?.label || msg.agent}
-                    </span>
-                    {msg.agentStatus === "running" && (
-                      <div className="w-2.5 h-2.5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
-                    )}
-                  </div>
-                )}
-
-                {/* Message text */}
                 <div className={`rounded-xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap ${
                   msg.role === "user"
                     ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-100 rounded-tr-sm"
-                    : msg.role === "agent" && msg.agentStatus === "running"
+                    : msg.role === "system"
                     ? "bg-purple-500/10 border border-purple-500/20 text-purple-200 rounded-tl-sm"
-                    : msg.role === "agent" && msg.agentStatus === "error"
-                    ? "bg-red-500/10 border border-red-500/20 text-red-200 rounded-tl-sm"
-                    : msg.role === "agent" && msg.agentStatus === "success"
-                    ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-100 rounded-tl-sm"
                     : "bg-white/5 border border-white/10 text-gray-200 rounded-tl-sm"
                 }`}>
                   {msg.content}
@@ -762,7 +658,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
         </div>
       )}
 
-      {/* Save to Page Bar — only show if NOT auto-saved */}
+      {/* Save to Page Bar */}
       {!savedToPage && !isRunning && messages.some((m) => m.role === "assistant" && m.sectionCount && m.sectionCount > 0) && currentPage && (
         <div className="mx-4 mb-2">
           <button
@@ -814,7 +710,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
           </div>
         )}
         <p className="text-[8px] text-gray-700 text-center mt-1.5">
-          AI akan membangun website langsung. Preview muncul di sebelah kanan.
+          Template engine + AI content. Preview muncul di sebelah kanan.
         </p>
       </div>
     </div>
