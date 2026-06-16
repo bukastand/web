@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { BuilderElement } from "@/lib/builder/types";
 import { applyBgOpacity } from "@/lib/builder/utils";
 import { SocialIcon } from "@/lib/builder/social-platforms";
+import Lottie from "lottie-react";
 
 interface ElementComponentProps {
   el: BuilderElement;
@@ -1905,25 +1906,86 @@ function GalleryElement({ el }: ElementComponentProps) {
 function LottieElement({ el }: ElementComponentProps) {
   const { src, loop = true, autoplay = true, speed = 1, width = "300px", height = "300px" } = el.content;
   const styles = applyStyles(el);
+  const [animationData, setAnimationData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  // Use a simple animated placeholder since Lottie requires the external library
+  useEffect(() => {
+    if (!src) {
+      setAnimationData(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(false);
+
+    const loadAnimation = async () => {
+      try {
+        let data;
+        if (src.startsWith("data:")) {
+          // Uploaded JSON file as data URL
+          const base64 = src.split(",")[1];
+          const jsonStr = atob(base64);
+          data = JSON.parse(jsonStr);
+        } else {
+          // Remote URL
+          const res = await fetch(src);
+          data = await res.json();
+        }
+        setAnimationData(data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAnimation();
+  }, [src]);
+
+  // Empty state — no src set
+  if (!src) {
+    return (
+      <div style={{ ...styles, width, height }} className="flex items-center justify-center">
+        <div className="rounded-2xl flex flex-col items-center justify-center w-full h-full" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
+          <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#64748b" }}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-[10px]" style={{ color: "#64748b" }}>Lottie Animation</span>
+          <span className="text-[9px] mt-1" style={{ color: "#4b5563" }}>Isi URL atau upload file .json</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div style={{ ...styles, width, height }} className="flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#22c55e] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !animationData) {
+    return (
+      <div style={{ ...styles, width, height }} className="flex items-center justify-center">
+        <div className="text-center">
+          <svg className="w-10 h-10 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#ef4444" }}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <span className="text-[10px]" style={{ color: "#ef4444" }}>Gagal memuat animasi</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Render actual Lottie animation
   return (
     <div style={{ ...styles, width, height }} className="flex items-center justify-center">
-      <div
-        className="rounded-2xl flex flex-col items-center justify-center w-full h-full"
-        style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
-      >
-        <svg className="w-16 h-16 mb-2 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#22c55e" }}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className="text-[10px]" style={{ color: "#64748b" }}>Animation</span>
-        {src && (
-          <a href={src} target="_blank" rel="noopener noreferrer" className="mt-2 text-[9px] underline" style={{ color: "#22c55e" }}>
-            View Lottie
-          </a>
-        )}
-      </div>
+      <Lottie animationData={animationData} loop={loop} autoplay={autoplay} style={{ width: "100%", height: "100%" }} />
     </div>
   );
 }

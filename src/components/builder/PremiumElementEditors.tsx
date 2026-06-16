@@ -499,13 +499,60 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
 
 export function LottieEditor({ element, updateContent }: EditorProps) {
   const c = element.content;
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("src", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const isDataUrl = c.src && c.src.startsWith("data:");
+
   return (
     <div>
-      <div className="mb-3 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-        <p className="text-xs text-yellow-400 font-medium mb-1">🎬 Lottie Animation</p>
-        <p className="text-[10px] text-yellow-500/70">Memerlukan library Lottie eksternal. Saat ini menggunakan placeholder.</p>
+      <div className="mb-3">
+        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload File .json</label>
+        {c.src && (
+          <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+            <div className="flex items-center justify-between p-2">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#22c55e" }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-xs font-medium" style={{ color: "#22c55e" }}>
+                  {isDataUrl ? "Animation diupload" : "Animation dari URL"}
+                </span>
+              </div>
+              <button
+                onClick={() => updateContent("src", "")}
+                className="w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500 flex-shrink-0"
+              >
+                ×
+              </button>
+            </div>
+            {isDataUrl && (
+              <div className="px-2 pb-2">
+                <div className="h-1 rounded-full bg-[#22c55e]/30 overflow-hidden">
+                  <div className="h-full rounded-full bg-[#22c55e]" style={{ width: "100%" }} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        <input
+          type="file"
+          accept=".json,application/json"
+          onChange={handleFileUpload}
+          className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+        />
       </div>
-      <TextInput label="URL Animation JSON" value={c.src} onChange={(v) => updateContent("src", v)} />
+      <TextInput label="URL Animation JSON" value={c.src || ""} onChange={(v) => updateContent("src", v)} />
       <Checkbox label="Loop" checked={c.loop !== false} onChange={(v) => updateContent("loop", v)} />
       <Checkbox label="Auto Play" checked={c.autoplay !== false} onChange={(v) => updateContent("autoplay", v)} />
       <TextInput label="Lebar" value={c.width} onChange={(v) => updateContent("width", v)} />
