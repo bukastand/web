@@ -168,15 +168,62 @@ export function buildCoderPrompt(
   isFollowUp: boolean = false,
   previousResult?: string
 ): string {
-  const existingSections = isFollowUp && previousResult
-    ? `\n\nSECTION YANG SUDAH ADA SEBELUMNYA (jangan diubah, hanya TAMBAH section baru):\n${previousResult.substring(0, 2000)}\n`
-    : "";
+  if (isFollowUp && previousResult) {
+    return `${CREATIVE_SPIRIT}
+
+TUGAS ANDA: CREATIVE CODER — FOLLOW-UP MODE
+Anda melanjutkan website yang SUDAH ADA.
+
+SECTION YANG SUDAH ADA (JANGAN DIUBAH):
+${previousResult.substring(0, 3000)}
+
+PERMINTAAN BARU USER: "${userPrompt}"
+
+⚠️ ATURAN PALING PENTING:
+1. JANGAN buat ulang section yang sudah ada — itu sudah jadi!
+2. HANYA buat section BARU sesuai permintaan user
+3. Output HANYA array berisi section-section BARU
+4. JANGAN include section yang sudah ada di output
+
+PANDUAN ELEMENT TYPE:
+- heading, text, button, image, features, testimonial, pricing, stats
+- cta, contactForm, footer, navbar, accordion, team, carousel
+- icon, spacer, divider, maps, video
+
+⚠️ SETIAP element WAJIB punya "content" yang TERISI penuh!
+
+FORMAT OUTPUT (HANYA section baru — JSON array):
+[
+  {
+    "sectionType": "...",
+    "id": "sec-auto-1",
+    "styles": {
+      "backgroundColor": "#hex atau transparent",
+      "padding": "...px 0",
+      "containerWidth": "boxed | full | wide | narrow"
+    },
+    "columns": [
+      {
+        "width": 12,
+        "elements": [
+          {
+            "type": "heading",
+            "content": { "text": "ISI", "level": "h1|h2|h3", "align": "center|left|right" },
+            "styles": { "color": "#hex", "fontSize": "...", "fontWeight": "..." }
+          }
+        ]
+      }
+    ]
+  }
+]
+
+INGAT: Output HANYA section BARU. Jangan output section yang sudah ada!`;
+  }
 
   return `${CREATIVE_SPIRIT}
 
 TUGAS ANDA: CREATIVE CODER
-${isFollowUp ? "Anda melanjutkan website yang sudah ada. HANYA tambahkan section baru, jangan ubah yang sudah jadi." : "Anda adalah engineer kreatif yang mengubah visi desain menjadi JSON siap render."}
-${existingSections}
+Anda adalah engineer kreatif yang mengubah visi desain menjadi JSON siap render.
 
 DATA HALAMAN DENGAN KONTEN:
 ${planWithContent}
@@ -185,7 +232,6 @@ BRIEF KLIEN: "${userPrompt}"
 
 TUGAS:
 Konversi rencana halaman menjadi format JSON array of sections.
-${isFollowUp ? "HANYA output section BARU (yang diminta user). Jangan include section yang sudah ada!" : ""}
 
 PANDUAN ELEMENT TYPE:
 - heading, text, button, image, features, testimonial, pricing, stats

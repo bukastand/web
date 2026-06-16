@@ -217,45 +217,56 @@ export async function runPipeline(
     console.warn("Memory query failed, continuing without examples:", err);
   }
 
-  let researchResult = "";
+  let currentJSON = "";
 
-  // ── Step 1: Researcher (NEW!) ──
-  if (enableResearcher) {
-    const researcherPrompt = buildResearcherPrompt(userPrompt);
-    const researcherRaw = await runAgent(aiConfig, "researcher", researcherPrompt, callbacks, signal);
-    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
-    researchResult = researcherRaw;
-    // Note: Researcher output is natural language, not JSON — used as context for Planner
-  }
-
-  // ── Step 2: Planner ──
-  const plannerPrompt = buildPlannerPrompt(userPrompt, researchResult, fewShotExamples, userPrefString, isFollowUp, previousResult);
-  const planRaw = await runAgent(aiConfig, "planner", plannerPrompt, callbacks, signal);
-  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
-
-  // Update preview with plan
-  const planJSON = extractJSON(planRaw);
-  callbacks.onPreviewUpdate(planJSON);
-
-  let currentJSON = planJSON;
-
-  // ── Step 3: Writer & Curator (optional) ──
-  if (enableWriter) {
-    const writerPrompt = buildWriterPrompt(userPrompt, currentJSON);
-    const writerRaw = await runAgent(aiConfig, "writer", writerPrompt, callbacks, signal);
+  if (isFollowUp && previousResult) {
+    // ── FOLLOW-UP MODE: Skip Researcher & Planner ──
+    // Langsung ke Coder dengan existing JSON + prompt user
+    const coderPrompt = buildCoderPrompt(userPrompt, previousResult, true, previousResult);
+    const coderRaw = await runAgent(aiConfig, "coder", coderPrompt, callbacks, signal);
     if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 
-    currentJSON = extractJSON(writerRaw);
+    currentJSON = extractJSON(coderRaw);
+    callbacks.onPreviewUpdate(currentJSON);
+  } else {
+    // ── FRESH GENERATION MODE: Full pipeline ──
+    let researchResult = "";
+
+    // Step 1: Researcher
+    if (enableResearcher) {
+      const researcherPrompt = buildResearcherPrompt(userPrompt);
+      const researcherRaw = await runAgent(aiConfig, "researcher", researcherPrompt, callbacks, signal);
+      if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+      researchResult = researcherRaw;
+    }
+
+    // Step 2: Planner
+    const plannerPrompt = buildPlannerPrompt(userPrompt, researchResult, fewShotExamples, userPrefString, false, undefined);
+    const planRaw = await runAgent(aiConfig, "planner", plannerPrompt, callbacks, signal);
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+
+    const planJSON = extractJSON(planRaw);
+    callbacks.onPreviewUpdate(planJSON);
+    currentJSON = planJSON;
+
+    // Step 3: Writer (optional)
+    if (enableWriter) {
+      const writerPrompt = buildWriterPrompt(userPrompt, currentJSON);
+      const writerRaw = await runAgent(aiConfig, "writer", writerPrompt, callbacks, signal);
+      if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+
+      currentJSON = extractJSON(writerRaw);
+      callbacks.onPreviewUpdate(currentJSON);
+    }
+
+    // Step 4: Coder
+    const coderPrompt = buildCoderPrompt(userPrompt, currentJSON, false, undefined);
+    const coderRaw = await runAgent(aiConfig, "coder", coderPrompt, callbacks, signal);
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+
+    currentJSON = extractJSON(coderRaw);
     callbacks.onPreviewUpdate(currentJSON);
   }
-
-  // ── Step 4: Coder ──
-  const coderPrompt = buildCoderPrompt(userPrompt, currentJSON, isFollowUp, previousResult);
-  const coderRaw = await runAgent(aiConfig, "coder", coderPrompt, callbacks, signal);
-  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
-
-  currentJSON = extractJSON(coderRaw);
-  callbacks.onPreviewUpdate(currentJSON);
 
   // ── Step 5: Reviewer ──
   const reviewerPrompt = buildReviewerPrompt(userPrompt, currentJSON);
