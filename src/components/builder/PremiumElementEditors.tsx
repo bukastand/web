@@ -443,6 +443,18 @@ export function ChecklistEditor({ element, updateContent, handleAddItem, handleR
 export function GalleryEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
   const c = element.content;
   const images = c.images || [];
+
+  const handleImageUpload = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      handleItemChange("images", i, "src", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
       <TextInput label="Judul Galeri" value={c.title} onChange={(v) => updateContent("title", v)} />
@@ -453,11 +465,28 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Gambar ({images.length})</label>
         {images.map((img: any, i: number) => (
-          <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+          <div key={i} className="mb-3 p-2 rounded-lg bg-white/5 border border-white/10">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-gray-400">#{i + 1}</span>
               <button onClick={() => handleRemoveItem("images", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
             </div>
+            {img.src && (
+              <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                <img src={img.src} alt="" className="w-full h-20 object-cover" />
+                <button
+                  onClick={() => handleItemChange("images", i, "src", "")}
+                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(i, e)}
+              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
+            />
             <input value={img.src || ""} onChange={(e) => handleItemChange("images", i, "src", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar" />
             <input value={img.caption || ""} onChange={(e) => handleItemChange("images", i, "caption", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Caption" />
           </div>
