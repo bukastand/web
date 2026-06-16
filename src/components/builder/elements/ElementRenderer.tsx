@@ -1664,20 +1664,41 @@ function HotspotElement({ el }: ElementComponentProps) {
 
 function ProgressTrackerElement({ el }: ElementComponentProps) {
   const { type = "horizontal", percentage, progress = 50, label } = el.content;
-  const styles = applyStyles(el);
+  const allStyles = applyStyles(el);
   const pct = Math.min(100, Math.max(0, progress));
+  const accentColor = (el.styles as any).accentColor || "#22c55e";
+  const trackColor = el.styles.backgroundColor || "#1e293b";
+  const barHeight = el.styles.height || "6px";
+
+  // Extract only text-level styles for wrapper (NOT bar styles)
+  const wrapperStyle: React.CSSProperties = {};
+  if (allStyles.color) wrapperStyle.color = allStyles.color;
+  if (allStyles.fontSize) wrapperStyle.fontSize = allStyles.fontSize;
+  if (allStyles.fontWeight) wrapperStyle.fontWeight = allStyles.fontWeight;
+  if (allStyles.fontFamily) wrapperStyle.fontFamily = allStyles.fontFamily;
+  if (allStyles.textAlign) wrapperStyle.textAlign = allStyles.textAlign;
+  if (allStyles.margin) wrapperStyle.margin = allStyles.margin;
+  if (allStyles.marginTop) wrapperStyle.marginTop = allStyles.marginTop;
+  if (allStyles.marginBottom) wrapperStyle.marginBottom = allStyles.marginBottom;
+  if (allStyles.marginLeft) wrapperStyle.marginLeft = allStyles.marginLeft;
+  if (allStyles.marginRight) wrapperStyle.marginRight = allStyles.marginRight;
+  if (allStyles.padding) wrapperStyle.padding = allStyles.padding;
+  if (allStyles.paddingTop) wrapperStyle.paddingTop = allStyles.paddingTop;
+  if (allStyles.paddingBottom) wrapperStyle.paddingBottom = allStyles.paddingBottom;
+  if (allStyles.paddingLeft) wrapperStyle.paddingLeft = allStyles.paddingLeft;
+  if (allStyles.paddingRight) wrapperStyle.paddingRight = allStyles.paddingRight;
 
   if (type === "circular") {
     const r = 45;
     const circ = 2 * Math.PI * r;
     const offset = circ - (pct / 100) * circ;
     return (
-      <div className="flex flex-col items-center" style={styles}>
+      <div className="flex flex-col items-center" style={wrapperStyle}>
         <svg width="120" height="120" viewBox="0 0 100 100" className="transform -rotate-90">
-          <circle cx="50" cy="50" r={r} fill="none" stroke={styles.backgroundColor || "#1e293b"} strokeWidth="8" />
+          <circle cx="50" cy="50" r={r} fill="none" stroke={trackColor} strokeWidth="8" />
           <circle
             cx="50" cy="50" r={r} fill="none"
-            stroke={styles.accentColor || "#22c55e"} strokeWidth="8"
+            stroke={accentColor} strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={offset}
@@ -1685,7 +1706,7 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
           />
         </svg>
         {percentage && (
-          <span className="mt-2 text-lg font-bold" style={{ color: styles.accentColor || "#22c55e" }}>{pct}%</span>
+          <span className="mt-2 text-lg font-bold" style={{ color: accentColor }}>{pct}%</span>
         )}
         {label && <span className="text-sm mt-1" style={{ color: "#94a3b8" }}>{label}</span>}
       </div>
@@ -1693,17 +1714,17 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
   }
 
   return (
-    <div style={styles}>
+    <div style={wrapperStyle}>
       {(percentage || label) && (
         <div className="flex items-center justify-between mb-1.5">
           {label && <span className="text-xs" style={{ color: "#94a3b8" }}>{label}</span>}
-          {percentage && <span className="text-xs font-semibold" style={{ color: styles.accentColor || "#22c55e" }}>{pct}%</span>}
+          {percentage && <span className="text-xs font-semibold" style={{ color: accentColor }}>{pct}%</span>}
         </div>
       )}
-      <div className="w-full rounded-full overflow-hidden" style={{ height: styles.height || "6px", backgroundColor: styles.backgroundColor || "#1e293b" }}>
+      <div className="w-full rounded-full overflow-hidden" style={{ height: barHeight, backgroundColor: trackColor }}>
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, backgroundColor: styles.accentColor || "#22c55e" }}
+          style={{ width: `${pct}%`, backgroundColor: accentColor }}
         />
       </div>
     </div>
