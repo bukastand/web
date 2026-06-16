@@ -296,8 +296,40 @@ export function FlipBoxEditor({ element, updateContent }: EditorProps) {
 export function HotspotEditor({ element, updateContent, handleAddItem, handleRemoveItem, handleItemChange }: EditorProps) {
   const c = element.content;
   const items = c.items || [];
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("imageSrc", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
+      <div className="mb-3">
+        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Gambar Hotspot</label>
+        {c.imageSrc && (
+          <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+            <img src={c.imageSrc} alt="hotspot preview" className="w-full h-24 object-cover" />
+            <button
+              onClick={() => updateContent("imageSrc", "")}
+              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+        />
+      </div>
       <TextInput label="URL Gambar" value={c.imageSrc} onChange={(v) => updateContent("imageSrc", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />

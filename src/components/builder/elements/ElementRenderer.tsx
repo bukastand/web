@@ -1628,7 +1628,7 @@ function HotspotElement({ el }: ElementComponentProps) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
-    <div className="hotspot-container relative inline-block max-w-full" style={applyStyles(el)}>
+    <div className="hotspot-container relative inline-block max-w-full overflow-visible" style={applyStyles(el)}>
       <img
         src={imageSrc || "https://placehold.co/800x500/1e293b/64748b?text=Hotspot"}
         alt="Hotspot"
@@ -1649,11 +1649,11 @@ function HotspotElement({ el }: ElementComponentProps) {
           </div>
           {activeIdx === i && (
             <div
-              className="absolute z-10 w-48 p-3 rounded-xl mt-2 left-1/2 -translate-x-1/2"
+              className="absolute z-50 w-48 p-3 rounded-xl mt-2 left-1/2 -translate-x-1/2 pointer-events-none"
               style={{ backgroundColor: "#1e293b", border: "1px solid rgba(255,255,255,0.1)" }}
             >
               <p className="text-xs font-semibold mb-1" style={{ color: "#22c55e" }}>{item.label}</p>
-              {item.description && <p className="text-[10px]" style={{ color: "#94a3b8" }}>{item.description}</p>}
+              {item.description && <p className="text-[10px] leading-relaxed" style={{ color: "#94a3b8" }}>{item.description}</p>}
             </div>
           )}
         </div>
