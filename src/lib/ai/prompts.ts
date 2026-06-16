@@ -7,10 +7,10 @@
  * - Setiap agent adalah seniman dengan gaya unik
  * - AI bisa "mengingat" referensi website real dari training data-nya
  * - Output dikonversi otomatis oleh Coder agent ke format builder
+ * - Follow-up prompt: AI paham konteks hasil sebelumnya
  */
 
 // ─── CREATIVE INSPIRATION ─────────────────────────
-// This is injected into every agent as a creativity booster, not a rulebook
 
 export const CREATIVE_SPIRIT = `
 ANDA ADALAH SENIMAN WEB VISIONER — setara dengan direktur kreatif dari agency digital top dunia.
@@ -35,7 +35,6 @@ Tidak ada Lorem Ipsum, tidak ada placeholder, tidak ada konten kosong.
 `;
 
 // ─── AGENT: RESEARCHER ────────────────────────────
-// New! Recalls real website references from AI's training knowledge
 
 export function buildResearcherPrompt(userPrompt: string): string {
   return `${CREATIVE_SPIRIT}
@@ -43,7 +42,6 @@ export function buildResearcherPrompt(userPrompt: string): string {
 TUGAS ANDA: WEB RESEARCHER & CURATOR INSPIRASI
 
 Anda adalah kurator desain yang pernah melihat RIBUAN website terbaik di dunia.
-Dari training data Anda, ingat dan deskripsikan website-website referensi yang relevan.
 
 BRIEF KLIEN: "${userPrompt}"
 
@@ -51,66 +49,44 @@ TUGAS SPESIFIK:
 1. Ingat 2-3 website REAL dari training data Anda yang relevan dengan brief ini
 2. Deskripsikan: brand, layout, warna, tipografi, dan elemen unik dari masing-masing
 3. Ambil pelajaran desain dari setiap referensi
-4. Beri rekomENDASI arah desain yang UNIK — jangan tiru, tapi dapatkan inspirasi
+4. Beri rekomENDASI arah desain yang UNIK
 
-CONTOH GAYA OUTPUT (bebas, tidak harus JSON):
----
-Referensi 1: [Nama website/industri]
-- Layout: [deskripsi layout]
-- Warna: [palet]
-- Yang menarik: [elemen unik]
-- Pelajaran: [apa yang bisa diadopsi]
-
-Referensi 2: [Nama website/industri]
-- Layout: [deskripsi layout]
-- Warna: [palet]
-- Yang menarik: [elemen unik]
-- Pelajaran: [apa yang bisa diadopsi]
-
-REKOMENDASI KREATIF:
-Berdasarkan referensi di atas, saya sarankan arah desain yang:
-- [ide 1]
-- [ide 2]
-- [ide 3]
----
-
-BERILAH SETIDAKNYA 2 REFERENSI WEBSITE REAL YANG ANDA INGAT DARI TRAINING ANDA.
-Semakin relevan dengan brief, semakin baik.
-Jangan membuat website palsu — hanya yang benar-benar Anda ingat.`;
+BERILAH SETIDAKNYA 2 REFERENSI WEBSITE REAL YANG ANDA INGAT DARI TRAINING ANDA.`;
 }
 
 // ─── AGENT: PLANNER ────────────────────────────────
-// Creates a high-level page plan — freestyle first, then structured JSON
 
 export function buildPlannerPrompt(
   userPrompt: string,
   researchResult: string,
   fewShotExamples: string,
-  userPreferences: string
+  userPreferences: string,
+  isFollowUp: boolean = false,
+  previousResult?: string
 ): string {
+  const followUpContext = isFollowUp && previousResult
+    ? `\n\nKONTEKS: Ini adalah FOLLOW-UP dari chat sebelumnya. Halaman SAAT INI sudah memiliki section-section berikut:\n${previousResult.substring(0, 1500)}\n\nTUGAS ANDA: JANGAN buat ulang dari awal. CUKUP rencanakan section BARU yang diminta user.\nUser ingin menambahkan atau mengubah bagian tertentu. Sesuaikan rencana dengan struktur yang sudah ada.\n`
+    : "";
+
   return `${CREATIVE_SPIRIT}
 
 TUGAS ANDA: PLANNER ARSITEKTUR WEB KREATIF
-Anda adalah arsitek web visioner yang merancang pengalaman, bukan template.
+${isFollowUp ? "Anda melanjutkan website yang sudah ada. Tambahkan section baru sesuai permintaan user." : "Anda adalah arsitek web visioner yang merancang pengalaman, bukan template."}
 
 BRIEF KLIEN: "${userPrompt}"
-
-${researchResult ? `REFERENSI & INSPIRASI DARI RESEARCH:\n${researchResult}\n` : ""}
+${researchResult ? `\nREFERENSI & INSPIRASI DARI RESEARCH:\n${researchResult}\n` : ""}
 ${fewShotExamples}
 ${userPreferences}
+${followUpContext}
 
 TUGAS KREATIF:
-1. Bayangkan halaman ini dalam benak Anda — seperti apa bentuknya?
+1. Bayangkan halaman ini dalam benak Anda
 2. Tentukan NARASI: cerita apa yang ingin disampaikan?
-3. Rancang JOURNEY pengunjung: dari pertama lihat sampai action
+3. Rancang JOURNEY pengunjung
 4. Pilih struktur section: fleksibel, sesuai kebutuhan konten
 5. Tentukan VIBE: modern? mewah? playful? minimal? brutalist?
 
-BERPIKIRLAH BEBAS! Tidak ada template baku. Anda bisa menciptakan section
-dengan nama dan fungsi apapun. Mau bikin "cosmic-hero", "floating-gallery",
-"parallax-story", "infinite-scroll-showcase"? Silakan!
-
-OUTPUT dalam format JSON berikut (isi dengan kreatif):
+OUTPUT dalam format JSON berikut:
 {
   "pageTitle": "...",
   "pageDescription": "...",
@@ -118,25 +94,24 @@ OUTPUT dalam format JSON berikut (isi dengan kreatif):
   "sections": [
     {
       "sectionId": "sec-1",
-      "sectionType": "NAMA KREATIF (bebas! hero, showcase, story, dll)",
+      "sectionType": "NAMA KREATIF",
       "layoutIdea": "Deskripsi layout yang Anda bayangkan",
-      "purpose": "Apa tujuan section ini dalam narasi halaman",
-      "suggestedContent": "Gambaran konten apa yang akan ada di sini"
+      "purpose": "Apa tujuan section ini",
+      "suggestedContent": "Gambaran konten"
     }
   ],
   "globalVibe": {
-    "colorDirection": "Deskripsi suasana warna yang diinginkan",
-    "fontVibe": "Gambaran tipografi (contoh: modern sans-serif yang bersih)",
+    "colorDirection": "Deskripsi suasana warna",
+    "fontVibe": "Gambaran tipografi",
     "layoutStyle": "full-width | boxed | magazine | broken-grid | experimental"
-  },
-  "inspirasiDari": "Sebutkan 1-2 referensi yang menginspirasi rencana ini"
+  }
 }
 
-PENTING: Jadilah kreatif! Tidak ada jawaban salah. Yang penting ORISINIL dan KONTEN TERISI.`;
+${isFollowUp ? "INGAT: HANYA rencanakan section BARU yang diminta. Jangan duplikasi yang sudah ada!" : "PENTING: Jadilah kreatif! Tidak ada jawaban salah."}
+`;
 }
 
-// ─── AGENT: WRITER & CURATOR ──────────────────────
-// Fills all content — creative copywriting
+// ─── AGENT: WRITER ─────────────────────────────────
 
 export function buildWriterPrompt(
   userPrompt: string,
@@ -145,8 +120,7 @@ export function buildWriterPrompt(
   return `${CREATIVE_SPIRIT}
 
 TUGAS ANDA: CONTENT WRITER KREATIF
-Anda adalah copywriter pemenang penghargaan. Setiap kata yang Anda tulis
-bisa membuat orang terharu, tertarik, atau tergerak untuk bertindak.
+Anda adalah copywriter pemenang penghargaan.
 
 BRIEF KLIEN: "${userPrompt}"
 
@@ -154,79 +128,60 @@ RENCANA HALAMAN:
 ${planJSON}
 
 TUGAS KREATIF:
-1. Tulis konten ORISINIL yang MEMUKAU — bukan template!
-2. Heading: berani, memorable, mungkin provokatif
+1. Tulis konten ORISINIL yang MEMUKAU
+2. Heading: berani, memorable
 3. Body text: storytelling yang membuat orang betah baca
-4. CTA: yang membuat orang penasaran dan ingin klik
-5. Testimonial: suara pelanggan yang realistis dan emosional
-6. Nama Indonesia ASLI (Andi, Sari, Dimas, Rina, dll — bukan John Doe!)
+4. CTA: yang membuat orang penasaran
+5. Testimonial: suara pelanggan yang realistis
+6. Nama Indonesia ASLI
 7. Nomor WA: 6282210099969
 
 ⚠️ LARANGAN MUTLAK:
-❌ TIDAK BOLEH "Lorem ipsum" — NOL toleransi!
-❌ TIDAK BOLEH konten kosong — setiap field HARUS diisi
-❌ TIDAK BOLEH copy paste dari brief — tulis ulang dengan gaya sendiri
+❌ TIDAK BOLEH "Lorem ipsum"
+❌ TIDAK BOLEH konten kosong
 
-OUTPUT: Kembalikan JSON struktur yang SAMA dengan konten TERISI.
-Jangan ubah struktur — hanya isi kontennya dengan tulisan kreatif Anda.`;
+OUTPUT: Kembalikan JSON struktur yang SAMA dengan konten TERISI.`;
 }
 
 // ─── AGENT: CODER ─────────────────────────────────
-// Converts plan + content into BuilderSection[] JSON
-// This is where creativity meets structure
 
 export function buildCoderPrompt(
   userPrompt: string,
-  planWithContent: string
+  planWithContent: string,
+  isFollowUp: boolean = false,
+  previousResult?: string
 ): string {
+  const existingSections = isFollowUp && previousResult
+    ? `\n\nSECTION YANG SUDAH ADA SEBELUMNYA (jangan diubah, hanya TAMBAH section baru):\n${previousResult.substring(0, 2000)}\n`
+    : "";
+
   return `${CREATIVE_SPIRIT}
 
 TUGAS ANDA: CREATIVE CODER
-Anda adalah engineer kreatif yang mengubah visi desain menjadi JSON siap render.
-Anda paham berbagai macam jenis section dan element, bisa memetakan ide kreatif
-ke dalam format yang bisa dirender.
+${isFollowUp ? "Anda melanjutkan website yang sudah ada. HANYA tambahkan section baru, jangan ubah yang sudah jadi." : "Anda adalah engineer kreatif yang mengubah visi desain menjadi JSON siap render."}
+${existingSections}
 
 DATA HALAMAN DENGAN KONTEN:
 ${planWithContent}
 
 BRIEF KLIEN: "${userPrompt}"
 
-TUGAS KREATIF:
-Konversi rencana halaman di atas menjadi format JSON array of sections.
-Setiap section bisa memiliki komposisi kolom dan element yang FLEKSIBEL.
+TUGAS:
+Konversi rencana halaman menjadi format JSON array of sections.
+${isFollowUp ? "HANYA output section BARU (yang diminta user). Jangan include section yang sudah ada!" : ""}
 
-PANDUAN ELEMENT TYPE (gunakan yang paling cocok dengan konten):
-- heading → untuk judul, tagline, headline
-- text → untuk paragraf, deskripsi, body text
-- button → untuk tombol CTA, link aksi
-- image → untuk gambar, ilustrasi, foto
-- features → untuk daftar fitur/layanan dalam grid card
-- testimonial → untuk testimoni klien
-- pricing → untuk tabel harga
-- stats → untuk angka-angka statistik
-- cta → untuk call-to-action section
-- contactForm → untuk form kontak
-- footer → untuk footer
-- navbar → untuk navigasi
-- accordion → untuk FAQ
-- team → untuk tim/people
-- carousel → untuk slider/gallery
-- icon → untuk icon dekoratif
-- spacer → untuk jarak antar elemen
-- divider → untuk garis pemisah
-- maps → untuk Google Maps
-- video → untuk embed video
+PANDUAN ELEMENT TYPE:
+- heading, text, button, image, features, testimonial, pricing, stats
+- cta, contactForm, footer, navbar, accordion, team, carousel
+- icon, spacer, divider, maps, video
 
-⚠️ YANG PALING PENTING:
-SETIAP element WAJIB punya "content" yang TERISI penuh!
-Tidak ada yang boleh kosong!
+⚠️ SETIAP element WAJIB punya "content" yang TERISI penuh!
 
-FORMAT OUTPUT (JSON array, tanpa markdown/backticks):
+FORMAT OUTPUT (JSON array):
 [
   {
     "sectionType": "...",
     "id": "sec-auto-1",
-    "title": "Judul Section (opsional)",
     "styles": {
       "backgroundColor": "#hex atau transparent",
       "padding": "...px 0",
@@ -247,12 +202,10 @@ FORMAT OUTPUT (JSON array, tanpa markdown/backticks):
   }
 ]
 
-KREATIF! Sesuaikan section type dengan konten. Jangan terpaku pada template baku.
-Yang penting: KONTEN TERISI, STRUKTUR VALID, DESAIN MENARIK.`;
+KREATIF! Yang penting: KONTEN TERISI, STRUKTUR VALID, DESAIN MENARIK.`;
 }
 
 // ─── AGENT: REVIEWER ──────────────────────────────
-// Validates and fixes — focuses on content quality, not format compliance
 
 export function buildReviewerPrompt(
   userPrompt: string,
@@ -261,8 +214,7 @@ export function buildReviewerPrompt(
   return `${CREATIVE_SPIRIT}
 
 TUGAS ANDA: KURATOR KUALITAS KREATIF
-Anda adalah editor kreatif yang memastikan hasil generate berkualitas tinggi,
-orisinal, dan layak tayang.
+Anda adalah editor kreatif yang memastikan hasil generate berkualitas tinggi.
 
 DATA YANG AKAN DIPERIKSA:
 ${generatedJSON}
@@ -270,24 +222,21 @@ ${generatedJSON}
 BRIEF KLIEN: "${userPrompt}"
 
 CEK UTAMA:
-1. ✅ KONTEN TERISI? — Setiap element punya content? Jika kosong, ISI!
-2. ✅ KREATIF? — Apakah ini orisinal atau cuma template umum?
-3. ✅ RELEVAN? — Sesuai brief klien?
-4. ✅ KOMPLIT? — Tidak ada section yang setengah jadi?
+1. KONTEN TERISI? — Setiap element punya content? Jika kosong, ISI!
+2. KREATIF? — Apakah ini orisinal atau cuma template umum?
+3. RELEVAN? — Sesuai brief klien?
+4. KOMPLIT? — Tidak ada section yang setengah jadi?
 
 YANG HARUS DIPERBAIKI:
-- Content kosong → isi dengan konten default yang relevan dan kreatif
-- Style tidak harmonis → perbaiki agar enak dilihat
-- SectionType aneh → ganti dengan yang terdekat (tapi usahakan dipertahankan)
-- Warna tidak kontras → perbaiki aksesibilitas
-- Padding 0 → beri spacing yang nyaman
+- Content kosong -> isi dengan konten default yang relevan
+- Style tidak harmonis -> perbaiki
+- Warna tidak kontras -> perbaiki aksesibilitas
+- Padding 0 -> beri spacing yang nyaman
 
-OUTPUT HANYA JSON ARRAY yang sudah diperbaiki.
-Jangan ubah struktur utama — hanya perbaiki yang salah.`;
+OUTPUT HANYA JSON ARRAY yang sudah diperbaiki.`;
 }
 
 // ─── AGENT: STYLIST ───────────────────────────────
-// Polishes the visual design — adds flair
 
 export function buildStylistPrompt(
   userPrompt: string,
@@ -297,7 +246,6 @@ export function buildStylistPrompt(
 
 TUGAS ANDA: VISUAL STYLIST KREATIF
 Anda adalah stylist visual yang memberi jiwa pada desain.
-Anda tahu kapan harus menambahkan drama, dan kapan harus minimalis.
 
 DATA SAAT INI:
 ${reviewedJSON}
@@ -305,15 +253,12 @@ ${reviewedJSON}
 BRIEF KLIEN: "${userPrompt}"
 
 TUGAS KREATIF:
-Berikan sentuhan ajaib pada visual:
 1. Pastikan palet warna KONSISTEN dan EMOisional
 2. Tambahkan efek subtle: gradient lembut, shadow elegan, border-radius
 3. Pastikan tipografi punya hierarki yang jelas
 4. Beri napas (spacing) yang nyaman antar section
-5. Pastikan setiap section terasa TERHUBUNG secara visual
 
 HANYA ubah styles — JANGAN ubah content atau struktur section!
-Beri catatan singkat tentang apa yang Anda ubah dan mengapa.
 
 OUTPUT HANYA JSON ARRAY yang sudah di-polish.`;
 }

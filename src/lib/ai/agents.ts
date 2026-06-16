@@ -46,6 +46,8 @@ export interface PipelineConfig {
   enableWriter?: boolean;
   enableStylist?: boolean;
   enableResearcher?: boolean;
+  /** JSON dari hasil generate sebelumnya — untuk follow-up prompt */
+  previousResult?: string;
 }
 
 // ─── AI Proxy Call ─────────────────────────────────
@@ -151,11 +153,12 @@ export async function runPipeline(
   callbacks: PipelineCallbacks,
   signal?: AbortSignal
 ): Promise<string> {
-  const { userId, userPrompt, category, enableWriter = true, enableStylist = true, enableResearcher = true } = pipelineConfig;
+  const { userId, userPrompt, category, enableWriter = true, enableStylist = true, enableResearcher = true, previousResult } = pipelineConfig;
 
   // ── Step 0: Gather context from memory ──
   let fewShotExamples = "";
   let userPrefString = "";
+  const isFollowUp = !!previousResult;
 
   try {
     const memories = await queryBestMemories(category, 3);
@@ -180,7 +183,7 @@ export async function runPipeline(
   }
 
   // ── Step 2: Planner ──
-  const plannerPrompt = buildPlannerPrompt(userPrompt, researchResult, fewShotExamples, userPrefString);
+  const plannerPrompt = buildPlannerPrompt(userPrompt, researchResult, fewShotExamples, userPrefString, isFollowUp, previousResult);
   const planRaw = await runAgent(aiConfig, "planner", plannerPrompt, callbacks, signal);
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 
@@ -201,7 +204,7 @@ export async function runPipeline(
   }
 
   // ── Step 4: Coder ──
-  const coderPrompt = buildCoderPrompt(userPrompt, currentJSON);
+  const coderPrompt = buildCoderPrompt(userPrompt, currentJSON, isFollowUp, previousResult);
   const coderRaw = await runAgent(aiConfig, "coder", coderPrompt, callbacks, signal);
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 

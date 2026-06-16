@@ -59,6 +59,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const [category, setCategory] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [finalSections, setFinalSections] = useState<any[]>([]);
+  const [lastResultJson, setLastResultJson] = useState<string>("");
   const abortRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -157,6 +158,9 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     try {
       // Reset final sections
 
+      // Check if this is a follow-up by seeing if there's previous result
+      const isFollowUp = !!lastResultJson;
+
       const finalJSON = await runPipeline(
         config,
         {
@@ -166,6 +170,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
           enableResearcher,
           enableWriter,
           enableStylist,
+          previousResult: isFollowUp ? lastResultJson : undefined,
         },
         {
           onAgentStart: (agent) => {
@@ -219,6 +224,9 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       // Parse final result
       const parsedSections = parseResultToSections(finalJSON);
       setFinalSections(parsedSections);
+
+      // Store for follow-up context
+      setLastResultJson(finalJSON);
 
       // Update preview with final result
       onGenerate(promptText, finalJSON);
@@ -315,7 +323,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
 
     setIsRunning(false);
     abortRef.current = null;
-  }, [input, category, enableResearcher, enableWriter, enableStylist, user, currentPage, onGenerate, onOpenConfig, scrollToBottom]);
+  }, [input, category, enableResearcher, enableWriter, enableStylist, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson]);
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
@@ -354,6 +362,9 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const handleClearChat = useCallback(() => {
     setMessages([]);
     setError("");
+    setLastResultJson("");
+    setFinalSections([]);
+    setSavedToPage(false);
     inputRef.current?.focus();
   }, []);
 
