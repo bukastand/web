@@ -1765,28 +1765,7 @@ export default function StylePanel() {
               <>
                 {renderField("Judul Section", "title", "text")}
 
-          {/* --- PREMIUM ELEMENTS --- */}
-          {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "blockquote" && <BlockquoteEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "code-highlight" && <CodeHighlightEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "flip-box" && <FlipBoxEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "hotspot" && <HotspotEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "progress-tracker" && <ProgressTrackerEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "share-buttons" && <ShareButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "checklist" && <ChecklistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "gallery" && <GalleryEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "lottie" && <LottieEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "star-rating" && <StarRatingEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "search" && <SearchEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "floating-buttons" && <FloatingButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "breadcrumbs" && <BreadcrumbsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "off-canvas" && <OffCanvasEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "slides" && <SlidesEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "nested-carousel" && <NestedCarouselEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "video-playlist" && <VideoPlaylistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "table-of-contents" && <TableOfContentsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-          {selectedElement.type === "social-embed" && <SocialEmbedEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
-
+          
                 {renderField("Subtitle", "subtitle", "text")}
                 <div className="mb-3 mt-3">
                   <div className="h-px bg-white/10 mb-3" />
@@ -1855,6 +1834,27 @@ export default function StylePanel() {
                 </div>
               </>
             )}
+            {/* --- PREMIUM ELEMENTS --- */}
+          {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "blockquote" && <BlockquoteEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "code-highlight" && <CodeHighlightEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "flip-box" && <FlipBoxEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "hotspot" && <HotspotEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "progress-tracker" && <ProgressTrackerEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "share-buttons" && <ShareButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "checklist" && <ChecklistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "gallery" && <GalleryEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "lottie" && <LottieEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "star-rating" && <StarRatingEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "search" && <SearchEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "floating-buttons" && <FloatingButtonsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "breadcrumbs" && <BreadcrumbsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "off-canvas" && <OffCanvasEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "slides" && <SlidesEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "nested-carousel" && <NestedCarouselEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "video-playlist" && <VideoPlaylistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "table-of-contents" && <TableOfContentsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
+          {selectedElement.type === "social-embed" && <SocialEmbedEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} />}
           </div>
         ) : (
           <div>
