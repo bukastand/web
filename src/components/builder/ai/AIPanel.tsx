@@ -283,13 +283,31 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
         }
       }
 
+      // Auto-save to page
+      if (parsedSections.length > 0 && currentPage) {
+        try {
+          for (const secData of parsedSections) {
+            const builderSection = aiSectionToBuilder(secData);
+            dispatch({
+              type: "ADD_TEMPLATE_SECTION",
+              pageId: currentPage.id,
+              section: builderSection,
+            });
+          }
+          setSavedToPage(true);
+          setTimeout(() => setSavedToPage(false), 3000);
+        } catch (e) {
+          console.warn("Auto-save failed, manual save available:", e);
+        }
+      }
+
       // Add final summary message
       if (parsedSections.length > 0) {
         const sectionTypes = parsedSections.map((s: any) => s.sectionType || "section").filter(Boolean);
         const summaryMsg: ChatMessage = {
           id: genMsgId(),
           role: "assistant",
-          content: `✨ **Website selesai!** Saya berhasil membuat **${parsedSections.length} section** untuk website Anda.\n\nAnda bisa simpan ke halaman dengan klik tombol di bawah, atau lanjutkan chat untuk revisi.`,
+          content: `✅ **Website berhasil dibuat!** Saya membuat **${parsedSections.length} section** dan **langsung menyimpannya ke halaman Anda**.\n\n${savedToPage ? "✅ Tersimpan!" : "Klik tombol 💾 Simpan di bawah untuk menyimpan."}\n\nLanjutkan chat jika ingin revisi atau tambah section.`,
           timestamp: Date.now(),
           sectionCount: parsedSections.length,
           sectionTypes,
@@ -669,19 +687,17 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
         </div>
       )}
 
-      {/* Save to Page Bar */}
-      {!isRunning && messages.some((m) => m.role === "assistant" && m.sectionCount && m.sectionCount > 0) && currentPage && (
+      {/* Save to Page Bar — only show if NOT auto-saved */}
+      {!savedToPage && !isRunning && messages.some((m) => m.role === "assistant" && m.sectionCount && m.sectionCount > 0) && currentPage && (
         <div className="mx-4 mb-2">
           <button
             onClick={handleSaveToPage}
-            disabled={saving || savedToPage}
+            disabled={saving}
             className={`w-full py-2 rounded-xl text-[10px] font-semibold transition-all ${
-              savedToPage
-                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                : "bg-emerald-500 text-white hover:bg-emerald-600"
+              "bg-emerald-500 text-white hover:bg-emerald-600"
             }`}
           >
-            {savedToPage ? "✓ Tersimpan ke Halaman!" : saving ? "Menyimpan..." : "💾 Simpan Hasil ke Halaman"}
+            {saving ? "Menyimpan..." : "💾 Simpan Hasil ke Halaman"}
           </button>
         </div>
       )}

@@ -62,7 +62,7 @@ const PROVIDER_CONFIGS: Record<string, {
   },
 };
 
-const SYSTEM_PROMPT = "Anda adalah seniman web visioner dan copywriter puitis. Bebas total — tidak ada template, tidak ada batasan. Ciptakan desain yang orisinil, konten yang bermakna, dan layout yang belum pernah dilihat orang sebelumnya. Beranilah berbeda. Output JSON saja, tanpa markdown atau backticks.";
+const SYSTEM_PROMPT = "Anda adalah desainer web profesional dan copywriter bisnis. Tulis konten yang lugas, jelas, dan profesional — seperti website bisnis pada umumnya. Hindari bahasa puitis, metafora, atau kata-kata bombastis. Output JSON saja, tanpa markdown atau backticks.";
 
 // ─── Main Handler ──────────────────────────────────
 
