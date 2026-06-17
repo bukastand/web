@@ -2609,58 +2609,79 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const elStyles = applyStyles(el);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Responsive slidesPerView: 1 on mobile, 2 on tablet, user-configured on desktop
+  const responsiveSlidesPerView = windowWidth < 640 ? 1 : windowWidth < 1024 ? 2 : Math.min(slidesPerView, 4);
 
   const totalSlides = slides.length;
   const goTo = (idx: number) => {
     if (totalSlides === 0) return;
-    setActiveIdx(((idx % totalSlides) + totalSlides) % totalSlides);
+    if (loop) {
+      setActiveIdx(((idx % totalSlides) + totalSlides) % totalSlides);
+    } else {
+      const maxIdx = Math.max(0, totalSlides - responsiveSlidesPerView);
+      setActiveIdx(Math.max(0, Math.min(idx, maxIdx)));
+    }
   };
 
   useEffect(() => {
-    if (!autoplay || totalSlides <= slidesPerView) return;
+    if (!autoplay || totalSlides <= responsiveSlidesPerView) return;
     timerRef.current = setInterval(() => goTo(activeIdx + 1), interval);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [autoplay, interval, activeIdx, totalSlides, slidesPerView]);
+  }, [autoplay, interval, activeIdx, totalSlides, responsiveSlidesPerView]);
 
   if (totalSlides === 0) {
     return <div className="text-center text-gray-500 py-10">Tambah slide untuk carousel</div>;
   }
 
+  const slidePercent = 100 / responsiveSlidesPerView;
+  const gapAdjust = gap * (1 - 1 / responsiveSlidesPerView);
+
   return (
     <div style={elStyles}>
-      {title && <h2 className="text-center mb-8" style={{ color: titleColor || "#ffffff", fontSize: titleSize || "30px", fontWeight: titleWeight || "700", fontFamily: cardTitleFont }}>{title}</h2>}
+      {title && <h2 className="text-center mb-4 md:mb-8" style={{ color: titleColor || "#ffffff", fontSize: titleSize || "30px", fontWeight: titleWeight || "700", fontFamily: cardTitleFont }}>{title}</h2>}
       <div className="relative">
       <div className="overflow-hidden">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
-            transform: `translateX(-${activeIdx * (100 / Math.min(slidesPerView, 3))}%)`,
+            transform: `translateX(-${activeIdx * slidePercent}%)`,
             gap: `${gap}px`,
           }}
         >
           {slides.map((slide: any, i: number) => (
             <div
               key={i}
-              className="flex-shrink-0 p-4 rounded-2xl flex flex-col"
+              className="flex-shrink-0 rounded-2xl flex flex-col"
               style={{
-                flexBasis: `calc(${100 / Math.min(slidesPerView, 3)}% - ${gap * (1 - 1 / Math.min(slidesPerView, 3))}px)`,
+                flexBasis: `calc(${slidePercent}% - ${gapAdjust}px)`,
                 backgroundColor: slideBg,
                 border: `1px solid ${slideBorder}`,
                 borderRadius: slideBorderRadius,
+                padding: windowWidth < 640 ? "12px" : "16px",
               }}
             >
               {slide.image && (
                 <img
                   src={slide.image}
                   alt={slide.title || ""}
-                  className="w-full h-40 object-cover rounded-xl mb-4"
+                  className="w-full object-cover rounded-xl mb-3"
+                  style={{ height: windowWidth < 640 ? "140px" : "160px" }}
                 />
               )}
               {slide.title && (
-                <h3 className="mb-2" style={{ color: cardTitleColor || "#ffffff", fontSize: cardTitleSize || "16px", fontWeight: cardTitleWeight || "700", fontFamily: cardTitleFont }}>{slide.title}</h3>
+                <h3 className="mb-1.5" style={{ color: cardTitleColor || "#ffffff", fontSize: windowWidth < 640 ? "14px" : (cardTitleSize || "16px"), fontWeight: cardTitleWeight || "700", fontFamily: cardTitleFont }}>{slide.title}</h3>
               )}
               {slide.description && (
-                <p style={{ color: cardDescColor || "#94a3b8", fontSize: cardDescSize || "14px", fontFamily: cardDescFont, fontWeight: cardDescWeight }}>{slide.description}</p>
+                <p style={{ color: cardDescColor || "#94a3b8", fontSize: windowWidth < 640 ? "12px" : (cardDescSize || "14px"), fontFamily: cardDescFont, fontWeight: cardDescWeight }}>{slide.description}</p>
               )}
             </div>
           ))}
@@ -2668,41 +2689,43 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
       </div>
 
       {/* Arrows */}
-      {navigation !== "none" && totalSlides > slidesPerView && (
+      {navigation !== "none" && totalSlides > responsiveSlidesPerView && (
         <>
           <button
             onClick={() => goTo(activeIdx - 1)}
-            className="absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
+            className="absolute -left-2 md:-left-3 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
             style={{ backgroundColor: arrowBg, color: arrowColor }}
+            aria-label="Previous"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
             onClick={() => goTo(activeIdx + 1)}
-            className="absolute -right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
+            className="absolute -right-2 md:-right-3 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 z-10"
             style={{ backgroundColor: arrowBg, color: arrowColor }}
+            aria-label="Next"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </>
       )}
 
-      {/* Dots */}
-      {pagination && totalSlides > slidesPerView && (
-        <div className="flex items-center justify-center gap-2 mt-4">
-          {slides.map((_: any, i: number) => (
+      {/* Dots - page-based for responsive */}
+      {pagination && totalSlides > responsiveSlidesPerView && (
+        <div className="flex items-center justify-center gap-1.5 md:gap-2 mt-3 md:mt-4">
+          {Array.from({ length: Math.ceil(totalSlides / responsiveSlidesPerView) }).map((_, i) => (
             <button
               key={i}
-              onClick={() => setActiveIdx(i)}
+              onClick={() => setActiveIdx(i * responsiveSlidesPerView)}
               className="rounded-full transition-all duration-300"
               style={{
-                width: i === activeIdx ? "20px" : "8px",
-                height: "8px",
-                backgroundColor: i === activeIdx ? dotActiveColor : dotColor,
+                width: i === Math.floor(activeIdx / responsiveSlidesPerView) ? "16px" : "6px",
+                height: "6px",
+                backgroundColor: i === Math.floor(activeIdx / responsiveSlidesPerView) ? dotActiveColor : dotColor,
               }}
             />
           ))}
