@@ -333,10 +333,10 @@ export function AIPanel({ onGenerate, onOpenConfig, pageId: pageIdProp }: AIPane
 
     // Auto-save to page
     if (parsedSections.length > 0) {
-      let pageId = currentPage?.id;
-      // Jika currentPage belum di-set, gunakan pageId dari URL (?pageId=xxx)
-      if (!pageId && pageIdProp) {
-        pageId = pageIdProp;
+      // PRIORITAS: pageId dari URL (?pageId=) > currentPage dari context > create baru
+      let pageId = pageIdProp || currentPage?.id;
+      // Jika pake pageId dari URL, pastikan SET_CURRENT_PAGE sinkron
+      if (pageIdProp && pageIdProp !== currentPage?.id) {
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdProp });
       }
       // Jika masih tidak ada, buat halaman baru
@@ -415,10 +415,10 @@ export function AIPanel({ onGenerate, onOpenConfig, pageId: pageIdProp }: AIPane
     if (finalSections.length === 0) return;
     setSaving(true);
     try {
-      let pageId = currentPage?.id;
-      // Jika currentPage belum di-set, gunakan pageId dari URL (?pageId=xxx)
-      if (!pageId && pageIdProp) {
-        pageId = pageIdProp;
+      // PRIORITAS: pageId dari URL (?pageId=) > currentPage dari context > create baru
+      let pageId = pageIdProp || currentPage?.id;
+      // Jika pake pageId dari URL, pastikan SET_CURRENT_PAGE sinkron
+      if (pageIdProp && pageIdProp !== currentPage?.id) {
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdProp });
       }
       // Jika masih tidak ada, buat halaman baru
