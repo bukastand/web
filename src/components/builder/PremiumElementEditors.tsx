@@ -994,6 +994,15 @@ export function NestedCarouselEditor({ element, updateContent, handleAddItem, ha
       <ColorPicker value={c.dotActiveColor || "#22c55e"} onChange={(v) => updateContent("dotActiveColor", v)} label="Warna Dot Aktif" />
       <ColorPicker value={c.slideBg || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("slideBg", v)} label="Background Card" />
       <ColorPicker value={c.slideBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("slideBorder", v)} label="Border Card" />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Card</p>
+      <ColorPicker value={c.cardTitleColor || "#ffffff"} onChange={(v) => updateContent("cardTitleColor", v)} label="Warna Judul" />
+      <TextInput label="Ukuran Judul" value={c.cardTitleSize} onChange={(v) => updateContent("cardTitleSize", v)} />
+      <TextInput label="Tebal Judul" value={c.cardTitleWeight} onChange={(v) => updateContent("cardTitleWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Card</p>
+      <ColorPicker value={c.cardDescColor || "#94a3b8"} onChange={(v) => updateContent("cardDescColor", v)} label="Warna Deskripsi" />
+      <TextInput label="Ukuran Deskripsi" value={c.cardDescSize} onChange={(v) => updateContent("cardDescSize", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Cards ({slides.length})</label>

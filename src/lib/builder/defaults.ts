@@ -712,6 +712,9 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   "nested-carousel": {
     content: {
       title: "Carousel",
+      titleColor: "#ffffff",
+      titleSize: "30px",
+      titleWeight: "700",
       slidesPerView: 3,
       autoplay: true,
       interval: 4000,
@@ -726,6 +729,11 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       slideBg: "rgba(255,255,255,0.05)",
       slideBorder: "rgba(255,255,255,0.1)",
       slideBorderRadius: "12px",
+      cardTitleColor: "#ffffff",
+      cardTitleSize: "16px",
+      cardTitleWeight: "700",
+      cardDescColor: "#94a3b8",
+      cardDescSize: "14px",
       slides: [
         {
           title: "Card 1",

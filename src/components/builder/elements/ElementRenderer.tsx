@@ -2557,8 +2557,12 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
     slideBg = "rgba(255,255,255,0.05)",
     slideBorder = "rgba(255,255,255,0.1)",
     slideBorderRadius = "12px",
+    title, titleColor, titleSize, titleWeight,
+    cardTitleColor, cardTitleSize, cardTitleWeight,
+    cardDescColor, cardDescSize,
   } = el.content;
   const [activeIdx, setActiveIdx] = useState(0);
+  const elStyles = applyStyles(el);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const totalSlides = slides.length;
@@ -2578,7 +2582,9 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
   }
 
   return (
-    <div className="relative">
+    <div style={elStyles}>
+      {title && <h2 className="text-center mb-8" style={{ color: titleColor || "#ffffff", fontSize: titleSize || "30px", fontWeight: titleWeight || "700" }}>{title}</h2>}
+      <div className="relative">
       <div className="overflow-hidden">
         <div
           className="flex transition-transform duration-500 ease-in-out"
@@ -2606,10 +2612,10 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
                 />
               )}
               {slide.title && (
-                <h3 className="font-bold mb-2" style={{ color: "#ffffff", fontSize: "16px" }}>{slide.title}</h3>
+                <h3 className="mb-2" style={{ color: cardTitleColor || "#ffffff", fontSize: cardTitleSize || "16px", fontWeight: cardTitleWeight || "700" }}>{slide.title}</h3>
               )}
               {slide.description && (
-                <p className="text-sm" style={{ color: "#94a3b8" }}>{slide.description}</p>
+                <p style={{ color: cardDescColor || "#94a3b8", fontSize: cardDescSize || "14px" }}>{slide.description}</p>
               )}
             </div>
           ))}
@@ -2657,6 +2663,7 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }
