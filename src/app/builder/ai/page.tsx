@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useCallback, useRef, useEffect } from "react";
+import { Suspense, useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useBuilder } from "@/lib/builder/store";
 import { getAIConfig, getApiKeyUrl, type AIProvider } from "@/lib/ai";
@@ -29,7 +29,6 @@ function AIBuilderPageContent() {
   const { state, dispatch } = useBuilder();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const loadedPageIdRef = useRef<string | null>(null);
   // Wait for client-side hydration to complete before acting on search params
   useEffect(() => { setMounted(true); }, []);
 
@@ -41,28 +40,41 @@ function AIBuilderPageContent() {
   const [showPreview, setShowPreview] = useState(false);
   const [pendingPageTitle, setPendingPageTitle] = useState("");
 
-  // Jika tidak ada pageId, redirect ke daftar proyek
-  // Jika ada pageId, load halaman tersebut
-  // Gunakan ref agar navigasi antar halaman (pageId berubah) tetap berfungsi
+  // Load halaman berdasarkan pageIdParam
+  // Effect ini jalan setiap kali pageIdParam berubah atau state.pages selesai di-load
   useEffect(() => {
     if (!authLoading && user && mounted) {
       if (!pageIdParam) {
         router.replace("/builder/pages");
         return;
       }
-      // Skip jika halaman ini sudah di-load sebelumnya
-      if (loadedPageIdRef.current === pageIdParam) return;
-
       const targetPage = state.pages.find(p => p.id === pageIdParam);
       if (targetPage) {
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
-        loadedPageIdRef.current = pageIdParam;
       } else if (state.pages.length > 0) {
         // Page not found — redirect ke daftar proyek
         router.replace("/builder/pages");
       }
+      // Jika state.pages masih kosong (belum di-load), tunggu sampai terisi
     }
   }, [pageIdParam, authLoading, user, mounted, state.pages, dispatch, router]);
+
+  // Reset AI panel + preview saat navigasi ke halaman berbeda
+  useEffect(() => {
+    if (pageIdParam) {
+      // Hapus data AI lama dari localStorage biar AIPanel start fresh
+      try {
+        localStorage.removeItem("ai_chat_messages");
+        localStorage.removeItem("ai_last_result_json");
+        localStorage.removeItem("ai_last_title");
+        localStorage.removeItem("ai_final_sections");
+      } catch {}
+      // Reset preview
+      setGeneratedSectionsJson("");
+      setShowPreview(false);
+      setPendingPageTitle("");
+    }
+  }, [pageIdParam]);
 
   // Check if AI is configured
   useEffect(() => {
@@ -159,6 +171,7 @@ function AIBuilderPageContent() {
         {/* Left Column: AI Panel */}
         <div className="w-[420px] min-w-[380px] border-r border-white/10 overflow-y-auto bg-[#0f172a]">
           <AIPanel
+            key={pageIdParam || "new"}
             onGenerate={handleGenerate}
             onOpenConfig={() => setAiConfigOpen(true)}
           />
