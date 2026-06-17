@@ -578,10 +578,11 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "LOAD_PAGES", pages: next });
   }, [dispatch]);
 
-  const createNewPage = useCallback((title?: string) => {
+  const createNewPage = useCallback((title?: string): string => {
     const existingSlugs = state.pages.map((p) => p.slug);
     const page = createDefaultPage(title, existingSlugs);
     wrappedDispatch({ type: "ADD_PAGE", page });
+    return page.id;
   }, [wrappedDispatch, state.pages]);
 
   return (

@@ -7,7 +7,7 @@ import { getAIConfig, getApiKeyUrl, type AIProvider } from "@/lib/ai";
 import { AIPanel } from "@/components/builder/ai/AIPanel";
 import { SandboxPreview } from "@/components/builder/ai/SandboxPreview";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function AIBuilderPage() {
   return (
@@ -26,8 +26,9 @@ export default function AIBuilderPage() {
 
 function AIBuilderPageContent() {
   const { user, loading: authLoading } = useAuth();
-  const { state, dispatch, currentPage, createNewPage } = useBuilder();
-  const [pageCreated, setPageCreated] = useState(false);
+  const { state, dispatch } = useBuilder();
+  const router = useRouter();
+  const [pageLoaded, setPageLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
   // Wait for client-side hydration to complete before acting on search params
   useEffect(() => { setMounted(true); }, []);
@@ -40,22 +41,24 @@ function AIBuilderPageContent() {
   const [showPreview, setShowPreview] = useState(false);
   const [pendingPageTitle, setPendingPageTitle] = useState("");
 
-  // Single effect to handle both cases without race condition:
-  // - If pageId is provided → set existing page as current
-  // - If no pageId → create a fresh new page
+  // Jika tidak ada pageId, redirect ke daftar proyek
+  // Jika ada pageId, load halaman tersebut
   useEffect(() => {
-    if (!authLoading && user && !pageCreated && mounted) {
-      if (pageIdParam) {
-        const targetPage = state.pages.find(p => p.id === pageIdParam);
-        if (targetPage) {
-          dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
-        }
-      } else {
-        createNewPage("AI Generated Page");
+    if (!authLoading && user && mounted && !pageLoaded) {
+      if (!pageIdParam) {
+        router.replace("/builder/pages");
+        return;
       }
-      setPageCreated(true);
+      const targetPage = state.pages.find(p => p.id === pageIdParam);
+      if (targetPage) {
+        dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
+        setPageLoaded(true);
+      } else if (state.pages.length > 0) {
+        // Page not found — redirect ke daftar proyek
+        router.replace("/builder/pages");
+      }
     }
-  }, [pageIdParam, authLoading, user, pageCreated, mounted, state.pages, dispatch, createNewPage]);
+  }, [pageIdParam, authLoading, user, mounted, pageLoaded, state.pages, dispatch, router]);
 
   // Check if AI is configured
   useEffect(() => {

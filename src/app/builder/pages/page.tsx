@@ -16,9 +16,10 @@ export default function BuilderPages() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const handleCreate = () => {
-    createNewPage(title || undefined);
+    const newPageId = createNewPage(title || undefined);
     setShowNew(false);
     setTitle("");
+    router.push(`/builder/${newPageId}`);
   };
 
   if (loading) {
