@@ -28,8 +28,8 @@ function AIBuilderPageContent() {
   const { user, loading: authLoading } = useAuth();
   const { state, dispatch } = useBuilder();
   const router = useRouter();
-  const [pageLoaded, setPageLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const loadedPageIdRef = useRef<string | null>(null);
   // Wait for client-side hydration to complete before acting on search params
   useEffect(() => { setMounted(true); }, []);
 
@@ -43,22 +43,26 @@ function AIBuilderPageContent() {
 
   // Jika tidak ada pageId, redirect ke daftar proyek
   // Jika ada pageId, load halaman tersebut
+  // Gunakan ref agar navigasi antar halaman (pageId berubah) tetap berfungsi
   useEffect(() => {
-    if (!authLoading && user && mounted && !pageLoaded) {
+    if (!authLoading && user && mounted) {
       if (!pageIdParam) {
         router.replace("/builder/pages");
         return;
       }
+      // Skip jika halaman ini sudah di-load sebelumnya
+      if (loadedPageIdRef.current === pageIdParam) return;
+
       const targetPage = state.pages.find(p => p.id === pageIdParam);
       if (targetPage) {
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
-        setPageLoaded(true);
+        loadedPageIdRef.current = pageIdParam;
       } else if (state.pages.length > 0) {
         // Page not found — redirect ke daftar proyek
         router.replace("/builder/pages");
       }
     }
-  }, [pageIdParam, authLoading, user, mounted, pageLoaded, state.pages, dispatch, router]);
+  }, [pageIdParam, authLoading, user, mounted, state.pages, dispatch, router]);
 
   // Check if AI is configured
   useEffect(() => {
