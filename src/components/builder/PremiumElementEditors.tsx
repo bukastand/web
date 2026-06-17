@@ -577,7 +577,9 @@ export function HotspotEditor({ element, updateContent, handleAddItem, handleRem
       <ColorPicker value={c.markerColor || "#22c55e"} onChange={(v) => updateContent("markerColor", v)} label="Warna Marker" />
       <TextInput label="Ukuran Marker" value={c.markerSize} onChange={(v) => updateContent("markerSize", v)} />
       <ColorPicker value={c.markerTextColor || "#ffffff"} onChange={(v) => updateContent("markerTextColor", v)} label="Warna Teks Marker" />
+      <FontFamilySelect label="Font" value={c.markerTextFont} onChange={(v) => updateContent("markerTextFont", v)} />
       <FontSizeSlider value={c.markerTextSize} onChange={(v) => updateContent("markerTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.markerTextWeight} onChange={(v) => updateContent("markerTextWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Popup</p>
@@ -884,6 +886,7 @@ export function SearchEditor({ element, updateContent }: EditorProps) {
       <ColorPicker value={c.textColor || "#ffffff"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
       <FontFamilySelect label="Font" value={c.textFont} onChange={(v) => updateContent("textFont", v)} />
       <FontSizeSlider value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.textWeight} onChange={(v) => updateContent("textWeight", v)} />
       <TextInput label="Teks Tombol" value={c.buttonText} onChange={(v) => updateContent("buttonText", v)} />
       <Checkbox label="Icon pada Tombol" checked={!!c.buttonIcon} onChange={(v) => updateContent("buttonIcon", v)} />
       <SelectInput label="Skin" value={c.skin} onChange={(v) => updateContent("skin", v)} options={["classic", "minimal", "fill"]} />
@@ -979,6 +982,9 @@ export function OffCanvasEditor({ element, updateContent, handleAddItem, handleR
       <Checkbox label="Tombol Tutup" checked={c.closeButton !== false} onChange={(v) => updateContent("closeButton", v)} />
       <ColorPicker value={c.panelBg || "#0f172a"} onChange={(v) => updateContent("panelBg", v)} label="Background Panel" />
       <ColorPicker value={c.panelTextColor || "#ffffff"} onChange={(v) => updateContent("panelTextColor", v)} label="Warna Teks" />
+      <FontFamilySelect label="Font" value={c.panelTextFont} onChange={(v) => updateContent("panelTextFont", v)} />
+      <FontSizeSlider value={c.panelTextSize} onChange={(v) => updateContent("panelTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.panelTextWeight} onChange={(v) => updateContent("panelTextWeight", v)} />
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Link</p>
       <FontFamilySelect label="Font" value={c.panelLinkFont} onChange={(v) => updateContent("panelLinkFont", v)} />
@@ -1044,10 +1050,13 @@ export function SlidesEditor({ element, updateContent, handleAddItem, handleRemo
       <ColorPicker value={c.slideDescColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("slideDescColor", v)} label="Warna Deskripsi" />
       <FontFamilySelect label="Font" value={c.slideDescFont} onChange={(v) => updateContent("slideDescFont", v)} />
       <FontSizeSlider value={c.slideDescSize} onChange={(v) => updateContent("slideDescSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.slideDescWeight} onChange={(v) => updateContent("slideDescWeight", v)} />
       <ColorPicker value={c.buttonBg || "#22c55e"} onChange={(v) => updateContent("buttonBg", v)} label="Background Tombol" />
+      <ColorPicker value={c.buttonTextColor || "#ffffff"} onChange={(v) => updateContent("buttonTextColor", v)} label="Warna Teks Tombol" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</p>
       <FontFamilySelect label="Font" value={c.buttonFont} onChange={(v) => updateContent("buttonFont", v)} />
       <FontSizeSlider value={c.buttonSize} onChange={(v) => updateContent("buttonSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.buttonWeight} onChange={(v) => updateContent("buttonWeight", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Slides ({slides.length})</label>
@@ -1163,6 +1172,7 @@ export function VideoPlaylistEditor({ element, updateContent, handleAddItem, han
       <ColorPicker value={c.playlistDescColor || "#94a3b8"} onChange={(v) => updateContent("playlistDescColor", v)} label="Warna Deskripsi" />
       <FontFamilySelect label="Font" value={c.playlistDescFont} onChange={(v) => updateContent("playlistDescFont", v)} />
       <FontSizeSlider value={c.playlistDescSize} onChange={(v) => updateContent("playlistDescSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.playlistDescWeight} onChange={(v) => updateContent("playlistDescWeight", v)} />
       <ColorPicker value={c.playerBg || "#000000"} onChange={(v) => updateContent("playerBg", v)} label="Background Player" />
       <ColorPicker value={c.accentColor || "#22c55e"} onChange={(v) => updateContent("accentColor", v)} label="Warna Accent" />
       <div className="mb-3">
@@ -1205,6 +1215,7 @@ export function TableOfContentsEditor({ element, updateContent, handleAddItem, h
       <ColorPicker value={c.linkColor || "#94a3b8"} onChange={(v) => updateContent("linkColor", v)} label="Warna Link" />
       <FontFamilySelect label="Font" value={c.linkFont} onChange={(v) => updateContent("linkFont", v)} />
       <FontSizeSlider value={c.linkSize} onChange={(v) => updateContent("linkSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.linkWeight} onChange={(v) => updateContent("linkWeight", v)} />
       <ColorPicker value={c.linkActiveColor || "#22c55e"} onChange={(v) => updateContent("linkActiveColor", v)} label="Warna Link Aktif" />
       <ColorPicker value={c.markerColor || "#22c55e"} onChange={(v) => updateContent("markerColor", v)} label="Warna Marker" />
       <ColorPicker value={c.backgroundColor || "rgba(255,255,255,0.03)"} onChange={(v) => updateContent("backgroundColor", v)} label="Background" />
@@ -1247,6 +1258,7 @@ export function SocialEmbedEditor({ element, updateContent }: EditorProps) {
       <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
       <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
       <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
     </div>
   );
 }
