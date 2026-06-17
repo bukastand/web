@@ -411,6 +411,35 @@ Ini contoh BENAR — setiap element HARUS punya konten yang diisi:
 ✅ contactForm → { "type": "contactForm", "content": { "title": "Hubungi Kami", "subtitle": "Isi form", "fields": ["name", "email", "phone", "message"] }, "styles": {} }
 ✅ navbar → { "type": "navbar", "content": { "logo": "NAMA BRAND", "links": [{ "label": "Beranda", "href": "#" }], "ctaText": "Hubungi", "ctaHref": "#" }, "styles": {} }
 ✅ footer → { "type": "footer", "content": { "logo": "NAMA BRAND", "description": "Deskripsi", "links": [{ "label": "Tentang", "href": "#" }], "socials": [{ "platform": "instagram", "url": "#" }], "copyright": "© 2025 Nama Brand. All rights reserved." }, "styles": {} }
+✅ carousel → { "type": "carousel", "content": { "title": "Galeri", "slides": [{ "image": "https://placehold.co/800x400", "caption": "Judul" }] }, "styles": {} }
+✅ accordion → { "type": "accordion", "content": { "items": [{ "question": "Pertanyaan?", "answer": "Jawaban..." }] }, "styles": {} }
+✅ team → { "type": "team", "content": { "title": "Tim Kami", "members": [{ "name": "Budi", "role": "CEO", "image": "https://placehold.co/150", "desc": "Bio" }] }, "styles": {} }
+✅ countdown → { "type": "countdown", "content": { "title": "Menuju Launch", "targetDate": "2025-12-31" }, "styles": {} }
+✅ maps → { "type": "maps", "content": { "title": "Lokasi Kami", "embedUrl": "https://maps.google.com/maps?q=...", "address": "Jl. Contoh No. 123" }, "styles": {} }
+✅ animated-headline → { "type": "animated-headline", "content": { "beforeText": "Saya adalah", "highlightedText": "Profesional", "afterText": "", "style": "highlight", "animationType": "underline", "tag": "h2", "rotatingTexts": ["Kreatif", "Inovatif"] }, "styles": { "color": "#ffffff", "fontSize": "36px" } }
+✅ blockquote → { "type": "blockquote", "content": { "quoteText": "Kutipan inspiratif...", "authorName": "Nama Author", "skin": "border" }, "styles": {} }
+✅ flip-box → { "type": "flip-box", "content": { "frontTitle": "Judul Depan", "frontDescription": "Deskripsi depan", "backTitle": "Judul Belakang", "backDescription": "Deskripsi belakang", "backButtonText": "Pelajari", "backButtonLink": "#", "frontGraphic": "icon", "frontIcon": "star" }, "styles": {} }
+✅ hotspot → { "type": "hotspot", "content": { "imageSrc": "https://placehold.co/800x500", "items": [{ "label": "Titik 1", "x": "30%", "y": "40%", "description": "Info..." }] }, "styles": {} }
+✅ progress-tracker → { "type": "progress-tracker", "content": { "label": "Skill", "progress": 75, "percentage": true, "type": "horizontal" }, "styles": {} }
+✅ share-buttons → { "type": "share-buttons", "content": { "view": "icon", "skin": "minimal", "networks": [{ "name": "facebook", "text": "" }, { "name": "twitter", "text": "" }] }, "styles": {} }
+✅ checklist → { "type": "checklist", "content": { "title": "Daftar", "items": [{ "text": "Item 1", "checked": true }] }, "styles": {} }
+✅ gallery → { "type": "gallery", "content": { "title": "Galeri Foto", "columns": 3, "lightbox": true, "images": [{ "src": "https://placehold.co/600x400", "caption": "Foto 1" }] }, "styles": {} }
+✅ lottie → { "type": "lottie", "content": { "src": "https://assets-v2.lottiefiles.com/a/1a2b3c4d.json", "loop": true, "autoplay": true }, "styles": {} }
+✅ star-rating → { "type": "star-rating", "content": { "title": "Rating", "rating": 4.5, "scale": 5, "starColor": "#f59e0b" }, "styles": {} }
+✅ search → { "type": "search", "content": { "placeholder": "Cari...", "buttonText": "Cari", "skin": "classic" }, "styles": {} }
+✅ slides → { "type": "slides", "content": { "slides": [{ "title": "Slide 1", "description": "...", "image": "https://placehold.co/1400x600", "buttonText": "Pelajari" }] }, "styles": {} }
+✅ nested-carousel → { "type": "nested-carousel", "content": { "title": "Portofolio", "slides": [{ "title": "Project 1", "description": "...", "image": "https://placehold.co/400x300" }] }, "styles": {} }
+✅ video-playlist → { "type": "video-playlist", "content": { "title": "Video Tutorial", "videos": [{ "title": "Video 1", "url": "https://www.youtube.com/embed/...", "duration": "3:45", "description": "..." }] }, "styles": {} }
+✅ table-of-contents → { "type": "table-of-contents", "content": { "title": "Daftar Isi", "items": [{ "text": "Pendahuluan", "level": 2, "href": "#pendahuluan" }], "markers": "numbers" }, "styles": {} }
+✅ social-embed → { "type": "social-embed", "content": { "title": "Facebook Page", "type": "facebook-page", "url": "https://facebook.com/example" }, "styles": {} }
+✅ off-canvas → { "type": "off-canvas", "content": { "title": "Menu", "position": "right", "items": [{ "label": "Beranda", "href": "#" }] }, "styles": {} }
+✅ floating-buttons → { "type": "floating-buttons", "content": { "position": "bottom-right", "buttons": [{ "icon": "whatsapp", "link": "https://wa.me/6282210099969", "color": "#22c55e" }] }, "styles": {} }
+✅ breadcrumbs → { "type": "breadcrumbs", "content": { "separator": "/", "items": [{ "label": "Beranda", "href": "/" }, { "label": "Tentang", "href": "/tentang" }] }, "styles": {} }
+✅ code-highlight → { "type": "code-highlight", "content": { "language": "javascript", "code": "console.log('Hello');", "showLineNumbers": true, "copyButton": true }, "styles": {} }
+✅ video → { "type": "video", "content": { "url": "https://www.youtube.com/embed/VIDEO_ID", "caption": "Video Tutorial" }, "styles": {} }
+✅ spacer → { "type": "spacer", "content": { "height": "40px" }, "styles": {} }
+✅ divider → { "type": "divider", "content": { "style": "solid", "color": "rgba(255,255,255,0.1)" }, "styles": {} }
+✅ icon → { "type": "icon", "content": { "icon": "star", "size": "48px", "color": "#22c55e" }, "styles": {} }
 
 ⚠️ LARANGAN MUTLAK: content KOSONG! ⚠️
 Setiap element.type HARUS punya content yang diisi dengan properti yang sesuai.
@@ -485,6 +514,31 @@ WAJIB — setiap element HARUS punya konten seperti contoh di bawah:
 ✅ navbar → content: { "logo": "NAMA BRAND", "links": [{ "label": "Beranda", "href": "#" }], "ctaText": "Hubungi", "ctaHref": "#" }
 ✅ footer → content: { "logo": "NAMA BRAND", "description": "...", "links": [...], "socials": [...], "copyright": "© 2025..." }
 ✅ contactForm → content: { "title": "Hubungi Kami", "subtitle": "Isi form", "fields": ["name", "email", "phone", "message"] }
+✅ carousel → content: { "title": "Galeri", "slides": [{ "image": "...", "caption": "..." }] }
+✅ accordion → content: { "items": [{ "question": "Pertanyaan?", "answer": "Jawaban..." }] }
+✅ team → content: { "members": [{ "name": "Budi", "role": "CEO", "image": "..." }] }
+✅ animated-headline → content: { "beforeText": "Saya", "highlightedText": "Profesional", "afterText": "", "rotatingTexts": ["Kreatif"] }
+✅ blockquote → content: { "quoteText": "Kutipan...", "authorName": "Nama" }
+✅ flip-box → content: { "frontTitle": "Judul", "frontDescription": "Desc", "backTitle": "Judul", "backDescription": "Desc", "backButtonText": "Pelajari" }
+✅ hotspot → content: { "imageSrc": "url", "items": [{ "label": "Titik", "x": "50%", "y": "50%", "description": "Info" }] }
+✅ progress-tracker → content: { "label": "Skill", "progress": 75 }
+✅ checklist → content: { "items": [{ "text": "Item", "checked": true }] }
+✅ gallery → content: { "images": [{ "src": "...", "caption": "Foto" }] }
+✅ star-rating → content: { "rating": 4.5, "scale": 5 }
+✅ search → content: { "placeholder": "Cari...", "buttonText": "Cari" }
+✅ slides → content: { "slides": [{ "title": "Slide", "image": "...", "buttonText": "Pelajari" }] }
+✅ nested-carousel → content: { "slides": [{ "title": "Project", "description": "...", "image": "..." }] }
+✅ video-playlist → content: { "videos": [{ "title": "Video 1", "url": "...", "duration": "3:45" }] }
+✅ maps → content: { "title": "Lokasi", "embedUrl": "...", "address": "Jl. Contoh" }
+✅ countdown → content: { "title": "Menuju Launch", "targetDate": "2025-12-31" }
+✅ video → content: { "url": "https://www.youtube.com/embed/..." }
+✅ search → content: { "placeholder": "Cari..." }
+✅ lottie → content: { "src": "animation.json", "loop": true }
+✅ breadcrumbs → content: { "items": [{ "label": "Beranda", "href": "/" }] }
+✅ off-canvas → content: { "title": "Menu", "items": [{ "label": "Beranda", "href": "#" }] }
+✅ share-buttons → content: { "networks": [{ "name": "facebook" }] }
+✅ social-embed → content: { "type": "facebook-page", "url": "..." }
+✅ table-of-contents → content: { "items": [{ "text": "Pendahuluan", "level": 2 }] }
 
 ⚠️ LARANGAN: content {} KOSONG! Setiap element HARUS diisi konten! ⚠️
 

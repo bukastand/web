@@ -119,6 +119,32 @@ PANDUAN ELEMENT TYPE:
 - accordion: { "items": [{ "question": "...", "answer": "..." }] }
 - team: { "members": [{ "name": "...", "role": "...", "image": "..." }] }
 - carousel: { "slides": [{ "image": "...", "caption": "..." }] }
+- maps: { "title": "Lokasi", "embedUrl": "...", "address": "Jl. Contoh" }
+- countdown: { "title": "Menuju Launch", "targetDate": "2025-12-31" }
+- video: { "url": "https://www.youtube.com/embed/...", "caption": "..." }
+- animated-headline: { "beforeText": "Saya", "highlightedText": "Profesional", "afterText": "", "rotatingTexts": ["Kreatif"], "style": "highlight", "animationType": "underline" }
+- blockquote: { "quoteText": "Kutipan...", "authorName": "Nama", "skin": "border" }
+- flip-box: { "frontTitle": "Judul Depan", "frontDescription": "Desc", "backTitle": "Judul Belakang", "backDescription": "Desc", "backButtonText": "Pelajari" }
+- hotspot: { "imageSrc": "url", "items": [{ "label": "Titik 1", "x": "50%", "y": "50%", "description": "Info" }] }
+- progress-tracker: { "label": "Skill", "progress": 75, "type": "horizontal" }
+- checklist: { "title": "Daftar", "items": [{ "text": "Item", "checked": true }] }
+- gallery: { "title": "Galeri", "columns": 3, "images": [{ "src": "...", "caption": "Foto" }] }
+- star-rating: { "title": "Rating", "rating": 4.5, "scale": 5 }
+- search: { "placeholder": "Cari...", "buttonText": "Cari" }
+- slides: { "slides": [{ "title": "Slide 1", "description": "...", "image": "...", "buttonText": "Pelajari" }] }
+- nested-carousel: { "title": "Portofolio", "slides": [{ "title": "Project", "description": "...", "image": "..." }] }
+- video-playlist: { "title": "Video", "videos": [{ "title": "Video 1", "url": "...", "duration": "3:45" }] }
+- lottie: { "src": "animation.json", "loop": true, "autoplay": true }
+- breadcrumbs: { "items": [{ "label": "Beranda", "href": "/" }], "separator": "/" }
+- off-canvas: { "title": "Menu", "position": "right", "items": [{ "label": "Beranda", "href": "#" }] }
+- share-buttons: { "networks": [{ "name": "facebook" }], "skin": "minimal" }
+- social-embed: { "type": "facebook-page", "url": "...", "title": "Facebook" }
+- table-of-contents: { "title": "Daftar Isi", "items": [{ "text": "Pendahuluan", "level": 2, "href": "#" }] }
+- floating-buttons: { "position": "bottom-right", "buttons": [{ "icon": "whatsapp", "link": "https://wa.me/...", "color": "#22c55e" }] }
+- code-highlight: { "language": "javascript", "code": "console.log('Hello');" }
+- spacer: { "height": "40px" }
+- divider: { "style": "solid", "color": "rgba(255,255,255,0.1)" }
+- icon: { "icon": "star", "size": "48px", "color": "#22c55e" }
 
 ⚠️ ATURAN PENTING:
 - Gunakan bahasa Indonesia yang profesional dan lugas

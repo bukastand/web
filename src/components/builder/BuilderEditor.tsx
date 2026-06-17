@@ -215,6 +215,133 @@ export default function BuilderEditor() {
           
           {/* Desktop style panel */}
           {state.selectedElementId && !isFullscreen && !isMobile && <StylePanel />}
+          
+          {/* Desktop section edit panel */}
+          {!state.selectedElementId && state.selectedSectionId && selectedSection && !isFullscreen && !isMobile && currentPage && (
+            <aside className="w-72 flex-shrink-0 bg-[#0f172a] border-l border-white/10 overflow-y-auto">
+              <div className="sticky top-0 bg-[#0f172a] z-10 p-4 border-b border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#22c55e]" />
+                    <h3 className="text-sm font-semibold text-white">Section Controls</h3>
+                  </div>
+                  <button
+                    onClick={() => dispatch({ type: "SELECT_SECTION", sectionId: null })}
+                    className="p-1 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="p-4 space-y-4">
+                {/* Background Color */}
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Background</label>
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="color"
+                      value={selectedSection.styles.backgroundColor && selectedSection.styles.backgroundColor !== "transparent" ? selectedSection.styles.backgroundColor : "#0f172a"}
+                      onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: e.target.value } })}
+                      className="w-10 h-10 rounded-lg cursor-pointer border-0 p-0 flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={selectedSection.styles.backgroundColor || ""}
+                      onChange={(e) => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: e.target.value } })}
+                      className="flex-1 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-[#22c55e]/50 font-mono"
+                      placeholder="transparent"
+                    />
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {SECTION_QUICK_COLORS.map((c) => (
+                      <button
+                        key={c.value}
+                        onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { backgroundColor: c.value } })}
+                        className="w-6 h-6 rounded-md border border-white/10 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: c.value }}
+                        title={c.label}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Container Width */}
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Container Width</label>
+                  <div className="flex gap-1">
+                    {containerOptions.map((opt) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { containerWidth: opt.key } })}
+                        className={`flex-1 py-2 text-xs font-medium rounded-lg transition-all ${cw === opt.key ? "bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30" : "bg-white/5 text-gray-400 border border-white/10 hover:text-white"}`}
+                        title={opt.desc}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Padding */}
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Padding</label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        const current = parseInt(selectedSection.styles.padding || "0") || 0;
+                        dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { padding: `${Math.max(0, current - 20)}px 0` } });
+                      }}
+                      className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all flex items-center justify-center text-lg"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm text-gray-400 font-mono min-w-[60px] text-center">{selectedSection.styles.padding || "0"}</span>
+                    <button
+                      onClick={() => {
+                        const current = parseInt(selectedSection.styles.padding || "0") || 0;
+                        dispatch({ type: "UPDATE_SECTION_STYLES", pageId: currentPage.id, sectionId: state.selectedSectionId!, styles: { padding: `${Math.min(200, current + 20)}px 0` } });
+                      }}
+                      className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all flex items-center justify-center text-lg"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-gray-600 mt-1">Nilai: {selectedSection.styles.padding || "0px 0"}</p>
+                </div>
+
+                {/* Actions */}
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Actions</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => dispatch({ type: "ADD_COLUMN", pageId: currentPage.id, sectionId: state.selectedSectionId! })} className="flex flex-col items-center gap-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-95">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                      <span className="text-[9px]">+ Kolom</span>
+                    </button>
+                    <button onClick={() => dispatch({ type: "DUPLICATE_SECTION", pageId: currentPage.id, sectionId: state.selectedSectionId! })} className="flex flex-col items-center gap-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-95">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                      <span className="text-[9px]">Duplikat</span>
+                    </button>
+                    <button disabled={selectedSectionIndex <= 0} onClick={() => dispatch({ type: "MOVE_SECTION", pageId: currentPage.id, sectionId: state.selectedSectionId!, toIndex: selectedSectionIndex - 1 })} className="flex flex-col items-center gap-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
+                      <span className="text-[9px]">Naik</span>
+                    </button>
+                    <button disabled={selectedSectionIndex >= totalSections - 1} onClick={() => dispatch({ type: "MOVE_SECTION", pageId: currentPage.id, sectionId: state.selectedSectionId!, toIndex: selectedSectionIndex + 1 })} className="flex flex-col items-center gap-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      <span className="text-[9px]">Turun</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Delete */}
+                <button onClick={() => { dispatch({ type: "REMOVE_SECTION", pageId: currentPage.id, sectionId: state.selectedSectionId! }); }} className="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm font-medium">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  Hapus Section
+                </button>
+              </div>
+            </aside>
+          )}
         </div>
 
         {/* ─── MOBILE STYLE DRAWER ─── */}

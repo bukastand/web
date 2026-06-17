@@ -756,25 +756,30 @@ export default function StylePanel() {
                 <div className="mb-3 mt-3">
                   <div className="h-px bg-white/10 mb-3" />
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
                   <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Judul</label>
-                    <input type="text" value={selectedElement.content.titleSize || "30px"} onChange={(e) => updateContent("titleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Font Judul</label>
+                    <select value={selectedElement.content.titleFont || "Inter, sans-serif"} onChange={(e) => updateContent("titleFont", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
+                      {fontOptions.map(f => <option key={f.value} value={f.value} className="bg-[#1e293b] text-white">{f.label}</option>)}
+                    </select>
                   </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" /></div>
+                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.titleSize || "30px"} onChange={(v) => updateContent("titleSize", v)} /></div>
                   <div className="mb-2">
                     <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ketebalan Judul</label>
                     <select value={selectedElement.content.titleWeight || "700"} onChange={(e) => updateContent("titleWeight", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" style={{ colorScheme: 'dark' }}>
-                      {["400","500","600","700","800","900"].map(w => <option key={w} value={w} className="bg-[#1e293b] text-white">{w}</option>)}
+                      <option value="300" className="bg-[#1e293b] text-white">Light (300)</option>
+                      <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+                      <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+                      <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+                      <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+                      <option value="800" className="bg-[#1e293b] text-white">Extra Bold (800)</option>
+                      <option value="900" className="bg-[#1e293b] text-white">Black (900)</option>
                     </select>
                   </div>
                 </div>
                 <div className="mb-3">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
-                  <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
-                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
-                  </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.subtitleSize || "16px"} onChange={(v) => updateContent("subtitleSize", v)} /></div>
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />
@@ -831,11 +836,7 @@ export default function StylePanel() {
                 </div>
                 <div className="mb-3">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
-                  <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
-                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
-                  </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.subtitleSize || "16px"} onChange={(v) => updateContent("subtitleSize", v)} /></div>
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />
@@ -959,11 +960,7 @@ export default function StylePanel() {
                 </div>
                 <div className="mb-3">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
-                  <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
-                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
-                  </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.subtitleSize || "16px"} onChange={(v) => updateContent("subtitleSize", v)} /></div>
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />
@@ -1055,11 +1052,7 @@ export default function StylePanel() {
                 </div>
                 <div className="mb-3">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
-                  <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
-                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
-                  </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.subtitleSize || "16px"} onChange={(v) => updateContent("subtitleSize", v)} /></div>
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />
@@ -1482,11 +1475,7 @@ export default function StylePanel() {
                 </div>
                 <div className="mb-3">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Subtitle</h4>
-                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>
-                  <div className="mb-2">
-                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Subtitle</label>
-                    <input type="text" value={selectedElement.content.subtitleSize || "16px"} onChange={(e) => updateContent("subtitleSize", e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50" />
-                  </div>
+                  <div className="mb-2"><ColorPicker value={selectedElement.content.subtitleColor || "#94a3b8"} onChange={(v) => updateContent("subtitleColor", v)} label="Warna Subtitle" /></div>                  <div className="mb-2"><FontSizeSlider value={selectedElement.content.subtitleSize || "16px"} onChange={(v) => updateContent("subtitleSize", v)} /></div>
                 </div>
                 <div className="mb-3">
                   <div className="h-px bg-white/10 mb-3" />

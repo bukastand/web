@@ -20,10 +20,24 @@ const commonColors = [
   { label: "Dark", value: "#0f172a" },
 ];
 
+const fontFamilyOptions = [
+  { label: "Inter (Default)", value: "Inter, sans-serif" },
+  { label: "Arial", value: "Arial, Helvetica, sans-serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Times New Roman", value: "'Times New Roman', serif" },
+  { label: "Courier New", value: "'Courier New', monospace" },
+  { label: "Roboto", value: "'Roboto', sans-serif" },
+  { label: "Open Sans", value: "'Open Sans', sans-serif" },
+  { label: "Lato", value: "'Lato', sans-serif" },
+  { label: "Montserrat", value: "'Montserrat', sans-serif" },
+  { label: "Playfair Display", value: "'Playfair Display', serif" },
+  { label: "Poppins", value: "'Poppins', sans-serif" },
+  { label: "Merriweather", value: "'Merriweather', serif" },
+];
+
 function ColorPicker({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
   const [internalValue, setInternalValue] = useState(value || "#000000");
 
-  // Sync from props when value changes externally
   useEffect(() => {
     setInternalValue(value || "#000000");
   }, [value]);
@@ -87,6 +101,8 @@ interface EditorProps {
   userId: string | null;
 }
 
+// ── Helper Input Components ──
+
 function TextInput({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div className="mb-3">
@@ -148,6 +164,112 @@ function Checkbox({ label, checked, onChange }: { label: string; checked: boolea
   );
 }
 
+// ── Style Input Components ──
+
+function FontSizeSlider({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const match = value?.match(/^([\d.]+)(\s*)(\S*)$/) || [];
+  const num = parseFloat(match[1]) || 16;
+  const unit = match[3] || "px";
+
+  const presets = [
+    { label: "8px", value: "8px" },
+    { label: "12px", value: "12px" },
+    { label: "14px", value: "14px" },
+    { label: "16px", value: "16px" },
+    { label: "18px", value: "18px" },
+    { label: "20px", value: "20px" },
+    { label: "24px", value: "24px" },
+    { label: "28px", value: "28px" },
+    { label: "32px", value: "32px" },
+    { label: "36px", value: "36px" },
+    { label: "40px", value: "40px" },
+    { label: "48px", value: "48px" },
+    { label: "56px", value: "56px" },
+    { label: "64px", value: "64px" },
+    { label: "72px", value: "72px" },
+  ];
+
+  return (
+    <div className="mb-3">
+      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Ukuran Font</label>
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          type="range"
+          min={8} max={100} step={1}
+          value={Math.min(100, Math.max(8, Math.round(num)))}
+          onChange={(e) => onChange(`${parseInt(e.target.value)}${unit}`)}
+          className="flex-1 h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]
+            [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#22c55e] [&::-webkit-slider-thumb]:shadow-lg
+            [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:active:cursor-grabbing
+            [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#22c55e] [&::-moz-range-thumb]:border-0"
+        />
+        <input
+          type="text"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-16 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm text-center focus:outline-none focus:border-[#22c55e]/50 font-mono"
+        />
+      </div>
+      <div className="flex gap-1 flex-wrap">
+        {presets.map((p) => (
+          <button
+            key={p.value}
+            onClick={() => onChange(p.value)}
+            className={`px-1.5 py-0.5 text-[10px] rounded-md border transition-all ${
+              value === p.value
+                ? "bg-[#22c55e]/20 border-[#22c55e]/40 text-[#22c55e]"
+                : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FontWeightSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="mb-3">
+      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label || "Tebal Font"}</label>
+      <select
+        value={value || "400"}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+        style={{ colorScheme: "dark" } as any}
+      >
+        <option value="300" className="bg-[#1e293b] text-white">Light (300)</option>
+        <option value="400" className="bg-[#1e293b] text-white">Normal (400)</option>
+        <option value="500" className="bg-[#1e293b] text-white">Medium (500)</option>
+        <option value="600" className="bg-[#1e293b] text-white">Semi Bold (600)</option>
+        <option value="700" className="bg-[#1e293b] text-white">Bold (700)</option>
+        <option value="800" className="bg-[#1e293b] text-white">Extra Bold (800)</option>
+        <option value="900" className="bg-[#1e293b] text-white">Black (900)</option>
+      </select>
+    </div>
+  );
+}
+
+function FontFamilySelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="mb-3">
+      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">{label || "Jenis Font"}</label>
+      <select
+        value={value || "Inter, sans-serif"}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#22c55e]/50"
+        style={{ colorScheme: "dark" } as any}
+      >
+        {fontFamilyOptions.map((f) => (
+          <option key={f.value} value={f.value} className="bg-[#1e293b] text-white" style={{ fontFamily: f.value }}>{f.label}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 // ── Individual Editors ──
 
 export function AnimatedHeadlineEditor({ element, updateContent }: EditorProps) {
@@ -158,22 +280,25 @@ export function AnimatedHeadlineEditor({ element, updateContent }: EditorProps) 
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Sebelum</p>
       <ColorPicker value={c.beforeTextColor || "#ffffff"} onChange={(v) => updateContent("beforeTextColor", v)} label="Warna" />
-      <TextInput label="Ukuran" value={c.beforeTextSize} onChange={(v) => updateContent("beforeTextSize", v)} />
-      <TextInput label="Tebal" value={c.beforeTextWeight} onChange={(v) => updateContent("beforeTextWeight", v)} />
+      <FontFamilySelect label="Font" value={c.beforeTextFont} onChange={(v) => updateContent("beforeTextFont", v)} />
+      <FontSizeSlider value={c.beforeTextSize} onChange={(v) => updateContent("beforeTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.beforeTextWeight} onChange={(v) => updateContent("beforeTextWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <TextInput label="Teks Highlight" value={c.highlightedText} onChange={(v) => updateContent("highlightedText", v)} />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Highlight</p>
       <ColorPicker value={c.highlightTextColor || "#22c55e"} onChange={(v) => updateContent("highlightTextColor", v)} label="Warna" />
-      <TextInput label="Ukuran" value={c.highlightTextSize} onChange={(v) => updateContent("highlightTextSize", v)} />
-      <TextInput label="Tebal" value={c.highlightTextWeight} onChange={(v) => updateContent("highlightTextWeight", v)} />
+      <FontFamilySelect label="Font" value={c.highlightTextFont} onChange={(v) => updateContent("highlightTextFont", v)} />
+      <FontSizeSlider value={c.highlightTextSize} onChange={(v) => updateContent("highlightTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.highlightTextWeight} onChange={(v) => updateContent("highlightTextWeight", v)} />
 
       <div className="h-px bg-white/10 my-3" />
       <TextInput label="Teks Setelah" value={c.afterText} onChange={(v) => updateContent("afterText", v)} />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Setelah</p>
       <ColorPicker value={c.afterTextColor || "#ffffff"} onChange={(v) => updateContent("afterTextColor", v)} label="Warna" />
-      <TextInput label="Ukuran" value={c.afterTextSize} onChange={(v) => updateContent("afterTextSize", v)} />
-      <TextInput label="Tebal" value={c.afterTextWeight} onChange={(v) => updateContent("afterTextWeight", v)} />
+      <FontFamilySelect label="Font" value={c.afterTextFont} onChange={(v) => updateContent("afterTextFont", v)} />
+      <FontSizeSlider value={c.afterTextSize} onChange={(v) => updateContent("afterTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.afterTextWeight} onChange={(v) => updateContent("afterTextWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <SelectInput label="Style" value={c.style} onChange={(v) => updateContent("style", v)} options={["highlight", "rotating"]} />
@@ -203,18 +328,21 @@ export function BlockquoteEditor({ element, updateContent }: EditorProps) {
   return (
     <div>
       <TextArea label="Kutipan" value={c.quoteText} onChange={(v) => updateContent("quoteText", v)} />
-      <TextInput label="Nama Author" value={c.authorName} onChange={(v) => updateContent("authorName", v)} />
-      <SelectInput label="Skin" value={c.skin} onChange={(v) => updateContent("skin", v)} options={["border", "quotation", "boxed", "clean"]} />
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Kutipan</p>
       <ColorPicker value={c.quoteTextColor || "#d1d5db"} onChange={(v) => updateContent("quoteTextColor", v)} label="Warna Kutipan" />
-      <TextInput label="Ukuran Kutipan" value={c.quoteTextSize} onChange={(v) => updateContent("quoteTextSize", v)} />
+      <FontFamilySelect label="Font" value={c.quoteFontFamily} onChange={(v) => updateContent("quoteFontFamily", v)} />
+      <FontSizeSlider value={c.quoteTextSize} onChange={(v) => updateContent("quoteTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.quoteTextWeight} onChange={(v) => updateContent("quoteTextWeight", v)} />
       <SelectInput label="Font Style" value={c.quoteFontStyle || "italic"} onChange={(v) => updateContent("quoteFontStyle", v)} options={["italic", "normal", "oblique"]} />
+      <TextInput label="Nama Author" value={c.authorName} onChange={(v) => updateContent("authorName", v)} />
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Author</p>
       <ColorPicker value={c.authorNameColor || "#22c55e"} onChange={(v) => updateContent("authorNameColor", v)} label="Warna Author" />
-      <TextInput label="Ukuran Author" value={c.authorNameSize} onChange={(v) => updateContent("authorNameSize", v)} />
-      <TextInput label="Tebal Author" value={c.authorNameWeight} onChange={(v) => updateContent("authorNameWeight", v)} />
+      <FontFamilySelect label="Font" value={c.authorNameFont} onChange={(v) => updateContent("authorNameFont", v)} />
+      <FontSizeSlider value={c.authorNameSize} onChange={(v) => updateContent("authorNameSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.authorNameWeight} onChange={(v) => updateContent("authorNameWeight", v)} />
+      <SelectInput label="Skin" value={c.skin} onChange={(v) => updateContent("skin", v)} options={["border", "quotation", "boxed", "clean"]} />
       <div className="h-px bg-white/10 my-3" />
       <Checkbox label="Tampilkan Tweet Button" checked={!!c.tweetButton} onChange={(v) => updateContent("tweetButton", v)} />
       {c.tweetButton && <TextInput label="Label Tweet" value={c.tweetLabel} onChange={(v) => updateContent("tweetLabel", v)} />}
@@ -348,20 +476,10 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
             {c.frontImage && (
               <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
                 <img src={c.frontImage} alt="" className="w-full h-20 object-cover" />
-                <button
-                  onClick={() => updateContent("frontImage", "")}
-                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-                >
-                  ×
-                </button>
+                <button onClick={() => updateContent("frontImage", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
               </div>
             )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFrontImageUpload}
-              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
-            />
+            <input type="file" accept="image/*" onChange={handleFrontImageUpload} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1" />
             <input value={c.frontImage || ""} onChange={(v) => updateContent("frontImage", v.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar Depan" />
           </div>
         )}
@@ -369,12 +487,15 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
         <div className="h-px bg-white/10 my-2" />
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Depan</p>
         <ColorPicker value={c.frontTitleColor || "#ffffff"} onChange={(v) => updateContent("frontTitleColor", v)} label="Warna Judul" />
-        <TextInput label="Ukuran Judul" value={c.frontTitleSize} onChange={(v) => updateContent("frontTitleSize", v)} />
-        <TextInput label="Tebal Judul" value={c.frontTitleWeight} onChange={(v) => updateContent("frontTitleWeight", v)} />
+        <FontFamilySelect label="Font" value={c.frontTitleFont} onChange={(v) => updateContent("frontTitleFont", v)} />
+        <FontSizeSlider value={c.frontTitleSize} onChange={(v) => updateContent("frontTitleSize", v)} />
+        <FontWeightSelect label="Tebal" value={c.frontTitleWeight} onChange={(v) => updateContent("frontTitleWeight", v)} />
         <TextArea label="Deskripsi Depan" value={c.frontDescription} onChange={(v) => updateContent("frontDescription", v)} />
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Depan</p>
         <ColorPicker value={c.frontDescColor || "#94a3b8"} onChange={(v) => updateContent("frontDescColor", v)} label="Warna Deskripsi" />
-        <TextInput label="Ukuran Deskripsi" value={c.frontDescSize} onChange={(v) => updateContent("frontDescSize", v)} />
+        <FontFamilySelect label="Font" value={c.frontDescFont} onChange={(v) => updateContent("frontDescFont", v)} />
+        <FontSizeSlider value={c.frontDescSize} onChange={(v) => updateContent("frontDescSize", v)} />
+        <FontWeightSelect label="Tebal" value={c.frontDescWeight} onChange={(v) => updateContent("frontDescWeight", v)} />
         <ColorPicker value={c.frontBackground || "#1e293b"} onChange={(v) => updateContent("frontBackground", v)} label="Background Depan" />
       </Section>
       <Section title="Back">
@@ -383,32 +504,25 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
           {c.backImage && (
             <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
               <img src={c.backImage} alt="" className="w-full h-20 object-cover" />
-              <button
-                onClick={() => updateContent("backImage", "")}
-                className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-              >
-                ×
-              </button>
+              <button onClick={() => updateContent("backImage", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
             </div>
           )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleBackImageUpload}
-            className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
-          />
+          <input type="file" accept="image/*" onChange={handleBackImageUpload} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1" />
           <input value={c.backImage || ""} onChange={(v) => updateContent("backImage", v.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar Belakang" />
         </div>
         <TextInput label="Judul Belakang" value={c.backTitle} onChange={(v) => updateContent("backTitle", v)} />
         <div className="h-px bg-white/10 my-2" />
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Belakang</p>
         <ColorPicker value={c.backTitleColor || "#ffffff"} onChange={(v) => updateContent("backTitleColor", v)} label="Warna Judul" />
-        <TextInput label="Ukuran Judul" value={c.backTitleSize} onChange={(v) => updateContent("backTitleSize", v)} />
-        <TextInput label="Tebal Judul" value={c.backTitleWeight} onChange={(v) => updateContent("backTitleWeight", v)} />
+        <FontFamilySelect label="Font" value={c.backTitleFont} onChange={(v) => updateContent("backTitleFont", v)} />
+        <FontSizeSlider value={c.backTitleSize} onChange={(v) => updateContent("backTitleSize", v)} />
+        <FontWeightSelect label="Tebal" value={c.backTitleWeight} onChange={(v) => updateContent("backTitleWeight", v)} />
         <TextArea label="Deskripsi Belakang" value={c.backDescription} onChange={(v) => updateContent("backDescription", v)} />
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Belakang</p>
         <ColorPicker value={c.backDescColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("backDescColor", v)} label="Warna Deskripsi" />
-        <TextInput label="Ukuran Deskripsi" value={c.backDescSize} onChange={(v) => updateContent("backDescSize", v)} />
+        <FontFamilySelect label="Font" value={c.backDescFont} onChange={(v) => updateContent("backDescFont", v)} />
+        <FontSizeSlider value={c.backDescSize} onChange={(v) => updateContent("backDescSize", v)} />
+        <FontWeightSelect label="Tebal" value={c.backDescWeight} onChange={(v) => updateContent("backDescWeight", v)} />
         <ColorPicker value={c.backBackground || "#22c55e"} onChange={(v) => updateContent("backBackground", v)} label="Background Belakang" />
         <div className="h-px bg-white/10 my-2" />
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</p>
@@ -416,8 +530,9 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
         <TextInput label="Link Tombol" value={c.backButtonLink} onChange={(v) => updateContent("backButtonLink", v)} />
         <ColorPicker value={c.backButtonBg || "#ffffff"} onChange={(v) => updateContent("backButtonBg", v)} label="Background Tombol" />
         <ColorPicker value={c.backButtonTextColor || "#1e293b"} onChange={(v) => updateContent("backButtonTextColor", v)} label="Warna Teks Tombol" />
-        <TextInput label="Ukuran Tombol" value={c.backButtonSize} onChange={(v) => updateContent("backButtonSize", v)} />
-        <TextInput label="Tebal Tombol" value={c.backButtonWeight} onChange={(v) => updateContent("backButtonWeight", v)} />
+        <FontFamilySelect label="Font" value={c.backButtonFont} onChange={(v) => updateContent("backButtonFont", v)} />
+        <FontSizeSlider value={c.backButtonSize} onChange={(v) => updateContent("backButtonSize", v)} />
+        <FontWeightSelect label="Tebal" value={c.backButtonWeight} onChange={(v) => updateContent("backButtonWeight", v)} />
       </Section>
     </div>
   );
@@ -450,20 +565,10 @@ export function HotspotEditor({ element, updateContent, handleAddItem, handleRem
         {c.imageSrc && (
           <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
             <img src={c.imageSrc} alt="hotspot preview" className="w-full h-24 object-cover" />
-            <button
-              onClick={() => updateContent("imageSrc", "")}
-              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-            >
-              ×
-            </button>
+            <button onClick={() => updateContent("imageSrc", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
           </div>
         )}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
-        />
+        <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30" />
       </div>
       <TextInput label="URL Gambar" value={c.imageSrc} onChange={(v) => updateContent("imageSrc", v)} />
       
@@ -472,7 +577,7 @@ export function HotspotEditor({ element, updateContent, handleAddItem, handleRem
       <ColorPicker value={c.markerColor || "#22c55e"} onChange={(v) => updateContent("markerColor", v)} label="Warna Marker" />
       <TextInput label="Ukuran Marker" value={c.markerSize} onChange={(v) => updateContent("markerSize", v)} />
       <ColorPicker value={c.markerTextColor || "#ffffff"} onChange={(v) => updateContent("markerTextColor", v)} label="Warna Teks Marker" />
-      <TextInput label="Ukuran Teks Marker" value={c.markerTextSize} onChange={(v) => updateContent("markerTextSize", v)} />
+      <FontSizeSlider value={c.markerTextSize} onChange={(v) => updateContent("markerTextSize", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Popup</p>
@@ -485,13 +590,16 @@ export function HotspotEditor({ element, updateContent, handleAddItem, handleRem
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Label</p>
       <ColorPicker value={c.labelColor || "#22c55e"} onChange={(v) => updateContent("labelColor", v)} label="Warna Label" />
-      <TextInput label="Ukuran Label" value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
-      <TextInput label="Tebal Label" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
+      <FontFamilySelect label="Font" value={c.labelFont} onChange={(v) => updateContent("labelFont", v)} />
+      <FontSizeSlider value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi</p>
       <ColorPicker value={c.descColor || "#94a3b8"} onChange={(v) => updateContent("descColor", v)} label="Warna Deskripsi" />
-      <TextInput label="Ukuran Deskripsi" value={c.descSize} onChange={(v) => updateContent("descSize", v)} />
+      <FontFamilySelect label="Font" value={c.descFont} onChange={(v) => updateContent("descFont", v)} />
+      <FontSizeSlider value={c.descSize} onChange={(v) => updateContent("descSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.descWeight} onChange={(v) => updateContent("descWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Markers ({items.length})</label>
@@ -521,13 +629,7 @@ export function ProgressTrackerEditor({ element, updateContent }: EditorProps) {
       <SelectInput label="Tipe" value={c.type} onChange={(v) => updateContent("type", v)} options={["horizontal", "circular"]} />
       <div className="mb-3">
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Progress ({c.progress || 50}%)</label>
-        <input
-          type="range"
-          min={0} max={100} step={1}
-          value={c.progress || 50}
-          onChange={(e) => updateContent("progress", parseInt(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
-        />
+        <input type="range" min={0} max={100} step={1} value={c.progress || 50} onChange={(e) => updateContent("progress", parseInt(e.target.value))} className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]" />
       </div>
       <TextInput label="Label" value={c.label} onChange={(v) => updateContent("label", v)} />
       <Checkbox label="Tampilkan Persentase" checked={!!c.percentage} onChange={(v) => updateContent("percentage", v)} />
@@ -535,14 +637,16 @@ export function ProgressTrackerEditor({ element, updateContent }: EditorProps) {
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Label</p>
       <ColorPicker value={c.labelColor || "#94a3b8"} onChange={(v) => updateContent("labelColor", v)} label="Warna Label" />
-      <TextInput label="Ukuran Label" value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
-      <TextInput label="Tebal Label" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
+      <FontFamilySelect label="Font" value={c.labelFont} onChange={(v) => updateContent("labelFont", v)} />
+      <FontSizeSlider value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Persentase</p>
       <ColorPicker value={c.percentageColor || "#22c55e"} onChange={(v) => updateContent("percentageColor", v)} label="Warna Angka" />
-      <TextInput label="Ukuran Angka" value={c.percentageSize} onChange={(v) => updateContent("percentageSize", v)} />
-      <TextInput label="Tebal Angka" value={c.percentageWeight} onChange={(v) => updateContent("percentageWeight", v)} />
+      <FontFamilySelect label="Font" value={c.percentageFont} onChange={(v) => updateContent("percentageFont", v)} />
+      <FontSizeSlider value={c.percentageSize} onChange={(v) => updateContent("percentageSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.percentageWeight} onChange={(v) => updateContent("percentageWeight", v)} />
       
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Bar</p>
@@ -604,12 +708,15 @@ export function ChecklistEditor({ element, updateContent, handleAddItem, handleR
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
       <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
-      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
-      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
       <div className="h-px bg-white/10 my-3" />
       <ColorPicker value={c.checkedColor || "#22c55e"} onChange={(v) => updateContent("checkedColor", v)} label="Warna Checklist" />
       <ColorPicker value={c.textColor || "#ffffff"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
-      <TextInput label="Ukuran Teks" value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
+      <FontFamilySelect label="Font Teks" value={c.textFont} onChange={(v) => updateContent("textFont", v)} />
+      <FontSizeSlider value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
+      <FontWeightSelect label="Tebal Teks" value={c.textWeight} onChange={(v) => updateContent("textWeight", v)} />
       <TextInput label="Ukuran Icon" value={c.iconSize} onChange={(v) => updateContent("iconSize", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
@@ -621,7 +728,7 @@ export function ChecklistEditor({ element, updateContent, handleAddItem, handleR
               <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
             </div>
             <input value={item.text || ""} onChange={(e) => handleItemChange("items", i, "text", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Teks" />
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 mt-1">
               <input type="checkbox" checked={item.checked !== false} onChange={(e) => handleItemChange("items", i, "checked", e.target.checked)} className="rounded bg-white/5 border-white/20" />
               <span className="text-xs text-gray-400">Checked</span>
             </label>
@@ -659,16 +766,18 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
       <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
-      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
-      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
       <div className="h-px bg-white/10 my-3" />
       <TextInput label="Jumlah Kolom" value={String(c.columns || 3)} onChange={(v) => updateContent("columns", parseInt(v) || 3)} />
       <Checkbox label="Lightbox" checked={!!c.lightbox} onChange={(v) => updateContent("lightbox", v)} />
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Caption</p>
       <ColorPicker value={c.captionColor || "#ffffff"} onChange={(v) => updateContent("captionColor", v)} label="Warna Caption" />
-      <TextInput label="Ukuran Caption" value={c.captionSize} onChange={(v) => updateContent("captionSize", v)} />
-      <TextInput label="Tebal Caption" value={c.captionWeight} onChange={(v) => updateContent("captionWeight", v)} />
+      <FontFamilySelect label="Font" value={c.captionFont} onChange={(v) => updateContent("captionFont", v)} />
+      <FontSizeSlider value={c.captionSize} onChange={(v) => updateContent("captionSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.captionWeight} onChange={(v) => updateContent("captionWeight", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Gambar ({images.length})</label>
@@ -681,20 +790,10 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
             {img.src && (
               <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
                 <img src={img.src} alt="" className="w-full h-20 object-cover" />
-                <button
-                  onClick={() => handleItemChange("images", i, "src", "")}
-                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-                >
-                  ×
-                </button>
+                <button onClick={() => handleItemChange("images", i, "src", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
               </div>
             )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(i, e)}
-              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
-            />
+            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(i, e)} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1" />
             <input value={img.src || ""} onChange={(e) => handleItemChange("images", i, "src", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar" />
             <input value={img.caption || ""} onChange={(e) => handleItemChange("images", i, "caption", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Caption" />
           </div>
@@ -707,7 +806,6 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
 
 export function LottieEditor({ element, updateContent }: EditorProps) {
   const c = element.content;
-
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -718,7 +816,6 @@ export function LottieEditor({ element, updateContent }: EditorProps) {
     };
     reader.readAsDataURL(file);
   };
-
   const isDataUrl = c.src && c.src.startsWith("data:");
 
   return (
@@ -737,28 +834,11 @@ export function LottieEditor({ element, updateContent }: EditorProps) {
                   {isDataUrl ? "Animation diupload" : "Animation dari URL"}
                 </span>
               </div>
-              <button
-                onClick={() => updateContent("src", "")}
-                className="w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500 flex-shrink-0"
-              >
-                ×
-              </button>
+              <button onClick={() => updateContent("src", "")} className="w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500 flex-shrink-0">×</button>
             </div>
-            {isDataUrl && (
-              <div className="px-2 pb-2">
-                <div className="h-1 rounded-full bg-[#22c55e]/30 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#22c55e]" style={{ width: "100%" }} />
-                </div>
-              </div>
-            )}
           </div>
         )}
-        <input
-          type="file"
-          accept=".json,application/json"
-          onChange={handleFileUpload}
-          className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
-        />
+        <input type="file" accept=".json,application/json" onChange={handleFileUpload} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30" />
       </div>
       <TextInput label="URL Animation JSON" value={c.src || ""} onChange={(v) => updateContent("src", v)} />
       <Checkbox label="Loop" checked={c.loop !== false} onChange={(v) => updateContent("loop", v)} />
@@ -776,21 +856,19 @@ export function StarRatingEditor({ element, updateContent }: EditorProps) {
       <TextInput label="Judul" value={c.title} onChange={(v) => updateContent("title", v)} />
       <div className="mb-3">
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Rating ({c.rating || 5})</label>
-        <input
-          type="range" min={0} max={5} step={0.5}
-          value={c.rating || 5}
-          onChange={(e) => updateContent("rating", parseFloat(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#f59e0b]"
-        />
+        <input type="range" min={0} max={5} step={0.5} value={c.rating || 5} onChange={(e) => updateContent("rating", parseFloat(e.target.value))} className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#f59e0b]" />
       </div>
       <TextInput label="Skala" value={String(c.scale || 5)} onChange={(v) => updateContent("scale", parseInt(v) || 5)} />
       <ColorPicker value={c.starColor || "#f59e0b"} onChange={(v) => updateContent("starColor", v)} label="Warna Bintang" />
       <ColorPicker value={c.emptyColor || "#374151"} onChange={(v) => updateContent("emptyColor", v)} label="Warna Bintang Kosong" />
       <Checkbox label="Tampilkan Nilai" checked={!!c.showValue} onChange={(v) => updateContent("showValue", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
       <ColorPicker value={c.titleColor || "#94a3b8"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
-      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
-      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
-      <TextInput label="Ukuran" value={c.size} onChange={(v) => updateContent("size", v)} />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <TextInput label="Ukuran Bintang" value={c.size} onChange={(v) => updateContent("size", v)} />
       <SelectInput label="Posisi" value={c.align} onChange={(v) => updateContent("align", v)} options={["left", "center", "right"]} />
     </div>
   );
@@ -801,14 +879,23 @@ export function SearchEditor({ element, updateContent }: EditorProps) {
   return (
     <div>
       <TextInput label="Placeholder" value={c.placeholder} onChange={(v) => updateContent("placeholder", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Placeholder</p>
+      <ColorPicker value={c.textColor || "#ffffff"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
+      <FontFamilySelect label="Font" value={c.textFont} onChange={(v) => updateContent("textFont", v)} />
+      <FontSizeSlider value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
       <TextInput label="Teks Tombol" value={c.buttonText} onChange={(v) => updateContent("buttonText", v)} />
       <Checkbox label="Icon pada Tombol" checked={!!c.buttonIcon} onChange={(v) => updateContent("buttonIcon", v)} />
       <SelectInput label="Skin" value={c.skin} onChange={(v) => updateContent("skin", v)} options={["classic", "minimal", "fill"]} />
-      <ColorPicker value={c.backgroundColor || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("backgroundColor", v)} label="Background Input" />
-      <ColorPicker value={c.textColor || "#ffffff"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
-      <ColorPicker value={c.borderColor || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("borderColor", v)} label="Border" />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</p>
       <ColorPicker value={c.buttonColor || "#22c55e"} onChange={(v) => updateContent("buttonColor", v)} label="Warna Tombol" />
       <ColorPicker value={c.buttonTextColor || "#ffffff"} onChange={(v) => updateContent("buttonTextColor", v)} label="Warna Teks Tombol" />
+      <FontFamilySelect label="Font" value={c.buttonFont} onChange={(v) => updateContent("buttonFont", v)} />
+      <FontSizeSlider value={c.buttonTextSize} onChange={(v) => updateContent("buttonTextSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.buttonWeight} onChange={(v) => updateContent("buttonWeight", v)} />
+      <ColorPicker value={c.backgroundColor || "rgba(255,255,255,0.05)"} onChange={(v) => updateContent("backgroundColor", v)} label="Background Input" />
+      <ColorPicker value={c.borderColor || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("borderColor", v)} label="Border" />
     </div>
   );
 }
@@ -857,7 +944,9 @@ export function BreadcrumbsEditor({ element, updateContent, handleAddItem, handl
       <ColorPicker value={c.textColor || "#94a3b8"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
       <ColorPicker value={c.activeColor || "#ffffff"} onChange={(v) => updateContent("activeColor", v)} label="Warna Aktif" />
       <ColorPicker value={c.separatorColor || "#4b5563"} onChange={(v) => updateContent("separatorColor", v)} label="Warna Separator" />
-      <TextInput label="Ukuran Teks" value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
+      <FontFamilySelect label="Font" value={c.fontFamily} onChange={(v) => updateContent("fontFamily", v)} />
+      <FontSizeSlider value={c.textSize} onChange={(v) => updateContent("textSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.fontWeight} onChange={(v) => updateContent("fontWeight", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Items ({items.length})</label>
@@ -890,6 +979,11 @@ export function OffCanvasEditor({ element, updateContent, handleAddItem, handleR
       <Checkbox label="Tombol Tutup" checked={c.closeButton !== false} onChange={(v) => updateContent("closeButton", v)} />
       <ColorPicker value={c.panelBg || "#0f172a"} onChange={(v) => updateContent("panelBg", v)} label="Background Panel" />
       <ColorPicker value={c.panelTextColor || "#ffffff"} onChange={(v) => updateContent("panelTextColor", v)} label="Warna Teks" />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Link</p>
+      <FontFamilySelect label="Font" value={c.panelLinkFont} onChange={(v) => updateContent("panelLinkFont", v)} />
+      <FontSizeSlider value={c.panelLinkSize} onChange={(v) => updateContent("panelLinkSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.panelLinkWeight} onChange={(v) => updateContent("panelLinkWeight", v)} />
       <ColorPicker value={c.panelLinkColor || "#94a3b8"} onChange={(v) => updateContent("panelLinkColor", v)} label="Warna Link" />
       <ColorPicker value={c.panelLinkHoverColor || "#22c55e"} onChange={(v) => updateContent("panelLinkHoverColor", v)} label="Warna Hover Link" />
       <div className="mb-3">
@@ -939,10 +1033,21 @@ export function SlidesEditor({ element, updateContent, handleAddItem, handleRemo
       <SelectInput label="Navigasi" value={c.navigation} onChange={(v) => updateContent("navigation", v)} options={["arrows", "none"]} />
       <ColorPicker value={c.arrowColor || "#ffffff"} onChange={(v) => updateContent("arrowColor", v)} label="Warna Panah" />
       <ColorPicker value={c.dotActiveColor || "#22c55e"} onChange={(v) => updateContent("dotActiveColor", v)} label="Warna Dot Aktif" />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Slide</p>
       <ColorPicker value={c.slideTitleColor || "#ffffff"} onChange={(v) => updateContent("slideTitleColor", v)} label="Warna Judul" />
-      <TextInput label="Ukuran Judul" value={c.slideTitleSize} onChange={(v) => updateContent("slideTitleSize", v)} />
+      <FontFamilySelect label="Font" value={c.slideTitleFont} onChange={(v) => updateContent("slideTitleFont", v)} />
+      <FontSizeSlider value={c.slideTitleSize} onChange={(v) => updateContent("slideTitleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.slideTitleWeight} onChange={(v) => updateContent("slideTitleWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Slide</p>
       <ColorPicker value={c.slideDescColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("slideDescColor", v)} label="Warna Deskripsi" />
+      <FontFamilySelect label="Font" value={c.slideDescFont} onChange={(v) => updateContent("slideDescFont", v)} />
+      <FontSizeSlider value={c.slideDescSize} onChange={(v) => updateContent("slideDescSize", v)} />
       <ColorPicker value={c.buttonBg || "#22c55e"} onChange={(v) => updateContent("buttonBg", v)} label="Background Tombol" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</p>
+      <FontFamilySelect label="Font" value={c.buttonFont} onChange={(v) => updateContent("buttonFont", v)} />
+      <FontSizeSlider value={c.buttonSize} onChange={(v) => updateContent("buttonSize", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Slides ({slides.length})</label>
@@ -955,22 +1060,12 @@ export function SlidesEditor({ element, updateContent, handleAddItem, handleRemo
             {slide.image && (
               <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
                 <img src={slide.image} alt="" className="w-full h-20 object-cover" />
-                <button
-                  onClick={() => handleItemChange("slides", i, "image", "")}
-                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-                >
-                  ×
-                </button>
+                <button onClick={() => handleItemChange("slides", i, "image", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
               </div>
             )}
             <input value={slide.title || ""} onChange={(e) => handleItemChange("slides", i, "title", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Judul" />
             <textarea value={slide.description || ""} onChange={(e) => handleItemChange("slides", i, "description", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(i, e)}
-              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
-            />
+            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(i, e)} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1" />
             <input value={slide.image || ""} onChange={(e) => handleItemChange("slides", i, "image", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar" />
             <input value={slide.buttonText || ""} onChange={(e) => handleItemChange("slides", i, "buttonText", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Teks Tombol" />
             <input value={slide.buttonLink || ""} onChange={(e) => handleItemChange("slides", i, "buttonLink", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Link Tombol" />
@@ -1016,12 +1111,15 @@ export function NestedCarouselEditor({ element, updateContent, handleAddItem, ha
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Card</p>
       <ColorPicker value={c.cardTitleColor || "#ffffff"} onChange={(v) => updateContent("cardTitleColor", v)} label="Warna Judul" />
-      <TextInput label="Ukuran Judul" value={c.cardTitleSize} onChange={(v) => updateContent("cardTitleSize", v)} />
-      <TextInput label="Tebal Judul" value={c.cardTitleWeight} onChange={(v) => updateContent("cardTitleWeight", v)} />
+      <FontFamilySelect label="Font" value={c.cardTitleFont} onChange={(v) => updateContent("cardTitleFont", v)} />
+      <FontSizeSlider value={c.cardTitleSize} onChange={(v) => updateContent("cardTitleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.cardTitleWeight} onChange={(v) => updateContent("cardTitleWeight", v)} />
       <div className="h-px bg-white/10 my-3" />
       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Card</p>
       <ColorPicker value={c.cardDescColor || "#94a3b8"} onChange={(v) => updateContent("cardDescColor", v)} label="Warna Deskripsi" />
-      <TextInput label="Ukuran Deskripsi" value={c.cardDescSize} onChange={(v) => updateContent("cardDescSize", v)} />
+      <FontFamilySelect label="Font" value={c.cardDescFont} onChange={(v) => updateContent("cardDescFont", v)} />
+      <FontSizeSlider value={c.cardDescSize} onChange={(v) => updateContent("cardDescSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.cardDescWeight} onChange={(v) => updateContent("cardDescWeight", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Cards ({slides.length})</label>
@@ -1034,22 +1132,12 @@ export function NestedCarouselEditor({ element, updateContent, handleAddItem, ha
             {slide.image && (
               <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
                 <img src={slide.image} alt="" className="w-full h-20 object-cover" />
-                <button
-                  onClick={() => handleItemChange("slides", i, "image", "")}
-                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500"
-                >
-                  ×
-                </button>
+                <button onClick={() => handleItemChange("slides", i, "image", "")} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
               </div>
             )}
             <input value={slide.title || ""} onChange={(e) => handleItemChange("slides", i, "title", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Judul" />
             <textarea value={slide.description || ""} onChange={(e) => handleItemChange("slides", i, "description", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(i, e)}
-              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1"
-            />
+            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(i, e)} className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30 mb-1" />
             <input value={slide.image || ""} onChange={(e) => handleItemChange("slides", i, "image", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar" />
           </div>
         ))}
@@ -1066,8 +1154,15 @@ export function VideoPlaylistEditor({ element, updateContent, handleAddItem, han
     <div>
       <TextInput label="Judul Playlist" value={c.title} onChange={(v) => updateContent("title", v)} />
       <ColorPicker value={c.playlistBg || "#0f172a"} onChange={(v) => updateContent("playlistBg", v)} label="Background Playlist" />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Video Playlist</p>
       <ColorPicker value={c.playlistTitleColor || "#ffffff"} onChange={(v) => updateContent("playlistTitleColor", v)} label="Warna Judul Video" />
+      <FontFamilySelect label="Font" value={c.playlistTitleFont} onChange={(v) => updateContent("playlistTitleFont", v)} />
+      <FontSizeSlider value={c.playlistTitleSize} onChange={(v) => updateContent("playlistTitleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.playlistTitleWeight} onChange={(v) => updateContent("playlistTitleWeight", v)} />
       <ColorPicker value={c.playlistDescColor || "#94a3b8"} onChange={(v) => updateContent("playlistDescColor", v)} label="Warna Deskripsi" />
+      <FontFamilySelect label="Font" value={c.playlistDescFont} onChange={(v) => updateContent("playlistDescFont", v)} />
+      <FontSizeSlider value={c.playlistDescSize} onChange={(v) => updateContent("playlistDescSize", v)} />
       <ColorPicker value={c.playerBg || "#000000"} onChange={(v) => updateContent("playerBg", v)} label="Background Player" />
       <ColorPicker value={c.accentColor || "#22c55e"} onChange={(v) => updateContent("accentColor", v)} label="Warna Accent" />
       <div className="mb-3">
@@ -1099,8 +1194,17 @@ export function TableOfContentsEditor({ element, updateContent, handleAddItem, h
       <TextInput label="Judul" value={c.title} onChange={(v) => updateContent("title", v)} />
       <SelectInput label="Marker" value={c.markers} onChange={(v) => updateContent("markers", v)} options={["numbers", "bullets"]} />
       <Checkbox label="Bisa Diminimalkan" checked={c.minimizeBox !== false} onChange={(v) => updateContent("minimizeBox", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
       <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Link</p>
       <ColorPicker value={c.linkColor || "#94a3b8"} onChange={(v) => updateContent("linkColor", v)} label="Warna Link" />
+      <FontFamilySelect label="Font" value={c.linkFont} onChange={(v) => updateContent("linkFont", v)} />
+      <FontSizeSlider value={c.linkSize} onChange={(v) => updateContent("linkSize", v)} />
       <ColorPicker value={c.linkActiveColor || "#22c55e"} onChange={(v) => updateContent("linkActiveColor", v)} label="Warna Link Aktif" />
       <ColorPicker value={c.markerColor || "#22c55e"} onChange={(v) => updateContent("markerColor", v)} label="Warna Marker" />
       <ColorPicker value={c.backgroundColor || "rgba(255,255,255,0.03)"} onChange={(v) => updateContent("backgroundColor", v)} label="Background" />
@@ -1141,6 +1245,8 @@ export function SocialEmbedEditor({ element, updateContent }: EditorProps) {
       <TextInput label="Lebar" value={c.width} onChange={(v) => updateContent("width", v)} />
       <TextInput label="Tinggi" value={c.height} onChange={(v) => updateContent("height", v)} />
       <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
     </div>
   );
 }
