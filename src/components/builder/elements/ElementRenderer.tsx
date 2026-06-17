@@ -1319,9 +1319,9 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     beforeText = "",
     highlightedText = "",
     afterText = "",
-    beforeTextColor, beforeTextSize, beforeTextWeight,
-    highlightTextColor, highlightTextSize, highlightTextWeight,
-    afterTextColor, afterTextSize, afterTextWeight,
+    beforeTextColor, beforeTextSize, beforeTextWeight, beforeTextFont,
+    highlightTextColor, highlightTextSize, highlightTextWeight, highlightTextFont,
+    afterTextColor, afterTextSize, afterTextWeight, afterTextFont,
     style: headlineStyle = "highlight",
     animationType = "underline",
     tag = "h2",
@@ -1366,16 +1366,19 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     color: beforeTextColor || styles.color,
     fontSize: beforeTextSize || styles.fontSize,
     fontWeight: beforeTextWeight || styles.fontWeight,
+    fontFamily: beforeTextFont || styles.fontFamily,
   };
   const highlightStyle: React.CSSProperties = {
     color: highlightTextColor || styles.color || "#22c55e",
     fontSize: highlightTextSize || styles.fontSize,
     fontWeight: highlightTextWeight || styles.fontWeight,
+    fontFamily: highlightTextFont || styles.fontFamily,
   };
   const afterStyle: React.CSSProperties = {
     color: afterTextColor || styles.color,
     fontSize: afterTextSize || styles.fontSize,
     fontWeight: afterTextWeight || styles.fontWeight,
+    fontFamily: afterTextFont || styles.fontFamily,
   };
 
   // ── Highlight style: animated background reveal ──
@@ -1472,8 +1475,8 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
 
 function BlockquoteElement({ el }: ElementComponentProps) {
   const { quoteText, authorName, skin = "border", tweetButton, tweetLabel,
-    quoteTextColor, quoteTextSize, quoteFontStyle,
-    authorNameColor, authorNameSize, authorNameWeight,
+    quoteTextColor, quoteTextSize, quoteFontStyle, quoteFontFamily, quoteTextWeight,
+    authorNameColor, authorNameSize, authorNameWeight, authorNameFont,
   } = el.content;
   const styles = applyStyles(el);
 
@@ -1491,12 +1494,12 @@ function BlockquoteElement({ el }: ElementComponentProps) {
           &ldquo;
         </span>
       )}
-      <p className="mb-3 leading-relaxed" style={{ color: quoteTextColor || styles.color, fontSize: quoteTextSize || styles.fontSize || "18px", fontStyle: quoteFontStyle || styles.fontStyle || "italic" }}>
+      <p className="mb-3 leading-relaxed" style={{ color: quoteTextColor || styles.color, fontSize: quoteTextSize || styles.fontSize || "18px", fontStyle: quoteFontStyle || styles.fontStyle || "italic", fontFamily: quoteFontFamily || styles.fontFamily, fontWeight: quoteTextWeight }}>
         &ldquo;{quoteText}&rdquo;
       </p>
       {authorName && (
         <footer className="flex items-center gap-2 mt-3">
-          <cite className="not-italic font-semibold" style={{ color: authorNameColor || styles.color || "#22c55e", fontSize: authorNameSize || "14px", fontWeight: authorNameWeight || "600" }}>
+          <cite className="not-italic font-semibold" style={{ color: authorNameColor || styles.color || "#22c55e", fontSize: authorNameSize || "14px", fontWeight: authorNameWeight || "600", fontFamily: authorNameFont || styles.fontFamily }}>
             &mdash; {authorName}
           </cite>
           {tweetButton && (
@@ -1582,19 +1585,19 @@ function FlipBoxElement({ el }: ElementComponentProps) {
     frontIcon = "star",
     frontImage = "",
     frontTitle,
-    frontTitleColor, frontTitleSize, frontTitleWeight,
+    frontTitleColor, frontTitleSize, frontTitleWeight, frontTitleFont,
     frontDescription,
-    frontDescColor, frontDescSize,
+    frontDescColor, frontDescSize, frontDescFont, frontDescWeight,
     frontIconColor,
     frontBackground = "#1e293b",
     backImage = "",
     backTitle,
-    backTitleColor, backTitleSize, backTitleWeight,
+    backTitleColor, backTitleSize, backTitleWeight, backTitleFont,
     backDescription,
-    backDescColor, backDescSize,
+    backDescColor, backDescSize, backDescFont, backDescWeight,
     backBackground = "#22c55e",
     backButtonText, backButtonLink = "#",
-    backButtonBg, backButtonTextColor, backButtonSize, backButtonWeight,
+    backButtonBg, backButtonTextColor, backButtonSize, backButtonWeight, backButtonFont,
   } = el.content;
   const styles = applyStyles(el);
 
@@ -1624,8 +1627,8 @@ function FlipBoxElement({ el }: ElementComponentProps) {
               {FLIP_ICONS[frontIcon]}
             </svg>
           )}
-          <h3 className="font-bold mb-2" style={{ color: frontTitleColor || "#ffffff", fontSize: frontTitleSize || "20px", fontWeight: frontTitleWeight || "700" }}>{frontTitle}</h3>
-          {frontDescription && <p style={{ color: frontDescColor || "#94a3b8", fontSize: frontDescSize || "14px" }}>{frontDescription}</p>}
+          <h3 className="font-bold mb-2" style={{ color: frontTitleColor || "#ffffff", fontSize: frontTitleSize || "20px", fontWeight: frontTitleWeight || "700", fontFamily: frontTitleFont }}>{frontTitle}</h3>
+          {frontDescription && <p style={{ color: frontDescColor || "#94a3b8", fontSize: frontDescSize || "14px", fontFamily: frontDescFont, fontWeight: frontDescWeight }}>{frontDescription}</p>}
         </div>
         {/* Back */}
         <div
@@ -1637,8 +1640,8 @@ function FlipBoxElement({ el }: ElementComponentProps) {
             transform: "rotateY(180deg)",
           }}
         >
-          <h3 className="font-bold mb-2" style={{ color: backTitleColor || "#ffffff", fontSize: backTitleSize || "20px", fontWeight: backTitleWeight || "700" }}>{backTitle}</h3>
-          {backDescription && <p className="mb-6" style={{ color: backDescColor || "rgba(255,255,255,0.8)", fontSize: backDescSize || "14px" }}>{backDescription}</p>}
+          <h3 className="font-bold mb-2" style={{ color: backTitleColor || "#ffffff", fontSize: backTitleSize || "20px", fontWeight: backTitleWeight || "700", fontFamily: backTitleFont }}>{backTitle}</h3>
+          {backDescription && <p className="mb-6" style={{ color: backDescColor || "rgba(255,255,255,0.8)", fontSize: backDescSize || "14px", fontFamily: backDescFont, fontWeight: backDescWeight }}>{backDescription}</p>}
           <a
             href={backButtonLink}
             className="px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
@@ -1647,6 +1650,7 @@ function FlipBoxElement({ el }: ElementComponentProps) {
               color: backButtonTextColor || "#1e293b",
               fontSize: backButtonSize || "14px",
               fontWeight: backButtonWeight || "600",
+              fontFamily: backButtonFont,
             }}
           >
             {backButtonText || "Pelajari"}
@@ -1660,10 +1664,10 @@ function FlipBoxElement({ el }: ElementComponentProps) {
 function HotspotElement({ el }: ElementComponentProps) {
   const { imageSrc, items = [],
     markerColor, markerSize,
-    markerTextColor, markerTextSize,
+    markerTextColor, markerTextSize, markerTextFont, markerTextWeight,
     popupBg, popupBorder, popupWidth, popupPadding, popupRadius,
-    labelColor, labelSize, labelWeight,
-    descColor, descSize,
+    labelColor, labelSize, labelWeight, labelFont,
+    descColor, descSize, descFont, descWeight,
   } = el.content;
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
@@ -1688,6 +1692,8 @@ function HotspotElement({ el }: ElementComponentProps) {
               backgroundColor: markerColor || "#22c55e",
               color: markerTextColor || "#ffffff",
               fontSize: markerTextSize || "14px",
+              fontFamily: markerTextFont,
+              fontWeight: markerTextWeight,
             }}
             onClick={() => setActiveIdx(activeIdx === i ? null : i)}
           >
@@ -1708,10 +1714,13 @@ function HotspotElement({ el }: ElementComponentProps) {
                 color: labelColor || "#22c55e",
                 fontSize: labelSize || "12px",
                 fontWeight: labelWeight || "600",
+                fontFamily: labelFont,
               }}>{item.label}</p>
               {item.description && <p className="leading-relaxed" style={{
                 color: descColor || "#94a3b8",
                 fontSize: descSize || "10px",
+                fontFamily: descFont,
+                fontWeight: descWeight,
               }}>{item.description}</p>}
             </div>
           )}
@@ -1723,8 +1732,8 @@ function HotspotElement({ el }: ElementComponentProps) {
 
 function ProgressTrackerElement({ el }: ElementComponentProps) {
   const { type = "horizontal", percentage, progress = 50, label,
-    labelColor, labelSize, labelWeight,
-    percentageColor, percentageSize, percentageWeight,
+    labelColor, labelSize, labelWeight, labelFont,
+    percentageColor, percentageSize, percentageWeight, percentageFont,
     barColor, trackColor, barHeight, barRadius, circleSize, strokeWidth,
   } = el.content;
   const allStyles = applyStyles(el);
@@ -1774,12 +1783,14 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
             color: percentageColor || accentColor,
             fontSize: percentageSize || "18px",
             fontWeight: percentageWeight || "700",
+            fontFamily: percentageFont,
           }}>{pct}%</span>
         )}
         {label && <span className="mt-1" style={{
           color: labelColor || "#94a3b8",
           fontSize: labelSize || "14px",
           fontWeight: labelWeight || "400",
+          fontFamily: labelFont,
         }}>{label}</span>}
       </div>
     );
@@ -1796,11 +1807,13 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
             color: labelColor || "#94a3b8",
             fontSize: labelSize || "12px",
             fontWeight: labelWeight || "400",
+            fontFamily: labelFont,
           }}>{label}</span>}
           {percentage && <span className="font-semibold" style={{
             color: percentageColor || accentColor,
             fontSize: percentageSize || "12px",
             fontWeight: percentageWeight || "600",
+            fontFamily: percentageFont,
           }}>{pct}%</span>}
         </div>
       )}
@@ -1890,12 +1903,12 @@ function ShareButtonsElement({ el }: ElementComponentProps) {
 }
 
 function ChecklistElement({ el }: ElementComponentProps) {
-  const { title, titleColor, titleSize, titleWeight, items = [], checkedColor = "#22c55e", textColor = "#ffffff", textSize = "16px", iconSize = "20px" } = el.content;
+  const { title, titleColor, titleSize, titleWeight, titleFont, items = [], checkedColor = "#22c55e", textColor = "#ffffff", textSize = "16px", textFont, textWeight, iconSize = "20px" } = el.content;
   const styles = applyStyles(el);
 
   return (
     <div style={styles}>
-      {title && <h3 className="mb-4" style={{ color: titleColor || textColor, fontSize: titleSize || "18px", fontWeight: titleWeight || "700" }}>{title}</h3>}
+      {title && <h3 className="mb-4" style={{ color: titleColor || textColor, fontSize: titleSize || "18px", fontWeight: titleWeight || "700", fontFamily: titleFont }}>{title}</h3>}
       <ul className="space-y-3">
         {items.map((item: any, i: number) => (
           <li key={i} className="flex items-start gap-3">
@@ -1916,7 +1929,7 @@ function ChecklistElement({ el }: ElementComponentProps) {
                 <circle cx="12" cy="12" r="10" />
               )}
             </svg>
-            <span style={{ color: textColor, fontSize: textSize }}>{item.text}</span>
+            <span style={{ color: textColor, fontSize: textSize, fontFamily: textFont, fontWeight: textWeight }}>{item.text}</span>
           </li>
         ))}
       </ul>
@@ -1925,13 +1938,13 @@ function ChecklistElement({ el }: ElementComponentProps) {
 }
 
 function GalleryElement({ el }: ElementComponentProps) {
-  const { title, titleColor, titleSize, titleWeight, images = [], columns = 3, lightbox, captionColor = "#ffffff", captionSize = "14px", captionWeight } = el.content;
+  const { title, titleColor, titleSize, titleWeight, titleFont, images = [], columns = 3, lightbox, captionColor = "#ffffff", captionSize = "14px", captionWeight, captionFont } = el.content;
   const styles = applyStyles(el);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
   return (
     <div style={styles}>
-      {title && <h2 className="text-center mb-8" style={{ color: titleColor || captionColor, fontSize: titleSize || "24px", fontWeight: titleWeight || "700" }}>{title}</h2>}
+      {title && <h2 className="text-center mb-8" style={{ color: titleColor || captionColor, fontSize: titleSize || "24px", fontWeight: titleWeight || "700", fontFamily: titleFont }}>{title}</h2>}
       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${columns > 2 ? "250px" : "200px"}, 1fr))` }}>
         {images.map((img: any, i: number) => (
           <div
@@ -1946,7 +1959,7 @@ function GalleryElement({ el }: ElementComponentProps) {
             />
             {img.caption && (
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                <p style={{ color: captionColor, fontSize: captionSize, fontWeight: captionWeight || "400" }}>{img.caption}</p>
+                <p style={{ color: captionColor, fontSize: captionSize, fontWeight: captionWeight || "400", fontFamily: captionFont }}>{img.caption}</p>
               </div>
             )}
           </div>
@@ -2081,7 +2094,7 @@ function LottieElement({ el }: ElementComponentProps) {
 }
 
 function StarRatingElement({ el }: ElementComponentProps) {
-  const { title, rating = 5, scale = 5, starColor = "#f59e0b", emptyColor = "#374151", showValue, size = "24px", align = "center", titleColor = "#94a3b8", titleSize = "14px", titleWeight = "500" } = el.content;
+  const { title, rating = 5, scale = 5, starColor = "#f59e0b", emptyColor = "#374151", showValue, size = "24px", align = "center", titleColor = "#94a3b8", titleSize = "14px", titleWeight = "500", titleFont } = el.content;
   const styles = applyStyles(el);
   const fullStars = Math.floor(rating);
   const hasHalf = rating - fullStars >= 0.25 && rating - fullStars < 0.75;
@@ -2089,7 +2102,7 @@ function StarRatingElement({ el }: ElementComponentProps) {
 
   return (
     <div style={{ ...styles, textAlign: align as any }}>
-      {title && <p className="mb-2" style={{ color: titleColor, fontSize: titleSize, fontWeight: titleWeight }}>{title}</p>}
+      {title && <p className="mb-2" style={{ color: titleColor, fontSize: titleSize, fontWeight: titleWeight, fontFamily: titleFont }}>{title}</p>}
       <div className="inline-flex items-center gap-1">
         {Array.from({ length: scale }).map((_, i) => {
           const isFull = i < Math.floor(roundedRating);
@@ -2117,7 +2130,7 @@ function StarRatingElement({ el }: ElementComponentProps) {
 }
 
 function SearchElement({ el }: ElementComponentProps) {
-  const { placeholder = "Cari...", buttonText = "Cari", buttonIcon, skin = "classic", backgroundColor, textColor, borderColor, buttonColor, buttonTextColor } = el.content;
+  const { placeholder = "Cari...", buttonText = "Cari", buttonIcon, skin = "classic", backgroundColor, textColor, textFont, textSize, textWeight, borderColor, buttonColor, buttonTextColor, buttonFont, buttonTextSize, buttonWeight } = el.content;
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -2138,12 +2151,15 @@ function SearchElement({ el }: ElementComponentProps) {
           backgroundColor: backgroundColor || "rgba(255,255,255,0.05)",
           color: textColor || "#ffffff",
           border: `1px solid ${borderColor || "rgba(255,255,255,0.1)"}`,
+          fontFamily: textFont,
+          fontSize: textSize,
+          fontWeight: textWeight,
         }}
       />
       <button
         type="submit"
         className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-90 flex items-center gap-2"
-        style={{ backgroundColor: buttonColor || "#22c55e", color: buttonTextColor || "#ffffff" }}
+        style={{ backgroundColor: buttonColor || "#22c55e", color: buttonTextColor || "#ffffff", fontFamily: buttonFont, fontSize: buttonTextSize, fontWeight: buttonWeight }}
       >
         {buttonIcon && (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2213,7 +2229,7 @@ function FloatingButtonsElement({ el }: ElementComponentProps) {
 }
 
 function BreadcrumbsElement({ el }: ElementComponentProps) {
-  const { items = [], separator = "/", textColor = "#94a3b8", activeColor = "#ffffff", separatorColor = "#4b5563", textSize = "14px" } = el.content;
+  const { items = [], separator = "/", textColor = "#94a3b8", activeColor = "#ffffff", separatorColor = "#4b5563", textSize = "14px", fontFamily, fontWeight } = el.content;
   const styles = applyStyles(el);
 
   return (
@@ -2225,11 +2241,11 @@ function BreadcrumbsElement({ el }: ElementComponentProps) {
               <span className="text-xs" style={{ color: separatorColor }}>{separator}</span>
             )}
             {item.href && i < items.length - 1 ? (
-              <a href={item.href} className="transition-colors hover:opacity-80" style={{ color: textColor, fontSize: textSize }}>
+              <a href={item.href} className="transition-colors hover:opacity-80" style={{ color: textColor, fontSize: textSize, fontFamily, fontWeight }}>
                 {item.label}
               </a>
             ) : (
-              <span style={{ color: activeColor, fontSize: textSize, fontWeight: 500 }}>
+              <span style={{ color: activeColor, fontSize: textSize, fontFamily, fontWeight: fontWeight || 500 }}>
                 {item.label}
               </span>
             )}
@@ -2336,6 +2352,8 @@ function OffCanvasElement({ el }: ElementComponentProps) {
     panelTextColor = "#ffffff",
     panelLinkColor = "#94a3b8",
     panelLinkHoverColor = "#22c55e",
+    panelTextFont, panelTextSize, panelTextWeight,
+    panelLinkFont, panelLinkSize, panelLinkWeight,
     items = [],
   } = el.content;
   const [open, setOpen] = useState(false);
@@ -2390,7 +2408,7 @@ function OffCanvasElement({ el }: ElementComponentProps) {
         <div className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h3 style={{ color: panelTextColor, fontSize: "18px", fontWeight: 700 }}>{title}</h3>
+            <h3 style={{ color: panelTextColor, fontFamily: panelTextFont, fontSize: panelTextSize || "18px", fontWeight: panelTextWeight || 700 }}>{title}</h3>
             {closeButton && (
               <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: panelTextColor }}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2407,7 +2425,7 @@ function OffCanvasElement({ el }: ElementComponentProps) {
                 key={i}
                 href={item.href || "#"}
                 className="block px-4 py-3 rounded-xl transition-all text-sm"
-                style={{ color: panelLinkColor }}
+                style={{ color: panelLinkColor, fontFamily: panelLinkFont, fontSize: panelLinkSize, fontWeight: panelLinkWeight }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = panelLinkHoverColor; e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = panelLinkColor; e.currentTarget.style.backgroundColor = "transparent"; }}
               >
@@ -2436,11 +2454,14 @@ function SlidesElement({ el }: ElementComponentProps) {
     dotActiveColor = "#22c55e",
     slideTitleColor = "#ffffff",
     slideTitleSize = "48px",
+    slideTitleFont, slideTitleWeight,
     slideDescColor = "rgba(255,255,255,0.8)",
     slideDescSize = "18px",
+    slideDescFont, slideDescWeight,
     buttonBg = "#22c55e",
     buttonColor = "#ffffff",
     buttonText = "Pelajari",
+    buttonFont, buttonSize, buttonWeight,
   } = el.content;
   const [activeIdx, setActiveIdx] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -2489,19 +2510,19 @@ function SlidesElement({ el }: ElementComponentProps) {
           <div className="absolute inset-0 flex items-center justify-center p-8">
             <div className="text-center max-w-2xl">
               {slide.title && (
-                <h2 className="font-bold mb-4" style={{ color: slideTitleColor, fontSize: slideTitleSize }}>
+                <h2 className="font-bold mb-4" style={{ color: slideTitleColor, fontSize: slideTitleSize, fontFamily: slideTitleFont, fontWeight: slideTitleWeight }}>
                   {slide.title}
                 </h2>
               )}
               {slide.description && (
-                <p className="mb-8" style={{ color: slideDescColor, fontSize: slideDescSize }}>
+                <p className="mb-8" style={{ color: slideDescColor, fontSize: slideDescSize, fontFamily: slideDescFont, fontWeight: slideDescWeight }}>
                   {slide.description}
                 </p>
               )}
               <a
                 href={slide.buttonLink || "#"}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
-                style={{ backgroundColor: buttonBg, color: buttonColor }}
+                style={{ backgroundColor: buttonBg, color: buttonColor, fontFamily: buttonFont, fontSize: buttonSize, fontWeight: buttonWeight }}
               >
                 {slide.buttonText || buttonText}
               </a>
@@ -2573,8 +2594,8 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
     slideBorder = "rgba(255,255,255,0.1)",
     slideBorderRadius = "12px",
     title, titleColor, titleSize, titleWeight,
-    cardTitleColor, cardTitleSize, cardTitleWeight,
-    cardDescColor, cardDescSize,
+    cardTitleColor, cardTitleSize, cardTitleWeight, cardTitleFont,
+    cardDescColor, cardDescSize, cardDescFont, cardDescWeight,
   } = el.content;
   const [activeIdx, setActiveIdx] = useState(0);
   const elStyles = applyStyles(el);
@@ -2598,7 +2619,7 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
 
   return (
     <div style={elStyles}>
-      {title && <h2 className="text-center mb-8" style={{ color: titleColor || "#ffffff", fontSize: titleSize || "30px", fontWeight: titleWeight || "700" }}>{title}</h2>}
+      {title && <h2 className="text-center mb-8" style={{ color: titleColor || "#ffffff", fontSize: titleSize || "30px", fontWeight: titleWeight || "700", fontFamily: cardTitleFont }}>{title}</h2>}
       <div className="relative">
       <div className="overflow-hidden">
         <div
@@ -2627,10 +2648,10 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
                 />
               )}
               {slide.title && (
-                <h3 className="mb-2" style={{ color: cardTitleColor || "#ffffff", fontSize: cardTitleSize || "16px", fontWeight: cardTitleWeight || "700" }}>{slide.title}</h3>
+                <h3 className="mb-2" style={{ color: cardTitleColor || "#ffffff", fontSize: cardTitleSize || "16px", fontWeight: cardTitleWeight || "700", fontFamily: cardTitleFont }}>{slide.title}</h3>
               )}
               {slide.description && (
-                <p style={{ color: cardDescColor || "#94a3b8", fontSize: cardDescSize || "14px" }}>{slide.description}</p>
+                <p style={{ color: cardDescColor || "#94a3b8", fontSize: cardDescSize || "14px", fontFamily: cardDescFont, fontWeight: cardDescWeight }}>{slide.description}</p>
               )}
             </div>
           ))}
@@ -2688,12 +2709,15 @@ function VideoPlaylistElement({ el }: ElementComponentProps) {
     title = "Video Playlist",
     titleColor = "#ffffff",
     titleSize = "20px",
+    titleWeight,
     playlistBg = "#0f172a",
     playlistItemBg = "rgba(255,255,255,0.03)",
     playlistItemHoverBg = "rgba(255,255,255,0.08)",
     playlistItemActiveBg = "rgba(34,197,94,0.1)",
     playlistTitleColor = "#ffffff",
+    playlistTitleFont, playlistTitleSize, playlistTitleWeight,
     playlistDescColor = "#94a3b8",
+    playlistDescFont, playlistDescSize, playlistDescWeight,
     thumbnailWidth = "120px",
     playerBg = "#000000",
     accentColor = "#22c55e",
@@ -2735,7 +2759,7 @@ function VideoPlaylistElement({ el }: ElementComponentProps) {
       <div className="w-full md:w-72 overflow-y-auto" style={{ maxHeight: "400px", backgroundColor: playlistBg }}>
         {title && (
           <div className="px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
-            <h3 style={{ color: titleColor, fontSize: titleSize, fontWeight: 700 }}>{title}</h3>
+            <h3 style={{ color: titleColor, fontSize: titleSize, fontFamily: playlistTitleFont, fontWeight: titleWeight || 700 }}>{title}</h3>
           </div>
         )}
         <div className="p-2 space-y-1">
@@ -2764,9 +2788,9 @@ function VideoPlaylistElement({ el }: ElementComponentProps) {
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate" style={{ color: playlistTitleColor }}>{video.title || `Video ${i + 1}`}</p>
+                <p className="text-sm font-medium truncate" style={{ color: playlistTitleColor, fontFamily: playlistTitleFont, fontSize: playlistTitleSize, fontWeight: playlistTitleWeight }}>{video.title || `Video ${i + 1}`}</p>
                 {video.description && (
-                  <p className="text-xs mt-0.5 line-clamp-2" style={{ color: playlistDescColor }}>{video.description}</p>
+                  <p className="text-xs mt-0.5 line-clamp-2" style={{ color: playlistDescColor, fontFamily: playlistDescFont, fontSize: playlistDescSize, fontWeight: playlistDescWeight }}>{video.description}</p>
                 )}
                 {video.duration && (
                   <p className="text-[10px] mt-1" style={{ color: accentColor }}>{video.duration}</p>
@@ -2786,10 +2810,12 @@ function TableOfContentsElement({ el }: ElementComponentProps) {
     markers = "numbers",
     titleColor = "#ffffff",
     titleSize = "18px",
+    titleFont, titleWeight,
     linkColor = "#94a3b8",
     linkHoverColor = "#22c55e",
     linkActiveColor = "#22c55e",
     linkSize = "14px",
+    linkFont, linkWeight,
     markerColor = "#22c55e",
     backgroundColor = "rgba(255,255,255,0.03)",
     borderColor = "rgba(255,255,255,0.1)",
@@ -2815,7 +2841,7 @@ function TableOfContentsElement({ el }: ElementComponentProps) {
         className="flex items-center justify-between px-5 py-3 cursor-pointer select-none"
         onClick={() => minimizeBox && setMinimized(!minimized)}
       >
-        <h3 style={{ color: titleColor, fontSize: titleSize, fontWeight: 700 }}>{title}</h3>
+        <h3 style={{ color: titleColor, fontSize: titleSize, fontFamily: titleFont, fontWeight: titleWeight || 700 }}>{title}</h3>
         {minimizeBox && (
           <svg
             className="w-4 h-4 transition-transform duration-200"
@@ -2841,6 +2867,8 @@ function TableOfContentsElement({ el }: ElementComponentProps) {
                 style={{
                   color: activeHref === item.href ? linkActiveColor : linkColor,
                   fontSize: linkSize,
+                  fontFamily: linkFont,
+                  fontWeight: linkWeight,
                   paddingLeft: `${(item.level || 2) * 12}px`,
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = linkHoverColor; }}
@@ -2877,6 +2905,7 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
     title = "Facebook",
     titleColor = "#ffffff",
     titleSize = "18px",
+    titleFont, titleWeight,
   } = el.content;
   const styles = applyStyles(el);
 
@@ -2904,7 +2933,7 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
   return (
     <div style={styles}>
       {title && (
-        <h3 className="mb-4 font-bold" style={{ color: titleColor, fontSize: titleSize }}>{title}</h3>
+        <h3 className="mb-4 font-bold" style={{ color: titleColor, fontSize: titleSize, fontFamily: titleFont, fontWeight: titleWeight }}>{title}</h3>
       )}
       <div
         className="mx-auto rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6"
