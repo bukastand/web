@@ -28,8 +28,23 @@ export function createDefaultSection(): BuilderSection {
   };
 }
 
-export function createDefaultPage(title = "Halaman Baru"): BuilderPage {
-  const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+/** Generate a unique slug by appending a number if it already exists */
+export function getUniqueSlug(baseSlug: string, existingSlugs: string[]): string {
+  let slug = baseSlug;
+  let counter = 1;
+  while (existingSlugs.includes(slug)) {
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  return slug;
+}
+
+export function createDefaultPage(title = "Halaman Baru", existingSlugs?: string[]): BuilderPage {
+  let slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  if (slug === "") slug = "halaman-baru";
+  if (existingSlugs && existingSlugs.length > 0) {
+    slug = getUniqueSlug(slug, existingSlugs);
+  }
   return {
     id: genId("page"),
     title,

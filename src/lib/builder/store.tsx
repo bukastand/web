@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState, type ReactNode } from "react";
 import type { BuilderState, BuilderAction, BuilderPage } from "./types";
-import { createDefaultPage, createDefaultSection, genId } from "./defaults";
+import { createDefaultPage, createDefaultSection, getUniqueSlug, genId } from "./defaults";
 import { useAuth } from "@/components/auth/AuthProvider";
 import * as supabasePages from "@/lib/supabase/pages";
 import * as supabasePublished from "@/lib/supabase/published";
@@ -105,7 +105,10 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       return updatePage((p) => ({ ...p, title: action.title }));
 
     case "UPDATE_PAGE_SLUG":
-      return updatePage((p) => ({ ...p, slug: action.slug }));
+      return updatePage((p) => {
+        const others = state.pages.filter((pg) => pg.id !== p.id).map((pg) => pg.slug);
+        return { ...p, slug: getUniqueSlug(action.slug, others) };
+      });
 
     case "ADD_SECTION": {
       const section = createDefaultSection();
@@ -576,9 +579,10 @@ export function BuilderProvider({ children }: { children: ReactNode }) {
   }, [dispatch]);
 
   const createNewPage = useCallback((title?: string) => {
-    const page = createDefaultPage(title);
+    const existingSlugs = state.pages.map((p) => p.slug);
+    const page = createDefaultPage(title, existingSlugs);
     wrappedDispatch({ type: "ADD_PAGE", page });
-  }, [wrappedDispatch]);
+  }, [wrappedDispatch, state.pages]);
 
   return (
     <BuilderContext.Provider value={{ state, dispatch: wrappedDispatch, currentPage, createNewPage, undo, redo, canUndo, canRedo }}>

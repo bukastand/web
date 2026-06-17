@@ -2910,26 +2910,56 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
   } = el.content;
   const styles = applyStyles(el);
 
-  const embedTypes: Record<string, { label: string; icon: React.ReactNode }> = {
-    "facebook-page": {
-      label: "Facebook Page",
-      icon: <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />,
-    },
-    "facebook-post": {
-      label: "Facebook Post",
-      icon: <path d="M19 2H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4a2 2 0 002-2V4a2 2 0 00-2-2zm-7 3.3c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7S9.3 9.49 9.3 8s1.21-2.7 2.7-2.7zM18 16H6v-.9c0-2 4-3.1 6-3.1s6 1.1 6 3.1v.9z" />,
-    },
-    "facebook-comments": {
-      label: "Facebook Comments",
-      icon: <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" />,
-    },
-    "facebook-button": {
-      label: "Facebook Button",
-      icon: <path d="M14 9V5a3 3 0 00-3-3H5a3 3 0 00-3 3v14a3 3 0 003 3h6a3 3 0 003-3v-4" />,
-    },
+  // Build Facebook embed iframe URL based on type
+  const getEmbedUrl = (): string => {
+    const encodedUrl = encodeURIComponent(url);
+    const w = parseInt(width) || 340;
+    const h = parseInt(height) || 500;
+
+    switch (type) {
+      case "facebook-page":
+        return `https://www.facebook.com/plugins/page.php?href=${encodedUrl}&tabs=${layout}&width=${w}&height=${h}&small_header=${smallHeader ? 'true' : 'false'}&hide_cover=${hideCover ? 'true' : 'false'}&show_facepile=${showFacepile ? 'true' : 'false'}&adapt_container_width=true`;
+      case "facebook-post":
+        return `https://www.facebook.com/plugins/post.php?href=${encodedUrl}&width=${w}&show_text=true`;
+      case "facebook-comments":
+        return `https://www.facebook.com/plugins/comments.php?href=${encodedUrl}&width=${w}`;
+      case "facebook-button":
+        return `https://www.facebook.com/plugins/like.php?href=${encodedUrl}&layout=standard&size=small&share=false&width=${w}`;
+      default:
+        return `https://www.facebook.com/plugins/page.php?href=${encodedUrl}&tabs=${layout}&width=${w}&height=${h}`;
+    }
   };
 
-  const currentType = embedTypes[type] || embedTypes["facebook-page"];
+  const embedUrl = url && url !== "#" ? getEmbedUrl() : "";
+
+  // If no valid URL, show placeholder
+  if (!embedUrl) {
+    return (
+      <div style={styles}>
+        {title && (
+          <h3 className="mb-4 font-bold" style={{ color: titleColor, fontSize: titleSize, fontFamily: titleFont, fontWeight: titleWeight }}>{title}</h3>
+        )}
+        <div
+          className="mx-auto rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6"
+          style={{
+            width,
+            minHeight: height,
+            backgroundColor: colorScheme === "dark" ? "#1e293b" : "#ffffff",
+            border: `1px solid ${colorScheme === "dark" ? "rgba(255,255,255,0.1)" : "#e2e8f0"}`,
+            borderRadius: "12px",
+          }}
+        >
+          <div className="text-center mb-4">
+            <svg className="w-12 h-12 mx-auto mb-3" fill="#1877F2" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+            <p className="text-sm font-semibold mt-3" style={{ color: colorScheme === "dark" ? "#ffffff" : "#1e293b" }}>Social Embed</p>
+            <p className="text-xs mt-1" style={{ color: colorScheme === "dark" ? "#94a3b8" : "#64748b" }}>Masukkan URL Facebook untuk menampilkan embed</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles}>
@@ -2937,63 +2967,26 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
         <h3 className="mb-4 font-bold" style={{ color: titleColor, fontSize: titleSize, fontFamily: titleFont, fontWeight: titleWeight }}>{title}</h3>
       )}
       <div
-        className="mx-auto rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6"
+        className="mx-auto overflow-hidden rounded-2xl"
         style={{
           width,
-          minHeight: height,
-          backgroundColor: colorScheme === "dark" ? "#1e293b" : "#ffffff",
+          maxWidth: "100%",
           border: `1px solid ${colorScheme === "dark" ? "rgba(255,255,255,0.1)" : "#e2e8f0"}`,
           borderRadius: "12px",
         }}
       >
-        <div className="text-center mb-4">
-          <svg
-            className="w-12 h-12 mx-auto mb-3"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            style={{ color: "#1877F2" }}
-          >
-            {currentType.icon}
-          </svg>
-          <p className="text-sm font-semibold" style={{ color: colorScheme === "dark" ? "#ffffff" : "#1e293b" }}>
-            {currentType.label}
-          </p>
-          <p className="text-xs mt-1" style={{ color: colorScheme === "dark" ? "#94a3b8" : "#64748b" }}>
-            {url}
-          </p>
-          {!hideCover && type === "facebook-page" && (
-            <div
-              className="mt-4 rounded-xl w-full"
-              style={{
-                height: "130px",
-                backgroundColor: "#1877F2",
-                opacity: 0.3,
-              }}
-            />
-          )}
-          {showFacepile && (
-            <div className="flex justify-center -space-x-2 mt-3">
-              {[1, 2, 3, 4, 5].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-bold"
-                  style={{
-                    backgroundColor: ["#1877F2", "#e4405f", "#1da1f2", "#0a66c2", "#fffc00"][i],
-                    borderColor: colorScheme === "dark" ? "#1e293b" : "#ffffff",
-                    color: "#ffffff",
-                  }}
-                >
-                  {["F", "I", "T", "L", "S"][i]}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {smallHeader && (
-          <p className="text-[10px]" style={{ color: colorScheme === "dark" ? "#64748b" : "#94a3b8" }}>
-            Small header mode
-          </p>
-        )}
+        <iframe
+          src={embedUrl}
+          width="100%"
+          height={height}
+          style={{ border: "none", overflow: "hidden", display: "block" }}
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          allowFullScreen
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          scrolling="no"
+          title={`Facebook ${type}`}
+        />
       </div>
     </div>
   );
