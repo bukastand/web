@@ -376,7 +376,7 @@ function PricingElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-7xl mx-auto px-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto px-4">
         {items.map((item: any, i: number) => (
           <div
             key={i}
@@ -1319,6 +1319,9 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     beforeText = "",
     highlightedText = "",
     afterText = "",
+    beforeTextColor, beforeTextSize, beforeTextWeight,
+    highlightTextColor, highlightTextSize, highlightTextWeight,
+    afterTextColor, afterTextSize, afterTextWeight,
     style: headlineStyle = "highlight",
     animationType = "underline",
     tag = "h2",
@@ -1327,7 +1330,7 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
   const styles = applyStyles(el);
   const [revealed, setRevealed] = useState(false);
   const [cyclingIdx, setCyclingIdx] = useState(0);
-  const [animState, setAnimState] = useState<"entering" | "visible" | "leaving">("entering");
+  const [animState, setAnimState] = useState<"visible" | "leaving">("visible");
 
   const texts = rotatingTexts.length > 0 ? rotatingTexts : highlightedText ? [highlightedText] : [""];
 
@@ -1340,29 +1343,45 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
   // Cycle through rotating texts
   useEffect(() => {
     if (headlineStyle !== "rotating" || texts.length <= 1) return;
-    
+
     const cycleTime = 3000; // ms per text
-    const animDuration = 800; // ms for slide in/out
-    
+    const fadeDuration = 400; // ms for crossfade
+
+    // Start first text visible
+    setAnimState("visible");
+
     const interval = setInterval(() => {
       setAnimState("leaving");
       setTimeout(() => {
         setCyclingIdx((prev) => (prev + 1) % texts.length);
-        setAnimState("entering");
-        setTimeout(() => setAnimState("visible"), 50);
-      }, animDuration);
+        setAnimState("visible");
+      }, fadeDuration);
     }, cycleTime);
-    
-    // Start first text visible
-    setAnimState("visible");
-    
+
     return () => clearInterval(interval);
   }, [headlineStyle, texts.length]);
+
+  // ── Style for each text part ──
+  const beforeStyle: React.CSSProperties = {
+    color: beforeTextColor || styles.color,
+    fontSize: beforeTextSize || styles.fontSize,
+    fontWeight: beforeTextWeight || styles.fontWeight,
+  };
+  const highlightStyle: React.CSSProperties = {
+    color: highlightTextColor || styles.color || "#22c55e",
+    fontSize: highlightTextSize || styles.fontSize,
+    fontWeight: highlightTextWeight || styles.fontWeight,
+  };
+  const afterStyle: React.CSSProperties = {
+    color: afterTextColor || styles.color,
+    fontSize: afterTextSize || styles.fontSize,
+    fontWeight: afterTextWeight || styles.fontWeight,
+  };
 
   // ── Highlight style: animated background reveal ──
   const renderHighlight = () => (
     <span className="relative inline-block">
-      <span className="relative z-10">{highlightedText}</span>
+      <span className="relative z-10" style={highlightStyle}>{highlightedText}</span>
       {animationType === "curly" ? (
         <svg
           className="absolute -bottom-1 left-0 w-full pointer-events-none"
@@ -1373,7 +1392,7 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
           <path
             d="M5 15 Q 50 0, 100 15 Q 150 30, 195 10"
             fill="none"
-            stroke={styles.color || "#22c55e"}
+            stroke={highlightStyle.color || "#22c55e"}
             strokeWidth="3"
             strokeLinecap="round"
             className={`${revealed ? "animate-headline-curly" : ""}`}
@@ -1383,7 +1402,7 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
         <span
           className={`absolute left-1/2 -translate-x-1/2 opacity-30 rounded-full ${revealed ? "animate-headline-pop" : ""}`}
           style={{
-            backgroundColor: styles.color || "#22c55e",
+            backgroundColor: highlightStyle.color || "#22c55e",
             width: "105%",
             height: "1.3em",
             bottom: "-0.15em",
@@ -1394,7 +1413,7 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
         <span
           className={`absolute bottom-0 left-0 h-1 rounded-full ${revealed ? "animate-headline-reveal" : ""}`}
           style={{
-            backgroundColor: styles.color || "#22c55e",
+            backgroundColor: highlightStyle.color || "#22c55e",
             width: revealed ? "100%" : "0%",
           }}
         />
@@ -1402,27 +1421,23 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     </span>
   );
 
-  // ── Rotating style: cycle through texts ──
+  // ── Rotating style: crossfade cycle through texts ──
   const renderRotating = () => {
     if (texts.length === 0 || (texts.length === 1 && !texts[0])) {
-      return <span>{highlightedText}</span>;
+      return <span style={highlightStyle}>{highlightedText}</span>;
     }
-    
+
     const currentText = texts[cyclingIdx];
-    
+
     return (
-      <span className="relative inline-flex overflow-hidden" style={{ height: "1.2em", verticalAlign: "bottom" }}>
+      <span className="relative inline-block" style={{ minWidth: "1em" }}>
         <span
-          key={`${cyclingIdx}-${animState}`}
-          className={`${
-            animState === "entering"
-              ? "animate-text-fade-in"
-              : animState === "leaving"
-              ? "animate-text-slide-out"
-              : ""
-          }`}
+          key={cyclingIdx}
+          className="inline-block transition-all duration-500"
           style={{
-            color: styles.color || "#22c55e",
+            ...highlightStyle,
+            opacity: animState === "leaving" ? 0 : 1,
+            transform: animState === "leaving" ? "translateY(-4px)" : "translateY(0)",
           }}
         >
           {currentText}
@@ -1433,12 +1448,12 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
 
   const headlineContent = (
     <>
-      {beforeText && <span className="mr-2">{beforeText}</span>}
+      {beforeText && <span className="mr-2" style={beforeStyle}>{beforeText}</span>}
       {headlineStyle === "highlight"
         ? renderHighlight()
         : renderRotating()
       }
-      {afterText && <span className="ml-2">{afterText}</span>}
+      {afterText && <span className="ml-2" style={afterStyle}>{afterText}</span>}
     </>
   );
 

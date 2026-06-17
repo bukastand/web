@@ -155,8 +155,27 @@ export function AnimatedHeadlineEditor({ element, updateContent }: EditorProps) 
   return (
     <div>
       <TextInput label="Teks Sebelum" value={c.beforeText} onChange={(v) => updateContent("beforeText", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Sebelum</p>
+      <ColorPicker value={c.beforeTextColor || "#ffffff"} onChange={(v) => updateContent("beforeTextColor", v)} label="Warna" />
+      <TextInput label="Ukuran" value={c.beforeTextSize} onChange={(v) => updateContent("beforeTextSize", v)} />
+      <TextInput label="Tebal" value={c.beforeTextWeight} onChange={(v) => updateContent("beforeTextWeight", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
       <TextInput label="Teks Highlight" value={c.highlightedText} onChange={(v) => updateContent("highlightedText", v)} />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Highlight</p>
+      <ColorPicker value={c.highlightTextColor || "#22c55e"} onChange={(v) => updateContent("highlightTextColor", v)} label="Warna" />
+      <TextInput label="Ukuran" value={c.highlightTextSize} onChange={(v) => updateContent("highlightTextSize", v)} />
+      <TextInput label="Tebal" value={c.highlightTextWeight} onChange={(v) => updateContent("highlightTextWeight", v)} />
+
+      <div className="h-px bg-white/10 my-3" />
       <TextInput label="Teks Setelah" value={c.afterText} onChange={(v) => updateContent("afterText", v)} />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Teks Setelah</p>
+      <ColorPicker value={c.afterTextColor || "#ffffff"} onChange={(v) => updateContent("afterTextColor", v)} label="Warna" />
+      <TextInput label="Ukuran" value={c.afterTextSize} onChange={(v) => updateContent("afterTextSize", v)} />
+      <TextInput label="Tebal" value={c.afterTextWeight} onChange={(v) => updateContent("afterTextWeight", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
       <SelectInput label="Style" value={c.style} onChange={(v) => updateContent("style", v)} options={["highlight", "rotating"]} />
       {c.style === "highlight" && (
         <SelectInput label="Animasi" value={c.animationType} onChange={(v) => updateContent("animationType", v)} options={["underline", "circle", "curly"]} />
