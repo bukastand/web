@@ -1162,9 +1162,15 @@ export function VideoPlaylistEditor({ element, updateContent, handleAddItem, han
   return (
     <div>
       <TextInput label="Judul Playlist" value={c.title} onChange={(v) => updateContent("title", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Playlist</p>
+      <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <FontFamilySelect label="Font" value={c.titleFont} onChange={(v) => updateContent("titleFont", v)} />
+      <FontSizeSlider value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <FontWeightSelect label="Tebal" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
       <ColorPicker value={c.playlistBg || "#0f172a"} onChange={(v) => updateContent("playlistBg", v)} label="Background Playlist" />
       <div className="h-px bg-white/10 my-3" />
-      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Video Playlist</p>
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Video Item</p>
       <ColorPicker value={c.playlistTitleColor || "#ffffff"} onChange={(v) => updateContent("playlistTitleColor", v)} label="Warna Judul Video" />
       <FontFamilySelect label="Font" value={c.playlistTitleFont} onChange={(v) => updateContent("playlistTitleFont", v)} />
       <FontSizeSlider value={c.playlistTitleSize} onChange={(v) => updateContent("playlistTitleSize", v)} />

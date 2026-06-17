@@ -2710,6 +2710,7 @@ function VideoPlaylistElement({ el }: ElementComponentProps) {
     titleColor = "#ffffff",
     titleSize = "20px",
     titleWeight,
+    titleFont,
     playlistBg = "#0f172a",
     playlistItemBg = "rgba(255,255,255,0.03)",
     playlistItemHoverBg = "rgba(255,255,255,0.08)",
@@ -2759,7 +2760,7 @@ function VideoPlaylistElement({ el }: ElementComponentProps) {
       <div className="w-full md:w-72 overflow-y-auto" style={{ maxHeight: "400px", backgroundColor: playlistBg }}>
         {title && (
           <div className="px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
-            <h3 style={{ color: titleColor, fontSize: titleSize, fontFamily: playlistTitleFont, fontWeight: titleWeight || 700 }}>{title}</h3>
+            <h3 style={{ color: titleColor, fontSize: titleSize, fontFamily: titleFont, fontWeight: titleWeight || 700 }}>{title}</h3>
           </div>
         )}
         <div className="p-2 space-y-1">
