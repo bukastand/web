@@ -31,9 +31,14 @@ function AIBuilderPageContent() {
   const [mounted, setMounted] = useState(false);
   // Wait for client-side hydration to complete before acting on search params
   useEffect(() => { setMounted(true); }, []);
+  // Track page load status
+  const [pageLoadStatus, setPageLoadStatus] = useState<string>("idle");
 
   const searchParams = useSearchParams();
   const pageIdParam = searchParams.get("pageId");
+
+  // Visual indicator: cari halaman dari state.pages (shared dari parent BuilderProvider)
+  const loadedPage = mounted && pageIdParam ? state.pages.find(p => p.id === pageIdParam) : undefined;
 
   const [aiConfigOpen, setAiConfigOpen] = useState(false);
   const [generatedSectionsJson, setGeneratedSectionsJson] = useState<string>("");
@@ -44,12 +49,18 @@ function AIBuilderPageContent() {
   // dan akan membuat halaman baru otomatis saat hasil generate di-save.
   useEffect(() => {
     if (!authLoading && user && mounted && pageIdParam) {
-      const targetPage = state.pages.find(p => p.id === pageIdParam);
-      if (targetPage) {
+      const found = state.pages.find(p => p.id === pageIdParam);
+      if (found) {
+        console.log(`[AI Builder] Loading page: "${found.title}" (${pageIdParam})`);
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
+        setPageLoadStatus("loaded");
       } else if (state.pages.length > 0) {
+        console.log(`[AI Builder] Page ${pageIdParam} not found in ${state.pages.length} pages`);
         // Page not found — redirect ke daftar proyek
         router.replace("/builder/pages");
+      } else {
+        console.log(`[AI Builder] Pages not loaded yet (state.pages is empty), waiting...`);
+        setPageLoadStatus("waiting_for_pages");
       }
     }
   }, [pageIdParam, authLoading, user, mounted, state.pages, dispatch, router]);
@@ -117,19 +128,39 @@ function AIBuilderPageContent() {
     <div className="h-screen bg-[#0f172a] flex flex-col overflow-hidden">
       {/* Header */}
       <header className="h-14 flex items-center justify-between px-4 bg-[#0f172a] border-b border-white/10 flex-shrink-0 z-10">
-        <div className="flex items-center gap-3">
-          <Link href="/builder" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors group">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/builder" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors group flex-shrink-0">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             <span className="text-xs font-bold tracking-wider text-[#22c55e] group-hover:text-[#22c55e]/80">PAGODASTUDIO</span>
           </Link>
-          <div className="w-px h-5 bg-white/10" />
-          <h1 className="text-sm font-semibold text-white">
-            <span className="text-purple-400">AI</span> Website Builder
-          </h1>
+          <div className="w-px h-5 bg-white/10 flex-shrink-0" />
+          <div className="flex items-center gap-2 min-w-0">
+            <h1 className="text-sm font-semibold text-white flex-shrink-0">
+              <span className="text-purple-400">AI</span> Website Builder
+            </h1>
+            {(mounted && pageIdParam && pageLoadStatus === "waiting_for_pages") && (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+                <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                <span className="text-[9px] text-yellow-400 whitespace-nowrap">Memuat proyek...</span>
+              </div>
+            )}
+            {loadedPage && (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 min-w-0">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="text-[9px] text-emerald-400 truncate max-w-[120px]">{loadedPage.title}</span>
+              </div>
+            )}
+            {(!loadedPage && mounted && pageIdParam && pageLoadStatus !== "waiting_for_pages") && (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-500/10 border border-gray-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                <span className="text-[9px] text-gray-400 whitespace-nowrap">Proyek baru</span>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => setAiConfigOpen(!aiConfigOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
