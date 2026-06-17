@@ -15,8 +15,6 @@ function MobileMenu({
   publishedUrl,
   handlePublish,
   handleUnpublish,
-  onOpenSectionAI,
-  onOpenWebsiteAI,
 }: {
   currentPage: any;
   signOut: () => void;
@@ -25,8 +23,6 @@ function MobileMenu({
   publishedUrl: string;
   handlePublish: () => void;
   handleUnpublish: () => void;
-  onOpenSectionAI?: () => void;
-  onOpenWebsiteAI?: () => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
   return (
@@ -127,8 +123,6 @@ export default function BuilderTopBar({
   onShowElements,
   onShowStyle,
   showStylePanel = false,
-  onOpenWebsiteAI,
-  onOpenSectionAI,
 }: {
   showSidebar: boolean;
   onToggleSidebar: () => void;
@@ -140,8 +134,6 @@ export default function BuilderTopBar({
   onShowElements?: () => void;
   onShowStyle?: () => void;
   showStylePanel?: boolean;
-  onOpenWebsiteAI?: () => void;
-  onOpenSectionAI?: () => void;
 }) {
   const { currentPage, dispatch, undo, redo, canUndo, canRedo } = useBuilder();
   const { user, signOut } = useAuth();
@@ -640,8 +632,7 @@ export default function BuilderTopBar({
           publishedUrl={publishedUrl}
           handlePublish={handlePublish}
           handleUnpublish={handleUnpublish}
-          onOpenSectionAI={onOpenSectionAI}
-          onOpenWebsiteAI={onOpenWebsiteAI}
+
         />
       )}
     </header>

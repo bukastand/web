@@ -3,12 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
-import { createElement, aiSectionToBuilder } from "@/lib/builder/defaults";
+import { createElement } from "@/lib/builder/defaults";
 import BuilderTopBar from "./BuilderTopBar";
 import ElementSidebar from "./ElementSidebar";
 import BuilderCanvas from "./BuilderCanvas";
 import StylePanel from "./StylePanel";
-import AIGeneratorModal from "./AIGeneratorModal";
 import type { ElementType } from "@/lib/builder/types";
 
 const SECTION_QUICK_COLORS = [
@@ -38,8 +37,6 @@ export default function BuilderEditor() {
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
-  const [aiGeneratorMode, setAiGeneratorMode] = useState<"section" | "website">("section");
 
   // Detect mobile screen size
   useEffect(() => {
@@ -197,14 +194,7 @@ export default function BuilderEditor() {
             onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
             isMobile={isMobile}
             showStylePanel={!!state.selectedElementId}
-            onOpenWebsiteAI={() => {
-              setAiGeneratorMode("website");
-              setAiGeneratorOpen(true);
-            }}
-            onOpenSectionAI={() => {
-              setAiGeneratorMode("section");
-              setAiGeneratorOpen(true);
-            }}
+
           />
         )}
         <div className="flex-1 flex overflow-hidden relative">
@@ -532,42 +522,6 @@ export default function BuilderEditor() {
             />
           </>
         )}
-
-        {/* AI Generator Modal */}
-        <AIGeneratorModal
-          isOpen={aiGeneratorOpen}
-          onClose={() => setAiGeneratorOpen(false)}
-          mode={aiGeneratorMode}
-          onApplySection={(sectionJson) => {
-            try {
-              const sectionData = JSON.parse(sectionJson);
-              const builderSection = aiSectionToBuilder(sectionData);
-              dispatch({
-                type: "ADD_TEMPLATE_SECTION",
-                pageId: currentPage.id,
-                section: builderSection,
-              });
-            } catch (e) {
-              console.warn("AI section apply failed:", e);
-            }
-          }}
-          onApplyWebsite={(sectionsJson) => {
-            try {
-              const sectionsData = JSON.parse(sectionsJson);
-              const sections = Array.isArray(sectionsData) ? sectionsData : [sectionsData];
-              const builderSections = sections.map((s: any) => aiSectionToBuilder(s));
-              for (const sec of builderSections) {
-                dispatch({
-                  type: "ADD_TEMPLATE_SECTION",
-                  pageId: currentPage.id,
-                  section: sec,
-                });
-              }
-            } catch (e) {
-              console.warn("AI website apply failed:", e);
-            }
-          }}
-        />
 
         {/* Mobile add section button (hanya saat belum ada section) */}
         {isMobile && currentPage.sections.length === 0 && (

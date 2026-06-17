@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { useBuilder } from "@/lib/builder/store";
 import { ElementRenderer } from "./elements/ElementRenderer";
-import AIPromptModal from "./AIPromptModal";
 import type { BuilderElement as BuilderElementType } from "@/lib/builder/types";
-import { getAIConfig } from "@/lib/ai";
 
 export default function BuilderElementComponent({
   element,
@@ -24,95 +22,6 @@ export default function BuilderElementComponent({
   totalElements: number;
 }) {
   const { dispatch, state } = useBuilder();
-  
-  // ── Ambil konteks section untuk AI ──
-  const sectionContext = useMemo(() => {
-    const page = state.pages.find(p => p.id === pageId);
-    if (!page) return undefined;
-    
-    const section = page.sections.find(s => s.id === sectionId);
-    if (!section) return undefined;
-    
-    // Kumpulkan deskripsi element lain di section yang sama (bukan element ini)
-    const otherElements: string[] = [];
-    for (const col of section.columns) {
-      for (const el of col.elements) {
-        if (el.id === element.id) continue;
-        const content = el.type === 'heading' ? el.content.text
-          : el.type === 'text' ? el.content.text
-          : el.type === 'button' ? el.content.text
-          : el.type === 'features' ? el.content.title
-          : el.type === 'testimonial' ? el.content.title
-          : el.type === 'cta' ? el.content.title
-          : el.type === 'pricing' ? el.content.title
-          : el.type === 'contactForm' ? el.content.title
-          : el.type === 'image' ? '(gambar)'
-          : el.type === 'video' ? '(video)'
-          : el.type === 'icon' ? `ikon: ${el.content.icon || ''}`
-          : el.type === 'stats' ? 'statistik'
-          : el.type === 'divider' ? '(pemisah)'
-          : el.type === 'spacer' ? '(spasi)'
-          : el.type === 'navbar' ? 'navigasi'
-          : el.type === 'footer' ? 'footer'
-          : el.type === 'maps' ? 'peta'
-          : el.type === 'carousel' ? 'carousel gambar'
-          : el.type === 'accordion' ? 'FAQ/accordion'
-          : el.type === 'team' ? 'tim'
-          : el.type === 'countdown' ? 'countdown'
-          : `${el.type}: ${JSON.stringify(el.content).substring(0, 60)}`;
-        otherElements.push(`${el.type}: "${content}"`);
-      }
-    }
-    
-    // Deteksi section type dari konten
-    const firstHeadings = section.columns
-      .flatMap(c => c.elements)
-      .filter(e => e.type === 'heading' || e.type === 'text')
-      .map(e => e.content.text || '')
-      .filter(Boolean);
-    
-    const sectionType = firstHeadings.length > 0
-      ? firstHeadings[0]
-      : section.columns.some(c => c.elements.some(e => e.type === 'navbar'))
-      ? 'Navigasi'
-      : section.columns.some(c => c.elements.some(e => e.type === 'footer'))
-      ? 'Footer'
-      : section.columns.some(c => c.elements.some(e => e.type === 'pricing'))
-      ? 'Pricing'
-      : section.columns.some(c => c.elements.some(e => e.type === 'testimonial'))
-      ? 'Testimonial'
-      : section.columns.some(c => c.elements.some(e => e.type === 'features'))
-      ? 'Layanan/Fitur'
-      : section.columns.some(c => c.elements.some(e => e.type === 'cta'))
-      ? 'CTA'
-      : section.columns.some(c => c.elements.some(e => e.type === 'contactForm'))
-      ? 'Kontak'
-      : section.columns.some(c => c.elements.some(e => e.type === 'heading'))
-      ? 'Hero'
-      : 'Section';
-    
-    const sectionStyles = [
-      section.styles?.backgroundColor && section.styles.backgroundColor !== 'transparent'
-        ? `background ${section.styles.backgroundColor}`
-        : '',
-      section.styles?.containerWidth
-        ? `lebar: ${section.styles.containerWidth}`
-        : '',
-    ].filter(Boolean).join(', ');
-    
-    const col = section.columns[columnIndex];
-    return {
-      sectionType,
-      sectionStyles: sectionStyles || undefined,
-      nearbyElements: otherElements.length > 0
-        ? otherElements.join('\n')
-        : '(tidak ada elemen lain di section ini)',
-      pageTitle: page.title,
-      pageDescription: page.slug ? `Website untuk ${page.title}` : undefined,
-      columnWidth: col?.width,
-      columnTotal: section.columns.length,
-    };
-  }, [state.pages, pageId, sectionId, element.id]);
   const isSelected = state.selectedElementId === element.id;
   const [inlineEditing, setInlineEditing] = useState(false);
   const isTouchDevice = typeof window !== "undefined" && 'ontouchstart' in window;
@@ -174,7 +83,6 @@ export default function BuilderElementComponent({
     setTimeout(() => setInlineEditing(false), 200);
   };
 
-  const [showAIModal, setShowAIModal] = useState(false);
   const isHidden = element.content.hidden === true;
 
   const handleToggleHidden = (e: React.MouseEvent) => {
@@ -251,27 +159,6 @@ export default function BuilderElementComponent({
           <div className="w-px h-3 bg-white/10" />
           <span className="text-[10px] text-gray-500 uppercase font-medium px-1">{element.type}</span>
           <div className="w-px h-3 bg-white/10" />
-          {/* AI button - only for text-based elements */}
-          {["heading", "text", "button"].includes(element.type) && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const aiConfig = getAIConfig();
-                if (!aiConfig) {
-                  // No API key configured — open AI modal in config mode
-                  setShowAIModal(true);
-                  return;
-                }
-                setShowAIModal(true);
-              }}
-              className="p-0.5 text-purple-400 hover:text-purple-300 transition-colors"
-              title="Tulis dengan AI"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-              </svg>
-            </button>
-          )}
           <div className="w-px h-3 bg-white/10" />
           {/* Edit button */}
           <button
@@ -344,36 +231,6 @@ export default function BuilderElementComponent({
             {isTouchDevice ? "Tap to edit" : "Double-click to edit"}
           </span>
         </div>
-      )}
-
-      {/* AI Prompt Modal — dengan FULL konteks halaman, section, style & layout */}
-      {showAIModal && (
-        <AIPromptModal
-          isOpen={showAIModal}
-          onClose={() => setShowAIModal(false)}
-          elementType={element.type}
-          currentContent={element.type === "heading" || element.type === "text" || element.type === "button"
-            ? element.content.text || ''
-            : ''
-          }
-          currentStyles={element.styles as Record<string, string>}
-          sectionContext={sectionContext}
-          onApply={(result) => {
-            dispatch({
-              type: "UPDATE_ELEMENT",
-              pageId,
-              sectionId,
-              columnIndex,
-              elementId: element.id,
-              content: result.content
-                ? element.type === "heading" || element.type === "text" || element.type === "button"
-                  ? { text: result.content }
-                  : { text: result.content }
-                : {},
-              styles: result.styles,
-            });
-          }}
-        />
       )}
 
       {/* Element content */}
