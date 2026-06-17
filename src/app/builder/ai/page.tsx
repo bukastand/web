@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { Suspense, useState, useCallback, useRef, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useBuilder } from "@/lib/builder/store";
 import { getAIConfig, getApiKeyUrl, type AIProvider } from "@/lib/ai";
@@ -10,6 +10,21 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 export default function AIBuilderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-2 border-[#22c55e] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-gray-500">Memuat...</p>
+        </div>
+      </div>
+    }>
+      <AIBuilderPageContent />
+    </Suspense>
+  );
+}
+
+function AIBuilderPageContent() {
   const { user, loading: authLoading } = useAuth();
   const { state, dispatch, currentPage, createNewPage } = useBuilder();
   const [pageCreated, setPageCreated] = useState(false);
