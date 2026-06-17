@@ -186,6 +186,17 @@ export function BlockquoteEditor({ element, updateContent }: EditorProps) {
       <TextArea label="Kutipan" value={c.quoteText} onChange={(v) => updateContent("quoteText", v)} />
       <TextInput label="Nama Author" value={c.authorName} onChange={(v) => updateContent("authorName", v)} />
       <SelectInput label="Skin" value={c.skin} onChange={(v) => updateContent("skin", v)} options={["border", "quotation", "boxed", "clean"]} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Kutipan</p>
+      <ColorPicker value={c.quoteTextColor || "#d1d5db"} onChange={(v) => updateContent("quoteTextColor", v)} label="Warna Kutipan" />
+      <TextInput label="Ukuran Kutipan" value={c.quoteTextSize} onChange={(v) => updateContent("quoteTextSize", v)} />
+      <SelectInput label="Font Style" value={c.quoteFontStyle || "italic"} onChange={(v) => updateContent("quoteFontStyle", v)} options={["italic", "normal", "oblique"]} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Author</p>
+      <ColorPicker value={c.authorNameColor || "#22c55e"} onChange={(v) => updateContent("authorNameColor", v)} label="Warna Author" />
+      <TextInput label="Ukuran Author" value={c.authorNameSize} onChange={(v) => updateContent("authorNameSize", v)} />
+      <TextInput label="Tebal Author" value={c.authorNameWeight} onChange={(v) => updateContent("authorNameWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
       <Checkbox label="Tampilkan Tweet Button" checked={!!c.tweetButton} onChange={(v) => updateContent("tweetButton", v)} />
       {c.tweetButton && <TextInput label="Label Tweet" value={c.tweetLabel} onChange={(v) => updateContent("tweetLabel", v)} />}
     </div>
@@ -307,7 +318,10 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
       <Section title="Front">
         <SelectInput label="Tipe Grafis" value={frontGraphic} onChange={(v) => updateContent("frontGraphic", v)} options={["icon", "image", "none"]} />
         {frontGraphic === "icon" && (
-          <IconPicker value={c.frontIcon || "star"} onChange={(v) => updateContent("frontIcon", v)} />
+          <>
+            <IconPicker value={c.frontIcon || "star"} onChange={(v) => updateContent("frontIcon", v)} />
+            <ColorPicker value={c.frontIconColor || "#22c55e"} onChange={(v) => updateContent("frontIconColor", v)} label="Warna Icon" />
+          </>
         )}
         {frontGraphic === "image" && (
           <div className="mb-3">
@@ -333,7 +347,15 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
           </div>
         )}
         <TextInput label="Judul Depan" value={c.frontTitle} onChange={(v) => updateContent("frontTitle", v)} />
+        <div className="h-px bg-white/10 my-2" />
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Depan</p>
+        <ColorPicker value={c.frontTitleColor || "#ffffff"} onChange={(v) => updateContent("frontTitleColor", v)} label="Warna Judul" />
+        <TextInput label="Ukuran Judul" value={c.frontTitleSize} onChange={(v) => updateContent("frontTitleSize", v)} />
+        <TextInput label="Tebal Judul" value={c.frontTitleWeight} onChange={(v) => updateContent("frontTitleWeight", v)} />
         <TextArea label="Deskripsi Depan" value={c.frontDescription} onChange={(v) => updateContent("frontDescription", v)} />
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Depan</p>
+        <ColorPicker value={c.frontDescColor || "#94a3b8"} onChange={(v) => updateContent("frontDescColor", v)} label="Warna Deskripsi" />
+        <TextInput label="Ukuran Deskripsi" value={c.frontDescSize} onChange={(v) => updateContent("frontDescSize", v)} />
         <ColorPicker value={c.frontBackground || "#1e293b"} onChange={(v) => updateContent("frontBackground", v)} label="Background Depan" />
       </Section>
       <Section title="Back">
@@ -359,10 +381,24 @@ export function FlipBoxEditor({ element, updateContent, userId }: EditorProps) {
           <input value={c.backImage || ""} onChange={(v) => updateContent("backImage", v.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="URL Gambar Belakang" />
         </div>
         <TextInput label="Judul Belakang" value={c.backTitle} onChange={(v) => updateContent("backTitle", v)} />
+        <div className="h-px bg-white/10 my-2" />
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul Belakang</p>
+        <ColorPicker value={c.backTitleColor || "#ffffff"} onChange={(v) => updateContent("backTitleColor", v)} label="Warna Judul" />
+        <TextInput label="Ukuran Judul" value={c.backTitleSize} onChange={(v) => updateContent("backTitleSize", v)} />
+        <TextInput label="Tebal Judul" value={c.backTitleWeight} onChange={(v) => updateContent("backTitleWeight", v)} />
         <TextArea label="Deskripsi Belakang" value={c.backDescription} onChange={(v) => updateContent("backDescription", v)} />
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi Belakang</p>
+        <ColorPicker value={c.backDescColor || "rgba(255,255,255,0.8)"} onChange={(v) => updateContent("backDescColor", v)} label="Warna Deskripsi" />
+        <TextInput label="Ukuran Deskripsi" value={c.backDescSize} onChange={(v) => updateContent("backDescSize", v)} />
         <ColorPicker value={c.backBackground || "#22c55e"} onChange={(v) => updateContent("backBackground", v)} label="Background Belakang" />
+        <div className="h-px bg-white/10 my-2" />
+        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Tombol</p>
         <TextInput label="Teks Tombol" value={c.backButtonText} onChange={(v) => updateContent("backButtonText", v)} />
         <TextInput label="Link Tombol" value={c.backButtonLink} onChange={(v) => updateContent("backButtonLink", v)} />
+        <ColorPicker value={c.backButtonBg || "#ffffff"} onChange={(v) => updateContent("backButtonBg", v)} label="Background Tombol" />
+        <ColorPicker value={c.backButtonTextColor || "#1e293b"} onChange={(v) => updateContent("backButtonTextColor", v)} label="Warna Teks Tombol" />
+        <TextInput label="Ukuran Tombol" value={c.backButtonSize} onChange={(v) => updateContent("backButtonSize", v)} />
+        <TextInput label="Tebal Tombol" value={c.backButtonWeight} onChange={(v) => updateContent("backButtonWeight", v)} />
       </Section>
     </div>
   );
@@ -411,25 +447,50 @@ export function HotspotEditor({ element, updateContent, handleAddItem, handleRem
         />
       </div>
       <TextInput label="URL Gambar" value={c.imageSrc} onChange={(v) => updateContent("imageSrc", v)} />
-      <div className="mb-3">
-        <div className="h-px bg-white/10 mb-3" />
-        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Markers ({items.length})</label>
-        {items.map((item: any, i: number) => (
-          <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-400">Marker #{i + 1}</span>
-              <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
-            </div>
-            <input value={item.label || ""} onChange={(e) => handleItemChange("items", i, "label", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
-            <div className="flex gap-1 mb-1">
-              <input value={item.x || "50%"} onChange={(e) => handleItemChange("items", i, "x", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="X%" />
-              <input value={item.y || "50%"} onChange={(e) => handleItemChange("items", i, "y", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Y%" />
-            </div>
-            <textarea value={item.description || ""} onChange={(e) => handleItemChange("items", i, "description", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Marker</p>
+      <ColorPicker value={c.markerColor || "#22c55e"} onChange={(v) => updateContent("markerColor", v)} label="Warna Marker" />
+      <TextInput label="Ukuran Marker" value={c.markerSize} onChange={(v) => updateContent("markerSize", v)} />
+      <ColorPicker value={c.markerTextColor || "#ffffff"} onChange={(v) => updateContent("markerTextColor", v)} label="Warna Teks Marker" />
+      <TextInput label="Ukuran Teks Marker" value={c.markerTextSize} onChange={(v) => updateContent("markerTextSize", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Popup</p>
+      <ColorPicker value={c.popupBg || "#1e293b"} onChange={(v) => updateContent("popupBg", v)} label="Background Popup" />
+      <ColorPicker value={c.popupBorder || "rgba(255,255,255,0.1)"} onChange={(v) => updateContent("popupBorder", v)} label="Border Popup" />
+      <TextInput label="Lebar Popup" value={c.popupWidth} onChange={(v) => updateContent("popupWidth", v)} />
+      <TextInput label="Padding Popup" value={c.popupPadding} onChange={(v) => updateContent("popupPadding", v)} />
+      <TextInput label="Radius Popup" value={c.popupRadius} onChange={(v) => updateContent("popupRadius", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Label</p>
+      <ColorPicker value={c.labelColor || "#22c55e"} onChange={(v) => updateContent("labelColor", v)} label="Warna Label" />
+      <TextInput label="Ukuran Label" value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
+      <TextInput label="Tebal Label" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Deskripsi</p>
+      <ColorPicker value={c.descColor || "#94a3b8"} onChange={(v) => updateContent("descColor", v)} label="Warna Deskripsi" />
+      <TextInput label="Ukuran Deskripsi" value={c.descSize} onChange={(v) => updateContent("descSize", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Markers ({items.length})</label>
+      {items.map((item: any, i: number) => (
+        <div key={i} className="mb-2 p-2 rounded-lg bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-gray-400">Marker #{i + 1}</span>
+            <button onClick={() => handleRemoveItem("items", i)} className="text-red-400 hover:text-red-300 text-xs">Hapus</button>
           </div>
-        ))}
-        <button onClick={() => handleAddItem("items", { label: "Point Baru", x: "50%", y: "50%", description: "" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Marker</button>
-      </div>
+          <input value={item.label || ""} onChange={(e) => handleItemChange("items", i, "label", e.target.value)} className="w-full mb-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Label" />
+          <div className="flex gap-1 mb-1">
+            <input value={item.x || "50%"} onChange={(e) => handleItemChange("items", i, "x", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="X%" />
+            <input value={item.y || "50%"} onChange={(e) => handleItemChange("items", i, "y", e.target.value)} className="flex-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs" placeholder="Y%" />
+          </div>
+          <textarea value={item.description || ""} onChange={(e) => handleItemChange("items", i, "description", e.target.value)} className="w-full px-2 py-1 rounded bg-white/5 border border-white/10 text-white text-xs resize-none" rows={2} placeholder="Deskripsi" />
+        </div>
+      ))}
+      <button onClick={() => handleAddItem("items", { label: "Point Baru", x: "50%", y: "50%", description: "" })} className="w-full py-1.5 text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors">+ Tambah Marker</button>
     </div>
   );
 }
@@ -451,7 +512,34 @@ export function ProgressTrackerEditor({ element, updateContent }: EditorProps) {
       </div>
       <TextInput label="Label" value={c.label} onChange={(v) => updateContent("label", v)} />
       <Checkbox label="Tampilkan Persentase" checked={!!c.percentage} onChange={(v) => updateContent("percentage", v)} />
-      <ColorPicker value={c.accentColor || "#22c55e"} onChange={(v) => updateContent("accentColor", v)} label="Warna Accent" />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Label</p>
+      <ColorPicker value={c.labelColor || "#94a3b8"} onChange={(v) => updateContent("labelColor", v)} label="Warna Label" />
+      <TextInput label="Ukuran Label" value={c.labelSize} onChange={(v) => updateContent("labelSize", v)} />
+      <TextInput label="Tebal Label" value={c.labelWeight} onChange={(v) => updateContent("labelWeight", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Persentase</p>
+      <ColorPicker value={c.percentageColor || "#22c55e"} onChange={(v) => updateContent("percentageColor", v)} label="Warna Angka" />
+      <TextInput label="Ukuran Angka" value={c.percentageSize} onChange={(v) => updateContent("percentageSize", v)} />
+      <TextInput label="Tebal Angka" value={c.percentageWeight} onChange={(v) => updateContent("percentageWeight", v)} />
+      
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Bar</p>
+      <ColorPicker value={c.barColor || "#22c55e"} onChange={(v) => updateContent("barColor", v)} label="Warna Bar Aktif" />
+      <ColorPicker value={c.trackColor || "#1e293b"} onChange={(v) => updateContent("trackColor", v)} label="Warna Track" />
+      <TextInput label="Tinggi Bar" value={c.barHeight} onChange={(v) => updateContent("barHeight", v)} />
+      <TextInput label="Radius Bar" value={c.barRadius} onChange={(v) => updateContent("barRadius", v)} />
+
+      {c.type === "circular" && (
+        <>
+          <div className="h-px bg-white/10 my-3" />
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Circular</p>
+          <TextInput label="Ukuran Lingkaran" value={c.circleSize} onChange={(v) => updateContent("circleSize", v)} />
+          <TextInput label="Tebal Stroke" value={c.strokeWidth} onChange={(v) => updateContent("strokeWidth", v)} />
+        </>
+      )}
     </div>
   );
 }
@@ -494,6 +582,12 @@ export function ChecklistEditor({ element, updateContent, handleAddItem, handleR
   return (
     <div>
       <TextInput label="Judul" value={c.title} onChange={(v) => updateContent("title", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
+      <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
       <ColorPicker value={c.checkedColor || "#22c55e"} onChange={(v) => updateContent("checkedColor", v)} label="Warna Checklist" />
       <ColorPicker value={c.textColor || "#ffffff"} onChange={(v) => updateContent("textColor", v)} label="Warna Teks" />
       <TextInput label="Ukuran Teks" value={c.textSize} onChange={(v) => updateContent("textSize", v)} />

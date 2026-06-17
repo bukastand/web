@@ -81,35 +81,35 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 items-start">
           {packages.map((pkg, index) => (
             <div
               key={index}
-            className={`reveal group relative rounded-2xl p-6 sm:p-8 transition-all duration-500 ${
+            className={`reveal group relative rounded-2xl p-5 sm:p-6 lg:p-8 transition-all duration-500 ${
               pkg.is_popular
                   ? "bg-gradient-to-b from-[#22c55e]/20 via-[#22c55e]/10 to-transparent border-2 border-[#22c55e] shadow-[0_0_30px_rgba(34,197,94,0.15)]"
                   : "bg-white/5 border border-white/10 hover:border-[#22c55e]/40 hover:bg-white/[0.07]"
               }`}
             >
               {pkg.is_popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1 bg-[#22c55e] text-white text-[10px] sm:text-xs font-bold rounded-full whitespace-nowrap">
                   Paling Laris ⭐
                 </div>
               )}
 
               <div className={`${pkg.is_popular ? "mt-4" : ""}`}>
-                <h3 className="text-xl font-bold text-white mb-1">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
                   {pkg.name}
                 </h3>
-                <div className="text-3xl font-extrabold text-[#22c55e] mb-6">
+                <div className="text-2xl sm:text-3xl font-extrabold text-[#22c55e] mb-4 sm:mb-6">
                   {pkg.price}
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
                   {pkg.features.map((feature, fi) => (
                     <li
                       key={fi}
-                      className="flex items-start gap-3 text-sm text-gray-300"
+                      className="flex items-start gap-2 sm:gap-3 text-sm text-gray-300"
                     >
                       <svg
                         className="w-5 h-5 text-[#22c55e] flex-shrink-0 mt-0.5"

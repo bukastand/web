@@ -376,11 +376,11 @@ function PricingElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-7xl mx-auto px-4">
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className="p-8 rounded-2xl"
+            className="p-5 md:p-8 rounded-2xl"
             style={{
               border: `1px solid ${item.highlighted ? (el.content.highlightBorder || el.content.cardBorder || "#22c55e") : (el.content.cardBorder || "rgba(255,255,255,0.1)")}`,
               backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.05)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
@@ -388,8 +388,8 @@ function PricingElement({ el }: ElementComponentProps) {
           >
             <h3 className="text-xl font-bold mb-2" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
             <p className="text-sm mb-4" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
-            <p className="text-3xl font-extrabold mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
-            <ul className="space-y-2 mb-8">
+            <p className="text-2xl md:text-3xl font-extrabold mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
+            <ul className="space-y-2 mb-6 md:mb-8">
               {(item.features || []).map((f: string, fi: number) => (
                 <li key={fi} className="flex items-center gap-2 text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
@@ -399,7 +399,7 @@ function PricingElement({ el }: ElementComponentProps) {
                 </li>
               ))}
             </ul>
-            <button className="w-full py-3 rounded-xl font-semibold hover:opacity-90 transition-all" style={{ backgroundColor: "#22c55e", color: "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
+            <button className="w-full py-2.5 md:py-3 rounded-xl font-semibold hover:opacity-90 transition-all" style={{ backgroundColor: "#22c55e", color: "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
           </div>
         ))}
       </div>
@@ -1411,14 +1411,14 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
     const currentText = texts[cyclingIdx];
     
     return (
-      <span className="relative inline-flex flex-col overflow-hidden" style={{ height: "1.2em" }}>
+      <span className="relative inline-flex overflow-hidden" style={{ height: "1.2em", verticalAlign: "bottom" }}>
         <span
           key={`${cyclingIdx}-${animState}`}
           className={`${
             animState === "entering"
               ? "animate-text-fade-in"
               : animState === "leaving"
-              ? "animate-text-slide-out absolute inset-0"
+              ? "animate-text-slide-out"
               : ""
           }`}
           style={{
@@ -1456,7 +1456,10 @@ function AnimatedHeadlineElement({ el }: ElementComponentProps) {
 }
 
 function BlockquoteElement({ el }: ElementComponentProps) {
-  const { quoteText, authorName, skin = "border", tweetButton, tweetLabel } = el.content;
+  const { quoteText, authorName, skin = "border", tweetButton, tweetLabel,
+    quoteTextColor, quoteTextSize, quoteFontStyle,
+    authorNameColor, authorNameSize, authorNameWeight,
+  } = el.content;
   const styles = applyStyles(el);
 
   const skinClasses: Record<string, string> = {
@@ -1469,16 +1472,16 @@ function BlockquoteElement({ el }: ElementComponentProps) {
   return (
     <blockquote className={skinClasses[skin] || skinClasses.border} style={styles}>
       {skin === "quotation" && (
-        <span className="absolute left-0 top-0 text-4xl leading-none opacity-30" style={{ color: styles.color || "#22c55e" }}>
+        <span className="absolute left-0 top-0 text-4xl leading-none opacity-30" style={{ color: authorNameColor || styles.color || "#22c55e" }}>
           &ldquo;
         </span>
       )}
-      <p className="mb-3 leading-relaxed" style={{ fontSize: styles.fontSize || "18px", fontStyle: styles.fontStyle || "italic" }}>
+      <p className="mb-3 leading-relaxed" style={{ color: quoteTextColor || styles.color, fontSize: quoteTextSize || styles.fontSize || "18px", fontStyle: quoteFontStyle || styles.fontStyle || "italic" }}>
         &ldquo;{quoteText}&rdquo;
       </p>
       {authorName && (
         <footer className="flex items-center gap-2 mt-3">
-          <cite className="not-italic font-semibold" style={{ color: styles.color || "#22c55e", fontSize: "14px" }}>
+          <cite className="not-italic font-semibold" style={{ color: authorNameColor || styles.color || "#22c55e", fontSize: authorNameSize || "14px", fontWeight: authorNameWeight || "600" }}>
             &mdash; {authorName}
           </cite>
           {tweetButton && (
@@ -1563,10 +1566,20 @@ function FlipBoxElement({ el }: ElementComponentProps) {
     frontGraphic = "icon",
     frontIcon = "star",
     frontImage = "",
-    frontTitle, frontDescription, frontBackground = "#1e293b",
+    frontTitle,
+    frontTitleColor, frontTitleSize, frontTitleWeight,
+    frontDescription,
+    frontDescColor, frontDescSize,
+    frontIconColor,
+    frontBackground = "#1e293b",
     backImage = "",
-    backTitle, backDescription, backBackground = "#22c55e",
+    backTitle,
+    backTitleColor, backTitleSize, backTitleWeight,
+    backDescription,
+    backDescColor, backDescSize,
+    backBackground = "#22c55e",
     backButtonText, backButtonLink = "#",
+    backButtonBg, backButtonTextColor, backButtonSize, backButtonWeight,
   } = el.content;
   const styles = applyStyles(el);
 
@@ -1592,12 +1605,12 @@ function FlipBoxElement({ el }: ElementComponentProps) {
           }}
         >
           {frontGraphic === "icon" && FLIP_ICONS[frontIcon] && (
-            <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#22c55e" }}>
+            <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: frontIconColor || styles.color || "#22c55e" }}>
               {FLIP_ICONS[frontIcon]}
             </svg>
           )}
-          <h3 className="text-xl font-bold mb-2" style={{ color: "#ffffff" }}>{frontTitle}</h3>
-          {frontDescription && <p className="text-sm" style={{ color: "#94a3b8" }}>{frontDescription}</p>}
+          <h3 className="font-bold mb-2" style={{ color: frontTitleColor || "#ffffff", fontSize: frontTitleSize || "20px", fontWeight: frontTitleWeight || "700" }}>{frontTitle}</h3>
+          {frontDescription && <p style={{ color: frontDescColor || "#94a3b8", fontSize: frontDescSize || "14px" }}>{frontDescription}</p>}
         </div>
         {/* Back */}
         <div
@@ -1609,12 +1622,17 @@ function FlipBoxElement({ el }: ElementComponentProps) {
             transform: "rotateY(180deg)",
           }}
         >
-          <h3 className="text-xl font-bold mb-2" style={{ color: "#ffffff" }}>{backTitle}</h3>
-          {backDescription && <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.8)" }}>{backDescription}</p>}
+          <h3 className="font-bold mb-2" style={{ color: backTitleColor || "#ffffff", fontSize: backTitleSize || "20px", fontWeight: backTitleWeight || "700" }}>{backTitle}</h3>
+          {backDescription && <p className="mb-6" style={{ color: backDescColor || "rgba(255,255,255,0.8)", fontSize: backDescSize || "14px" }}>{backDescription}</p>}
           <a
             href={backButtonLink}
             className="px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
-            style={{ backgroundColor: "#ffffff", color: backBackground }}
+            style={{
+              backgroundColor: backButtonBg || "#ffffff",
+              color: backButtonTextColor || "#1e293b",
+              fontSize: backButtonSize || "14px",
+              fontWeight: backButtonWeight || "600",
+            }}
           >
             {backButtonText || "Pelajari"}
           </a>
@@ -1625,7 +1643,13 @@ function FlipBoxElement({ el }: ElementComponentProps) {
 }
 
 function HotspotElement({ el }: ElementComponentProps) {
-  const { imageSrc, items = [] } = el.content;
+  const { imageSrc, items = [],
+    markerColor, markerSize,
+    markerTextColor, markerTextSize,
+    popupBg, popupBorder, popupWidth, popupPadding, popupRadius,
+    labelColor, labelSize, labelWeight,
+    descColor, descSize,
+  } = el.content;
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
@@ -1642,19 +1666,38 @@ function HotspotElement({ el }: ElementComponentProps) {
           style={{ left: item.x || "50%", top: item.y || "50%", transform: "translate(-50%, -50%)" }}
         >
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm transition-all hover:scale-110 relative"
-            style={{ backgroundColor: "#22c55e" }}
+            className="rounded-full flex items-center justify-center font-bold transition-all hover:scale-110 relative"
+            style={{
+              width: markerSize || "32px",
+              height: markerSize || "32px",
+              backgroundColor: markerColor || "#22c55e",
+              color: markerTextColor || "#ffffff",
+              fontSize: markerTextSize || "14px",
+            }}
             onClick={() => setActiveIdx(activeIdx === i ? null : i)}
           >
             <span>+</span>
           </div>
           {activeIdx === i && (
             <div
-              className="absolute z-50 w-48 p-3 rounded-xl mt-2 left-1/2 -translate-x-1/2 pointer-events-none"
-              style={{ backgroundColor: "#1e293b", border: "1px solid rgba(255,255,255,0.1)" }}
+              className="absolute z-50 mt-2 left-1/2 -translate-x-1/2 pointer-events-none"
+              style={{
+                width: popupWidth || "192px",
+                padding: popupPadding || "12px",
+                borderRadius: popupRadius || "12px",
+                backgroundColor: popupBg || "#1e293b",
+                border: `1px solid ${popupBorder || "rgba(255,255,255,0.1)"}`,
+              }}
             >
-              <p className="text-xs font-semibold mb-1" style={{ color: "#22c55e" }}>{item.label}</p>
-              {item.description && <p className="text-[10px] leading-relaxed" style={{ color: "#94a3b8" }}>{item.description}</p>}
+              <p className="mb-1" style={{
+                color: labelColor || "#22c55e",
+                fontSize: labelSize || "12px",
+                fontWeight: labelWeight || "600",
+              }}>{item.label}</p>
+              {item.description && <p className="leading-relaxed" style={{
+                color: descColor || "#94a3b8",
+                fontSize: descSize || "10px",
+              }}>{item.description}</p>}
             </div>
           )}
         </div>
@@ -1664,12 +1707,15 @@ function HotspotElement({ el }: ElementComponentProps) {
 }
 
 function ProgressTrackerElement({ el }: ElementComponentProps) {
-  const { type = "horizontal", percentage, progress = 50, label } = el.content;
+  const { type = "horizontal", percentage, progress = 50, label,
+    labelColor, labelSize, labelWeight,
+    percentageColor, percentageSize, percentageWeight,
+    barColor, trackColor, barHeight, barRadius, circleSize, strokeWidth,
+  } = el.content;
   const allStyles = applyStyles(el);
   const pct = Math.min(100, Math.max(0, progress));
   const accentColor = (el.styles as any).accentColor || "#22c55e";
-  const trackColor = el.styles.backgroundColor || "#1e293b";
-  const barHeight = el.styles.height || "6px";
+  const _trackColor = trackColor || el.styles.backgroundColor || "#1e293b";
 
   // Extract only text-level styles for wrapper (NOT bar styles)
   const wrapperStyle: React.CSSProperties = {};
@@ -1693,13 +1739,15 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
     const r = 45;
     const circ = 2 * Math.PI * r;
     const offset = circ - (pct / 100) * circ;
+    const svgSize = circleSize || "120px";
+    const sw = strokeWidth || "8";
     return (
       <div className="flex flex-col items-center" style={wrapperStyle}>
-        <svg width="120" height="120" viewBox="0 0 100 100" className="transform -rotate-90">
-          <circle cx="50" cy="50" r={r} fill="none" stroke={trackColor} strokeWidth="8" />
+        <svg width={svgSize} height={svgSize} viewBox="0 0 100 100" className="transform -rotate-90">
+          <circle cx="50" cy="50" r={r} fill="none" stroke={_trackColor} strokeWidth={sw} />
           <circle
             cx="50" cy="50" r={r} fill="none"
-            stroke={accentColor} strokeWidth="8"
+            stroke={barColor || accentColor} strokeWidth={sw}
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={offset}
@@ -1707,25 +1755,52 @@ function ProgressTrackerElement({ el }: ElementComponentProps) {
           />
         </svg>
         {percentage && (
-          <span className="mt-2 text-lg font-bold" style={{ color: accentColor }}>{pct}%</span>
+          <span className="mt-2" style={{
+            color: percentageColor || accentColor,
+            fontSize: percentageSize || "18px",
+            fontWeight: percentageWeight || "700",
+          }}>{pct}%</span>
         )}
-        {label && <span className="text-sm mt-1" style={{ color: "#94a3b8" }}>{label}</span>}
+        {label && <span className="mt-1" style={{
+          color: labelColor || "#94a3b8",
+          fontSize: labelSize || "14px",
+          fontWeight: labelWeight || "400",
+        }}>{label}</span>}
       </div>
     );
   }
+
+  const _barHeight = barHeight || el.styles.height || "6px";
+  const _barRadius = barRadius || "9999px";
 
   return (
     <div style={wrapperStyle}>
       {(percentage || label) && (
         <div className="flex items-center justify-between mb-1.5">
-          {label && <span className="text-xs" style={{ color: "#94a3b8" }}>{label}</span>}
-          {percentage && <span className="text-xs font-semibold" style={{ color: accentColor }}>{pct}%</span>}
+          {label && <span style={{
+            color: labelColor || "#94a3b8",
+            fontSize: labelSize || "12px",
+            fontWeight: labelWeight || "400",
+          }}>{label}</span>}
+          {percentage && <span className="font-semibold" style={{
+            color: percentageColor || accentColor,
+            fontSize: percentageSize || "12px",
+            fontWeight: percentageWeight || "600",
+          }}>{pct}%</span>}
         </div>
       )}
-      <div className="w-full rounded-full overflow-hidden" style={{ height: barHeight, backgroundColor: trackColor }}>
+      <div className="w-full overflow-hidden" style={{
+        height: _barHeight,
+        backgroundColor: _trackColor,
+        borderRadius: _barRadius,
+      }}>
         <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, backgroundColor: accentColor }}
+          className="h-full transition-all duration-500"
+          style={{
+            width: `${pct}%`,
+            backgroundColor: barColor || accentColor,
+            borderRadius: _barRadius,
+          }}
         />
       </div>
     </div>
@@ -1800,12 +1875,12 @@ function ShareButtonsElement({ el }: ElementComponentProps) {
 }
 
 function ChecklistElement({ el }: ElementComponentProps) {
-  const { title, items = [], checkedColor = "#22c55e", textColor = "#ffffff", textSize = "16px", iconSize = "20px" } = el.content;
+  const { title, titleColor, titleSize, titleWeight, items = [], checkedColor = "#22c55e", textColor = "#ffffff", textSize = "16px", iconSize = "20px" } = el.content;
   const styles = applyStyles(el);
 
   return (
     <div style={styles}>
-      {title && <h3 className="text-lg font-bold mb-4" style={{ color: textColor }}>{title}</h3>}
+      {title && <h3 className="mb-4" style={{ color: titleColor || textColor, fontSize: titleSize || "18px", fontWeight: titleWeight || "700" }}>{title}</h3>}
       <ul className="space-y-3">
         {items.map((item: any, i: number) => (
           <li key={i} className="flex items-start gap-3">

@@ -326,6 +326,38 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
         }),
       }));
 
+    case "UPDATE_COLUMN_WIDTH":
+      return updatePage((p) => ({
+        ...p,
+        sections: p.sections.map((s) => {
+          if (s.id !== action.sectionId) return s;
+          const cols = s.columns.map((c) => ({ ...c }));
+          if (action.columnIndex < 0 || action.columnIndex >= cols.length) return s;
+          const oldWidth = cols[action.columnIndex].width;
+          const newWidth = Math.max(1, Math.min(12, action.width));
+          if (newWidth === oldWidth) return s;
+          // Adjust adjacent column to keep total = 12
+          const diff = newWidth - oldWidth;
+          const otherIdx = action.columnIndex < cols.length - 1 ? action.columnIndex + 1 : action.columnIndex - 1;
+          if (otherIdx >= 0 && otherIdx < cols.length) {
+            const otherWidth = Math.max(1, Math.min(12, cols[otherIdx].width - diff));
+            cols[otherIdx].width = otherWidth;
+          }
+          cols[action.columnIndex].width = newWidth;
+          return { ...s, columns: cols };
+        }),
+      }));
+
+    case "REORDER_COLUMNS":
+      return updatePage((p) => ({
+        ...p,
+        sections: p.sections.map((s) => {
+          if (s.id !== action.sectionId) return s;
+          // Preserve widths — take widths from the new order
+          return { ...s, columns: action.columns };
+        }),
+      }));
+
     default:
       return state;
   }

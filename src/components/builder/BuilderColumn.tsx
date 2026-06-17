@@ -55,17 +55,74 @@ export default function BuilderColumnComponent({
             : "border-transparent"
       }`}
     >
-      {/* Column controls */}
+      {/* Column toolbar — muncul saat hover */}
       {section && section.columns.length > 1 && (
-        <div className="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="flex items-center gap-0.5">
+        <div className="absolute -top-9 left-1/2 -translate-x-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg pointer-events-auto">
+            {/* Lebar */}
+            <button
+              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width - 1 })}
+              disabled={column.width <= 1}
+              className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Kurangi Lebar"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            <span className="text-[9px] font-mono text-gray-300 min-w-[24px] text-center">{column.width}/12</span>
+            <button
+              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width + 1 })}
+              disabled={column.width >= 12}
+              className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Tambah Lebar"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <div className="w-px h-3 bg-white/10 mx-1" />
+            {/* Pindah kiri */}
+            <button
+              onClick={() => {
+                if (columnIndex <= 0) return;
+                const cols = [...section.columns];
+                [cols[columnIndex - 1], cols[columnIndex]] = [cols[columnIndex], cols[columnIndex - 1]];
+                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols });
+              }}
+              disabled={columnIndex === 0}
+              className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Pindah ke Kiri"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            {/* Pindah kanan */}
+            <button
+              onClick={() => {
+                if (columnIndex >= section.columns.length - 1) return;
+                const cols = [...section.columns];
+                [cols[columnIndex], cols[columnIndex + 1]] = [cols[columnIndex + 1], cols[columnIndex]];
+                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols });
+              }}
+              disabled={columnIndex >= section.columns.length - 1}
+              className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Pindah ke Kanan"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <div className="w-px h-3 bg-white/10 mx-1" />
+            {/* Hapus */}
             <button
               onClick={() => dispatch({ type: "REMOVE_COLUMN", pageId, sectionId, columnIndex })}
-              className="p-1 rounded-md bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+              className="p-0.5 text-red-400 hover:text-red-300 transition-colors"
               title="Hapus Kolom"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
           </div>
