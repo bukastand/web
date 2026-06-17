@@ -30,11 +30,13 @@ function genMsgId() {
 interface AIPanelProps {
   onGenerate: (title: string, sectionsJson: string) => void;
   onOpenConfig: () => void;
+  /** pageId dari URL (?pageId=xxx) — digunakan sebagai fallback sebelum create page baru */
+  pageId?: string | null;
 }
 
 // ─── Component ──────────────────────────────────────
 
-export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
+export function AIPanel({ onGenerate, onOpenConfig, pageId: pageIdProp }: AIPanelProps) {
   const { user } = useAuth();
   const { currentPage, dispatch, state } = useBuilder();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -332,7 +334,12 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     // Auto-save to page
     if (parsedSections.length > 0) {
       let pageId = currentPage?.id;
-      // Jika tidak ada currentPage, buat halaman baru
+      // Jika currentPage belum di-set, gunakan pageId dari URL (?pageId=xxx)
+      if (!pageId && pageIdProp) {
+        pageId = pageIdProp;
+        dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdProp });
+      }
+      // Jika masih tidak ada, buat halaman baru
       if (!pageId) {
         const existingSlugs = state.pages.map((p: any) => p.slug);
         const newPage = createDefaultPage(promptText.substring(0, 50), existingSlugs);
@@ -386,7 +393,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     scrollToBottom();
     setIsRunning(false);
     abortRef.current = null;
-  }, [input, category, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson, state]);
+  }, [input, category, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson, state, pageIdProp]);
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
@@ -409,7 +416,12 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     setSaving(true);
     try {
       let pageId = currentPage?.id;
-      // Jika tidak ada currentPage, buat halaman baru
+      // Jika currentPage belum di-set, gunakan pageId dari URL (?pageId=xxx)
+      if (!pageId && pageIdProp) {
+        pageId = pageIdProp;
+        dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdProp });
+      }
+      // Jika masih tidak ada, buat halaman baru
       if (!pageId) {
         const existingSlugs = state.pages.map((p: any) => p.slug);
         const newPage = createDefaultPage("AI Generated Page", existingSlugs);
@@ -431,7 +443,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       setError("Gagal menyimpan ke halaman");
     }
     setSaving(false);
-  }, [finalSections, currentPage, dispatch, state.pages]);
+  }, [finalSections, currentPage, dispatch, state.pages, pageIdProp]);
 
   const handleClearChat = useCallback(() => {
     setMessages([]);

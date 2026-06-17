@@ -198,6 +198,7 @@ function AIBuilderPageContent() {
         <div className="w-[420px] min-w-[380px] border-r border-white/10 overflow-y-auto bg-[#0f172a]">
           <AIPanel
             key={pageIdParam || "new"}
+            pageId={pageIdParam}
             onGenerate={handleGenerate}
             onOpenConfig={() => setAiConfigOpen(true)}
           />
