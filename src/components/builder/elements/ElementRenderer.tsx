@@ -1910,13 +1910,13 @@ function ChecklistElement({ el }: ElementComponentProps) {
 }
 
 function GalleryElement({ el }: ElementComponentProps) {
-  const { title, images = [], columns = 3, lightbox, captionColor = "#ffffff", captionSize = "14px" } = el.content;
+  const { title, titleColor, titleSize, titleWeight, images = [], columns = 3, lightbox, captionColor = "#ffffff", captionSize = "14px", captionWeight } = el.content;
   const styles = applyStyles(el);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
   return (
     <div style={styles}>
-      {title && <h2 className="text-center mb-8 text-2xl font-bold" style={{ color: captionColor }}>{title}</h2>}
+      {title && <h2 className="text-center mb-8" style={{ color: titleColor || captionColor, fontSize: titleSize || "24px", fontWeight: titleWeight || "700" }}>{title}</h2>}
       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${columns > 2 ? "250px" : "200px"}, 1fr))` }}>
         {images.map((img: any, i: number) => (
           <div
@@ -1931,7 +1931,7 @@ function GalleryElement({ el }: ElementComponentProps) {
             />
             {img.caption && (
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                <p className="text-xs" style={{ color: captionColor, fontSize: captionSize }}>{img.caption}</p>
+                <p style={{ color: captionColor, fontSize: captionSize, fontWeight: captionWeight || "400" }}>{img.caption}</p>
               </div>
             )}
           </div>

@@ -637,9 +637,19 @@ export function GalleryEditor({ element, updateContent, handleAddItem, handleRem
   return (
     <div>
       <TextInput label="Judul Galeri" value={c.title} onChange={(v) => updateContent("title", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Judul</p>
+      <ColorPicker value={c.titleColor || "#ffffff"} onChange={(v) => updateContent("titleColor", v)} label="Warna Judul" />
+      <TextInput label="Ukuran Judul" value={c.titleSize} onChange={(v) => updateContent("titleSize", v)} />
+      <TextInput label="Tebal Judul" value={c.titleWeight} onChange={(v) => updateContent("titleWeight", v)} />
+      <div className="h-px bg-white/10 my-3" />
       <TextInput label="Jumlah Kolom" value={String(c.columns || 3)} onChange={(v) => updateContent("columns", parseInt(v) || 3)} />
       <Checkbox label="Lightbox" checked={!!c.lightbox} onChange={(v) => updateContent("lightbox", v)} />
+      <div className="h-px bg-white/10 my-3" />
+      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Style Caption</p>
       <ColorPicker value={c.captionColor || "#ffffff"} onChange={(v) => updateContent("captionColor", v)} label="Warna Caption" />
+      <TextInput label="Ukuran Caption" value={c.captionSize} onChange={(v) => updateContent("captionSize", v)} />
+      <TextInput label="Tebal Caption" value={c.captionWeight} onChange={(v) => updateContent("captionWeight", v)} />
       <div className="mb-3">
         <div className="h-px bg-white/10 mb-3" />
         <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Gambar ({images.length})</label>

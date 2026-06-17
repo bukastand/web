@@ -550,6 +550,9 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
   gallery: {
     content: {
       title: "Galeri",
+      titleColor: "#ffffff",
+      titleSize: "24px",
+      titleWeight: "700",
       images: [
         { src: "https://placehold.co/600x400/1e293b/22c55e?text=Image+1", caption: "Image 1", alt: "Image 1" },
         { src: "https://placehold.co/600x400/1e293b/3b82f6?text=Image+2", caption: "Image 2", alt: "Image 2" },
@@ -562,6 +565,7 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
       lightbox: true,
       captionColor: "#ffffff",
       captionSize: "14px",
+      captionWeight: "400",
     },
     styles: { padding: "0", backgroundColor: "transparent" },
   },
