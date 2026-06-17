@@ -376,30 +376,39 @@ function PricingElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto px-4">
+      <div
+        className="mx-auto px-4"
+        style={{
+          maxWidth: "1200px",
+          display: "grid",
+          gap: items.length <= 4 ? "1rem" : "0.75rem",
+          gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${items.length <= 3 ? "300px" : "280px"}), 1fr))`,
+        }}
+      >
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className="p-5 md:p-8 rounded-2xl"
+            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#22c55e] scale-[1.02] md:scale-105 z-10" : ""}`}
             style={{
-              border: `1px solid ${item.highlighted ? (el.content.highlightBorder || el.content.cardBorder || "#22c55e") : (el.content.cardBorder || "rgba(255,255,255,0.1)")}`,
-              backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.05)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
+              padding: item.highlighted ? "1.75rem" : "1.5rem",
+              border: item.highlighted ? "none" : `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
+              backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.08)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
             }}
           >
-            <h3 className="text-xl font-bold mb-2" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
-            <p className="text-sm mb-4" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
-            <p className="text-2xl md:text-3xl font-extrabold mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
-            <ul className="space-y-2 mb-6 md:mb-8">
+            <h3 className="text-lg md:text-xl font-bold mb-1.5" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
+            <p className="text-xs md:text-sm mb-3" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
+            <p className="text-xl md:text-2xl lg:text-3xl font-extrabold mb-4 md:mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
+            <ul className="space-y-2 mb-4 md:mb-8 flex-1">
               {(item.features || []).map((f: string, fi: number) => (
-                <li key={fi} className="flex items-center gap-2 text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
+                <li key={fi} className="flex items-start gap-2 text-xs md:text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
+                  <svg className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
-                  {f}
+                  <span className="leading-relaxed">{f}</span>
                 </li>
               ))}
             </ul>
-            <button className="w-full py-2.5 md:py-3 rounded-xl font-semibold hover:opacity-90 transition-all" style={{ backgroundColor: "#22c55e", color: "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
+            <button className="w-full py-2 md:py-3 rounded-xl font-semibold text-xs md:text-sm hover:opacity-90 transition-all mt-auto" style={{ backgroundColor: el.content.cardButtonBg || "#22c55e", color: el.content.cardButtonTextColor || "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
           </div>
         ))}
       </div>
