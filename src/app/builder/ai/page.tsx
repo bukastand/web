@@ -40,14 +40,10 @@ function AIBuilderPageContent() {
   const [showPreview, setShowPreview] = useState(false);
   const [pendingPageTitle, setPendingPageTitle] = useState("");
 
-  // Load halaman berdasarkan pageIdParam
-  // Effect ini jalan setiap kali pageIdParam berubah atau state.pages selesai di-load
+  // Jika ada pageId, load halaman tersebut. Jika tidak ada, AI Builder tetap tampil
+  // dan akan membuat halaman baru otomatis saat hasil generate di-save.
   useEffect(() => {
-    if (!authLoading && user && mounted) {
-      if (!pageIdParam) {
-        router.replace("/builder/pages");
-        return;
-      }
+    if (!authLoading && user && mounted && pageIdParam) {
       const targetPage = state.pages.find(p => p.id === pageIdParam);
       if (targetPage) {
         dispatch({ type: "SET_CURRENT_PAGE", pageId: pageIdParam });
@@ -55,7 +51,6 @@ function AIBuilderPageContent() {
         // Page not found — redirect ke daftar proyek
         router.replace("/builder/pages");
       }
-      // Jika state.pages masih kosong (belum di-load), tunggu sampai terisi
     }
   }, [pageIdParam, authLoading, user, mounted, state.pages, dispatch, router]);
 

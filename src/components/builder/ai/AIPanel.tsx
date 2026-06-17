@@ -6,7 +6,7 @@ import { useBuilder } from "@/lib/builder/store";
 import { getAIConfig, getProviderList, removeProviderEntry, moveProviderPriority, type ProviderEntry } from "@/lib/ai";
 import { generateWebsite, parseResultToSections, type GenerateCallbacks } from "@/lib/ai/agents";
 import { saveLocalMemory, saveGlobalMemory, updatePreferencesFromGeneration } from "@/lib/ai/memory";
-import { aiSectionToBuilder } from "@/lib/builder/defaults";
+import { aiSectionToBuilder, createDefaultPage } from "@/lib/builder/defaults";
 import { generateFromPromptJSON } from "@/lib/builder/template-engine";
 import type { BuilderPage } from "@/lib/builder/types";
 
@@ -36,7 +36,7 @@ interface AIPanelProps {
 
 export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
   const { user } = useAuth();
-  const { currentPage, dispatch } = useBuilder();
+  const { currentPage, dispatch, state } = useBuilder();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
@@ -330,13 +330,22 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     }
 
     // Auto-save to page
-    if (parsedSections.length > 0 && currentPage) {
+    if (parsedSections.length > 0) {
+      let pageId = currentPage?.id;
+      // Jika tidak ada currentPage, buat halaman baru
+      if (!pageId) {
+        const existingSlugs = state.pages.map((p: any) => p.slug);
+        const newPage = createDefaultPage(promptText.substring(0, 50), existingSlugs);
+        pageId = newPage.id;
+        dispatch({ type: "ADD_PAGE", page: newPage });
+        dispatch({ type: "SET_CURRENT_PAGE", pageId: newPage.id });
+      }
       try {
         for (const secData of parsedSections) {
           const builderSection = aiSectionToBuilder(secData);
           dispatch({
             type: "ADD_TEMPLATE_SECTION",
-            pageId: currentPage.id,
+            pageId,
             section: builderSection,
           });
         }
@@ -377,7 +386,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     scrollToBottom();
     setIsRunning(false);
     abortRef.current = null;
-  }, [input, category, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson]);
+  }, [input, category, user, currentPage, onGenerate, onOpenConfig, scrollToBottom, lastResultJson, state]);
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
@@ -393,15 +402,26 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
     [handleSend]
   );
 
+
+
   const handleSaveToPage = useCallback(() => {
-    if (finalSections.length === 0 || !currentPage) return;
+    if (finalSections.length === 0) return;
     setSaving(true);
     try {
+      let pageId = currentPage?.id;
+      // Jika tidak ada currentPage, buat halaman baru
+      if (!pageId) {
+        const existingSlugs = state.pages.map((p: any) => p.slug);
+        const newPage = createDefaultPage("AI Generated Page", existingSlugs);
+        pageId = newPage.id;
+        dispatch({ type: "ADD_PAGE", page: newPage });
+        dispatch({ type: "SET_CURRENT_PAGE", pageId: newPage.id });
+      }
       for (const secData of finalSections) {
         const builderSection = aiSectionToBuilder(secData);
         dispatch({
           type: "ADD_TEMPLATE_SECTION",
-          pageId: currentPage.id,
+          pageId,
           section: builderSection,
         });
       }
@@ -411,7 +431,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       setError("Gagal menyimpan ke halaman");
     }
     setSaving(false);
-  }, [finalSections, currentPage, dispatch]);
+  }, [finalSections, currentPage, dispatch, state.pages]);
 
   const handleClearChat = useCallback(() => {
     setMessages([]);
@@ -659,7 +679,7 @@ export function AIPanel({ onGenerate, onOpenConfig }: AIPanelProps) {
       )}
 
       {/* Save to Page Bar */}
-      {!savedToPage && !isRunning && messages.some((m) => m.role === "assistant" && m.sectionCount && m.sectionCount > 0) && currentPage && (
+      {!savedToPage && !isRunning && messages.some((m) => m.role === "assistant" && m.sectionCount && m.sectionCount > 0) && (
         <div className="mx-4 mb-2">
           <button
             onClick={handleSaveToPage}
