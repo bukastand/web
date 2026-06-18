@@ -142,7 +142,7 @@ export default function PublishedPage() {
             {(section.rows || [{ columns: section.columns, id: 'default' }]).map((row) => (
               <div key={row.id} className="flex" style={{ gap: "16px", flexWrap: "wrap" }}>
                 {row.columns.map((column) => (
-                  <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%` }}>
+                  <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "200px" }}>
                     <div className="space-y-4">
                       {column.elements.map((element) => (
                         <div key={element.id}>
