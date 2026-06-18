@@ -1279,7 +1279,7 @@ function TeamElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 gap-4 md:gap-8 max-w-2xl mx-auto">
         {members.map((member: any, i: number) => (
           <div
             key={i}
