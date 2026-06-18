@@ -13,11 +13,13 @@ export default function BuilderColumnComponent({
   columnIndex,
   sectionId,
   pageId,
+  rowIndex = 0,
 }: {
   column: BuilderColumnType;
   columnIndex: number;
   sectionId: string;
   pageId: string;
+  rowIndex?: number;
 }) {
   const { dispatch, currentPage } = useBuilder();
   const [showElementPicker, setShowElementPicker] = useState(false);
@@ -37,7 +39,8 @@ export default function BuilderColumnComponent({
       sectionId,
       columnIndex,
       element,
-    });
+      rowIndex,
+    } as any);
     dispatch({ type: "SELECT_ELEMENT", elementId: element.id });
     setShowElementPicker(false);
   };
@@ -56,12 +59,15 @@ export default function BuilderColumnComponent({
       }`}
     >
       {/* Column toolbar — muncul saat hover */}
-      {section && section.columns.length > 1 && (
+      {(() => {
+        const currentRow = (section?.rows || [{ columns: section?.columns || [], id: '' }])[rowIndex];
+        const rowColumns = currentRow?.columns || [];
+        return rowColumns.length > 1 && (
         <div className="absolute -top-9 left-1/2 -translate-x-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
           <div className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-[#1e293b] border border-white/10 shadow-lg pointer-events-auto">
             {/* Lebar */}
             <button
-              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width - 1 })}
+              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width - 1, rowIndex } as any)}
               disabled={column.width <= 1}
               className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               title="Kurangi Lebar"
@@ -72,7 +78,7 @@ export default function BuilderColumnComponent({
             </button>
             <span className="text-[9px] font-mono text-gray-300 min-w-[24px] text-center">{column.width}/12</span>
             <button
-              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width + 1 })}
+              onClick={() => dispatch({ type: "UPDATE_COLUMN_WIDTH", pageId, sectionId, columnIndex, width: column.width + 1, rowIndex } as any)}
               disabled={column.width >= 12}
               className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               title="Tambah Lebar"
@@ -86,9 +92,9 @@ export default function BuilderColumnComponent({
             <button
               onClick={() => {
                 if (columnIndex <= 0) return;
-                const cols = [...section.columns];
+                const cols = [...rowColumns];
                 [cols[columnIndex - 1], cols[columnIndex]] = [cols[columnIndex], cols[columnIndex - 1]];
-                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols });
+                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols, rowIndex } as any);
               }}
               disabled={columnIndex === 0}
               className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -101,12 +107,12 @@ export default function BuilderColumnComponent({
             {/* Pindah kanan */}
             <button
               onClick={() => {
-                if (columnIndex >= section.columns.length - 1) return;
-                const cols = [...section.columns];
+                if (columnIndex >= rowColumns.length - 1) return;
+                const cols = [...rowColumns];
                 [cols[columnIndex], cols[columnIndex + 1]] = [cols[columnIndex + 1], cols[columnIndex]];
-                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols });
+                dispatch({ type: "REORDER_COLUMNS", pageId, sectionId, columns: cols, rowIndex } as any);
               }}
-              disabled={columnIndex >= section.columns.length - 1}
+              disabled={columnIndex >= rowColumns.length - 1}
               className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               title="Pindah ke Kanan"
             >
@@ -117,7 +123,7 @@ export default function BuilderColumnComponent({
             <div className="w-px h-3 bg-white/10 mx-1" />
             {/* Hapus */}
             <button
-              onClick={() => dispatch({ type: "REMOVE_COLUMN", pageId, sectionId, columnIndex })}
+              onClick={() => dispatch({ type: "REMOVE_COLUMN", pageId, sectionId, columnIndex, rowIndex } as any)}
               className="p-0.5 text-red-400 hover:text-red-300 transition-colors"
               title="Hapus Kolom"
             >
@@ -127,7 +133,8 @@ export default function BuilderColumnComponent({
             </button>
           </div>
         </div>
-      )}
+      );
+      })()}
 
       {/* Empty state / Add button — opens picker */}
       {column.elements.length === 0 && !showElementPicker && (

@@ -263,6 +263,7 @@ export default function BuilderSectionComponent({
                       columnIndex={colIndex}
                       sectionId={section.id}
                       pageId={pageId}
+                      rowIndex={rowIndex}
                     />
                   </div>
                 ))}
