@@ -52,11 +52,18 @@ export interface ElementContent {
   [key: string]: any;
 }
 
+export interface BuilderResponsive {
+  hideOnMobile?: boolean;
+  hideOnTablet?: boolean;
+  hideOnDesktop?: boolean;
+}
+
 export interface BuilderElement {
   id: string;
   type: ElementType;
   content: ElementContent;
   styles: ElementStyles;
+  responsive?: BuilderResponsive;
 }
 
 export interface BuilderColumn {
@@ -122,7 +129,7 @@ export type BuilderAction =
   | { type: "REMOVE_ELEMENT"; pageId: string; sectionId: string; columnIndex: number; elementId: string }
   | { type: "DUPLICATE_ELEMENT"; pageId: string; sectionId: string; columnIndex: number; elementId: string }
   | { type: "MOVE_ELEMENT"; pageId: string; from: { sectionId: string; columnIndex: number; elementId: string }; to: { sectionId: string; columnIndex: number; index: number } }
-  | { type: "UPDATE_ELEMENT"; pageId: string; sectionId: string; columnIndex: number; elementId: string; content: Partial<ElementContent>; styles?: Partial<ElementStyles> }
+  | { type: "UPDATE_ELEMENT"; pageId: string; sectionId: string; columnIndex: number; elementId: string; content: Partial<ElementContent>; styles?: Partial<ElementStyles>; responsive?: BuilderResponsive }
   | { type: "UPDATE_GLOBAL_STYLES"; pageId: string; styles: Partial<GlobalStyles> }
   | { type: "SELECT_ELEMENT"; elementId: string | null }
   | { type: "SELECT_SECTION"; sectionId: string | null }

@@ -404,6 +404,45 @@ export default function StylePanel() {
               <ColorPicker value={selectedElement.styles.borderColor || ""} onChange={(v) => updateStyle("borderColor", v)} label="Warna Border" />
               {renderStyleField("Style Border", "borderStyle", "select", ["solid", "dashed", "dotted", "double", "none"])}
             </>)}
+            {renderSection("Responsive", <>
+              <div className="flex gap-2">
+                {[
+                  { key: "hideOnMobile", label: "Mobile", icon: "📱", desc: "< 640px" },
+                  { key: "hideOnTablet", label: "Tablet", icon: "💻", desc: "640-1024px" },
+                  { key: "hideOnDesktop", label: "Desktop", icon: "🖥", desc: "> 1024px" },
+                ].map(({ key, label, icon, desc }) => {
+                  const isActive = selectedElement.responsive?.[key as keyof typeof selectedElement.responsive];
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        const current = selectedElement.responsive || {};
+                        dispatch({
+                          type: "UPDATE_ELEMENT",
+                          pageId: currentPage.id,
+                          sectionId,
+                          columnIndex,
+                          elementId: selectedElement.id,
+                          content: {},
+                          styles: {},
+                          responsive: { ...current, [key]: !isActive },
+                        });
+                      }}
+                      className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-lg text-[10px] font-medium transition-all border ${
+                        isActive
+                          ? "bg-red-500/20 border-red-500/40 text-red-400"
+                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
+                      }`}
+                    >
+                      <span className="text-xs">{icon}</span>
+                      <span>Sembunyi</span>
+                      <span className="text-[8px] opacity-60">{label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[9px] text-gray-600 mt-1">Toggle untuk menyembunyikan element di perangkat tertentu</p>
+            </>)}
             {renderSection("Ukuran", <>
               {renderStyleField("Width", "width", "text")}
               {renderStyleField("Max Width", "maxWidth", "text")}

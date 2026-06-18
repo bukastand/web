@@ -3070,6 +3070,17 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   "social-embed": SocialEmbedElement
 };
 
+/** Build responsive visibility classes from element settings */
+function getResponsiveClasses(el: BuilderElement): string {
+  const r = el.responsive;
+  if (!r) return "";
+  const classes: string[] = [];
+  if (r.hideOnMobile) classes.push("hidden sm:block");
+  if (r.hideOnTablet) classes.push("sm:hidden lg:block");
+  if (r.hideOnDesktop) classes.push("lg:hidden");
+  return classes.join(" ");
+}
+
 export function ElementRenderer({
   element,
   editing,
@@ -3082,8 +3093,13 @@ export function ElementRenderer({
   onBlurEditing?: () => void;
 }) {
   const Component = elementComponents[element.type];
+  const respClass = getResponsiveClasses(element);
   if (!Component) {
-    return <div className="text-gray-500 text-sm">Unknown element: {element.type}</div>;
+    return <div className={`text-gray-500 text-sm${respClass ? " " + respClass : ""}`}>Unknown element: {element.type}</div>;
   }
-  return <Component el={element} editing={editing} onEdit={onEdit} onBlurEditing={onBlurEditing} />;
+  return (
+    <div className={respClass || undefined}>
+      <Component el={element} editing={editing} onEdit={onEdit} onBlurEditing={onBlurEditing} />
+    </div>
+  );
 }

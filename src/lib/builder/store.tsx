@@ -268,7 +268,7 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
                 ...col,
                 elements: col.elements.map((e) =>
                   e.id === action.elementId
-                    ? { ...e, content: { ...e.content, ...action.content }, styles: { ...e.styles, ...(action.styles || {}) } }
+                    ? { ...e, content: { ...e.content, ...action.content }, styles: { ...e.styles, ...(action.styles || {}) }, responsive: action.responsive !== undefined ? action.responsive : e.responsive }
                     : e
                 ),
               };
