@@ -101,6 +101,18 @@ function SectionControls({
           </svg>
         </button>
         <div className="w-px h-4 bg-white/10" />
+        {/* Tambah Row */}
+        <button
+          onClick={() => dispatch({ type: "ADD_ROW", pageId, sectionId: section.id })}
+          className="p-1.5 md:p-1 text-gray-400 hover:text-[#22c55e] transition-colors"
+          title="Tambah Row"
+        >
+          <svg className="w-5 h-5 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="7" rx="1" strokeWidth={1.5} />
+            <rect x="3" y="14" width="18" height="7" rx="1" strokeWidth={1.5} />
+          </svg>
+        </button>
+        <div className="w-px h-4 bg-white/10" />
         {/* Duplicate */}
         <button
           onClick={() => dispatch({ type: "DUPLICATE_SECTION", pageId, sectionId: section.id })}
