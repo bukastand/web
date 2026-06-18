@@ -283,11 +283,21 @@ export default function BuilderSectionComponent({
               {/* Row Controls */}
               <div className={`flex items-center justify-center gap-2 mt-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-60 md:opacity-0 md:group-hover:opacity-100"}`}>
                 <button
+                  onClick={(e) => { e.stopPropagation(); dispatch({ type: "ADD_COLUMN", pageId, sectionId: section.id, rowIndex } as any); }}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition-all"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Kolom
+                </button>
+                <button
                   onClick={(e) => { e.stopPropagation(); dispatch({ type: "ADD_ROW", pageId, sectionId: section.id, index: rowIndex + 1 }); }}
                   className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <rect x="3" y="3" width="18" height="7" rx="1" strokeWidth={1.5} />
+                    <rect x="3" y="14" width="18" height="7" rx="1" strokeWidth={1.5} />
                   </svg>
                   Row
                 </button>
