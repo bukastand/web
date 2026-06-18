@@ -1127,7 +1127,7 @@ function CarouselElement({ el }: ElementComponentProps) {
           <div
             key={i}
             className="absolute inset-0 transition-all duration-700 ease-in-out"
-            style={{
+            style={{ backgroundColor: "#0f172a",
               opacity: i === activeIdx ? 1 : 0,
               transform: `translateX(${(i - activeIdx) * 100}%)`,
               transition: "opacity 0.7s ease-in-out, transform 0.7s ease-in-out",
@@ -1137,7 +1137,7 @@ function CarouselElement({ el }: ElementComponentProps) {
             <img
               src={slide.image || "https://placehold.co/800x500/1e293b/64748b?text=Slide"}
               alt={slide.caption || ""}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
             {slide.caption && (
               <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 bg-gradient-to-t from-black/60 to-transparent">
@@ -2325,23 +2325,19 @@ function CountdownElement({ el }: ElementComponentProps) {
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
       {/* Mobile: 2x2 grid | Desktop: single row */}
-      <div className="grid grid-cols-2 md:flex md:items-center md:justify-center gap-3 md:gap-6 max-w-sm mx-auto md:max-w-none">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-6 max-w-lg mx-auto">
         {boxes.map((box, i) => (
-          <div key={i} className="flex flex-col items-center md:flex-row md:items-center gap-0 md:gap-6">
+          <div key={i} className="flex flex-col items-center">
             <div
-              className="flex flex-col items-center rounded-2xl w-full md:w-auto p-3 md:p-6"
+              className="flex flex-col items-center rounded-2xl w-full p-3 md:p-6"
               style={{
                 backgroundColor: el.content.boxBg || "rgba(255,255,255,0.05)",
                 border: `1px solid ${el.content.boxBorder || "rgba(255,255,255,0.1)"}`,
               }}
             >
-              <span style={{ ...numStyle, fontSize: numStyle.fontSize || "clamp(24px, 8vw, 48px)" }}>{String(box.value).padStart(2, "0")}</span>
+              <span style={{ ...numStyle, fontSize: numStyle.fontSize || "clamp(20px, 10vw, 48px)" }}>{String(box.value).padStart(2, "0")}</span>
               <span style={labelStyle}>{box.label}</span>
             </div>
-            {/* Separator - hide on mobile (grid handles spacing), show on desktop between items */}
-            {i < boxes.length - 1 && (
-              <span className="hidden md:inline text-2xl md:text-3xl font-bold self-start pt-4 md:pt-6" style={{ color: el.content.separatorColor || "rgba(255,255,255,0.1)" }}>:</span>
-            )}
           </div>
         ))}
       </div>
@@ -2451,7 +2447,7 @@ function OffCanvasElement({ el }: ElementComponentProps) {
 function SlidesElement({ el }: ElementComponentProps) {
   const {
     slides = [],
-    slideHeight = "clamp(320px, 50vw, 600px)",
+    slideHeight = "clamp(300px, 60vw, 600px)",
     autoplay = true,
     interval = 5000,
     navigation = "arrows",
@@ -2492,12 +2488,12 @@ function SlidesElement({ el }: ElementComponentProps) {
   }
 
   return (
-    <div className="relative overflow-hidden w-full" style={{ height: slideHeight }}>
+    <div className="relative overflow-hidden w-full sm:aspect-[16/9] md:aspect-[21/9]" style={{ minHeight: slideHeight }}>
       {slides.map((slide: any, i: number) => (
         <div
           key={i}
           className="absolute inset-0 transition-all duration-1000"
-          style={{
+          style={{ backgroundColor: "#0f172a",
             opacity: i === activeIdx ? 1 : 0,
             transform: `scale(${kenBurns && i === activeIdx ? 1.05 : 1})`,
             transition: "opacity 1s ease-in-out, transform 8s ease-in-out",
@@ -2507,7 +2503,7 @@ function SlidesElement({ el }: ElementComponentProps) {
           <img
             src={slide.image || "https://placehold.co/1400x600/1e293b/64748b?text=Slide"}
             alt={slide.title || ""}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             style={{
               transform: kenBurns && i === activeIdx ? "scale(1.15)" : "scale(1)",
               transition: "transform 8s ease-in-out",
@@ -2642,6 +2638,10 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
     return <div className="text-center text-gray-500 py-10">Tambah slide untuk carousel</div>;
   }
 
+  // When showing only 1 slide, gap pushes subsequent slides off-center
+  // since translateX(%) is relative to the flex container (100% of parent),
+  // not accounting for gap pixels between slides.
+  const effectiveGap = responsiveSlidesPerView <= 1 ? 0 : gap;
   const slidePercent = 100 / responsiveSlidesPerView;
   const gapAdjust = gap * (1 - 1 / responsiveSlidesPerView);
 
@@ -2654,7 +2654,8 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
           className="flex transition-transform duration-500 ease-in-out"
           style={{
             transform: `translateX(-${activeIdx * slidePercent}%)`,
-            gap: `${gap}px`,
+                        gap: `${effectiveGap}px`,
+
           }}
         >
           {slides.map((slide: any, i: number) => (
