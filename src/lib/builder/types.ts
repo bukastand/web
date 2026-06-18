@@ -8,7 +8,9 @@ export type ElementType =
   | "progress-tracker" | "share-buttons" | "checklist" | "gallery" | "lottie"
   | "star-rating" | "search" | "floating-buttons" | "breadcrumbs"
   // Elementor Pro ports — batch 2:
-  | "off-canvas" | "slides" | "nested-carousel" | "video-playlist" | "table-of-contents" | "social-embed";
+  | "off-canvas" | "slides" | "nested-carousel" | "video-playlist" | "table-of-contents" | "social-embed"
+  // Layout containers:
+  | "container" | "flexbox";
 
 export interface ElementStyles {
   // Shorthand (backward compatible)

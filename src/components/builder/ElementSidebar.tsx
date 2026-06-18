@@ -14,6 +14,9 @@ interface ElementItem {
 
 // Export for reuse in mobile drawer
 const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }> = [
+  // Layout containers — Paling Atas
+  { type: "container", label: "Container Grid", icon: "⊞" },
+  { type: "flexbox", label: "Flexbox", icon: "≋" },
   { type: "heading", label: "Heading", icon: "H" },
   { type: "text", label: "Text", icon: "¶" },
   { type: "image", label: "Image", icon: "🖼" },
@@ -61,6 +64,10 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
 export { MOBILE_ELEMENTS };
 
 const elements: ElementItem[] = [
+  // Layout containers — Paling Atas
+  { type: "container", label: "Container Grid", icon: "⊞", category: "Layout" },
+  { type: "flexbox", label: "Flexbox", icon: "≋", category: "Layout" },
+
   // Layout category
   { type: "heading", label: "Heading", icon: "H", category: "Teks" },
   { type: "text", label: "Text", icon: "¶", category: "Teks" },

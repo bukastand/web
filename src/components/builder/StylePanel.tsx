@@ -51,6 +51,8 @@ const elementLabels: Record<string, string> = {
   "video-playlist": "Video Playlist",
   "table-of-contents": "Table of Contents",
   "social-embed": "Social Embed",
+  container: "Container Grid",
+  flexbox: "Flexbox",
 };
 
 export default function StylePanel() {
@@ -331,6 +333,33 @@ export default function StylePanel() {
             {selectedElement.type === "accordion" && <AccordionEditor element={selectedElement} updateContent={updateContent} renderField={renderField} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
             {selectedElement.type === "team" && <TeamEditor element={selectedElement} updateContent={updateContent} renderField={renderField} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
             {selectedElement.type === "countdown" && <CountdownEditor element={selectedElement} updateContent={updateContent} renderField={renderField} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+            {selectedElement.type === "container" && (
+              <>
+                {renderSection("Container Grid", <>
+                  {renderField("Jumlah Kolom", "columns", "select", ["1","2","3","4","5","6","8","12"])}
+                  {renderField("Baris (opsional)", "rows", "select", ["auto","100px","150px","200px","250px","1fr","auto auto","100px 1fr"])}
+                  {renderField("Gap (jarak)", "gap", "text")}
+                  {renderField("Gap Kolom", "columnGap", "text")}
+                  {renderField("Gap Baris", "rowGap", "text")}
+                  {renderField("Min Height", "minHeight", "text")}
+                  {renderField("Align Items", "align", "select", ["stretch","start","center","end"])}
+                  {renderField("Justify Items", "justifyItems", "select", ["stretch","start","center","end"])}
+                </>)}
+              </>
+            )}
+            {selectedElement.type === "flexbox" && (
+              <>
+                {renderSection("Flexbox", <>
+                  {renderField("Direction", "direction", "select", ["row","row-reverse","column","column-reverse"])}
+                  {renderField("Wrap", "wrap", "select", ["nowrap","wrap","wrap-reverse"])}
+                  {renderField("Justify Content", "justifyContent", "select", ["flex-start","center","flex-end","space-between","space-around","space-evenly"])}
+                  {renderField("Align Items", "alignItems", "select", ["stretch","flex-start","center","flex-end","baseline"])}
+                  {renderField("Align Content", "alignContent", "select", ["stretch","flex-start","center","flex-end","space-between","space-around"])}
+                  {renderField("Gap", "gap", "text")}
+                  {renderField("Min Height", "minHeight", "text")}
+                </>)}
+              </>
+            )}
             {["animated-headline","blockquote","code-highlight","flip-box","hotspot","progress-tracker","share-buttons","checklist","gallery","lottie","star-rating","search","floating-buttons","breadcrumbs","off-canvas","slides","nested-carousel","video-playlist","table-of-contents","social-embed"].includes(selectedElement.type) && (
               <>
                 {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}

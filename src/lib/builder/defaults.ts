@@ -835,6 +835,32 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { padding: "0", backgroundColor: "transparent", borderRadius: "12px" },
   },
+  container: {
+    content: {
+      columns: 3,
+      rows: "auto",
+      gap: "16px",
+      columnGap: "",
+      rowGap: "",
+      minHeight: "100px",
+      align: "stretch",
+      justifyItems: "stretch",
+      elements: [],
+    },
+    styles: { padding: "20px", backgroundColor: "transparent", minHeight: "100px" },
+  },
+  flexbox: {
+    content: {
+      direction: "row",
+      wrap: "wrap",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      alignContent: "stretch",
+      gap: "16px",
+      elements: [],
+    },
+    styles: { padding: "20px", backgroundColor: "transparent", minHeight: "80px" },
+  },
   "social-embed": {
     content: {
       type: "facebook-page",
@@ -998,6 +1024,7 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
     "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
     "star-rating", "search", "floating-buttons", "breadcrumbs",
     "off-canvas", "slides", "nested-carousel", "video-playlist", "table-of-contents", "social-embed",
+    "container", "flexbox",
   ];
   
   // Check alias first, then valid types, fallback to heading for visual emphasis
@@ -1038,7 +1065,7 @@ function fillContentDefaults(elType: ElementType, aiContent: any): Record<string
   }
   
   // Untuk field array khusus — isi jika kosong
-  const arrayFields = ['items', 'links', 'socials', 'slides', 'members', 'fields'];
+  const arrayFields = ['items', 'links', 'socials', 'slides', 'members', 'fields', 'elements'];
   for (const field of arrayFields) {
     if (Array.isArray(content[field]) && content[field].length === 0 && defaults[field]) {
       content[field] = JSON.parse(JSON.stringify(defaults[field]));
