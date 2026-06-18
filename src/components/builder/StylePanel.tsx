@@ -83,18 +83,24 @@ export default function StylePanel() {
   let columnIndex = 0;
   let elementIndex = -1;
   let totalElements = 0;
+  let rowIndex = 0;
 
   for (const sec of currentPage.sections) {
-    for (let ci = 0; ci < sec.columns.length; ci++) {
-      const idx = sec.columns[ci].elements.findIndex((e) => e.id === state.selectedElementId);
-      if (idx !== -1) {
-        selectedElement = sec.columns[ci].elements[idx];
-        sectionId = sec.id;
-        columnIndex = ci;
-        elementIndex = idx;
-        totalElements = sec.columns[ci].elements.length;
-        break;
+    const rows = sec.rows || [{ columns: sec.columns, id: 'default' }];
+    for (let ri = 0; ri < rows.length; ri++) {
+      for (let ci = 0; ci < rows[ri].columns.length; ci++) {
+        const idx = rows[ri].columns[ci].elements.findIndex((e) => e.id === state.selectedElementId);
+        if (idx !== -1) {
+          selectedElement = rows[ri].columns[ci].elements[idx];
+          sectionId = sec.id;
+          columnIndex = ci;
+          elementIndex = idx;
+          totalElements = rows[ri].columns[ci].elements.length;
+          rowIndex = ri;
+          break;
+        }
       }
+      if (selectedElement) break;
     }
     if (selectedElement) break;
   }
@@ -108,11 +114,11 @@ export default function StylePanel() {
   }
 
   const updateContent = (key: string, value: any) => {
-    dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: { [key]: value } });
+    dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: { [key]: value }, rowIndex } as any);
   };
 
   const updateStyle = (key: string, value: string) => {
-    dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: {}, styles: { [key]: value } });
+    dispatch({ type: "UPDATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, content: {}, styles: { [key]: value }, rowIndex } as any);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,21 +283,21 @@ export default function StylePanel() {
 
         <div className="flex items-center gap-1 mb-2">
           <button
-            onClick={() => dispatch({ type: "MOVE_ELEMENT", pageId: currentPage.id, from: { sectionId, columnIndex, elementId: selectedElement.id }, to: { sectionId, columnIndex, index: elementIndex - 1 } })}
+            onClick={() => dispatch({ type: "MOVE_ELEMENT", pageId: currentPage.id, from: { sectionId, columnIndex, elementId: selectedElement.id, rowIndex }, to: { sectionId, columnIndex, index: elementIndex - 1, rowIndex } } as any)}
             disabled={elementIndex <= 0}
             className="flex-1 py-1 text-[10px] font-medium rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >▲ Atas</button>
           <button
-            onClick={() => dispatch({ type: "MOVE_ELEMENT", pageId: currentPage.id, from: { sectionId, columnIndex, elementId: selectedElement.id }, to: { sectionId, columnIndex, index: elementIndex + 1 } })}
+            onClick={() => dispatch({ type: "MOVE_ELEMENT", pageId: currentPage.id, from: { sectionId, columnIndex, elementId: selectedElement.id, rowIndex }, to: { sectionId, columnIndex, index: elementIndex + 1, rowIndex } } as any)}
             disabled={elementIndex >= totalElements - 1}
             className="flex-1 py-1 text-[10px] font-medium rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >▼ Bawah</button>
           <button
-            onClick={() => dispatch({ type: "DUPLICATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id })}
+            onClick={() => dispatch({ type: "DUPLICATE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, rowIndex } as any)}
             className="flex-1 py-1 text-[10px] font-medium rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#22c55e] hover:bg-[#22c55e]/10 transition-all"
           >📋 Duplikat</button>
           <button
-            onClick={() => dispatch({ type: "REMOVE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id })}
+            onClick={() => dispatch({ type: "REMOVE_ELEMENT", pageId: currentPage.id, sectionId, columnIndex, elementId: selectedElement.id, rowIndex } as any)}
             className="flex-1 py-1 text-[10px] font-medium rounded-lg bg-white/5 border border-red-400/20 text-red-400 hover:bg-red-500/10 hover:border-red-400/40 transition-all"
           >🗑 Hapus</button>
         </div>
@@ -450,7 +456,8 @@ export default function StylePanel() {
                           content: {},
                           styles: {},
                           responsive: { ...current, [key]: !isActive },
-                        });
+                          rowIndex,
+                        } as any);
                       }}
                       className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-lg text-[10px] font-medium transition-all border ${
                         isActive

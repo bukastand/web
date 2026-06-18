@@ -26,7 +26,7 @@ export default function BuilderColumnComponent({
 
   const { setNodeRef, isOver } = useDroppable({
     id: `col-${column.id}`,
-    data: { type: "column", sectionId, columnIndex, columnId: column.id },
+    data: { type: "column", sectionId, columnIndex, columnId: column.id, rowIndex },
   });
 
   const section = currentPage?.sections.find((s) => s.id === sectionId);
@@ -157,8 +157,7 @@ export default function BuilderColumnComponent({
 
       {/* Elements */}
       <div className="space-y-1 p-2">
-        {column.elements.map((element, elIndex) => (
-          <BuilderElement
+        {column.elements.map((element, elIndex) => (                  <BuilderElement
             key={element.id}
             element={element}
             elementIndex={elIndex}
@@ -166,6 +165,7 @@ export default function BuilderColumnComponent({
             sectionId={sectionId}
             pageId={pageId}
             totalElements={column.elements.length}
+            rowIndex={rowIndex}
           />
         ))}
       </div>

@@ -138,7 +138,8 @@ export default function BuilderEditor() {
         sectionId: overData.sectionId,
         columnIndex: overData.columnIndex,
         element,
-      });
+        rowIndex: overData.rowIndex ?? 0,
+      } as any);
       return;
     }
 
@@ -150,13 +151,15 @@ export default function BuilderEditor() {
           sectionId: activeData.sectionId,
           columnIndex: activeData.columnIndex,
           elementId: activeData.elementId,
+          rowIndex: activeData.rowIndex ?? 0,
         },
         to: {
           sectionId: overData.sectionId,
           columnIndex: overData.columnIndex,
           index: overData.index,
+          rowIndex: overData.rowIndex ?? 0,
         },
-      });
+      } as any);
       return;
     }
 
@@ -168,13 +171,15 @@ export default function BuilderEditor() {
           sectionId: activeData.sectionId,
           columnIndex: activeData.columnIndex,
           elementId: activeData.elementId,
+          rowIndex: activeData.rowIndex ?? 0,
         },
         to: {
           sectionId: overData.sectionId,
           columnIndex: overData.columnIndex,
           index: 999,
+          rowIndex: overData.rowIndex ?? 0,
         },
-      });
+      } as any);
       return;
     }
   };

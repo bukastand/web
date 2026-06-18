@@ -13,6 +13,7 @@ export default function BuilderElementComponent({
   sectionId,
   pageId,
   totalElements,
+  rowIndex = 0,
 }: {
   element: BuilderElementType;
   elementIndex: number;
@@ -20,6 +21,7 @@ export default function BuilderElementComponent({
   sectionId: string;
   pageId: string;
   totalElements: number;
+  rowIndex?: number;
 }) {
   const { dispatch, state } = useBuilder();
   const isSelected = state.selectedElementId === element.id;
@@ -28,12 +30,12 @@ export default function BuilderElementComponent({
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `el-${element.id}`,
-    data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex },
+    data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex, rowIndex },
   });
 
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({
     id: `drop-${element.id}`,
-    data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex },
+    data: { type: "element", elementId: element.id, sectionId, columnIndex, index: elementIndex, rowIndex },
   });
 
   // Merge draggable + droppable refs onto the same outer element to avoid nested issues
@@ -74,9 +76,10 @@ export default function BuilderElementComponent({
       columnIndex,
       elementId: element.id,
       content,
-    });
+      rowIndex,
+    } as any);
     setInlineEditing(false);
-  }, [dispatch, pageId, sectionId, columnIndex, element.id]);
+  }, [dispatch, pageId, sectionId, columnIndex, rowIndex, element.id]);
 
   const handleBlur = () => {
     // Small delay to allow click events to fire
@@ -94,7 +97,8 @@ export default function BuilderElementComponent({
       columnIndex,
       elementId: element.id,
       content: { hidden: !isHidden },
-    });
+      rowIndex,
+    } as any);
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
@@ -128,30 +132,29 @@ export default function BuilderElementComponent({
             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 6h2v2H8V6zm6 0h2v2h-2V6zM8 11h2v2H8v-2zm6 0h2v2h-2v-2zm-6 5h2v2H8v-2zm6 0h2v2h-2v-2z" />
             </svg>
-          </button>
-          {/* Move up / down */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id }, to: { sectionId, columnIndex, index: elementIndex - 1 } });
-            }}
-            disabled={elementIndex === 0}
-            className={`p-0.5 transition-colors ${elementIndex === 0 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
-            title="Pindah ke atas"
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-            </svg>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id }, to: { sectionId, columnIndex, index: elementIndex + 1 } });
-            }}
-            disabled={elementIndex >= totalElements - 1}
-            className={`p-0.5 transition-colors ${elementIndex >= totalElements - 1 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
-            title="Pindah ke bawah"
-          >
+          </button>          {/* Move up / down */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id, rowIndex }, to: { sectionId, columnIndex, index: elementIndex - 1, rowIndex } } as any);
+              }}
+              disabled={elementIndex === 0}
+              className={`p-0.5 transition-colors ${elementIndex === 0 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
+              title="Pindah ke atas"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch({ type: "MOVE_ELEMENT", pageId, from: { sectionId, columnIndex, elementId: element.id, rowIndex }, to: { sectionId, columnIndex, index: elementIndex + 1, rowIndex } } as any);
+              }}
+              disabled={elementIndex >= totalElements - 1}
+              className={`p-0.5 transition-colors ${elementIndex >= totalElements - 1 ? "text-gray-700 cursor-not-allowed" : "text-gray-400 hover:text-white"}`}
+              title="Pindah ke bawah"
+            >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
@@ -187,27 +190,26 @@ export default function BuilderElementComponent({
               </svg>
             )}
           </button>
-          <div className="w-px h-3 bg-white/10" />
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "DUPLICATE_ELEMENT", pageId, sectionId, columnIndex, elementId: element.id });
-            }}
-            className="p-0.5 text-gray-400 hover:text-white transition-colors"
-            title="Duplikat"
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "REMOVE_ELEMENT", pageId, sectionId, columnIndex, elementId: element.id });
-            }}
-            className="p-0.5 text-red-400 hover:text-red-300 transition-colors"
-            title="Hapus"
-          >
+          <div className="w-px h-3 bg-white/10" />            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch({ type: "DUPLICATE_ELEMENT", pageId, sectionId, columnIndex, elementId: element.id, rowIndex } as any);
+              }}
+              className="p-0.5 text-gray-400 hover:text-white transition-colors"
+              title="Duplikat"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch({ type: "REMOVE_ELEMENT", pageId, sectionId, columnIndex, elementId: element.id, rowIndex } as any);
+              }}
+              className="p-0.5 text-red-400 hover:text-red-300 transition-colors"
+              title="Hapus"
+            >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
