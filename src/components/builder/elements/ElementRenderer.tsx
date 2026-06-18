@@ -316,7 +316,7 @@ function FeaturesElement({ el }: ElementComponentProps) {
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
     color: el.content.titleColor || "#ffffff",
-    fontSize: el.content.titleSize || "30px",
+    fontSize: el.content.titleSize || "24px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
   };
@@ -328,14 +328,14 @@ function FeaturesElement({ el }: ElementComponentProps) {
   return (
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cols > 2 ? "280px" : "200px"}, 1fr))` }}>
+      {el.content.subtitle && <p className="text-center mb-6 md:mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
+      <div className="grid gap-4 md:gap-6" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${cols > 2 ? "280px" : "200px"}), 1fr))` }}>
         {items.map((item: any, i: number) => {
           const iconDef = FEATURE_ICONS[item.icon];
           return (
             <div
               key={i}
-              className="p-6 rounded-2xl text-center"
+              className="p-4 md:p-6 rounded-2xl text-center"
               style={{
                 backgroundColor: el.content.itemBg || "rgba(255,255,255,0.05)",
                 borderColor: el.content.itemBorder || "rgba(255,255,255,0.1)",
@@ -377,7 +377,7 @@ function PricingElement({ el }: ElementComponentProps) {
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
       <div
-        className="mx-auto px-4"
+        className="mx-auto px-4 sm:px-0"
         style={{
           maxWidth: "1200px",
           display: "grid",
@@ -388,9 +388,9 @@ function PricingElement({ el }: ElementComponentProps) {
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#22c55e] scale-[1.02] md:scale-105 z-10" : ""}`}
+            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#22c55e] scale-[1.01] md:scale-105 z-10" : ""}`}
             style={{
-              padding: item.highlighted ? "1.75rem" : "1.5rem",
+              padding: item.highlighted ? "1.25rem" : "1rem",
               border: item.highlighted ? "none" : `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
               backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.08)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
             }}
@@ -398,7 +398,7 @@ function PricingElement({ el }: ElementComponentProps) {
             <h3 className="text-lg md:text-xl font-bold mb-1.5" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
             <p className="text-xs md:text-sm mb-3" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
             <p className="text-xl md:text-2xl lg:text-3xl font-extrabold mb-4 md:mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
-            <ul className="space-y-2 mb-4 md:mb-8 flex-1">
+            <ul className="space-y-1.5 md:space-y-2 mb-4 md:mb-8 flex-1">
               {(item.features || []).map((f: string, fi: number) => (
                 <li key={fi} className="flex items-start gap-2 text-xs md:text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
                   <svg className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
@@ -428,11 +428,11 @@ function TestimonialElement({ el }: ElementComponentProps) {
   return (
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-10" style={titleStyle}>{el.content.title}</h2>}
-      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className="p-6 rounded-2xl"
+            className="p-4 md:p-6 rounded-2xl"
             style={{
               backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)",
               border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
@@ -509,7 +509,7 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
   };
 
   return (
-    <div ref={containerRef} className="text-center py-16 px-6 rounded-2xl" style={elStyles}>
+    <div ref={containerRef} className="text-center py-10 md:py-16 px-4 md:px-6 rounded-2xl" style={elStyles}>
       <h2
         className="mb-4 outline-none"
         style={titleStyle}
@@ -521,7 +521,7 @@ function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProp
         {el.content.title || "Siap Memulai?"}
       </h2>
       <p
-        className="mb-8 max-w-xl mx-auto outline-none"
+        className="mb-6 md:mb-8 max-w-xl mx-auto outline-none"
         style={subtitleStyle}
         contentEditable={editing || undefined}
         suppressContentEditableWarning
@@ -556,7 +556,7 @@ function StatsElement({ el }: ElementComponentProps) {
   const cols = el.content.columns || 4;
   const elStyles = applyStyles(el);
   return (
-    <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(150px, 1fr))`, ...elStyles }}>
+    <div className="grid gap-4 md:gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 150px), 1fr))`, ...elStyles }}>
       {items.map((item: any, i: number) => (
         <div key={i} className="text-center">
           <div className="font-extrabold mb-1" style={{ color: el.content.valueColor || "#22c55e", fontSize: el.content.valueSize || "36px", fontWeight: el.content.valueWeight || "800" }}>{item.value}</div>
@@ -644,7 +644,7 @@ function ContactFormElement({ el }: ElementComponentProps) {
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-8" style={subtitleStyle}>{el.content.subtitle}</p>}
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
-        <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
+        <input type="text" name="name" placeholder="Nama Lengkap" required className="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
         <input type="email" name="email" placeholder="Email" required className="w-full px-4 py-3 rounded-xl focus:outline-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
         <textarea name="message" placeholder="Pesan" required rows={4} className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none" style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: inputText }} />
         <button type="submit" disabled={sending} className="w-full py-3 font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50" style={{ backgroundColor: buttonBg, color: buttonTextColor }}>
@@ -810,7 +810,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
 
   return (
     <>
-      <nav className="flex items-center justify-between gap-4 py-4 px-6" style={navStyle}>
+      <nav className="flex items-center justify-between gap-4 py-3 md:py-4 px-4 md:px-6" style={navStyle}>
         {/* Logo - natural width */}
         <div className="flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(logoAlign) }}>
           {logoImg ? (
@@ -963,8 +963,8 @@ function FooterElement({ el }: ElementComponentProps) {
   };
 
   return (
-    <div className="py-12 px-6">
-      <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+    <div className="py-8 md:py-12 px-4 md:px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
         <div className="md:col-span-1">
           {logoImg ? (
             <img src={logoImg} alt={el.content.logo || "Logo"} className="object-contain mb-2" style={{ height: `${logoH}px` }} />
@@ -1154,7 +1154,7 @@ function CarouselElement({ el }: ElementComponentProps) {
           <>
             <button
               onClick={() => goTo(activeIdx - 1)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+              className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
               style={{ backgroundColor: el.content.arrowBg || "rgba(0,0,0,0.3)", color: el.content.arrowColor || "#ffffff" }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1163,7 +1163,7 @@ function CarouselElement({ el }: ElementComponentProps) {
             </button>
             <button
               onClick={() => goTo(activeIdx + 1)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+              className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
               style={{ backgroundColor: el.content.arrowBg || "rgba(0,0,0,0.3)", color: el.content.arrowColor || "#ffffff" }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1215,7 +1215,7 @@ function AccordionElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-6" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="max-w-2xl mx-auto space-y-3">
+      <div className="max-w-2xl mx-auto space-y-2 md:space-y-3">
         {items.map((item: any, i: number) => (
           <div
             key={i}
@@ -1227,7 +1227,7 @@ function AccordionElement({ el }: ElementComponentProps) {
           >
             <button
               onClick={() => setOpenIdx(openIdx === i ? null : i)}
-              className="w-full flex items-center justify-between p-5 text-left transition-colors"
+              className="w-full flex items-center justify-between p-3 sm:p-5 text-left transition-colors"
               style={{ color: el.content.questionColor || "#ffffff", fontSize: el.content.questionSize || "16px", fontWeight: el.content.questionWeight || "600" }}
             >
               <span>{item.question}</span>
@@ -1279,11 +1279,11 @@ function TeamElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
         {members.map((member: any, i: number) => (
           <div
             key={i}
-            className="p-6 rounded-2xl text-center"
+            className="p-4 md:p-6 rounded-2xl text-center"
             style={{
               backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)",
               border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
@@ -1499,7 +1499,7 @@ function BlockquoteElement({ el }: ElementComponentProps) {
   return (
     <blockquote className={skinClasses[skin] || skinClasses.border} style={styles}>
       {skin === "quotation" && (
-        <span className="absolute left-0 top-0 text-4xl leading-none opacity-30" style={{ color: authorNameColor || styles.color || "#22c55e" }}>
+        <span className="absolute left-0 top-0 text-2xl md:text-4xl leading-none opacity-30" style={{ color: authorNameColor || styles.color || "#22c55e" }}>
           &ldquo;
         </span>
       )}
@@ -1954,7 +1954,7 @@ function GalleryElement({ el }: ElementComponentProps) {
   return (
     <div style={styles}>
       {title && <h2 className="text-center mb-8" style={{ color: titleColor || captionColor, fontSize: titleSize || "24px", fontWeight: titleWeight || "700", fontFamily: titleFont }}>{title}</h2>}
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${columns > 2 ? "250px" : "200px"}, 1fr))` }}>
+      <div className="grid gap-3 sm:gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${columns > 2 ? "250px" : "200px"}), 1fr))` }}>
         {images.map((img: any, i: number) => (
           <div
             key={i}
@@ -1964,7 +1964,7 @@ function GalleryElement({ el }: ElementComponentProps) {
             <img
               src={img.src || "https://placehold.co/600x400/1e293b/64748b?text=Image"}
               alt={img.alt || img.caption || ""}
-              className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+              className="w-full h-32 sm:h-40 md:h-48 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             {img.caption && (
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
@@ -1999,7 +1999,7 @@ function GalleryElement({ el }: ElementComponentProps) {
           <img
             src={images[lightboxIdx]?.src}
             alt={images[lightboxIdx]?.alt || ""}
-            className="max-h-[80vh] max-w-full object-contain rounded-2xl"
+            className="max-h-[70vh] sm:max-h-[80vh] max-w-full object-contain rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           />
           {lightboxIdx < images.length - 1 && (
