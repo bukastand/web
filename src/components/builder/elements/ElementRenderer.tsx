@@ -1123,13 +1123,13 @@ function CarouselElement({ el }: ElementComponentProps) {
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
       {el.content.subtitle && <p className="text-center mb-6" style={subtitleStyle}>{el.content.subtitle}</p>}
-      <div className="relative overflow-hidden rounded-2xl" style={{ height: carouselHeight }}>
+      <div className="relative rounded-2xl overflow-hidden aspect-video sm:aspect-video md:aspect-[21/9]" style={{ minHeight: "180px", maxHeight: "70vh" }}>
         {/* Slides */}
         {slides.map((slide: any, i: number) => (
           <div
             key={i}
             className="absolute inset-0 transition-all duration-700 ease-in-out"
-            style={{ backgroundColor: "#0f172a",
+            style={{
               opacity: i === activeIdx ? 1 : 0,
               transform: `translateX(${(i - activeIdx) * 100}%)`,
               transition: "opacity 0.7s ease-in-out, transform 0.7s ease-in-out",
@@ -1139,7 +1139,7 @@ function CarouselElement({ el }: ElementComponentProps) {
             <img
               src={slide.image || "https://placehold.co/800x500/1e293b/64748b?text=Slide"}
               alt={slide.caption || ""}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
             {slide.caption && (
               <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 bg-gradient-to-t from-black/60 to-transparent">
@@ -2490,12 +2490,12 @@ function SlidesElement({ el }: ElementComponentProps) {
   }
 
   return (
-    <div className="relative overflow-hidden w-full sm:aspect-[16/9] md:aspect-[21/9]" style={{ minHeight: slideHeight }}>
+    <div className="relative overflow-hidden w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9]" style={{ maxHeight: "70vh", minHeight: "200px" }}>
       {slides.map((slide: any, i: number) => (
         <div
           key={i}
           className="absolute inset-0 transition-all duration-1000"
-          style={{ backgroundColor: "#0f172a",
+          style={{
             opacity: i === activeIdx ? 1 : 0,
             transform: `scale(${kenBurns && i === activeIdx ? 1.05 : 1})`,
             transition: "opacity 1s ease-in-out, transform 8s ease-in-out",
@@ -2505,7 +2505,7 @@ function SlidesElement({ el }: ElementComponentProps) {
           <img
             src={slide.image || "https://placehold.co/1400x600/1e293b/64748b?text=Slide"}
             alt={slide.title || ""}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
             style={{
               transform: kenBurns && i === activeIdx ? "scale(1.15)" : "scale(1)",
               transition: "transform 8s ease-in-out",
@@ -2677,7 +2677,7 @@ function NestedCarouselElement({ el }: ElementComponentProps) {
                   src={slide.image}
                   alt={slide.title || ""}
                   className="w-full object-cover rounded-xl mb-3"
-                  style={{ height: windowWidth < 640 ? "140px" : "160px" }}
+                  style={{ height: windowWidth < 640 ? "180px" : windowWidth < 1024 ? "180px" : "200px" }}
                 />
               )}
               {slide.title && (
