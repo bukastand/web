@@ -14,7 +14,9 @@ interface ElementComponentProps {
 }
 
 function applyStyles(el: BuilderElement): React.CSSProperties {
-  const s: React.CSSProperties = {};
+  const s: React.CSSProperties = {
+};
+
   const st = el.styles;
   if (st.color) s.color = st.color;
   // Background color with optional opacity
@@ -3127,6 +3129,20 @@ function FlexboxElement({ el }: ElementComponentProps) {
   );
 }
 
+
+function HtmlElement({ el }: ElementComponentProps) {
+  const htmlContent = el.content.html || "";
+  const styles = applyStyles(el);
+
+  return (
+    <div
+      className="custom-html-element"
+      style={styles}
+      dangerouslySetInnerHTML={{ __html: htmlContent }}
+    />
+  );
+}
+
 const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   heading: HeadingElement,
   text: TextElement,
@@ -3171,7 +3187,8 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   "table-of-contents": TableOfContentsElement,
   "social-embed": SocialEmbedElement,
   container: ContainerElement,
-  flexbox: FlexboxElement,
+  flexbox: FlexboxElement,  "custom-html": HtmlElement,
+
 };
 
 /** Build responsive visibility classes from element settings */

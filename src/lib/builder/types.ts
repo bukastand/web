@@ -10,7 +10,9 @@ export type ElementType =
   // Elementor Pro ports — batch 2:
   | "off-canvas" | "slides" | "nested-carousel" | "video-playlist" | "table-of-contents" | "social-embed"
   // Layout containers:
-  | "container" | "flexbox";
+  | "container" | "flexbox"
+  // Custom:
+  | "custom-html";
 
 export interface ElementStyles {
   // Shorthand (backward compatible)

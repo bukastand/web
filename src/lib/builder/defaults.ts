@@ -861,6 +861,13 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { padding: "20px", backgroundColor: "transparent", minHeight: "80px" },
   },
+  "custom-html": {
+    content: {
+      html: "<div style=\"padding: 40px; text-align: center; background: #f8fafc; border-radius: 12px;\">\n  <h3 style=\"margin: 0 0 8px; color: #1e293b;\">Custom HTML</h3>\n  <p style=\"margin: 0; color: #64748b;\">Edit HTML Anda di sini</p>\n</div>",
+      title: "Custom HTML",
+    },
+    styles: { padding: "0", backgroundColor: "transparent", borderRadius: "0" },
+  },
   "social-embed": {
     content: {
       type: "facebook-page",
@@ -1024,7 +1031,7 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
     "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
     "star-rating", "search", "floating-buttons", "breadcrumbs",
     "off-canvas", "slides", "nested-carousel", "video-playlist", "table-of-contents", "social-embed",
-    "container", "flexbox",
+    "container", "flexbox", "custom-html",
   ];
   
   // Check alias first, then valid types, fallback to heading for visual emphasis

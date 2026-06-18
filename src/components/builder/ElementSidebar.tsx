@@ -59,6 +59,7 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
   { type: "video-playlist", label: "Video Playlist", icon: "▶️" },
   { type: "table-of-contents", label: "Table of Contents", icon: "📑" },
   { type: "social-embed", label: "Social Embed", icon: "🌐" },
+  { type: "custom-html", label: "Custom HTML", icon: "</>" },
 ];
 
 export { MOBILE_ELEMENTS };
@@ -120,6 +121,7 @@ const elements: ElementItem[] = [
   { type: "video-playlist", label: "Video Playlist", icon: "▶️", category: "Premium" },
   { type: "table-of-contents", label: "Table of Contents", icon: "📑", category: "Premium" },
   { type: "social-embed", label: "Social Embed", icon: "🌐", category: "Premium" },
+  { type: "custom-html", label: "Custom HTML", icon: "</>", category: "Premium" },
 ];
 
 function DraggableItem({ item }: { item: ElementItem }) {

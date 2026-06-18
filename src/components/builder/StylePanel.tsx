@@ -51,6 +51,7 @@ const elementLabels: Record<string, string> = {
   "video-playlist": "Video Playlist",
   "table-of-contents": "Table of Contents",
   "social-embed": "Social Embed",
+  "custom-html": "Custom HTML",
   container: "Container Grid",
   flexbox: "Flexbox",
 };
@@ -357,6 +358,29 @@ export default function StylePanel() {
                   {renderField("Align Content", "alignContent", "select", ["stretch","flex-start","center","flex-end","space-between","space-around"])}
                   {renderField("Gap", "gap", "text")}
                   {renderField("Min Height", "minHeight", "text")}
+                </>)}
+              </>
+            )}
+            {selectedElement.type === "custom-html" && (
+              <>
+                {renderSection("Custom HTML", <>
+                  <div className="mb-3">
+                    <label className="block text-[11px] font-medium text-amber-400 uppercase tracking-wider mb-1.5">⚠ Keamanan</label>
+                    <p className="text-[10px] text-gray-500 leading-relaxed">
+                      Script (JS) tidak akan berjalan saat preview/edit, tetapi akan berjalan di halaman yang <strong>sudah dipublikasikan</strong>. Hati-hati dengan kode dari sumber tidak dikenal.
+                    </p>
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kode HTML</label>
+                    <textarea
+                      value={selectedElement.content.html || ""}
+                      onChange={(e) => updateContent("html", e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-[#22c55e]/50 resize-y"
+                      rows={12}
+                      placeholder="<div>Your HTML here</div>"
+                      spellCheck={false}
+                    />
+                  </div>
                 </>)}
               </>
             )}
