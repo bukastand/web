@@ -6,6 +6,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { submitTemplate } from "@/lib/supabase/community-templates";
+import { checkSlugExists } from "@/lib/supabase/published";
 
 function MobileMenu({
   currentPage,
@@ -149,6 +150,7 @@ export default function BuilderTopBar({
   const [templateSubmitting, setTemplateSubmitting] = useState(false);
   const [templateError, setTemplateError] = useState("");
   const [templateSuccess, setTemplateSuccess] = useState("");
+  const [publishError, setPublishError] = useState("");
 
   const publishedUrl = `https://pagodastudio.my.id/${currentPage?.slug || ""}`;
 
@@ -187,7 +189,18 @@ export default function BuilderTopBar({
     }
   };
 
-  const handlePublishOnly = () => {
+  const handlePublishOnly = async () => {
+    setPublishError("");
+
+    // Cek apakah slug sudah dipakai oleh pengguna lain
+    if (user) {
+      const ownerId = await checkSlugExists(currentPage.slug, user.id);
+      if (ownerId) {
+        setPublishError(`Slug "${currentPage.slug}" sudah dipublikasikan oleh pengguna lain. Ganti slug di URL di atas, lalu coba lagi.`);
+        return;
+      }
+    }
+
     dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
     setShowTemplateOption(false);
     setTemplateDesc("");
@@ -198,8 +211,17 @@ export default function BuilderTopBar({
     setTemplateSubmitting(true);
     setTemplateError("");
     setTemplateSuccess("");
+    setPublishError("");
 
     try {
+      // Cek apakah slug sudah dipakai oleh pengguna lain
+      const ownerId = await checkSlugExists(currentPage.slug, user.id);
+      if (ownerId) {
+        setPublishError(`Slug "${currentPage.slug}" sudah dipublikasikan oleh pengguna lain. Ganti slug di URL di atas, lalu coba lagi.`);
+        setTemplateSubmitting(false);
+        return;
+      }
+
       // First publish
       dispatch({ type: "PUBLISH_PAGE", pageId: currentPage.id });
 
@@ -601,6 +623,12 @@ export default function BuilderTopBar({
                     </button>
                   </div>
 
+                      {publishError && (
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-2">
+                      {publishError}
+                    </div>
+                  )}
+
                   {templateError && (
                     <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-2">
                       {templateError}
@@ -608,7 +636,7 @@ export default function BuilderTopBar({
                   )}
 
                   <button
-                    onClick={() => { setShowTemplateOption(false); setTemplateDesc(""); setTemplateError(""); }}
+                    onClick={() => { setShowTemplateOption(false); setTemplateDesc(""); setTemplateError(""); setPublishError(""); }}
                     className="w-full py-2 text-sm text-gray-400 hover:text-white transition-colors text-center"
                   >
                     Batal

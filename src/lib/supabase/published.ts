@@ -27,6 +27,36 @@ export async function fetchPublishedPage(slug: string): Promise<BuilderPage | nu
 }
 
 /**
+ * Check if a slug is already taken by another user's published page.
+ * Returns the user_id of the owner if taken, or null if available.
+ */
+export async function checkSlugExists(slug: string, currentUserId: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from("published_pages")
+      .select("user_id, title")
+      .eq("slug", slug)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") return null; // No rows = slug available
+      console.warn("Supabase checkSlugExists error:", error.message);
+      return null;
+    }
+
+    // If found and owned by a different user, slug is taken
+    if (data && data.user_id !== currentUserId) {
+      return data.user_id;
+    }
+
+    return null; // Slug is available (owned by current user or doesn't exist)
+  } catch (err) {
+    console.warn("Supabase checkSlugExists exception:", err);
+    return null;
+  }
+}
+
+/**
  * Publish or update a page snapshot in Supabase.
  */
 export async function publishPage(
