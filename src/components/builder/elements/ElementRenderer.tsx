@@ -375,7 +375,7 @@ function PricingElement({ el }: ElementComponentProps) {
   return (
     <div style={elStyles}>
       {el.content.title && <h2 className="text-center mb-2" style={titleStyle}>{el.content.title}</h2>}
-      {el.content.subtitle && <p className="text-center mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
+      {el.content.subtitle && <p className="text-center mb-6 md:mb-10" style={subtitleStyle}>{el.content.subtitle}</p>}
       <div
         className="mx-auto px-4 sm:px-0"
         style={{
@@ -427,7 +427,7 @@ function TestimonialElement({ el }: ElementComponentProps) {
   };
   return (
     <div style={elStyles}>
-      {el.content.title && <h2 className="text-center mb-10" style={titleStyle}>{el.content.title}</h2>}
+      {el.content.title && <h2 className="text-center mb-6 md:mb-10" style={titleStyle}>{el.content.title}</h2>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
         {items.map((item: any, i: number) => (
           <div
@@ -861,7 +861,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* CTA - Desktop - natural width */}
         <div className="hidden md:flex items-center flex-shrink-0" style={{ justifyContent: mapAlign(ctaAlign) }}>
           <a href={el.content.ctaHref || "#"} target="_blank" rel="noopener noreferrer"
-            className="px-5 py-2.5 rounded-xl hover:opacity-90 transition-all"
+            className="px-3 md:px-5 py-2 md:py-2.5 rounded-xl hover:opacity-90 transition-all"
             style={ctaStyle}>
             {el.content.ctaText || "Hubungi"}
           </a>
@@ -906,7 +906,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}
-              className="block w-full text-center px-5 py-3 rounded-xl hover:opacity-90 transition-all mt-2"
+              className="block w-full text-center px-4 py-3 rounded-xl hover:opacity-90 transition-all mt-2"
               style={ctaStyle}
             >
               {el.content.ctaText || "Hubungi"}
@@ -999,7 +999,7 @@ function FooterElement({ el }: ElementComponentProps) {
               <a
                 key={i}
                 href={s.url || "#"}
-                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all"
                 style={socialIconStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = socialHoverColor + "20";
@@ -1111,7 +1111,7 @@ function CarouselElement({ el }: ElementComponentProps) {
     fontSize: el.content.subtitleSize || "16px",
     fontFamily: el.styles.fontFamily || undefined,
   };
-  const carouselHeight = el.content.height || "400px";
+  const carouselHeight = el.content.height || "clamp(250px, 50vw, 400px)";
 
   if (slides.length === 0) {
     return <div className="text-center text-gray-500 py-10">Tambah slide untuk memulai carousel</div>;
@@ -1140,7 +1140,7 @@ function CarouselElement({ el }: ElementComponentProps) {
               className="w-full h-full object-cover"
             />
             {slide.caption && (
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 bg-gradient-to-t from-black/60 to-transparent">
                 <p style={{ color: el.content.captionColor || "#ffffff", fontSize: el.content.captionSize || "14px" }}>
                   {slide.caption}
                 </p>
@@ -1292,7 +1292,7 @@ function TeamElement({ el }: ElementComponentProps) {
             <img
               src={member.image || "https://placehold.co/200x200/1e293b/64748b?text=Team"}
               alt={member.name}
-              className="mx-auto rounded-full object-cover mb-4"
+              className="mx-auto rounded-full object-cover mb-4 max-w-[40vw] md:max-w-none"
               style={{ width: el.content.avatarSize || "120px", height: el.content.avatarSize || "120px" }}
             />
             <h3 style={{ color: el.content.nameColor || "#ffffff", fontSize: el.content.nameSize || "18px", fontWeight: el.content.nameWeight || "700" }}>
@@ -2451,7 +2451,7 @@ function OffCanvasElement({ el }: ElementComponentProps) {
 function SlidesElement({ el }: ElementComponentProps) {
   const {
     slides = [],
-    slideHeight = "600px",
+    slideHeight = "clamp(320px, 50vw, 600px)",
     autoplay = true,
     interval = 5000,
     navigation = "arrows",
@@ -2462,10 +2462,10 @@ function SlidesElement({ el }: ElementComponentProps) {
     dotColor = "rgba(255,255,255,0.3)",
     dotActiveColor = "#22c55e",
     slideTitleColor = "#ffffff",
-    slideTitleSize = "48px",
+    slideTitleSize = "clamp(24px, 6vw, 48px)",
     slideTitleFont, slideTitleWeight,
     slideDescColor = "rgba(255,255,255,0.8)",
-    slideDescSize = "18px",
+    slideDescSize = "clamp(14px, 3vw, 18px)",
     slideDescFont, slideDescWeight,
     buttonBg = "#22c55e",
     buttonColor = "#ffffff",
@@ -2516,21 +2516,21 @@ function SlidesElement({ el }: ElementComponentProps) {
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
           {/* Content */}
-          <div className="absolute inset-0 flex items-center justify-center p-8">
+          <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
             <div className="text-center max-w-2xl">
               {slide.title && (
-                <h2 className="font-bold mb-4" style={{ color: slideTitleColor, fontSize: slideTitleSize, fontFamily: slideTitleFont, fontWeight: slideTitleWeight }}>
+                <h2 className="font-bold mb-2 md:mb-4" style={{ color: slideTitleColor, fontSize: slideTitleSize, fontFamily: slideTitleFont, fontWeight: slideTitleWeight }}>
                   {slide.title}
                 </h2>
               )}
               {slide.description && (
-                <p className="mb-8" style={{ color: slideDescColor, fontSize: slideDescSize, fontFamily: slideDescFont, fontWeight: slideDescWeight }}>
+                <p className="mb-4 md:mb-8" style={{ color: slideDescColor, fontSize: slideDescSize, fontFamily: slideDescFont, fontWeight: slideDescWeight }}>
                   {slide.description}
                 </p>
               )}
               <a
                 href={slide.buttonLink || "#"}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
+                className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl font-semibold transition-all hover:opacity-90"
                 style={{ backgroundColor: buttonBg, color: buttonColor, fontFamily: buttonFont, fontSize: buttonSize, fontWeight: buttonWeight }}
               >
                 {slide.buttonText || buttonText}
@@ -2545,7 +2545,7 @@ function SlidesElement({ el }: ElementComponentProps) {
         <>
           <button
             onClick={() => goTo(activeIdx - 1)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
             style={{ backgroundColor: arrowBg, color: arrowColor }}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2554,7 +2554,7 @@ function SlidesElement({ el }: ElementComponentProps) {
           </button>
           <button
             onClick={() => goTo(activeIdx + 1)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center z-10 hover:opacity-80 transition-opacity"
             style={{ backgroundColor: arrowBg, color: arrowColor }}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
