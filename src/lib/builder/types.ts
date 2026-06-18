@@ -9,8 +9,6 @@ export type ElementType =
   | "star-rating" | "search" | "floating-buttons" | "breadcrumbs"
   // Elementor Pro ports — batch 2:
   | "off-canvas" | "slides" | "nested-carousel" | "video-playlist" | "table-of-contents" | "social-embed"
-  // Layout containers:
-  | "container" | "flexbox"
   // Custom:
   | "custom-html";
 
@@ -76,6 +74,11 @@ export interface BuilderColumn {
   elements: BuilderElement[];
 }
 
+export interface BuilderRow {
+  id: string;
+  columns: BuilderColumn[];
+}
+
 export interface SectionStyles {
   padding?: string;
   paddingTop?: string;
@@ -92,6 +95,7 @@ export interface SectionStyles {
 export interface BuilderSection {
   id: string;
   columns: BuilderColumn[];
+  rows?: BuilderRow[];
   styles: SectionStyles;
 }
 
@@ -142,7 +146,9 @@ export type BuilderAction =
   | { type: "REORDER_COLUMNS"; pageId: string; sectionId: string; columns: BuilderColumn[] }
   | { type: "UPDATE_COLUMN_WIDTH"; pageId: string; sectionId: string; columnIndex: number; width: number }
   | { type: "ADD_COLUMN"; pageId: string; sectionId: string; index?: number }
-  | { type: "REMOVE_COLUMN"; pageId: string; sectionId: string; columnIndex: number };
+  | { type: "REMOVE_COLUMN"; pageId: string; sectionId: string; columnIndex: number }
+  | { type: "ADD_ROW"; pageId: string; sectionId: string; index?: number }
+  | { type: "REMOVE_ROW"; pageId: string; sectionId: string; rowIndex: number };
 
 export interface BuilderState {
   pages: BuilderPage[];

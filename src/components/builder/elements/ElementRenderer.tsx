@@ -3028,107 +3028,6 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
 }
 
 
-function ContainerElement({ el }: ElementComponentProps) {
-  const { columns = 3, rows = "auto", gap = "16px", columnGap = "", rowGap = "", minHeight = "100px", align = "stretch", justifyItems = "stretch", elements: children = [] } = el.content;
-  const styles = applyStyles(el);
-
-  const containerStyle: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: `repeat(${columns}, 1fr)`,
-    alignItems: align,
-    justifyItems,
-    minHeight,
-    ...styles,
-  };
-
-  // Apply rows if set and not "auto"
-  if (rows && rows !== "auto") {
-    containerStyle.gridTemplateRows = rows;
-  }
-
-  // Apply gap (columnGap/rowGap take priority over gap)
-  if (columnGap || rowGap) {
-    if (columnGap) containerStyle.columnGap = columnGap;
-    if (rowGap) containerStyle.rowGap = rowGap;
-  } else if (gap) {
-    containerStyle.gap = gap;
-  }
-
-  // Remove textAlign from grid container if inherited
-  delete containerStyle.textAlign;
-
-  return (
-    <div style={containerStyle} className="container-element">
-      {children.length === 0 ? (
-        <div
-          className="col-span-full flex items-center justify-center rounded-xl border-2 border-dashed border-white/10 py-8"
-          style={{ gridColumn: `1 / -1` }}
-        >
-          <span className="text-xs text-gray-500">Drop element disini</span>
-        </div>
-      ) : (
-        children.map((child: any, i: number) => (
-          <div key={child.id || i} className="min-w-0">
-            <img
-              src={child.content?.src || "https://placehold.co/400x300/1e293b/64748b?text=Item+" + (i + 1)}
-              alt={child.content?.alt || ""}
-              className="w-full h-32 md:h-40 object-cover rounded-xl"
-              style={{ objectFit: "cover" }}
-            />
-            {child.content?.title && (
-              <p className="mt-2 text-sm font-medium text-white">{child.content.title}</p>
-            )}
-          </div>
-        ))
-      )}
-    </div>
-  );
-}
-
-function FlexboxElement({ el }: ElementComponentProps) {
-  const { direction = "row", wrap = "wrap", justifyContent = "flex-start", alignItems = "center", alignContent = "stretch", gap = "16px", minHeight = "", elements: children = [] } = el.content;
-  const styles = applyStyles(el);
-
-  const flexStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: direction,
-    flexWrap: wrap,
-    justifyContent,
-    alignItems,
-    alignContent,
-    gap,
-    minHeight: minHeight || undefined,
-    ...styles,
-  };
-
-  // Remove textAlign from flex container if inherited
-  delete flexStyle.textAlign;
-
-  return (
-    <div style={flexStyle} className="flexbox-element">
-      {children.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center rounded-xl border-2 border-dashed border-white/10 py-8 min-w-[120px]">
-          <span className="text-xs text-gray-500">Drop element disini</span>
-        </div>
-      ) : (
-        children.map((child: any, i: number) => (
-          <div key={child.id || i} className="flex-shrink-0">
-            <img
-              src={child.content?.src || "https://placehold.co/400x300/1e293b/64748b?text=Item+" + (i + 1)}
-              alt={child.content?.alt || ""}
-              className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-xl"
-              style={{ objectFit: "cover" }}
-            />
-            {child.content?.title && (
-              <p className="mt-1 text-xs font-medium text-white text-center">{child.content.title}</p>
-            )}
-          </div>
-        ))
-      )}
-    </div>
-  );
-}
-
 
 function HtmlElement({ el }: ElementComponentProps) {
   const htmlContent = el.content.html || "";
@@ -3186,8 +3085,7 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   "video-playlist": VideoPlaylistElement,
   "table-of-contents": TableOfContentsElement,
   "social-embed": SocialEmbedElement,
-  container: ContainerElement,
-  flexbox: FlexboxElement,  "custom-html": HtmlElement,
+  "custom-html": HtmlElement,
 
 };
 

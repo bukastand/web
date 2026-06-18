@@ -1,4 +1,4 @@
-import type { BuilderElement, BuilderSection, BuilderColumn, BuilderPage, GlobalStyles, ElementType } from "./types";
+import type { BuilderElement, BuilderSection, BuilderColumn, BuilderRow, BuilderPage, GlobalStyles, ElementType } from "./types";
 
 let _counter = 0;
 export const genId = (prefix = "el") => `${prefix}_${Date.now()}_${++_counter}`;
@@ -21,9 +21,11 @@ export function defaultSectionStyles() {
 
 export function createDefaultSection(): BuilderSection {
   const col: BuilderColumn = { id: genId("col"), width: 12, elements: [] };
+  const row: BuilderRow = { id: genId("row"), columns: [col] };
   return {
     id: genId("sec"),
     columns: [col],
+    rows: [row],
     styles: defaultSectionStyles(),
   };
 }
@@ -835,32 +837,6 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { padding: "0", backgroundColor: "transparent", borderRadius: "12px" },
   },
-  container: {
-    content: {
-      columns: 3,
-      rows: "auto",
-      gap: "16px",
-      columnGap: "",
-      rowGap: "",
-      minHeight: "100px",
-      align: "stretch",
-      justifyItems: "stretch",
-      elements: [],
-    },
-    styles: { padding: "20px", backgroundColor: "transparent", minHeight: "100px" },
-  },
-  flexbox: {
-    content: {
-      direction: "row",
-      wrap: "wrap",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      alignContent: "stretch",
-      gap: "16px",
-      elements: [],
-    },
-    styles: { padding: "20px", backgroundColor: "transparent", minHeight: "80px" },
-  },
   "custom-html": {
     content: {
       html: "<div style=\"padding: 40px; text-align: center; background: #f8fafc; border-radius: 12px;\">\n  <h3 style=\"margin: 0 0 8px; color: #1e293b;\">Custom HTML</h3>\n  <p style=\"margin: 0; color: #64748b;\">Edit HTML Anda di sini</p>\n</div>",
@@ -1031,7 +1007,7 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
     "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
     "star-rating", "search", "floating-buttons", "breadcrumbs",
     "off-canvas", "slides", "nested-carousel", "video-playlist", "table-of-contents", "social-embed",
-    "container", "flexbox", "custom-html",
+    "custom-html",
   ];
   
   // Check alias first, then valid types, fallback to heading for visual emphasis

@@ -5,6 +5,7 @@ import { useBuilder } from "@/lib/builder/store";
 import BuilderColumn from "./BuilderColumn";
 import type { BuilderSection as BuilderSectionType } from "@/lib/builder/types";
 import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
+import { genId } from "@/lib/builder/defaults";
 
 const SECTION_QUICK_COLORS = [
   { label: "Dark", value: "#0f172a" },
@@ -247,23 +248,50 @@ export default function BuilderSectionComponent({
           </button>
         </div>
 
-        {/* Columns */}
+        {/* Rows */}
         <div
           className="mx-auto"
           style={{ maxWidth: getContainerWidth(section.styles.containerWidth, currentPage?.globalStyles.containerWidth || 1200), paddingLeft: "16px", paddingRight: "16px" }}
         >
-          <div className="flex gap-4" style={{ minHeight: "60px", flexWrap: "wrap" }}>
-            {section.columns.map((column, colIndex) => (
-              <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "280px" }}>
-                <BuilderColumn
-                  column={column}
-                  columnIndex={colIndex}
-                  sectionId={section.id}
-                  pageId={pageId}
-                />
+          {(section.rows || [{ id: genId("row"), columns: section.columns }]).map((row, rowIndex) => (
+            <div key={row.id || `row-${rowIndex}`} className="mb-4 last:mb-0">
+              <div className="flex gap-4" style={{ minHeight: "60px", flexWrap: "wrap" }}>
+                {row.columns.map((column, colIndex) => (
+                  <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "280px" }}>
+                    <BuilderColumn
+                      column={column}
+                      columnIndex={colIndex}
+                      sectionId={section.id}
+                      pageId={pageId}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+              {/* Row Controls */}
+              <div className={`flex items-center justify-center gap-2 mt-2 transition-opacity ${isSelected ? "opacity-100" : "opacity-60 md:opacity-0 md:group-hover:opacity-100"}`}>
+                <button
+                  onClick={(e) => { e.stopPropagation(); dispatch({ type: "ADD_ROW", pageId, sectionId: section.id, index: rowIndex + 1 }); }}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Row
+                </button>
+                {(section.rows?.length || 1) > 1 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); dispatch({ type: "REMOVE_ROW", pageId, sectionId: section.id, rowIndex }); }}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Hapus
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="h-2 opacity-0 group-hover:opacity-100 transition-opacity" />
