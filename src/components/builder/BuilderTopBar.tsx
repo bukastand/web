@@ -307,31 +307,29 @@ export default function BuilderTopBar({
       </div>
 
       <div className="flex items-center gap-1.5 overflow-x-auto">
-        {/* Undo / Redo - hide on mobile */}
-        {!isMobile && (
-          <div className="flex items-center">
-            <button
-              onClick={undo}
-              disabled={!canUndo}
-              className={`p-1.5 rounded-lg transition-colors ${canUndo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
-              title="Undo (Ctrl+Z)"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-              </svg>
-            </button>
-            <button
-              onClick={redo}
-              disabled={!canRedo}
-              className={`p-1.5 rounded-lg transition-colors ${canRedo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
-              title="Redo (Ctrl+Shift+Z)"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
-              </svg>
-            </button>
-          </div>
-        )}
+        {/* Undo / Redo - always visible */}
+        <div className="flex items-center">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className={`p-1.5 rounded-lg transition-colors ${canUndo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+            title="Undo (Ctrl+Z)"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            </svg>
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className={`p-1.5 rounded-lg transition-colors ${canRedo ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-700 cursor-not-allowed"}`}
+            title="Redo (Ctrl+Shift+Z)"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
+            </svg>
+          </button>
+        </div>
 
         {/* Divider */}
         {!isMobile && <div className="w-px h-5 bg-white/10 mx-1" />}
