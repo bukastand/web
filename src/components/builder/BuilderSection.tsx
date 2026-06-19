@@ -101,18 +101,6 @@ function SectionControls({
           </svg>
         </button>
         <div className="w-px h-4 bg-white/10" />
-        {/* Tambah Row */}
-        <button
-          onClick={() => dispatch({ type: "ADD_ROW", pageId, sectionId: section.id })}
-          className="p-1.5 md:p-1 text-gray-400 hover:text-[#22c55e] transition-colors"
-          title="Tambah Row"
-        >
-          <svg className="w-5 h-5 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="7" rx="1" strokeWidth={1.5} />
-            <rect x="3" y="14" width="18" height="7" rx="1" strokeWidth={1.5} />
-          </svg>
-        </button>
-        <div className="w-px h-4 bg-white/10" />
         {/* Duplicate */}
         <button
           onClick={() => dispatch({ type: "DUPLICATE_SECTION", pageId, sectionId: section.id })}
@@ -291,16 +279,7 @@ export default function BuilderSectionComponent({
                   </svg>
                   Kolom
                 </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); dispatch({ type: "ADD_ROW", pageId, sectionId: section.id, index: rowIndex + 1 }); }}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all"
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="18" height="7" rx="1" strokeWidth={1.5} />
-                    <rect x="3" y="14" width="18" height="7" rx="1" strokeWidth={1.5} />
-                  </svg>
-                  Row
-                </button>
+
                 {(section.rows?.length || 1) > 1 && (
                   <button
                     onClick={(e) => { e.stopPropagation(); dispatch({ type: "REMOVE_ROW", pageId, sectionId: section.id, rowIndex }); }}
