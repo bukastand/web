@@ -424,7 +424,7 @@ export function MapsEditor({ element, updateContent, renderField, handleAddItem,
                 {renderField("Title", "title", "text")}
                 <div className="mb-3">
                   <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Link Google Maps</label>
-                  <p className="text-[9px] text-gray-600 mb-1.5">Share dari Google Maps, lalu paste link di sini. Contoh: <code className="text-[#22c55e]">maps.google.com?q=-6.2088,106.8456</code></p>
+                  <p className="text-[9px] text-gray-600 mb-1.5">Share dari Google Maps, lalu paste link di sini. Support: <code className="text-[#22c55e]">maps.google.com?q=...</code>, <code className="text-[#22c55e]">share.google/...</code>, link place <code className="text-[#22c55e]">@lat,lng</code></p>
                   <input
                     type="text"
                     value={element.content.embedUrl || ""}

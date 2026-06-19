@@ -722,6 +722,9 @@ function MapsElement({ el }: ElementComponentProps) {
     // Other google maps URL, try to use with output=embed
     const baseUrl = urlToParse.split("?")[0];
     iframeSrc = `${baseUrl}?output=embed`;
+  } else if (urlToParse && (urlToParse.startsWith("http://") || urlToParse.startsWith("https://"))) {
+    // Fallback: coba gunakan URL langsung — mencakup share.google dan format lain
+    iframeSrc = urlToParse.includes("?") ? `${urlToParse}&output=embed` : `${urlToParse}?output=embed`;
   }
 
   return (
