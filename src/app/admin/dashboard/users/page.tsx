@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 
 interface UserWithProfile {
   id: string;
@@ -18,6 +19,8 @@ export default function UsersPage() {
   const [message, setMessage] = useState("");
   const [confirmUserId, setConfirmUserId] = useState<string | null>(null);
   const [confirmNewRole, setConfirmNewRole] = useState<"admin" | "user" | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const loadUsers = useCallback(async () => {
     try {
@@ -121,7 +124,7 @@ export default function UsersPage() {
         </div>
       )}
 
-      {/* Confirmation Modal */}
+      {/* Confirmation Modals */}
       {confirmUserId && confirmNewRole && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 w-full max-w-md">
@@ -133,17 +136,69 @@ export default function UsersPage() {
             </p>
             <div className="flex gap-3">
               <button
-                onClick={() =>
-                  handleRoleChange(confirmUserId, confirmNewRole)
-                }
+                onClick={() => handleRoleChange(confirmUserId, confirmNewRole)}
                 className="flex-1 py-3 bg-[#22c55e] text-white font-semibold rounded-xl hover:bg-[#16a34a] transition-colors"
               >
                 Ya, Lanjutkan
               </button>
+              <button onClick={cancelConfirm} className="flex-1 py-3 bg-white/10 text-gray-300 font-semibold rounded-xl hover:bg-white/20 transition-colors">
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Confirmation */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold text-white mb-2">Hapus User?</h3>
+            <p className="text-gray-300 text-sm mb-2">
+              Semua data user ini akan dihapus permanen:
+            </p>
+            <ul className="text-xs text-gray-400 mb-6 space-y-1 list-disc list-inside">
+              <li>Akun auth (tidak bisa login lagi)</li>
+              <li>Semua halaman builder</li>
+              <li>Semua halaman yang dipublikasikan</li>
+              <li>Template komunitas</li>
+              <li>Profile user</li>
+            </ul>
+            <p className="text-red-400 text-xs mb-4">⚠️ Tindakan ini tidak bisa dibatalkan!</p>
+            <div className="flex gap-3">
               <button
-                onClick={cancelConfirm}
-                className="flex-1 py-3 bg-white/10 text-gray-300 font-semibold rounded-xl hover:bg-white/20 transition-colors"
+                onClick={async () => {
+                  setDeleting(true);
+                  setError("");
+                  try {
+                    const res = await fetch("/api/admin/users", {
+                      method: "DELETE",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ userId: deleteConfirmId }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                      setError(data.error || "Gagal menghapus user");
+                    } else {
+                      setMessage("User berhasil dihapus!");
+                      loadUsers();
+                    }
+                  } catch {
+                    setError("Gagal terhubung ke server");
+                  }
+                  setDeleting(false);
+                  setDeleteConfirmId(null);
+                }}
+                disabled={deleting}
+                className="flex-1 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
+                {deleting ? (
+                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Menghapus...</>
+                ) : (
+                  "Ya, Hapus Permanen"
+                )}
+              </button>
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-3 bg-white/10 text-gray-300 font-semibold rounded-xl hover:bg-white/20 transition-colors">
                 Batal
               </button>
             </div>
@@ -210,27 +265,49 @@ export default function UsersPage() {
                     })}
                   </td>
                   <td className="p-4 text-right">
-                    {user.role === "admin" ? (
-                      <button
-                        onClick={() => requestConfirm(user.id, "user")}
-                        disabled={user.email === "admin@pagodastudio.com"}
-                        title={
-                          user.email === "admin@pagodastudio.com"
-                            ? "Tidak bisa menurunkan admin utama"
-                            : "Turunkan menjadi user"
-                        }
-                        className="px-3 py-1.5 text-xs bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link
+                        href={`/admin/dashboard/users/${user.id}`}
+                        className="px-2.5 py-1.5 text-xs bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"
+                        title="Lihat detail user"
                       >
-                        Turunkan
-                      </button>
-                    ) : (
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </Link>
+                      {user.role === "admin" ? (
+                        <button
+                          onClick={() => requestConfirm(user.id, "user")}
+                          disabled={user.email === "bukastand@gmail.com"}
+                          title={
+                            user.email === "bukastand@gmail.com"
+                              ? "Tidak bisa menurunkan admin utama"
+                              : "Turunkan menjadi user"
+                          }
+                          className="px-2.5 py-1.5 text-xs bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          Turunkan
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => requestConfirm(user.id, "admin")}
+                          className="px-2.5 py-1.5 text-xs bg-[#22c55e]/10 text-[#22c55e] rounded-lg hover:bg-[#22c55e]/20 transition-colors"
+                        >
+                          Jadikan
+                        </button>
+                      )}
                       <button
-                        onClick={() => requestConfirm(user.id, "admin")}
-                        className="px-3 py-1.5 text-xs bg-[#22c55e]/10 text-[#22c55e] rounded-lg hover:bg-[#22c55e]/20 transition-colors"
+                        onClick={() => setDeleteConfirmId(user.id)}
+                        disabled={user.email === "bukastand@gmail.com"}
+                        title={user.email === "bukastand@gmail.com" ? "Tidak bisa hapus admin utama" : "Hapus user"}
+                        className="px-2.5 py-1.5 text-xs bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        Jadikan Admin
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                       </button>
-                    )}
+                    </div>
                   </td>
                 </tr>
               ))}

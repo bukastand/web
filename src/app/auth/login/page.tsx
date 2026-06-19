@@ -48,9 +48,9 @@ export default function LoginPage() {
       });
     }
 
-    // Set cookies for middleware protection
-    document.cookie = "builder_session=authenticated; path=/; max-age=86400";
-    document.cookie = `user_role=${role}; path=/; max-age=86400`;
+    // Set cookies for middleware protection (30 days)
+    document.cookie = "builder_session=authenticated; path=/; max-age=2592000";
+    document.cookie = `user_role=${role}; path=/; max-age=2592000`;
     router.push("/builder");
   };
 

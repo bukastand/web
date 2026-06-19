@@ -42,12 +42,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Refresh cookies when session is restored (auto-login)
+  const refreshCookies = async (sessionUser: User) => {
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", sessionUser.id)
+        .single();
+      const role = profile?.role || "user";
+      document.cookie = "builder_session=authenticated; path=/; max-age=2592000";
+      document.cookie = `user_role=${role}; path=/; max-age=2592000`;
+    } catch {
+      document.cookie = "builder_session=authenticated; path=/; max-age=2592000";
+    }
+  };
+
   useEffect(() => {
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
         fetchProfile(session.user.id);
+        refreshCookies(session.user); // Refresh cookies on page load
       } else {
         setUser(null);
         setProfile(null);
@@ -61,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) {
           setUser(session.user);
           fetchProfile(session.user.id);
+          refreshCookies(session.user); // Refresh cookies on auth change
         } else {
           setUser(null);
           setProfile(null);

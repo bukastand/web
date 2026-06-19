@@ -78,8 +78,8 @@ export default function RegisterPage() {
       }
 
       setSuccess("Akun berhasil dibuat! Mengarahkan ke builder...");
-      document.cookie = "builder_session=authenticated; path=/; max-age=86400";
-      document.cookie = "user_role=user; path=/; max-age=86400";
+      document.cookie = "builder_session=authenticated; path=/; max-age=2592000";
+      document.cookie = "user_role=user; path=/; max-age=2592000";
       
       // If user came from a template, create the page from template first
       const selectedTemplate = getSelectedTemplate();
