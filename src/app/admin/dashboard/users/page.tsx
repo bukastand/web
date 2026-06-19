@@ -21,6 +21,9 @@ export default function UsersPage() {
   const [confirmNewRole, setConfirmNewRole] = useState<"admin" | "user" | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [search, setSearch] = useState("");
+  const [resetEmail, setResetEmail] = useState<string | null>(null);
+  const [resetting, setResetting] = useState(false);
 
   const loadUsers = useCallback(async () => {
     try {
@@ -149,6 +152,47 @@ export default function UsersPage() {
         </div>
       )}
 
+      {/* Reset Password Modal */}
+      {resetEmail && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-lg font-bold text-white mb-2">Reset Password</h3>
+            <p className="text-sm text-gray-300 mb-4">
+              Kirim link reset password ke <span className="text-white font-semibold">{resetEmail}</span>?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  setResetting(true);
+                  setError("");
+                  try {
+                    const res = await fetch("/api/admin/reset-password", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email: resetEmail }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) setError(data.error || "Gagal reset password");
+                    else setMessage("Link reset password berhasil dikirim!");
+                  } catch { setError("Gagal terhubung ke server"); }
+                  setResetting(false);
+                  setResetEmail(null);
+                }}
+                disabled={resetting}
+                className="flex-1 py-2.5 bg-amber-500 text-white font-semibold rounded-xl hover:bg-amber-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {resetting ? (
+                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Mengirim...</>
+                ) : "Ya, Kirim Link Reset"}
+              </button>
+              <button onClick={() => setResetEmail(null)} className="flex-1 py-2.5 bg-white/10 text-gray-300 rounded-xl hover:bg-white/20 transition-colors">
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete User Confirmation */}
       {deleteConfirmId && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
@@ -206,6 +250,16 @@ export default function UsersPage() {
         </div>
       )}
 
+      {/* Search / Filter */}
+      <div className="relative mb-4">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Cari berdasarkan email atau nama..."
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-[#22c55e]/50" />
+      </div>
+
       {/* Users Table */}
       <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
@@ -220,7 +274,11 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users.filter(u => {
+                if (!search) return true;
+                const q = search.toLowerCase();
+                return u.email.toLowerCase().includes(q) || (u.full_name || "").toLowerCase().includes(q);
+              }).map((user) => (
                 <tr
                   key={user.id}
                   className="border-b border-white/5 text-white hover:bg-white/5 transition-colors"
@@ -276,6 +334,15 @@ export default function UsersPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       </Link>
+                      <button
+                        onClick={() => setResetEmail(user.email)}
+                        className="px-2.5 py-1.5 text-xs bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"
+                        title="Reset password"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                      </button>
                       {user.role === "admin" ? (
                         <button
                           onClick={() => requestConfirm(user.id, "user")}
