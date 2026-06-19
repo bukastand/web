@@ -681,7 +681,7 @@ function MapsElement({ el }: ElementComponentProps) {
       fetch(`/api/resolve-url?url=${encodeURIComponent(embedUrl)}`, { signal: abort.signal })
         .then((r) => r.json())
         .then((data) => {
-          if (!abort.signal.aborted && data.url) {
+          if (!abort.signal.aborted && data.url && !data.error) {
             setResolvedUrl(data.url);
           }
         })
@@ -722,7 +722,7 @@ function MapsElement({ el }: ElementComponentProps) {
     // Other google maps URL, try to use with output=embed
     const baseUrl = urlToParse.split("?")[0];
     iframeSrc = `${baseUrl}?output=embed`;
-  } else if (urlToParse && (urlToParse.startsWith("http://") || urlToParse.startsWith("https://"))) {
+  } else if (urlToParse && !urlToParse.includes("share.google") && (urlToParse.startsWith("http://") || urlToParse.startsWith("https://"))) {
     // Fallback: coba gunakan URL langsung — mencakup share.google dan format lain
     iframeSrc = urlToParse.includes("?") ? `${urlToParse}&output=embed` : `${urlToParse}?output=embed`;
   }
