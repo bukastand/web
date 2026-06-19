@@ -10,10 +10,11 @@ import { templates } from "@/lib/builder/templates";
 export default function BuilderPages() {
   const router = useRouter();
   const { state, dispatch, createNewPage } = useBuilder();
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [showNew, setShowNew] = useState(false);
   const [title, setTitle] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleCreate = () => {
     const newPageId = createNewPage(title || undefined);
@@ -65,6 +66,51 @@ export default function BuilderPages() {
               PAGODA<span className="text-[#22c55e]"> STUDIO</span>
             </Link>
             <span className="text-sm text-gray-500 font-medium hidden sm:block">/ Halaman Saya</span>
+          </div>
+
+          {/* User avatar + dropdown */}
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              >
+                <span className="w-6 h-6 rounded-full bg-[#22c55e]/20 flex items-center justify-center">
+                  <span className="text-xs font-bold text-[#22c55e]">
+                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </span>
+                <span className="text-sm text-gray-300 hidden md:block max-w-[140px] truncate">
+                  {user?.email || "User"}
+                </span>
+                <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform ${showUserMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e293b] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="p-4 border-b border-white/10">
+                      <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Builder User</p>
+                    </div>
+                    <div className="p-2">
+                      <button
+                        onClick={() => { setShowUserMenu(false); signOut(); }}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Keluar
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
