@@ -69,7 +69,7 @@ export default function Home() {
         <LocationSection />
 
         {/* Final transition to footer */}
-        <div className="h-8 sm:h-12 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
+        <div className="h-4 sm:h-6 bg-gradient-to-b from-[#0a0f1e] to-[#0a0f1e]" />
 
         <Footer />
       </div>

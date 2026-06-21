@@ -27,12 +27,12 @@ export default function Footer() {
   return (
     <footer
       ref={ref}
-      className="relative bg-[#060a14] border-t border-[#22c55e]/20 overflow-hidden"
+      className="relative bg-[#0a0f1e] border-t border-[#22c55e]/30 overflow-hidden"
     >
       {/* Top decorative gradient */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-[#22c55e]/30 to-transparent" />
 
-      <div className="relative container mx-auto px-6 py-16 sm:py-20">
+      <div className="relative container mx-auto px-6 py-10 sm:py-14">
         <div className="reveal max-w-6xl mx-auto">
           {/* ── Main Grid ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
@@ -143,7 +143,7 @@ export default function Footer() {
                   href="https://wa.me/6282210099969"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:bg-emerald-500/20 hover:text-emerald-400 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1"
+                  className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 hover:bg-emerald-500/25 hover:text-emerald-300 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-1"
                   title="WhatsApp"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@ export default function Footer() {
                   href="https://instagram.com/pagodastudio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:bg-pink-500/20 hover:text-pink-400 hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1"
+                  className="w-11 h-11 rounded-xl bg-pink-500/15 border border-pink-500/25 flex items-center justify-center text-pink-400 hover:bg-pink-500/25 hover:text-pink-300 hover:border-pink-500/40 hover:shadow-lg hover:shadow-pink-500/10 transition-all duration-300 hover:-translate-y-1"
                   title="Instagram"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +169,7 @@ export default function Footer() {
                   href="https://facebook.com/pagodastudio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1"
+                  className="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400 hover:bg-blue-500/25 hover:text-blue-300 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
                   title="Facebook"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -181,7 +181,7 @@ export default function Footer() {
                   href="https://tiktok.com/@pagodastudio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:bg-white/20 hover:text-white hover:border-white/30 transition-all duration-300 hover:-translate-y-1"
+                  className="w-11 h-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-gray-300 hover:bg-white/20 hover:text-white hover:border-white/40 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 hover:-translate-y-1"
                   title="TikTok"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
