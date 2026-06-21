@@ -25,7 +25,7 @@ export default function Footer() {
   return (
     <footer
       ref={ref}
-      className="relative bg-[#060a14] border-t border-white/5 overflow-hidden"
+      className="relative bg-[#060a14] border-t border-[#22c55e]/20 overflow-hidden"
     >
       {/* Top decorative gradient */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-[#22c55e]/30 to-transparent" />

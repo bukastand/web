@@ -29,47 +29,47 @@ export default function Home() {
         <HeroSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <ServicesSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <ProcessSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <WhyUsSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <PricingSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <TestimonialsSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <HeroBuilderCTA />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <FAQSection />
 
         {/* Section transition */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <LocationSection />
 
         {/* Final transition to footer */}
-        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
+        <div className="h-8 sm:h-12 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
 
         <Footer />
       </div>

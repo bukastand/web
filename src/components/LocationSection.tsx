@@ -29,7 +29,7 @@ export default function LocationSection() {
     <section
       id="lokasi"
       ref={sectionRef}
-      className="relative py-24 sm:py-32 bg-[#0a0f1e] overflow-hidden"
+      className="relative py-16 sm:py-20 bg-[#0a0f1e] overflow-hidden"
     >
       {/* Background accents */}
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none" />
