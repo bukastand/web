@@ -10,19 +10,21 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  locale: "en",
+  locale: "id",
   setLocale: () => {},
   t: (key: string) => key,
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("id");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("locale") as Locale | null;
     if (saved === "en" || saved === "id") {
       setLocaleState(saved);
+    } else {
+      setLocaleState("id");
     }
     setMounted(true);
   }, []);
@@ -46,7 +48,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Prevent flash of wrong language
   if (!mounted) {
     return (
-      <LanguageContext.Provider value={{ locale: "en", setLocale, t }}>
+      <LanguageContext.Provider value={{ locale: "id", setLocale, t }}>
         {children}
       </LanguageContext.Provider>
     );
