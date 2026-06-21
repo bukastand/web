@@ -119,6 +119,12 @@ export interface BuilderPage {
   published: boolean;
   /** Deep copy of page data at last publish time — the live published version */
   publishedSnapshot: BuilderPage | null;
+  /** SEO metadata */
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    ogImage?: string;
+  };
 }
 
 export type BuilderAction =

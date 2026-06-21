@@ -176,7 +176,8 @@ function ImageElement({ el }: ElementComponentProps) {
     <div style={{ display: "flex", justifyContent, flexWrap: "wrap" }}>
       <img
         src={el.content.src || "https://placehold.co/800x500/1e293b/64748b?text=Gambar"}
-        alt={el.content.alt || ""}
+        alt={el.content.alt || el.content.caption || "Gambar"}
+        loading="lazy"
         style={imgOnlyStyles}
       />
       {el.content.caption && <p className="text-sm text-gray-500 mt-2 w-full">{el.content.caption}</p>}

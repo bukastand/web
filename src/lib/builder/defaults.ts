@@ -57,6 +57,11 @@ export function createDefaultPage(title = "Halaman Baru", existingSlugs?: string
     updatedAt: new Date().toISOString(),
     published: false,
     publishedSnapshot: null,
+    seo: {
+      metaTitle: title,
+      metaDescription: `${title} - Landing page profesional`,
+      ogImage: "",
+    },
   };
 }
 

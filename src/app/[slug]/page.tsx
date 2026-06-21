@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import type { BuilderPage } from "@/lib/builder/types";
@@ -10,10 +10,79 @@ import { applyBgOpacity, getContainerWidth } from "@/lib/builder/utils";
 
 const SNAPSHOTS_PREFIX = "builder_published_snapshots_";
 
+/**
+ * Dynamically set <title>, meta description, OG/Twitter tags, canonical, and JSON-LD.
+ */
+function injectMetaTags(page: BuilderPage) {
+  const seo = page.seo || {};
+  const metaTitle = seo.metaTitle || page.title;
+  const metaDesc = seo.metaDescription || `${page.title} - Landing page profesional | PAGODA STUDIO`;
+  const ogImage = seo.ogImage || "https://pagodastudio.my.id/og-default.jpg";
+  const canonical = `https://pagodastudio.my.id/${page.slug}`;
+  const siteName = "PAGODA STUDIO";
+
+  document.title = metaTitle;
+
+  const setOrUpdate = (attr: string, value: string, content: string) => {
+    let el = document.querySelector(`meta[${attr}="${value}"]`);
+    if (!el) {
+      el = document.createElement("meta");
+      el.setAttribute(attr, value);
+      document.head.appendChild(el);
+    }
+    el.setAttribute("content", content);
+  };
+
+  setOrUpdate("name", "description", metaDesc);
+  setOrUpdate("property", "og:title", metaTitle);
+  setOrUpdate("property", "og:description", metaDesc);
+  setOrUpdate("property", "og:image", ogImage);
+  setOrUpdate("property", "og:url", canonical);
+  setOrUpdate("property", "og:type", "website");
+  setOrUpdate("property", "og:site_name", siteName);
+  setOrUpdate("name", "twitter:card", "summary_large_image");
+  setOrUpdate("name", "twitter:title", metaTitle);
+  setOrUpdate("name", "twitter:description", metaDesc);
+  setOrUpdate("name", "twitter:image", ogImage);
+
+  // Canonical
+  let canonEl = document.querySelector("link[rel='canonical']");
+  if (!canonEl) {
+    canonEl = document.createElement("link");
+    canonEl.setAttribute("rel", "canonical");
+    document.head.appendChild(canonEl);
+  }
+  canonEl.setAttribute("href", canonical);
+
+  // JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: metaTitle,
+    description: metaDesc,
+    url: canonical,
+    publisher: {
+      "@type": "Organization",
+      name: siteName,
+      url: "https://pagodastudio.my.id",
+    },
+  };
+
+  let scriptEl = document.getElementById("seo-jsonld");
+  if (!scriptEl) {
+    scriptEl = document.createElement("script");
+    scriptEl.id = "seo-jsonld";
+    scriptEl.setAttribute("type", "application/ld+json");
+    document.head.appendChild(scriptEl);
+  }
+  scriptEl.textContent = JSON.stringify(jsonLd);
+}
+
 export default function PublishedPage() {
   const params = useParams();
   const [page, setPage] = useState<BuilderPage | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const metaInjectedRef = useRef(false);
 
   useEffect(() => {
     const slug = params.slug as string;
@@ -68,9 +137,17 @@ export default function PublishedPage() {
     });
   }, [params.slug]);
 
+  // Inject meta tags once page data is loaded
+  useEffect(() => {
+    if (page && !metaInjectedRef.current) {
+      injectMetaTags(page);
+      metaInjectedRef.current = true;
+    }
+  }, [page]);
+
   if (notFound) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+      <main className="min-h-screen bg-[#0f172a] flex items-center justify-center">
         <div className="text-center max-w-md">
           <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,12 +166,12 @@ export default function PublishedPage() {
             Kembali ke Beranda
           </Link>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (!page) {
-    return <div className="min-h-screen bg-[#0f172a]" />;
+    return <main className="min-h-screen bg-[#0f172a]" aria-label="Loading" />;
   }
 
   const gs = page.globalStyles;
@@ -121,7 +198,8 @@ export default function PublishedPage() {
   };
 
   return (
-    <div
+    <main
+      role="main"
       style={{
         fontFamily: gs.fontFamily || "Inter, sans-serif",
         backgroundColor: gs.backgroundColor || "#ffffff",
@@ -129,37 +207,48 @@ export default function PublishedPage() {
         minHeight: "100vh",
       }}
     >
-      {page.sections.map((section) => (
-        <div key={section.id} style={{ ...sectionBg(section), ...sectionPadding(section) }}>
-          <div
-            style={{
-              maxWidth: getContainerWidth(section.styles.containerWidth, gs.containerWidth || 1200),
-              margin: "0 auto",
-              paddingLeft: "16px",
-              paddingRight: "16px",
-            }}
+      {/* Skip to content link for accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#22c55e] focus:text-white focus:rounded-lg focus:font-semibold">
+        Lewati ke konten utama
+      </a>
+
+      <div id="main-content">
+        {page.sections.map((section, si) => (
+          <section
+            key={section.id}
+            aria-label={`Bagian ${si + 1}`}
+            style={{ ...sectionBg(section), ...sectionPadding(section) }}
           >
-            {(section.rows || [{ columns: section.columns, id: 'default' }]).map((row) => (
-              <div key={row.id} className="flex" style={{ gap: "16px", flexWrap: "wrap" }}>
-                {row.columns.map((column) => (
-                  <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "200px" }}>
-                    <div className="space-y-4">
-                      {column.elements.map((element) => (
-                        <div key={element.id}>
-                          <ElementRenderer element={element} />
-                        </div>
-                      ))}
+            <div
+              style={{
+                maxWidth: getContainerWidth(section.styles.containerWidth, gs.containerWidth || 1200),
+                margin: "0 auto",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+              }}
+            >
+              {(section.rows || [{ columns: section.columns, id: 'default' }]).map((row) => (
+                <div key={row.id} className="flex" style={{ gap: "16px", flexWrap: "wrap" }}>
+                  {row.columns.map((column) => (
+                    <div key={column.id} className="flex-1" style={{ maxWidth: `${(column.width / 12) * 100}%`, minWidth: "200px" }}>
+                      <div className="space-y-4">
+                        {column.elements.map((element) => (
+                          <div key={element.id}>
+                            <ElementRenderer element={element} />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+                  ))}
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
 
       {/* Powered by footer */}
-      <div className="text-center py-6 border-t border-gray-200">
+      <footer className="text-center py-6 border-t border-gray-200" role="contentinfo">
         <Link
           href="https://pagodastudio.my.id"
           target="_blank"
@@ -167,7 +256,7 @@ export default function PublishedPage() {
         >
           Dibuat dengan PAGODASTUDIO
         </Link>
-      </div>
-    </div>
+      </footer>
+    </main>
   );
 }
