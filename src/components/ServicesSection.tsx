@@ -26,6 +26,7 @@ const defaultServices: Service[] = [
 
 export default function ServicesSection() {
   const [services, setServices] = useState<Service[]>(defaultServices);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -53,9 +54,9 @@ export default function ServicesSection() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
-            const cards = entry.target.querySelectorAll(".reveal");
-            cards.forEach((card, i) => {
-              setTimeout(() => card.classList.add("visible"), i * 60);
+            const items = entry.target.querySelectorAll(".reveal");
+            items.forEach((el, i) => {
+              setTimeout(() => el.classList.add("visible"), i * 40);
             });
           }
         });
@@ -80,37 +81,58 @@ export default function ServicesSection() {
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Jenis Website Yang Kami{" "}
-            <span className="gradient-text">Kerjakan</span>
+            Keahlian{" "}
+            <span className="gradient-text">Kami</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Kami melayani berbagai kebutuhan website dan sistem digital
+            Berbagai solusi digital yang siap membantu bisnis Anda
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        {/* ── Compact Icon Grid ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-w-5xl mx-auto">
           {services.map((service, index) => (
             <div
               key={index}
-              className="reveal group relative p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-[#22c55e]/30 transition-all duration-500 hover:bg-white/[0.06] hover:-translate-y-1 overflow-hidden"
+              className="reveal group relative"
+              onMouseEnter={() => setActiveIndex(index)}
+              onMouseLeave={() => setActiveIndex(null)}
+              onClick={() => setActiveIndex(activeIndex === index ? null : index)}
             >
-              {/* Number badge */}
-              <div className="absolute top-3 right-3 text-[10px] font-bold text-white/10 group-hover:text-[#22c55e]/30 transition-colors duration-500">
-                {(index + 1).toString().padStart(2, "0")}
+              {/* Card */}
+              <div
+                className={`relative flex flex-col items-center text-center p-4 rounded-xl cursor-default transition-all duration-300 ${
+                  activeIndex === index
+                    ? "bg-[#22c55e]/10 border-[#22c55e]/40 scale-105"
+                    : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/20"
+                } border`}
+              >
+                <span className={`text-2xl mb-2 transition-transform duration-300 ${
+                  activeIndex === index ? "scale-110" : ""
+                }`}>
+                  {service.icon}
+                </span>
+                <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
+                  activeIndex === index ? "text-[#22c55e]" : "text-gray-300"
+                }`}>
+                  {service.title}
+                </span>
               </div>
 
-              <div className="text-3xl mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                {service.icon}
+              {/* ── Tooltip on hover/tap ── */}
+              <div
+                className={`absolute z-20 left-1/2 -translate-x-1/2 top-full mt-2 w-56 p-3 rounded-xl bg-[#1a2332] border border-white/10 shadow-xl shadow-black/40 transition-all duration-200 ${
+                  activeIndex === index
+                    ? "opacity-100 visible"
+                    : "opacity-0 invisible pointer-events-none"
+                }`}
+              >
+                <p className="text-xs text-gray-300 leading-relaxed">
+                  {service.description}
+                </p>
+                {/* Arrow */}
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full w-3 h-3 bg-[#1a2332] border-l border-t border-white/10 rotate-45 mb-[6px]" />
               </div>
-              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-[#22c55e] transition-colors duration-300">
-                {service.title}
-              </h4>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                {service.description}
-              </p>
-
-              {/* Bottom gradient line on hover */}
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full" />
             </div>
           ))}
         </div>
