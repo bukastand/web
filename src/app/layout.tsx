@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PAGODA STUDIO — Jasa Pembuatan Website Profesional",
+  title: "PAGODA STUDIO — Professional Website Development Services",
   description:
-    "Website modern, cepat, mobile friendly. Jasa pembuatan website profesional untuk bisnis, instansi, dan perusahaan di Payakumbuh dan seluruh Indonesia.",
+    "Modern, fast, mobile-friendly websites. Professional website development services for businesses, institutions, and companies.",
 };
 
 export default function RootLayout({
@@ -27,11 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="id"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-[#0f172a]">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

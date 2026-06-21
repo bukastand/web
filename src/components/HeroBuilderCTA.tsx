@@ -2,8 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function HeroBuilderCTA() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -11,7 +13,6 @@ export default function HeroBuilderCTA() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Add .visible to all .reveal children with staggered timing
             const reveals = entry.target.querySelectorAll(".reveal");
             reveals.forEach((el, i) => {
               setTimeout(() => {
@@ -34,10 +35,8 @@ export default function HeroBuilderCTA() {
 
   return (
     <section className="relative overflow-hidden pt-20 sm:pt-28 pb-16 sm:pb-24">
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#22c55e]/10 via-[#0f172a] to-[#0f172a] z-0" />
 
-      {/* Animated grid lines */}
       <div
         className="absolute inset-0 z-0 opacity-[0.04]"
         style={{
@@ -47,43 +46,37 @@ export default function HeroBuilderCTA() {
         }}
       />
 
-      {/* Glowing orbs */}
       <div className="absolute top-20 left-1/4 w-72 h-72 bg-[#22c55e]/20 rounded-full blur-[120px] animate-pulse z-0" />
       <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#22c55e]/10 rounded-full blur-[150px] animate-pulse z-0" />
 
       <div ref={sectionRef} className="relative z-10 container mx-auto px-6 max-w-5xl text-center">
-        {/* Badge */}
         <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#22c55e]/30 bg-[#22c55e]/10 text-[#4ade80] text-sm font-medium mb-6 backdrop-blur-sm">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          GRATIS — Tanpa Ribet
+          {t("cta.badge")}
         </div>
 
-        {/* Headline */}
         <h1 className="reveal reveal-delay-1 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-          <span className="text-white">Buat Landing Page</span>
+          <span className="text-white">{t("cta.heading1")}</span>
           <br />
-          <span className="gradient-text">Anda Secara Gratis</span>
+          <span className="gradient-text">{t("cta.heading2")}</span>
         </h1>
 
-        {/* Value props */}
         <div className="reveal reveal-delay-2 max-w-3xl mx-auto mb-10">
           <p className="text-lg sm:text-xl text-gray-400 leading-relaxed">
-            Tidak perlu coding. Tidak perlu desainer. Cukup drag-and-drop, pilih template,
-            dan website profesional Anda siap dalam hitungan menit.{" "}
-            <span className="text-white font-semibold">100% gratis untuk memulai.</span>
+            {t("cta.subtitle")}{" "}
+            <span className="text-white font-semibold">{t("cta.subtitle_bold")}</span>
           </p>
         </div>
 
-        {/* Feature pills */}
         <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3 mb-10">
           {[
-            { icon: "🎨", label: "Drag & Drop Builder" },
-            { icon: "📱", label: "Mobile Responsive" },
-            { icon: "⚡", label: "Cepat & Ringan" },
-            { icon: "🎯", label: "SEO Friendly" },
-            { icon: "🖼", label: "Template Siap Pakai" },
+            { icon: "🎨", label: t("cta.feature1") },
+            { icon: "📱", label: t("cta.feature2") },
+            { icon: "⚡", label: t("cta.feature3") },
+            { icon: "🎯", label: t("cta.feature4") },
+            { icon: "🖼", label: t("cta.feature5") },
           ].map((feat, i) => (
             <span
               key={i}
@@ -95,7 +88,6 @@ export default function HeroBuilderCTA() {
           ))}
         </div>
 
-        {/* CTA Buttons */}
         <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/auth/register"
@@ -104,29 +96,28 @@ export default function HeroBuilderCTA() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            Buat Website Gratis
+            {t("cta.cta1")}
             <span className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
           <Link
             href="/auth/login"
             className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 text-white font-semibold rounded-xl text-lg transition-all duration-300 hover:bg-white/10 hover:border-white/40"
           >
-            Sudah Punya Akun? Masuk
+            {t("cta.cta2")}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
         </div>
 
-        {/* Trust indicators */}
         <div className="reveal reveal-delay-4 mt-12 pt-8 border-t border-white/5">
-          <p className="text-xs text-gray-600 uppercase tracking-widest mb-4">Tidak perlu kartu kredit • Tanpa komitmen • Batal kapan saja</p>
+          <p className="text-xs text-gray-600 uppercase tracking-widest mb-4">{t("cta.trust")}</p>
           <div className="flex items-center justify-center gap-6 flex-wrap">
             {[
-              { value: "100%", label: "Gratis" },
-              { value: "5+", label: "Template" },
-              { value: "Drag & Drop", label: "Editor" },
-              { value: "1 Klik", label: "Publish" },
+              { value: t("cta.trust1_val"), label: t("cta.trust1_label") },
+              { value: t("cta.trust2_val"), label: t("cta.trust2_label") },
+              { value: t("cta.trust3_val"), label: t("cta.trust3_label") },
+              { value: t("cta.trust4_val"), label: t("cta.trust4_label") },
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="text-sm font-bold text-[#22c55e]">{stat.value}</div>
@@ -142,7 +133,7 @@ export default function HeroBuilderCTA() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
               </svg>
-              Lihat Semua Template
+              {t("cta.templates_link")}
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

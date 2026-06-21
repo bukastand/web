@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 interface Service {
   icon: string;
@@ -10,23 +11,24 @@ interface Service {
 }
 
 const defaultServices: Service[] = [
-  { icon: "🎓", title: "Website Universitas", description: "Portal kampus, informasi akademik, pendaftaran mahasiswa, dan sistem pendidikan modern." },
-  { icon: "📚", title: "Website Sekolah", description: "Website sekolah modern lengkap dengan informasi, galeri, PPDB, dan berita sekolah." },
-  { icon: "🏢", title: "Website Property", description: "Website property untuk perumahan, apartemen, agen properti, dan listing rumah." },
-  { icon: "🏬", title: "Company Profile", description: "Tampilan profesional untuk meningkatkan branding dan kepercayaan bisnis Anda." },
-  { icon: "✈️", title: "Website Travel", description: "Website travel dan tour lengkap dengan paket wisata dan booking online." },
-  { icon: "🏥", title: "Klinik & RS", description: "Sistem informasi kesehatan, jadwal dokter, dan layanan pasien online." },
-  { icon: "🛒", title: "Toko Online", description: "Website e-commerce modern untuk menjual produk secara online." },
-  { icon: "🏨", title: "Website Hotel", description: "Website hotel dan penginapan dengan fitur booking dan reservasi online." },
-  { icon: "🍽️", title: "Restaurant & Cafe", description: "Website menu digital, reservasi meja, dan promosi cafe atau restaurant." },
-  { icon: "🏛️", title: "Pemerintahan", description: "Portal informasi instansi pemerintahan dan pelayanan publik digital." },
-  { icon: "📰", title: "Portal Berita", description: "Portal media online dan berita dengan sistem kategori dan artikel lengkap." },
-  { icon: "💻", title: "Custom Web App", description: "Sistem dashboard, ERP, CRM, booking system, dan aplikasi berbasis web custom." },
+  { icon: "🎓", title: "University Website", description: "Campus portal, academic information, student registration, and modern education systems." },
+  { icon: "📚", title: "School Website", description: "Modern school website with information, gallery, PPDB, and school news." },
+  { icon: "🏢", title: "Property Website", description: "Property website for housing, apartments, real estate agents, and property listings." },
+  { icon: "🏬", title: "Company Profile", description: "Professional appearance to enhance your business branding and credibility." },
+  { icon: "✈️", title: "Travel Website", description: "Travel and tour website with tour packages and online booking." },
+  { icon: "🏥", title: "Clinic & Hospital", description: "Healthcare information system, doctor schedules, and online patient services." },
+  { icon: "🛒", title: "Online Store", description: "Modern e-commerce website to sell products online." },
+  { icon: "🏨", title: "Hotel Website", description: "Hotel and lodging website with online booking and reservation features." },
+  { icon: "🍽️", title: "Restaurant & Cafe", description: "Digital menu website, table reservations, and cafe or restaurant promotions." },
+  { icon: "🏛️", title: "Government", description: "Government agency information portal and digital public services." },
+  { icon: "📰", title: "News Portal", description: "Online media and news portal with complete category and article system." },
+  { icon: "💻", title: "Custom Web App", description: "Dashboard systems, ERP, CRM, booking systems, and custom web-based applications." },
 ];
 
 export default function ServicesSection() {
   const [services, setServices] = useState<Service[]>(defaultServices);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const { t, locale } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -81,11 +83,11 @@ export default function ServicesSection() {
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Keahlian{" "}
-            <span className="gradient-text">Kami</span>
+            {t("services.heading")}{" "}
+            <span className="gradient-text">{t("services.heading_highlight")}</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Berbagai solusi digital yang siap membantu bisnis Anda
+            {t("services.subtitle")}
           </p>
         </div>
 

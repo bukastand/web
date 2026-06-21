@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 interface WhyUsItem {
   icon: React.ReactNode;
@@ -36,26 +37,26 @@ const iconSvg: Record<string, React.ReactNode> = {
 const defaultWhyUs: WhyUsItem[] = [
   {
     icon: iconSvg.image || null,
-    title: "Desain Modern",
-    desc: "Tampilan elegan dan profesional untuk meningkatkan kepercayaan customer.",
+    title: "Modern Design",
+    desc: "Elegant and professional appearance to increase customer trust.",
     gradient: "from-emerald-500/20 to-emerald-500/5",
   },
   {
     icon: iconSvg.smartphone || null,
     title: "Mobile Friendly",
-    desc: "Website tampil optimal di HP, tablet, maupun desktop.",
+    desc: "Websites display optimally on phones, tablets, and desktops.",
     gradient: "from-blue-500/20 to-blue-500/5",
   },
   {
     icon: iconSvg.zap || null,
     title: "Fast Loading",
-    desc: "Website ringan dan cepat diakses untuk pengalaman pengguna yang lebih baik.",
+    desc: "Lightweight and fast-loading websites for a better user experience.",
     gradient: "from-yellow-500/20 to-yellow-500/5",
   },
   {
     icon: iconSvg.settings || null,
-    title: "Support Cepat",
-    desc: "Kami siap membantu jika ada kendala atau update website.",
+    title: "Quick Support",
+    desc: "We're ready to help with any issues or website updates.",
     gradient: "from-purple-500/20 to-purple-500/5",
   },
 ];
@@ -69,6 +70,7 @@ const colorAccents = [
 
 export default function WhyUsSection() {
   const [reasons, setReasons] = useState<WhyUsItem[]>(defaultWhyUs);
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -116,27 +118,24 @@ export default function WhyUsSection() {
       ref={sectionRef}
       className="relative py-24 sm:py-32 bg-[#0f172a] overflow-hidden"
     >
-      {/* Decorative blobs */}
       <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
-          {/* Section label */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/20 text-[#22c55e] text-xs font-semibold mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
-            Mengapa Kami?
+            {t("whyus.label")}
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Kenapa Pilih{" "}
-            <span className="gradient-text">Kami?</span>
+            {t("whyus.heading")}{" "}
+            <span className="gradient-text">{t("whyus.heading_highlight")}</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Kami membantu bisnis tampil profesional di internet
+            {t("whyus.subtitle")}
           </p>
         </div>
 
-        {/* ── Premium 2x2 Grid ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
           {reasons.map((reason, index) => {
             const accent = colorAccents[index];
@@ -149,15 +148,12 @@ export default function WhyUsSection() {
                   borderColor: "rgba(255,255,255,0.06)",
                 }}
               >
-                {/* Hover glass overlay */}
                 <div className={`absolute inset-0 ${accent.light} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
-                {/* Icon with colored background */}
                 <div className={`relative z-10 w-16 h-16 rounded-2xl ${accent.medium} ${accent.text} flex items-center justify-center mb-5 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg ${accent.glow}`}>
                   {reason.icon}
                 </div>
 
-                {/* Content */}
                 <div className="relative z-10">
                   <h4 className="text-xl font-bold text-white mb-3 group-hover:text-[#22c55e] transition-colors duration-300">
                     {reason.title}
@@ -167,10 +163,8 @@ export default function WhyUsSection() {
                   </p>
                 </div>
 
-                {/* Corner decorative dot */}
                 <div className={`absolute top-4 right-4 w-2 h-2 rounded-full ${accent.medium} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
-                {/* Bottom border accent */}
                 <div
                   className="absolute bottom-0 left-0 right-0 h-[2px] scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
                   style={{

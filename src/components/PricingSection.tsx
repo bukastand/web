@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 interface PricingItem {
   name: string;
@@ -11,15 +12,16 @@ interface PricingItem {
 }
 
 const defaultPackages: PricingItem[] = [
-  { name: "Landing Page", price: "Rp1,2 Juta", features: ["1 Halaman Profesional","Mobile Responsive","Tombol WhatsApp","Copywriting Basic","Fast Loading","Basic SEO","Gratis Domain 1 Tahun","Revisi 2x"], is_popular: false },
-  { name: "Starter UMKM", price: "Rp2 Juta", features: ["1–5 Halaman","Mobile Responsive","WhatsApp Chat","Google Maps","Basic SEO","Gratis Domain 1 Tahun","Gratis Hosting 1 Tahun","Revisi 2x"], is_popular: false },
-  { name: "Business Pro", price: "Rp5 Juta", features: ["Semua Fitur Starter","Desain Semi Custom","SEO Optimasi","Blog / Artikel","Optimasi Speed","Training Admin","Backup Website","Revisi 4x"], is_popular: true },
-  { name: "Premium Custom", price: "Mulai Rp10 Juta", features: ["UI/UX Full Custom","Dashboard Admin","Login Member","Payment Gateway","Integrasi API","Advanced Security","Priority Support","Maintenance 3 Bulan"], is_popular: false },
-  { name: "Aplikasi Android & iOS", price: "Mulai Rp15 Juta", features: ["Aplikasi Android & iOS","UI/UX Modern","Login User","Push Notification","Integrasi API","Dashboard Admin","Maintenance 1 Bulan","Source Code Full"], is_popular: false },
+  { name: "Landing Page", price: "Rp1.2 Million", features: ["1 Professional Page","Mobile Responsive","WhatsApp Button","Basic Copywriting","Fast Loading","Basic SEO","Free Domain 1 Year","2x Revisions"], is_popular: false },
+  { name: "Starter UMKM", price: "Rp2 Million", features: ["1–5 Pages","Mobile Responsive","WhatsApp Chat","Google Maps","Basic SEO","Free Domain 1 Year","Free Hosting 1 Year","2x Revisions"], is_popular: false },
+  { name: "Business Pro", price: "Rp5 Million", features: ["All Starter Features","Semi Custom Design","SEO Optimization","Blog / Articles","Speed Optimization","Admin Training","Website Backup","4x Revisions"], is_popular: true },
+  { name: "Premium Custom", price: "From Rp10 Million", features: ["UI/UX Full Custom","Admin Dashboard","Member Login","Payment Gateway","API Integration","Advanced Security","Priority Support","3 Months Maintenance"], is_popular: false },
+  { name: "Android & iOS App", price: "From Rp15 Million", features: ["Android & iOS App","Modern UI/UX","User Login","Push Notification","API Integration","Admin Dashboard","1 Month Maintenance","Full Source Code"], is_popular: false },
 ];
 
 export default function PricingSection() {
   const [packages, setPackages] = useState<PricingItem[]>(defaultPackages);
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -68,16 +70,15 @@ export default function PricingSection() {
       ref={sectionRef}
       className="relative py-24 sm:py-32 bg-[#0a0f1e] overflow-hidden"
     >
-      {/* Background accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Paket Harga <span className="gradient-text">Website</span>
+            {t("pricing.heading")} <span className="gradient-text">{t("pricing.heading_highlight")}</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Pilih paket sesuai kebutuhan bisnis Anda
+            {t("pricing.subtitle")}
           </p>
         </div>
 
@@ -93,7 +94,7 @@ export default function PricingSection() {
             >
               {pkg.is_popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#22c55e] text-white text-[10px] font-bold rounded-full whitespace-nowrap shadow-lg shadow-[#22c55e]/30">
-                  Paling Laris ⭐
+                  {t("pricing.popular")}
                 </div>
               )}
 
@@ -129,7 +130,7 @@ export default function PricingSection() {
                       : "bg-white/10 text-white hover:bg-white/20 border border-white/10 active:scale-95"
                   }`}
                 >
-                  Pesan Sekarang
+                  {t("pricing.order")}
                 </a>
               </div>
             </div>

@@ -1,35 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
-const testimonials = [
-  {
-    quote: "Website kami selesai tepat waktu dan hasilnya melebihi ekspektasi. Penjualan online meningkat signifikan setelah website baru diluncurkan.",
-    name: "James Clarke",
-    role: "Owner, Shop The Paws",
-    result: "300%",
-    resultLabel: "Peningkatan Revenue",
-    initial: "JC",
-  },
-  {
-    quote: "Pelayanan sangat profesional. Tim PAGODA STUDIO benar-benar paham apa yang kami butuhkan untuk website perusahaan.",
-    name: "Sarah Wijaya",
-    role: "CEO, TechBiz Solutions",
-    result: "20%",
-    resultLabel: "Kenaikan Session Duration",
-    initial: "SW",
-  },
-  {
-    quote: "Mulai dari konsultasi sampai launch, semuanya berjalan lancar. Website kami sekarang tampil lebih modern dan profesional.",
-    name: "Budi Santoso",
-    role: "Direktur, GreenHill Residence",
-    result: "150+",
-    resultLabel: "Lead per Bulan",
-    initial: "BS",
-  },
-];
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function TestimonialsSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -62,20 +37,20 @@ export default function TestimonialsSection() {
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Hasil Nyata dari{" "}
-            <span className="gradient-text">Klien Kami</span>
+            {t("testimonials.heading")}{" "}
+            <span className="gradient-text">{t("testimonials.heading_highlight")}</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Kepuasan klien adalah prioritas utama kami
+            {t("testimonials.subtitle")}
           </p>
         </div>
 
         {/* Stats row */}
         <div className="reveal grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {[
-            { value: "50+", label: "Project Terselesaikan" },
-            { value: "98%", label: "Klien Puas" },
-            { value: "2+ Tahun", label: "Pengalaman" },
+            { value: "50+", label: t("testimonials.stat1") },
+            { value: "98%", label: t("testimonials.stat2") },
+            { value: "2+", label: t("testimonials.stat3") },
           ].map((stat, i) => (
             <div
               key={i}
@@ -91,7 +66,7 @@ export default function TestimonialsSection() {
 
         {/* Testimonials */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((item, index) => (
+          {[1, 2, 3].map((num, index) => (
             <div
               key={index}
               className="reveal group relative p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-[#22c55e]/30 transition-all duration-500 hover:bg-white/[0.06]"
@@ -107,23 +82,31 @@ export default function TestimonialsSection() {
 
               {/* Quote */}
               <p className="text-gray-400 leading-relaxed mb-6 text-sm">
-                &ldquo;{item.quote}&rdquo;
+                &ldquo;{t(`testimonials.quote${num}`)}&rdquo;
               </p>
 
               {/* Result highlight */}
               <div className="mb-6 p-3 rounded-xl bg-[#22c55e]/5 border border-[#22c55e]/10">
-                <div className="text-xl font-extrabold text-[#22c55e]">{item.result}</div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wider">{item.resultLabel}</div>
+                <div className="text-xl font-extrabold text-[#22c55e]">
+                  {["300%", "20%", "150+"][index]}
+                </div>
+                <div className="text-[11px] text-gray-500 uppercase tracking-wider">
+                  {t(`testimonials.result${num}`)}
+                </div>
               </div>
 
               {/* Author */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-xs font-bold text-[#22c55e]">
-                  {item.initial}
+                  {["JC", "SW", "BS"][index]}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">{item.name}</div>
-                  <div className="text-xs text-gray-500">{item.role}</div>
+                  <div className="text-sm font-semibold text-white">
+                    {[["James Clarke", "Sarah Wijaya", "Budi Santoso"][index]]}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {[["Owner, Shop The Paws", "CEO, TechBiz Solutions", "Direktur, GreenHill Residence"][index]]}
+                  </div>
                 </div>
               </div>
             </div>

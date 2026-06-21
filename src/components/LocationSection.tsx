@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function LocationSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -31,24 +33,21 @@ export default function LocationSection() {
       ref={sectionRef}
       className="relative py-16 sm:py-20 bg-[#0a0f1e] overflow-hidden"
     >
-      {/* Background accents */}
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            <span className="gradient-text">Hubungi</span> Kami
+            <span className="gradient-text">{t("location.heading")}</span> {t("location.heading_highlight")}
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Silakan hubungi atau kunjungi studio kami
+            {t("location.subtitle")}
           </p>
         </div>
 
         <div className="reveal max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left: Contact Info */}
             <div className="p-8 sm:p-10 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-              {/* Address */}
               <div className="flex items-start gap-4 mb-8">
                 <div className="w-12 h-12 rounded-xl bg-[#22c55e]/10 text-[#22c55e] flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +64,6 @@ export default function LocationSection() {
                 </div>
               </div>
 
-              {/* Contact buttons */}
               <div className="space-y-3">
                 <a
                   href="https://wa.me/6282210099969"
@@ -91,7 +89,7 @@ export default function LocationSection() {
                   <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
-                  <span className="flex-1">Buka di Google Maps</span>
+                  <span className="flex-1">{t("location.gmaps")}</span>
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
@@ -99,7 +97,6 @@ export default function LocationSection() {
               </div>
             </div>
 
-            {/* Right: Map */}
             <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg shadow-black/20 min-h-[350px]">
               <iframe
                 src="https://www.google.com/maps?q=Jl.%20Ade%20Irma%20Suryani%20No.6A%20Payakumbuh&output=embed"
