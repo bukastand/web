@@ -106,14 +106,14 @@ export default function HeroSection() {
 
           {/* Main Title */}
           <h1 className="reveal reveal-delay-1 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight mb-6">
-            <span className="text-white">{hero.title_line1}</span>
+            <span className="text-white">{t("hero.title1")}</span>
             <br />
-            <span className="gradient-text">{hero.title_line2}</span>
+            <span className="gradient-text">{t("hero.title2")}</span>
           </h1>
 
           {/* Subtitle */}
           <p className="reveal reveal-delay-2 text-lg sm:text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-            {hero.subtitle}
+            {t("hero.subtitle")}
           </p>
 
           {/* CTA Buttons */}
