@@ -1274,31 +1274,108 @@ export function ThreeBackgroundEditor({ element, updateContent }: EditorProps) {
 
 export function ThreeSceneEditor({ element, updateContent }: EditorProps) {
   const c = element.content;
+  const modelMode = c.modelMode || "shapes";
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("modelSrc", dataUrl);
+      updateContent("modelMode", "custom");
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
-      <Section title="3D Scene">
-        <ColorPicker value={c.color || "#22c55e"} onChange={(v) => updateContent("color", v)} label="Warna Akcent" />
-        <div className="mb-3">
-          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Jumlah Shape ({c.shapes || 6})</label>
-          <input
-            type="range"
-            min={2} max={12} step={1}
-            value={c.shapes || 6}
-            onChange={(e) => updateContent("shapes", parseInt(e.target.value))}
-            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kecepatan Animasi ({c.rotateSpeed || 0.5})</label>
-          <input
-            type="range"
-            min={0.1} max={2} step={0.1}
-            value={c.rotateSpeed || 0.5}
-            onChange={(e) => updateContent("rotateSpeed", parseFloat(e.target.value))}
-            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
-          />
+      <Section title="Mode Konten">
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => updateContent("modelMode", "shapes")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+              modelMode === "shapes"
+                ? "bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/40"
+                : "bg-white/5 text-gray-400 border border-white/10 hover:border-white/30"
+            }`}
+          >
+            🎲 Procedural Shapes
+          </button>
+          <button
+            onClick={() => updateContent("modelMode", "custom")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+              modelMode === "custom"
+                ? "bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/40"
+                : "bg-white/5 text-gray-400 border border-white/10 hover:border-white/30"
+            }`}
+          >
+            📦 Custom 3D Model
+          </button>
         </div>
       </Section>
+
+      {modelMode === "shapes" ? (
+        <Section title="Procedural Shapes">
+          <ColorPicker value={c.color || "#22c55e"} onChange={(v) => updateContent("color", v)} label="Warna Akcent" />
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Jumlah Shape ({c.shapes || 6})</label>
+            <input
+              type="range"
+              min={2} max={12} step={1}
+              value={c.shapes || 6}
+              onChange={(e) => updateContent("shapes", parseInt(e.target.value))}
+              className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+            />
+          </div>
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kecepatan Animasi ({c.rotateSpeed || 0.5})</label>
+            <input
+              type="range"
+              min={0.1} max={2} step={0.1}
+              value={c.rotateSpeed || 0.5}
+              onChange={(e) => updateContent("rotateSpeed", parseFloat(e.target.value))}
+              className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+            />
+          </div>
+        </Section>
+      ) : (
+        <Section title="Custom 3D Model">
+          <p className="text-[10px] text-gray-500 leading-relaxed mb-3">
+            📦 Upload file <strong>.glb</strong> atau masukkan URL model 3D untuk menggantikan procedural shapes.
+          </p>
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload File .glb</label>
+            {c.modelSrc && (
+              <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-xs font-medium" style={{ color: "#22c55e" }}>✓ Model uploaded</span>
+                  <button onClick={() => { updateContent("modelSrc", ""); updateContent("modelMode", "shapes"); }} className="w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500">×</button>
+                </div>
+              </div>
+            )}
+            <input
+              type="file"
+              accept=".glb,.gltf,model/gltf-binary,model/gltf+json"
+              onChange={handleFileUpload}
+              className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+            />
+          </div>
+          <TextInput label="URL Model GLB" value={c.modelSrc || ""} onChange={(v) => { updateContent("modelSrc", v); updateContent("modelMode", "custom"); }} placeholder="https://example.com/model.glb" />
+          <ColorPicker value={c.modelColor || "#22c55e"} onChange={(v) => updateContent("modelColor", v)} label="Warna Model" />
+          <Checkbox label="Wireframe" checked={!!c.modelWireframe} onChange={(v) => updateContent("modelWireframe", v)} />
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Skala Model ({c.modelScale || 1.5})</label>
+            <input
+              type="range"
+              min={0.2} max={5} step={0.1}
+              value={c.modelScale || 1.5}
+              onChange={(e) => updateContent("modelScale", parseFloat(e.target.value))}
+              className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+            />
+          </div>
+        </Section>
+      )}
 
       <Section title="Teks Overlay">
         <p className="text-[10px] text-gray-500 leading-relaxed mb-3">Teks akan tampil di atas scene 3D. Gunakan style panel untuk mengatur warna, ukuran, dan posisi.</p>

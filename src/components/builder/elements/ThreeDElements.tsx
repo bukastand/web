@@ -171,14 +171,64 @@ function ParticleField({ color = "#22c55e", count = 300, size = 2 }: { color: st
   );
 }
 
+// ─── Custom Model Viewer for ThreeScene ───
+
+function SceneModelViewer({ src, modelColor, wireframe, scale: modelScale, rotateSpeed }: {
+  src: string;
+  modelColor: string;
+  wireframe: boolean;
+  scale: number;
+  rotateSpeed?: number;
+}) {
+  const { scene } = useGLTF(src);
+  const groupRef = useRef<THREE.Group>(null);
+
+  useEffect(() => {
+    scene.traverse((child: any) => {
+      if (child.isMesh) {
+        if (wireframe) {
+          child.material.wireframe = true;
+          child.material.color.setHex(parseInt(modelColor.replace('#', ''), 16));
+          child.material.transparent = true;
+          child.material.opacity = 0.6;
+        } else {
+          child.material.color.setHex(parseInt(modelColor.replace('#', ''), 16));
+          child.material.wireframe = false;
+          child.material.opacity = 1;
+        }
+      }
+    });
+  }, [scene, modelColor, wireframe]);
+
+  useFrame((_, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * (rotateSpeed || 0.5) * 0.5;
+      groupRef.current.rotation.x += delta * (rotateSpeed || 0.5) * 0.1;
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} scale={modelScale} />
+    </group>
+  );
+}
+
 // ─── Main ThreeScene Canvas ───
 
-function ThreeSceneCanvas({ color = "#22c55e", shapes = 6, animationSpeed = 1, backgroundColor = "#0a0f1a" }: {
+function ThreeSceneCanvas({ color = "#22c55e", shapes = 6, animationSpeed = 1, backgroundColor = "#0a0f1a", modelMode, modelSrc, modelColor, modelWireframe, modelScale }: {
   color: string;
   shapes: number;
   animationSpeed: number;
   backgroundColor: string;
+  modelMode?: string;
+  modelSrc?: string;
+  modelColor?: string;
+  modelWireframe?: boolean;
+  modelScale?: number;
 }) {
+  const isCustomModel = modelMode === "custom" && modelSrc;
+
   return (
     <div className="w-full h-full rounded-2xl overflow-hidden pointer-events-none" style={{ backgroundColor }}>
       <Canvas
@@ -192,8 +242,20 @@ function ThreeSceneCanvas({ color = "#22c55e", shapes = 6, animationSpeed = 1, b
         <directionalLight position={[-5, -5, -5]} intensity={0.3} />
         <pointLight position={[0, 0, 0]} intensity={0.3} color={color} />
         <Suspense fallback={null}>
-          <SceneShapesGroup color={color} shapeCount={shapes} />
-          <ParticleField color={color} count={200} size={animationSpeed} />
+          {isCustomModel ? (
+            <SceneModelViewer
+              src={modelSrc}
+              modelColor={modelColor || color}
+              wireframe={!!modelWireframe}
+              scale={modelScale || 1.5}
+              rotateSpeed={animationSpeed}
+            />
+          ) : (
+            <>
+              <SceneShapesGroup color={color} shapeCount={shapes} />
+              <ParticleField color={color} count={200} size={animationSpeed} />
+            </>
+          )}
           <Environment preset="night" />
         </Suspense>
       </Canvas>
@@ -413,6 +475,11 @@ export function ThreeSceneElement({ el }: ElementComponentProps) {
   const shapes = el.content.shapes || 6;
   const animationSpeed = el.content.rotateSpeed || 0.5;
   const backgroundColor = el.styles.backgroundColor || "#0a0f1a";
+  const modelMode = el.content.modelMode || "shapes";
+  const modelSrc = el.content.modelSrc;
+  const modelColor = el.content.modelColor || color;
+  const modelWireframe = !!el.content.modelWireframe;
+  const modelScale = el.content.modelScale || 1.5;
 
   return (
     <div
@@ -430,13 +497,18 @@ export function ThreeSceneElement({ el }: ElementComponentProps) {
           shapes={shapes}
           animationSpeed={animationSpeed}
           backgroundColor={backgroundColor}
+          modelMode={modelMode}
+          modelSrc={modelSrc}
+          modelColor={modelColor}
+          modelWireframe={modelWireframe}
+          modelScale={modelScale}
         />
       </div>
       <TextOverlay el={el} />
       {/* Label overlay */}
       <div className="absolute top-3 left-3 pointer-events-none">
         <span className="text-[10px] bg-black/40 text-white/70 px-2 py-0.5 rounded-md backdrop-blur-sm">
-          ✦ 3D Scene
+          {modelMode === "custom" && modelSrc ? "✦ 3D Custom Model" : "✦ 3D Scene"}
         </span>
       </div>
     </div>
