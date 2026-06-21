@@ -1,8 +1,61 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
 
+// ── Simple in-memory rate limiter ──
+// Limits: 3 requests per IP per 60 seconds
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return false;
+  }
+  entry.count++;
+  return true;
+}
+
+// Clean up stale entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, val] of rateLimitMap.entries()) {
+    if (now > val.resetAt) rateLimitMap.delete(key);
+  }
+}, 300_000);
+
+/**
+ * Sanitize user input to prevent XSS in email HTML.
+ * Escapes HTML special characters and limits length.
+ */
+function sanitize(str: string, maxLen = 5000): string {
+  const truncated = str.slice(0, maxLen);
+  return truncated
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 export async function POST(request: Request) {
   try {
+    // ── Rate limiting ──
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+      || request.headers.get("x-real-ip")
+      || "unknown";
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: "Terlalu banyak permintaan. Silakan coba lagi dalam 60 detik." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { name, email, phone, message, recipientEmail, siteName } = body;
 
@@ -20,7 +73,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const site = siteName || "Website";
+    // ── Sanitize all user inputs ──
+    const safeSite = sanitize(siteName || "Website", 200);
+    const safeName = sanitize(name, 200);
+    const safeEmail = sanitize(email, 320);
+    const safePhone = sanitize(phone || "", 50);
+    const safeMessage = sanitize(message, 10000);
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -45,29 +103,29 @@ export async function POST(request: Request) {
       <body>
         <div class="container">
           <div class="header">
-            <h1>📬 Pesan Baru dari ${site}</h1>
+            <h1>📬 Pesan Baru dari ${safeSite}</h1>
             <p>Ada seseorang yang mengirimkan pesan melalui form kontak</p>
           </div>
           <div class="body">
             <div class="field">
               <div class="field-label">Nama</div>
-              <div class="field-value">${name}</div>
+              <div class="field-value">${safeName}</div>
             </div>
             <div class="field">
               <div class="field-label">Email</div>
-              <div class="field-value"><a href="mailto:${email}" style="color: #22c55e">${email}</a></div>
+              <div class="field-value"><a href="mailto:${safeEmail}" style="color: #22c55e">${safeEmail}</a></div>
             </div>
-            ${phone ? `
+            ${safePhone ? `
             <div class="field">
               <div class="field-label">No. Telepon</div>
-              <div class="field-value">${phone}</div>
+              <div class="field-value">${safePhone}</div>
             </div>
             ` : ""}
             <div class="divider"></div>
             <div class="field">
               <div class="field-label">Pesan</div>
               <div class="message-box">
-                <div class="field-value" style="white-space: pre-wrap">${message}</div>
+                <div class="field-value" style="white-space: pre-wrap">${safeMessage}</div>
               </div>
             </div>
           </div>
@@ -83,9 +141,9 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       from: `Contact Form <onboarding@resend.dev>`,
       to: [recipientEmail],
-      subject: `📬 Pesan Baru dari ${site} — ${name}`,
+      subject: `📬 Pesan Baru dari ${safeSite} — ${safeName}`,
       html: emailHtml,
-      replyTo: email,
+      replyTo: safeEmail,
     });
 
     if (error) {

@@ -3034,8 +3034,28 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
 
 
 
+/**
+ * Sanitize user-provided HTML to prevent XSS.
+ * Strips <script> tags, event handlers (including <svg/onload=...>), and javascript: URLs.
+ */
+function sanitizeHtml(html: string): string {
+  return html
+    // Remove <script>...</script> tags
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    // Remove event handlers with quotes: onload="..." onclick='...'
+    // Also handles <svg/onload=...> (slash before on)
+    .replace(/[\s/]+on\w+\s*=\s*(['\"]).*?\1/gi, '')
+    // Remove event handlers without quotes: onload=alert(1)
+    .replace(/[\s/]+on\w+\s*=\s*[^\s>]+/gi, '')
+    // Block javascript: URLs (including obfuscated variants)
+    .replace(/\bj\s*\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/gi, 'blocked:')
+    // Block data:text/html URLs (common XSS vector)
+    .replace(/data:text\/html/gi, 'blocked:');
+}
+
 function HtmlElement({ el }: ElementComponentProps) {
-  const htmlContent = el.content.html || "";
+  const rawHtml = el.content.html || "";
+  const htmlContent = sanitizeHtml(rawHtml);
   const styles = applyStyles(el);
 
   return (
