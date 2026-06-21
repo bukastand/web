@@ -7,7 +7,7 @@ import { SOCIAL_PLATFORMS, SocialIcon } from "@/lib/builder/social-platforms";
 import { compressAndUploadImage } from "@/lib/upload-image";
 import { ColorPicker, FontSizeSlider, GradientBuilder } from "@/components/builder/helpers";
 import { HeadingEditor, TextEditor, ImageEditor, ButtonEditor, VideoEditor, SpacerEditor, DividerEditor, IconEditor, FeaturesEditor, PricingEditor, TestimonialEditor, CTAEditor, StatsEditor, ContactFormEditor, MapsEditor, NavbarEditor, FooterEditor, CarouselEditor, AccordionEditor, TeamEditor, CountdownEditor } from "@/components/builder/editors";
-import { AnimatedHeadlineEditor, BlockquoteEditor, CodeHighlightEditor, FlipBoxEditor, HotspotEditor, ProgressTrackerEditor, ShareButtonsEditor, ChecklistEditor, GalleryEditor, LottieEditor, StarRatingEditor, SearchEditor, FloatingButtonsEditor, BreadcrumbsEditor, OffCanvasEditor, SlidesEditor, NestedCarouselEditor, VideoPlaylistEditor, TableOfContentsEditor, SocialEmbedEditor } from "./PremiumElementEditors";
+import { AnimatedHeadlineEditor, BlockquoteEditor, CodeHighlightEditor, FlipBoxEditor, HotspotEditor, ProgressTrackerEditor, ShareButtonsEditor, ChecklistEditor, GalleryEditor, LottieEditor, StarRatingEditor, SearchEditor, FloatingButtonsEditor, BreadcrumbsEditor, OffCanvasEditor, SlidesEditor, NestedCarouselEditor, VideoPlaylistEditor, TableOfContentsEditor, SocialEmbedEditor, ThreeBackgroundEditor, ThreeSceneEditor, ThreeParticlesEditor } from "./PremiumElementEditors";
 
 const fontOptions = [
   { label: "Inter (Default)", value: "Inter, sans-serif" },
@@ -361,7 +361,7 @@ export default function StylePanel() {
                 </>)}
               </>
             )}
-            {["animated-headline","blockquote","code-highlight","flip-box","hotspot","progress-tracker","share-buttons","checklist","gallery","lottie","star-rating","search","floating-buttons","breadcrumbs","off-canvas","slides","nested-carousel","video-playlist","table-of-contents","social-embed"].includes(selectedElement.type) && (
+            {["animated-headline","blockquote","code-highlight","flip-box","hotspot","progress-tracker","share-buttons","checklist","gallery","lottie","star-rating","search","floating-buttons","breadcrumbs","off-canvas","slides","nested-carousel","video-playlist","table-of-contents","social-embed","three-background","three-scene","three-particles"].includes(selectedElement.type) && (
               <>
                 {selectedElement.type === "animated-headline" && <AnimatedHeadlineEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
                 {selectedElement.type === "blockquote" && <BlockquoteEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
@@ -383,6 +383,9 @@ export default function StylePanel() {
                 {selectedElement.type === "video-playlist" && <VideoPlaylistEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
                 {selectedElement.type === "table-of-contents" && <TableOfContentsEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
                 {selectedElement.type === "social-embed" && <SocialEmbedEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+                {selectedElement.type === "three-background" && <ThreeBackgroundEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+                {selectedElement.type === "three-scene" && <ThreeSceneEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
+                {selectedElement.type === "three-particles" && <ThreeParticlesEditor element={selectedElement} updateContent={updateContent} handleAddItem={handleAddItem} handleRemoveItem={handleRemoveItem} handleItemChange={handleItemChange} userId={user?.id ?? null} />}
               </>
             )}
           </div>

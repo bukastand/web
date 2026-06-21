@@ -1247,6 +1247,104 @@ export function TableOfContentsEditor({ element, updateContent, handleAddItem, h
   );
 }
 
+// ─── 3D Element Editors ───
+
+export function ThreeBackgroundEditor({ element, updateContent }: EditorProps) {
+  const c = element.content;
+  return (
+    <div>
+      <p className="text-[10px] text-gray-500 leading-relaxed mb-3">
+        🌌 Element 3D Background menggunakan CSS efek. Letakkan dalam section sebagai overlay — element ini menggunakan <code>position: absolute</code> dan akan menutupi seluruh section.
+      </p>
+      <ColorPicker value={c.color || "#22c55e"} onChange={(v) => updateContent("color", v)} label="Warna Akcent" />
+      <div className="mb-3">
+        <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Intensitas ({c.intensity || 0.5})</label>
+        <input
+          type="range"
+          min={0.1} max={1} step={0.1}
+          value={c.intensity || 0.5}
+          onChange={(e) => updateContent("intensity", parseFloat(e.target.value))}
+          className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+        />
+      </div>
+      <Checkbox label="Animasi" checked={c.animated !== false} onChange={(v) => updateContent("animated", v)} />
+    </div>
+  );
+}
+
+export function ThreeSceneEditor({ element, updateContent }: EditorProps) {
+  const c = element.content;
+  return (
+    <div>
+      <Section title="3D Scene">
+        <ColorPicker value={c.color || "#22c55e"} onChange={(v) => updateContent("color", v)} label="Warna Akcent" />
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Jumlah Shape ({c.shapes || 6})</label>
+          <input
+            type="range"
+            min={2} max={12} step={1}
+            value={c.shapes || 6}
+            onChange={(e) => updateContent("shapes", parseInt(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kecepatan Animasi ({c.rotateSpeed || 0.5})</label>
+          <input
+            type="range"
+            min={0.1} max={2} step={0.1}
+            value={c.rotateSpeed || 0.5}
+            onChange={(e) => updateContent("rotateSpeed", parseFloat(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+          />
+        </div>
+      </Section>
+
+      <Section title="Teks Overlay">
+        <p className="text-[10px] text-gray-500 leading-relaxed mb-3">Teks akan tampil di atas scene 3D. Gunakan style panel untuk mengatur warna, ukuran, dan posisi.</p>
+        <TextInput label="Judul" value={c.title} onChange={(v) => updateContent("title", v)} />
+        <TextArea label="Subtitle" value={c.subtitle} onChange={(v) => updateContent("subtitle", v)} />
+        <TextInput label="Teks Tombol" value={c.buttonText} onChange={(v) => updateContent("buttonText", v)} />
+        <TextInput label="Link Tombol" value={c.buttonHref} onChange={(v) => updateContent("buttonHref", v)} />
+        <SelectInput label="Posisi Teks" value={c.textPosition || "center"} onChange={(v) => updateContent("textPosition", v)} options={["center", "left", "right", "top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"]} />
+      </Section>
+    </div>
+  );
+}
+
+export function ThreeParticlesEditor({ element, updateContent }: EditorProps) {
+  const c = element.content;
+  return (
+    <div>
+      <Section title="3D Particles">
+        <ColorPicker value={c.color || "#22c55e"} onChange={(v) => updateContent("color", v)} label="Warna Partikel" />
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Jumlah Partikel ({c.particleCount || 300})</label>
+          <input
+            type="range"
+            min={50} max={1000} step={50}
+            value={c.particleCount || 300}
+            onChange={(e) => updateContent("particleCount", parseInt(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kecepatan ({c.speed || 0.5})</label>
+          <input
+            type="range"
+            min={0.1} max={2} step={0.1}
+            value={c.speed || 0.5}
+            onChange={(e) => updateContent("speed", parseFloat(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+          />
+        </div>
+      </Section>
+    </div>
+  );
+}
+
+// ─── End 3D Editors ───
+
 export function SocialEmbedEditor({ element, updateContent }: EditorProps) {
   const c = element.content;
   return (

@@ -226,6 +226,88 @@ function ParticlesOnlyCanvas({ color = "#22c55e", count = 300, speed = 0.5, back
   );
 }
 
+// ─── Text Overlay Helper ───
+
+const TEXT_POSITIONS: Record<string, { justify: string; items: string }> = {
+  center: { justify: "center", items: "center" },
+  left: { justify: "center", items: "start" },
+  right: { justify: "center", items: "end" },
+  "top-left": { justify: "start", items: "start" },
+  "top-center": { justify: "start", items: "center" },
+  "top-right": { justify: "start", items: "end" },
+  "bottom-left": { justify: "end", items: "start" },
+  "bottom-center": { justify: "end", items: "center" },
+  "bottom-right": { justify: "end", items: "end" },
+};
+
+function TextOverlay({ el }: { el: BuilderElement }) {
+  const c = el.content;
+  const hasContent = c.title || c.subtitle || c.buttonText;
+  if (!hasContent) return null;
+
+  const pos = TEXT_POSITIONS[c.textPosition || "center"] || TEXT_POSITIONS.center;
+
+  return (
+    <div
+      className="absolute inset-0 flex pointer-events-none"
+      style={{
+        justifyContent: pos.justify as any,
+        alignItems: pos.items as any,
+        padding: "32px",
+        background: c.overlayBg || "rgba(0,0,0,0.3)",
+      }}
+    >
+      <div
+        className="max-w-2xl pointer-events-auto"
+        style={{
+          textAlign: c.textPosition === "left" || c.textPosition?.includes("left") ? "left" as any :
+                     c.textPosition === "right" || c.textPosition?.includes("right") ? "right" as any : "center" as any,
+        }}
+      >
+        {c.title && (
+          <h2
+            className="font-bold leading-tight mb-2"
+            style={{
+              color: c.titleColor || "#ffffff",
+              fontSize: c.titleSize || "36px",
+              fontWeight: c.titleWeight || "800",
+            }}
+          >
+            {c.title}
+          </h2>
+        )}
+        {c.subtitle && (
+          <p
+            className="mb-4"
+            style={{
+              color: c.subtitleColor || "#94a3b8",
+              fontSize: c.subtitleSize || "16px",
+            }}
+          >
+            {c.subtitle}
+          </p>
+        )}
+        {c.buttonText && (
+          <a
+            href={c.buttonHref || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity"
+            style={{
+              backgroundColor: c.buttonBg || "#22c55e",
+              color: c.buttonColor || "#ffffff",
+              fontSize: c.buttonSize || "14px",
+              fontWeight: c.buttonWeight || "600",
+            }}
+          >
+            {c.buttonText}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Exported Builder Element Components ───
 
 export function ThreeSceneElement({ el }: ElementComponentProps) {
@@ -244,12 +326,15 @@ export function ThreeSceneElement({ el }: ElementComponentProps) {
         borderRadius: "12px",
       }}
     >
-      <ThreeSceneCanvas
-        color={color}
-        shapes={shapes}
-        animationSpeed={animationSpeed}
-        backgroundColor={backgroundColor}
-      />
+      <div className="absolute inset-0">
+        <ThreeSceneCanvas
+          color={color}
+          shapes={shapes}
+          animationSpeed={animationSpeed}
+          backgroundColor={backgroundColor}
+        />
+      </div>
+      <TextOverlay el={el} />
       {/* Label overlay */}
       <div className="absolute top-3 left-3 pointer-events-none">
         <span className="text-[10px] bg-black/40 text-white/70 px-2 py-0.5 rounded-md backdrop-blur-sm">
