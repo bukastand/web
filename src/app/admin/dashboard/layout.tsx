@@ -14,6 +14,7 @@ const navItems = [
   { href: "/admin/dashboard/why-us", label: "Kenapa Kami", icon: "⭐" },
   { href: "/admin/dashboard/users", label: "Pengguna", icon: "👥" },
   { href: "/admin/dashboard/templates", label: "Templates", icon: "📦" },
+  { href: "/admin/dashboard/articles", label: "Artikel", icon: "📝" },
   { href: "/admin/dashboard/contacts", label: "Pesan Masuk", icon: "📬" },
   { href: "/admin/dashboard/settings", label: "Pengaturan", icon: "⚙️" },
 ];

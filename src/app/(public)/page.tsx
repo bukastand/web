@@ -11,6 +11,7 @@ import FAQSection from "@/components/FAQSection";
 import LocationSection from "@/components/LocationSection";
 import Footer from "@/components/Footer";
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
+import ArticlesSection from "@/components/ArticlesSection";
 
 // Load 3D background dynamically (client-side only)
 const ThreeBackground = dynamic(
@@ -69,7 +70,11 @@ export default function Home() {
         <LocationSection />
 
         {/* Final transition to footer */}
-        <div className="h-4 sm:h-6 bg-gradient-to-b from-[#0a0f1e] to-[#0a0f1e]" />
+        {/* Blog / Articles */}
+        <ArticlesSection />
+
+        {/* Section transition */}
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <Footer />
       </div>
