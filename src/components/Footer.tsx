@@ -33,7 +33,7 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-[#22c55e]/30 to-transparent" />
 
       <div className="relative container mx-auto px-6 py-10 sm:py-14">
-        <div className="reveal max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto opacity-100">
           {/* ── Main Grid ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             {/* ── Brand ── */}
