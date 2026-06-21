@@ -57,6 +57,9 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
   { type: "table-of-contents", label: "Table of Contents", icon: "📑" },
   { type: "social-embed", label: "Social Embed", icon: "🌐" },
   { type: "custom-html", label: "Custom HTML", icon: "</>" },
+  { type: "three-background", label: "3D Background", icon: "🌌" },
+  { type: "three-scene", label: "3D Scene", icon: "🎲" },
+  { type: "three-particles", label: "3D Particles", icon: "✨" },
 ];
 
 export { MOBILE_ELEMENTS };
@@ -105,6 +108,9 @@ const elements: ElementItem[] = [
   { type: "lottie", label: "Lottie Animasi", icon: "🎬", category: "Premium" },
   { type: "star-rating", label: "Star Rating", icon: "⭐", category: "Premium" },
   { type: "search", label: "Search", icon: "🔎", category: "Premium" },
+  { type: "three-background", label: "3D Background", icon: "🌌", category: "Premium" },
+  { type: "three-scene", label: "3D Scene", icon: "🎲", category: "Premium" },
+  { type: "three-particles", label: "3D Particles", icon: "✨", category: "Premium" },
   { type: "floating-buttons", label: "Floating Button", icon: "💬", category: "Premium" },
   { type: "breadcrumbs", label: "Breadcrumbs", icon: "🔗", category: "Premium" },
   { type: "off-canvas", label: "Off Canvas", icon: "📋", category: "Premium" },

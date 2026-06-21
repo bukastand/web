@@ -5,6 +5,7 @@ import type { BuilderElement } from "@/lib/builder/types";
 import { applyBgOpacity } from "@/lib/builder/utils";
 import { SocialIcon } from "@/lib/builder/social-platforms";
 import Lottie from "lottie-react";
+import { ThreeSceneElement, ThreeParticlesElement } from "./ThreeDElements";
 
 interface ElementComponentProps {
   el: BuilderElement;
@@ -3064,6 +3065,8 @@ const elementComponents: Record<string, React.FC<ElementComponentProps>> = {
   navbar: NavbarElement,
   footer: FooterElement,
   "three-background": ThreeBackgroundElement,
+  "three-scene": ThreeSceneElement,
+  "three-particles": ThreeParticlesElement,
   carousel: CarouselElement,
   accordion: AccordionElement,
   team: TeamElement,

@@ -314,6 +314,25 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { position: "absolute", inset: "0", zIndex: "0" },
   },
+  "three-scene": {
+    content: {
+      color: "#22c55e",
+      intensity: 0.5,
+      shapes: 6,
+      animated: true,
+      rotateSpeed: 0.5,
+    },
+    styles: { width: "100%", height: "400px", backgroundColor: "#0a0f1a" },
+  },
+  "three-particles": {
+    content: {
+      color: "#22c55e",
+      particleCount: 300,
+      speed: 0.5,
+      size: 2,
+    },
+    styles: { width: "100%", height: "300px", backgroundColor: "#0a0f1a" },
+  },
   carousel: {
     content: {
       title: "Galeri Kami",
@@ -1002,7 +1021,7 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
   const validTypes: ElementType[] = [
     "heading", "text", "image", "button", "video", "spacer", "divider", "icon",
     "features", "pricing", "testimonial", "cta", "stats", "contactForm", "maps",
-    "navbar", "footer", "three-background", "carousel", "accordion", "team", "countdown",
+    "navbar", "footer", "three-background", "three-scene", "three-particles", "carousel", "accordion", "team", "countdown",
     "animated-headline", "blockquote", "code-highlight", "flip-box", "hotspot",
     "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
     "star-rating", "search", "floating-buttons", "breadcrumbs",
