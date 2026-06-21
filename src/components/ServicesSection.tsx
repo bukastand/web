@@ -117,7 +117,7 @@ export default function ServicesSection() {
                 <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
                   activeIndex === index ? "text-[#22c55e]" : "text-gray-300"
                 }`}>
-                  {service.title}
+                  {t(`services.item${index + 1}_title`)}
                 </span>
               </div>
 
@@ -130,7 +130,7 @@ export default function ServicesSection() {
                 }`}
               >
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  {service.description}
+                  {t(`services.item${index + 1}_desc`)}
                 </p>
                 {/* Arrow */}
                 <div className="absolute left-1/2 -translate-x-1/2 bottom-full w-3 h-3 bg-[#1a2332] border-l border-t border-white/10 rotate-45 mb-[6px]" />
