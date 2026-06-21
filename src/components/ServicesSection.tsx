@@ -71,9 +71,11 @@ export default function ServicesSection() {
     <section
       id="layanan"
       ref={sectionRef}
-      className="relative py-24 sm:py-32 bg-[#0a0f1e]"
+      className="relative py-24 sm:py-32 bg-[#0a0f1e] overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-[#22c55e]/5 via-transparent to-transparent pointer-events-none" />
+      {/* Background accents */}
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#22c55e]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
@@ -90,18 +92,25 @@ export default function ServicesSection() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="reveal group relative p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-[#22c55e]/40 transition-all duration-500 hover:bg-white/[0.07] hover:-translate-y-1"
+              className="reveal group relative p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-[#22c55e]/30 transition-all duration-500 hover:bg-white/[0.06] hover:-translate-y-1 overflow-hidden"
             >
-              <div className="text-4xl mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+              {/* Number badge */}
+              <div className="absolute top-3 right-3 text-[10px] font-bold text-white/10 group-hover:text-[#22c55e]/30 transition-colors duration-500">
+                {(index + 1).toString().padStart(2, "0")}
+              </div>
+
+              <div className="text-3xl mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
                 {service.icon}
               </div>
-              <h4 className="text-lg font-bold text-white mb-2">
+              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-[#22c55e] transition-colors duration-300">
                 {service.title}
               </h4>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-gray-500 leading-relaxed">
                 {service.description}
               </p>
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full" />
+
+              {/* Bottom gradient line on hover */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full" />
             </div>
           ))}
         </div>

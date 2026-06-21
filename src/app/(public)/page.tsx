@@ -2,9 +2,12 @@
 
 import dynamic from "next/dynamic";
 import HeroSection from "@/components/HeroSection";
-import PricingSection from "@/components/PricingSection";
 import ServicesSection from "@/components/ServicesSection";
+import ProcessSection from "@/components/ProcessSection";
 import WhyUsSection from "@/components/WhyUsSection";
+import PricingSection from "@/components/PricingSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import FAQSection from "@/components/FAQSection";
 import LocationSection from "@/components/LocationSection";
 import Footer from "@/components/Footer";
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
@@ -25,33 +28,48 @@ export default function Home() {
       <div className="relative z-10">
         <HeroSection />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <ServicesSection />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+
+        <ProcessSection />
+
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <WhyUsSection />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <PricingSection />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+
+        <TestimonialsSection />
+
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <HeroBuilderCTA />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+
+        <FAQSection />
+
+        {/* Section transition */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
 
         <LocationSection />
 
-        {/* Section transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
+        {/* Final transition to footer */}
+        <div className="h-24 sm:h-32 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
 
         <Footer />
       </div>
