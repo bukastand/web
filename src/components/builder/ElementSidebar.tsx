@@ -60,6 +60,7 @@ const MOBILE_ELEMENTS: Array<{ type: ElementType; label: string; icon: string }>
   { type: "three-background", label: "3D Background", icon: "🌌" },
   { type: "three-scene", label: "3D Scene", icon: "🎲" },
   { type: "three-particles", label: "3D Particles", icon: "✨" },
+  { type: "model-3d", label: "3D Model", icon: "📦" },
 ];
 
 export { MOBILE_ELEMENTS };
@@ -111,6 +112,7 @@ const elements: ElementItem[] = [
   { type: "three-background", label: "3D Background", icon: "🌌", category: "Premium" },
   { type: "three-scene", label: "3D Scene", icon: "🎲", category: "Premium" },
   { type: "three-particles", label: "3D Particles", icon: "✨", category: "Premium" },
+  { type: "model-3d", label: "3D Model", icon: "📦", category: "Premium" },
   { type: "floating-buttons", label: "Floating Button", icon: "💬", category: "Premium" },
   { type: "breadcrumbs", label: "Breadcrumbs", icon: "🔗", category: "Premium" },
   { type: "off-canvas", label: "Off Canvas", icon: "📋", category: "Premium" },

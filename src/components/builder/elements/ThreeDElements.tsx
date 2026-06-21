@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo, Suspense, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Environment, PerspectiveCamera } from "@react-three/drei";
+import { Float, MeshDistortMaterial, Environment, PerspectiveCamera, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { BuilderElement } from "@/lib/builder/types";
 
@@ -308,6 +308,104 @@ function TextOverlay({ el }: { el: BuilderElement }) {
   );
 }
 
+// ─── 3D Model (GLTF/GLB) Component ───
+
+function ModelViewer({ src, autoRotate, rotateSpeed, scale, modelColor, wireframe, backgroundColor }: {
+  src: string;
+  autoRotate: boolean;
+  rotateSpeed: number;
+  scale: number;
+  modelColor: string;
+  wireframe: boolean;
+  backgroundColor: string;
+}) {
+  const { scene } = useGLTF(src);
+  const controlsRef = useRef<any>(null);
+
+  // Apply color to all meshes in the model
+  useEffect(() => {
+    scene.traverse((child: any) => {
+      if (child.isMesh) {
+        if (wireframe) {
+          child.material.wireframe = true;
+          child.material.color.setHex(parseInt(modelColor.replace('#', ''), 16));
+          child.material.transparent = true;
+          child.material.opacity = 0.6;
+        } else {
+          child.material.color.setHex(parseInt(modelColor.replace('#', ''), 16));
+          child.material.wireframe = false;
+          child.material.opacity = 1;
+        }
+      }
+    });
+  }, [scene, modelColor, wireframe]);
+
+  return (
+    <>
+      <primitive object={scene} scale={scale} />
+      <OrbitControls
+        ref={controlsRef}
+        enableZoom
+        enablePan={false}
+        autoRotate={autoRotate}
+        autoRotateSpeed={rotateSpeed}
+        minDistance={2}
+        maxDistance={10}
+      />
+    </>
+  );
+}
+
+function ModelCanvas({ src, autoRotate, rotateSpeed, scale, modelColor, wireframe, backgroundColor }: {
+  src: string;
+  autoRotate: boolean;
+  rotateSpeed: number;
+  scale: number;
+  modelColor: string;
+  wireframe: boolean;
+  backgroundColor: string;
+}) {
+  return (
+    <div className="w-full h-full rounded-2xl overflow-hidden pointer-events-none" style={{ backgroundColor }}>
+      <Canvas
+        gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+        dpr={[1, 1.5]}
+        style={{ width: "100%", height: "100%", background: "transparent" }}
+      >
+        <PerspectiveCamera makeDefault position={[0, 0, 5]} fov={45} near={0.1} far={100} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <directionalLight position={[-5, -5, -5]} intensity={0.3} />
+        <pointLight position={[0, 0, 0]} intensity={0.3} color={modelColor} />
+        <Suspense fallback={
+          <mesh position={[0, 0, 0]}>
+            <sphereGeometry args={[0.5, 16, 16]} />
+            <meshStandardMaterial color={modelColor} wireframe transparent opacity={0.3} />
+          </mesh>
+        }>
+          {src ? (
+            <ModelViewer
+              src={src}
+              autoRotate={autoRotate}
+              rotateSpeed={rotateSpeed}
+              scale={scale}
+              modelColor={modelColor}
+              wireframe={wireframe}
+              backgroundColor={backgroundColor}
+            />
+          ) : (
+            <mesh position={[0, 0, 0]}>
+              <boxGeometry args={[1, 1, 1]} />
+              <meshStandardMaterial color={modelColor} wireframe transparent opacity={0.3} />
+            </mesh>
+          )}
+          <Environment preset="city" />
+        </Suspense>
+      </Canvas>
+    </div>
+  );
+}
+
 // ─── Exported Builder Element Components ───
 
 export function ThreeSceneElement({ el }: ElementComponentProps) {
@@ -339,6 +437,65 @@ export function ThreeSceneElement({ el }: ElementComponentProps) {
       <div className="absolute top-3 left-3 pointer-events-none">
         <span className="text-[10px] bg-black/40 text-white/70 px-2 py-0.5 rounded-md backdrop-blur-sm">
           ✦ 3D Scene
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function Model3DElement({ el }: ElementComponentProps) {
+  const src = el.content.src;
+  const autoRotate = el.content.autoRotate !== false;
+  const rotateSpeed = el.content.rotateSpeed || 2;
+  const scale = el.content.scale || 1.5;
+  const modelColor = el.content.modelColor || "#22c55e";
+  const wireframe = !!el.content.wireframe;
+  const backgroundColor = el.styles.backgroundColor || "#0a0f1a";
+
+  if (!src) {
+    return (
+      <div
+        className="flex items-center justify-center rounded-2xl"
+        style={{
+          width: el.styles.width || "100%",
+          height: el.styles.height || "400px",
+          backgroundColor,
+        }}
+      >
+        <div className="text-center">
+          <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#64748b" }}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+          </svg>
+          <p className="text-sm font-medium" style={{ color: "#94a3b8" }}>3D Model</p>
+          <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Upload file .glb atau masukkan URL</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        width: el.styles.width || "100%",
+        height: el.styles.height || "400px",
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: "12px",
+      }}
+    >
+      <ModelCanvas
+        src={src}
+        autoRotate={autoRotate}
+        rotateSpeed={rotateSpeed}
+        scale={scale}
+        modelColor={modelColor}
+        wireframe={wireframe}
+        backgroundColor={backgroundColor}
+      />
+      {/* Label overlay */}
+      <div className="absolute top-3 left-3 pointer-events-none">
+        <span className="text-[10px] bg-black/40 text-white/70 px-2 py-0.5 rounded-md backdrop-blur-sm">
+          ✦ 3D Model
         </span>
       </div>
     </div>

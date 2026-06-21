@@ -1343,6 +1343,88 @@ export function ThreeParticlesEditor({ element, updateContent }: EditorProps) {
   );
 }
 
+// ─── 3D Model Editor ───
+
+export function Model3DEditor({ element, updateContent }: EditorProps) {
+  const c = element.content;
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      updateContent("src", dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const isDataUrl = c.src && c.src.startsWith("data:");
+
+  return (
+    <div>
+      <Section title="Model">
+        <p className="text-[10px] text-gray-500 leading-relaxed mb-3">
+          📦 Upload file <strong>.glb</strong> atau masukkan URL model 3D dari sumber eksternal.
+        </p>
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Upload File .glb</label>
+          {c.src && (
+            <div className="relative mb-2 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+              <div className="flex items-center justify-between p-2">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "#22c55e" }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                  </svg>
+                  <span className="text-xs font-medium" style={{ color: "#22c55e" }}>
+                    {isDataUrl ? "Model diupload" : "Model dari URL"}
+                  </span>
+                </div>
+                <button onClick={() => updateContent("src", "")} className="w-5 h-5 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500 flex-shrink-0">×</button>
+              </div>
+            </div>
+          )}
+          <input
+            type="file"
+            accept=".glb,.gltf,model/gltf-binary,model/gltf+json"
+            onChange={handleFileUpload}
+            className="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[#22c55e]/20 file:text-[#22c55e] file:text-xs file:font-medium hover:file:bg-[#22c55e]/30"
+          />
+        </div>
+        <TextInput label="URL Model GLB" value={c.src || ""} onChange={(v) => updateContent("src", v)} placeholder="https://example.com/model.glb" />
+      </Section>
+
+      <Section title="Tampilan">
+        <ColorPicker value={c.modelColor || "#22c55e"} onChange={(v) => updateContent("modelColor", v)} label="Warna Model" />
+        <Checkbox label="Wireframe" checked={!!c.wireframe} onChange={(v) => updateContent("wireframe", v)} />
+        <Checkbox label="Auto Rotate" checked={c.autoRotate !== false} onChange={(v) => updateContent("autoRotate", v)} />
+        {c.autoRotate !== false && (
+          <div className="mb-3">
+            <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Kecepatan Rotasi ({c.rotateSpeed || 2})</label>
+            <input
+              type="range"
+              min={0.5} max={10} step={0.5}
+              value={c.rotateSpeed || 2}
+              onChange={(e) => updateContent("rotateSpeed", parseFloat(e.target.value))}
+              className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+            />
+          </div>
+        )}
+        <div className="mb-3">
+          <label className="block text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1.5">Skala ({c.scale || 1.5})</label>
+          <input
+            type="range"
+            min={0.2} max={5} step={0.1}
+            value={c.scale || 1.5}
+            onChange={(e) => updateContent("scale", parseFloat(e.target.value))}
+            className="w-full h-1.5 rounded-full appearance-none bg-white/10 cursor-pointer accent-[#22c55e]"
+          />
+        </div>
+      </Section>
+    </div>
+  );
+}
+
 // ─── End 3D Editors ───
 
 export function SocialEmbedEditor({ element, updateContent }: EditorProps) {

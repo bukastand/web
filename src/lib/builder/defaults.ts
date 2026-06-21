@@ -348,6 +348,17 @@ const elementDefaults: Record<ElementType, ElementDefaults> = {
     },
     styles: { width: "100%", height: "300px", backgroundColor: "#0a0f1a" },
   },
+  "model-3d": {
+    content: {
+      src: "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/avatar/style-a/style-a.glb",
+      autoRotate: true,
+      rotateSpeed: 2,
+      scale: 1.5,
+      modelColor: "#22c55e",
+      wireframe: false,
+    },
+    styles: { width: "100%", height: "400px", backgroundColor: "#0a0f1a" },
+  },
   carousel: {
     content: {
       title: "Galeri Kami",
@@ -1036,7 +1047,7 @@ function aiElementToBuilder(type: string, content: any, styles: any): BuilderEle
   const validTypes: ElementType[] = [
     "heading", "text", "image", "button", "video", "spacer", "divider", "icon",
     "features", "pricing", "testimonial", "cta", "stats", "contactForm", "maps",
-    "navbar", "footer", "three-background", "three-scene", "three-particles", "carousel", "accordion", "team", "countdown",
+    "navbar", "footer", "three-background", "three-scene", "three-particles", "model-3d", "carousel", "accordion", "team", "countdown",
     "animated-headline", "blockquote", "code-highlight", "flip-box", "hotspot",
     "progress-tracker", "share-buttons", "checklist", "gallery", "lottie",
     "star-rating", "search", "floating-buttons", "breadcrumbs",

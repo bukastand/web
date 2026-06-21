@@ -2,7 +2,7 @@ export type ElementType =
   | "heading" | "text" | "image" | "button" | "video" | "spacer" | "divider" | "icon"
   | "features" | "pricing" | "testimonial" | "cta" | "stats" | "contactForm" | "maps"
   | "navbar" | "footer" | "three-background"
-  | "three-scene" | "three-particles"
+  | "three-scene" | "three-particles" | "model-3d"
   | "carousel" | "accordion" | "team" | "countdown"
   // Elementor Pro ports:
   | "animated-headline" | "blockquote" | "code-highlight" | "flip-box" | "hotspot"
