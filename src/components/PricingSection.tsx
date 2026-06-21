@@ -100,10 +100,10 @@ export default function PricingSection() {
 
               <div className={pkg.is_popular ? "mt-4" : ""}>
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
-                  {pkg.name}
+                  {t(pkg.name)}
                 </h3>
                 <div className="text-2xl sm:text-3xl font-extrabold text-[#22c55e] mb-5">
-                  {pkg.price}
+                  {t(pkg.price)}
                 </div>
 
                 <ul className="space-y-2.5 mb-6 sm:mb-8">
@@ -115,7 +115,7 @@ export default function PricingSection() {
                       <svg className="w-4 h-4 text-[#22c55e] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span>{feature}</span>
+                      <span>{t(feature)}</span>
                     </li>
                   ))}
                 </ul>
