@@ -156,10 +156,10 @@ export default function WhyUsSection() {
 
                 <div className="relative z-10">
                   <h4 className="text-xl font-bold text-white mb-3 group-hover:text-[#22c55e] transition-colors duration-300">
-                    {reason.title}
+                    {t(`whyus.item${index + 1}_title`)}
                   </h4>
                   <p className="text-gray-500 leading-relaxed text-sm">
-                    {reason.desc}
+                    {t(`whyus.item${index + 1}_desc`)}
                   </p>
                 </div>
 
