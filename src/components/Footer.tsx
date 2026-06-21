@@ -44,12 +44,12 @@ export default function Footer() {
                   <h3 className="text-xl font-bold text-white leading-tight">
                     PAGODA<span className="text-[#22c55e]"> STUDIO</span>
                   </h3>
-                  <span className="text-[10px] text-gray-600 tracking-[0.2em] uppercase">
+                  <span className="text-[10px] text-gray-400 tracking-[0.2em] uppercase">
                     Web Development
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6 max-w-xs">
+              <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
                 {t("footer.brand_desc")}
               </p>
               {/* CTA Mini */}
@@ -71,7 +71,7 @@ export default function Footer() {
 
             {/* ── Layanan ── */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-[0.15em] mb-5">
+              <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-[0.15em] mb-5">
                 {t("footer.services_title")}
               </h4>
               <ul className="space-y-3">
@@ -85,9 +85,9 @@ export default function Footer() {
                   <li key={item.label}>
                     <a
                       href={item.href}
-                      className="text-sm text-gray-500 hover:text-[#22c55e] transition-colors duration-200 flex items-center gap-2 group"
+                      className="text-sm text-gray-400 hover:text-[#22c55e] transition-colors duration-200 flex items-center gap-2 group"
                     >
-                      <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-[#22c55e] transition-colors" />
+                      <span className="w-1 h-1 rounded-full bg-gray-500 group-hover:bg-[#22c55e] transition-colors" />
                       {item.label}
                     </a>
                   </li>
@@ -97,44 +97,44 @@ export default function Footer() {
 
             {/* ── Kontak ── */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-[0.15em] mb-5">
+              <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-[0.15em] mb-5">
                 {t("footer.contact_title")}
               </h4>
               <ul className="space-y-4 text-sm">
                 <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="text-gray-500">
+                  <span className="text-gray-400">
                     {t("footer.address")}
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <a
                     href="https://wa.me/6282210099969"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-500 hover:text-[#22c55e] transition-colors"
+                    className="text-gray-400 hover:text-[#22c55e] transition-colors"
                   >
                     +62 822-1009-9969
                   </a>
                 </li>
                 <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-gray-500">info@pagodastudio.com</span>
+                  <span className="text-gray-400">info@pagodastudio.com</span>
                 </li>
               </ul>
             </div>
 
             {/* ── Social Media ── */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-[0.15em] mb-5">
+              <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-[0.15em] mb-5">
                 {t("footer.social_title")}
               </h4>
               <div className="flex gap-3">
@@ -195,13 +195,13 @@ export default function Footer() {
           {/* ── Bottom Bar ── */}
           <div className="pt-8 border-t border-white/5">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-sm text-gray-600">
-                © {new Date().getFullYear()} <span className="text-gray-400 font-semibold">PAGODA STUDIO</span>. All rights reserved.
+              <p className="text-sm text-gray-500">
+                © {new Date().getFullYear()} <span className="text-gray-300 font-semibold">PAGODA STUDIO</span>. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
-                <a href="#layanan" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">{t("footer.services_link")}</a>
-                <a href="#paket" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">{t("footer.pricing_link")}</a>
-                <a href="#lokasi" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">{t("footer.contact_link")}</a>
+                <a href="#layanan" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{t("footer.services_link")}</a>
+                <a href="#paket" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{t("footer.pricing_link")}</a>
+                <a href="#lokasi" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{t("footer.contact_link")}</a>
               </div>
             </div>
           </div>
