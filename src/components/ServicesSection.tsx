@@ -69,6 +69,7 @@ export default function ServicesSection() {
 
   return (
     <section
+      id="layanan"
       ref={sectionRef}
       className="relative py-24 sm:py-32 bg-[#0a0f1e]"
     >

@@ -6,7 +6,6 @@ import PricingSection from "@/components/PricingSection";
 import ServicesSection from "@/components/ServicesSection";
 import WhyUsSection from "@/components/WhyUsSection";
 import LocationSection from "@/components/LocationSection";
-import PortfolioSection from "@/components/PortfolioSection";
 import Footer from "@/components/Footer";
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
 
@@ -25,12 +24,35 @@ export default function Home() {
       {/* Content overlay */}
       <div className="relative z-10">
         <HeroSection />
-        <HeroBuilderCTA />
-        <PricingSection />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+
         <ServicesSection />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+
         <WhyUsSection />
-        <PortfolioSection />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+
+        <PricingSection />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+
+        <HeroBuilderCTA />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+
         <LocationSection />
+
+        {/* Section transition gradient */}
+        <div className="h-32 bg-gradient-to-b from-[#0a0f1e] to-[#060a14]" />
+
         <Footer />
       </div>
     </main>

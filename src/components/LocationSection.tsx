@@ -27,6 +27,7 @@ export default function LocationSection() {
 
   return (
     <section
+      id="lokasi"
       ref={sectionRef}
       className="relative py-24 sm:py-32 bg-[#0a0f1e]"
     >

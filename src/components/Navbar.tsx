@@ -8,9 +8,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
+    { href: "#layanan", label: "Layanan" },
     { href: "#paket", label: "Paket" },
-    { href: "#portfolio", label: "Portfolio" },
-    { href: "https://wa.me/6282210099969", label: "Kontak", external: true },
+    { href: "#lokasi", label: "Kontak" },
+    { href: "https://wa.me/6282210099969", label: "WhatsApp", external: true },
   ];
 
   return (
