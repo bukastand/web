@@ -1,9 +1,5 @@
 # 📦 Dokumentasi Element Builder
 
-Seluruh elemen yang tersedia di **PAGODA STUDIO Website Builder**. Setiap elemen bisa di-drag ke canvas, dikustomisasi konten dan style-nya, serta diatur responsive visibility-nya.
-
----
-
 ## 🚀 Buat Landing Page Gratis
 
 Ingin membuat landing page profesional **tanpa biaya**? Ikuti langkah-langkah berikut:

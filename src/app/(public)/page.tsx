@@ -32,6 +32,12 @@ export default function Home() {
         {/* Section transition */}
         <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
+        {/* Buat Landing Page Gratis CTA */}
+        <HeroBuilderCTA />
+
+        {/* Section transition */}
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+
         <ServicesSection />
 
         {/* Section transition */}
@@ -56,11 +62,6 @@ export default function Home() {
 
         {/* Section transition */}
         <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
-
-        <HeroBuilderCTA />
-
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
 
         <FAQSection />
 
