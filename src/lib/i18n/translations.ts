@@ -349,6 +349,18 @@ export const translations: Record<Locale, Record<string, string>> = {
     "3 Months Maintenance": "Maintenance 3 Bulan",
     "Full Source Code": "Source Code Full",
     "1 Month Maintenance": "Maintenance 1 Bulan",
+    "Mobile Responsive": "Mobile Responsive",
+    "Fast Loading": "Fast Loading",
+    "Basic SEO": "Basic SEO",
+    "WhatsApp Chat": "Chat WhatsApp",
+    "Google Maps": "Google Maps",
+    "Payment Gateway": "Payment Gateway",
+    "API Integration": "Integrasi API",
+    "Advanced Security": "Advanced Security",
+    "Priority Support": "Priority Support",
+    "Modern UI/UX": "UI/UX Modern",
+    "User Login": "Login User",
+    "Push Notification": "Push Notification",
 
     // ── Testimonials ──
     "testimonials.heading": "Hasil Nyata dari",
