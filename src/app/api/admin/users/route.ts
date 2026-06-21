@@ -8,6 +8,24 @@ function getAdminClient() {
   return createClient(supabaseUrl, serviceRoleKey);
 }
 
+/**
+ * Verify that the request is from an authenticated admin.
+ * Checks for admin_session cookie OR x-admin-key header.
+ */
+function isAdminRequest(request: Request): boolean {
+  // Check cookie (sent automatically by middleware for same-origin requests)
+  const cookieHeader = request.headers.get("cookie") || "";
+  if (cookieHeader.includes("admin_session=authenticated")) {
+    return true;
+  }
+  // Check x-admin-key header (for server-to-server or fetch API calls)
+  const adminKey = request.headers.get("x-admin-key");
+  if (adminKey && adminKey === process.env.ADMIN_API_KEY) {
+    return true;
+  }
+  return false;
+}
+
 async function fetchAuthUsers(): Promise<Record<string, string>> {
   const authEmails: Record<string, string> = {};
   try {
@@ -27,8 +45,11 @@ async function fetchAuthUsers(): Promise<Record<string, string>> {
 /**
  * GET /api/admin/users - List all users with their profiles
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    if (!isAdminRequest(request)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!serviceRoleKey) {
       return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
     }
@@ -58,6 +79,9 @@ export async function GET() {
  */
 export async function PATCH(request: Request) {
   try {
+    if (!isAdminRequest(request)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!serviceRoleKey) {
       return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
     }
@@ -86,6 +110,9 @@ export async function PATCH(request: Request) {
  */
 export async function DELETE(request: Request) {
   try {
+    if (!isAdminRequest(request)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!serviceRoleKey) {
       return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
     }

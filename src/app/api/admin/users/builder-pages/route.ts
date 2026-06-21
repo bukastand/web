@@ -5,11 +5,29 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 /**
+ * Verify that the request is from an authenticated admin.
+ */
+function isAdminRequest(request: Request): boolean {
+  const cookieHeader = request.headers.get("cookie") || "";
+  if (cookieHeader.includes("admin_session=authenticated")) {
+    return true;
+  }
+  const adminKey = request.headers.get("x-admin-key");
+  if (adminKey && adminKey === process.env.ADMIN_API_KEY) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * POST /api/admin/users/builder-pages
  * Get all builder pages for a specific user
  */
 export async function POST(request: Request) {
   try {
+    if (!isAdminRequest(request)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!serviceRoleKey) {
       return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
     }

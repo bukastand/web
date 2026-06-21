@@ -59,8 +59,8 @@ export default function AdminLogin() {
     }
 
     // Set cookies for middleware protection
-    document.cookie = "admin_session=authenticated; path=/; max-age=86400";
-    document.cookie = "user_role=admin; path=/; max-age=86400";
+    document.cookie = "admin_session=authenticated; path=/; max-age=86400; SameSite=Lax; Secure";
+    document.cookie = "user_role=admin; path=/; max-age=86400; SameSite=Lax; Secure";
     router.push("/admin/dashboard");
   };
 

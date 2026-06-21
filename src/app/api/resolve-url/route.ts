@@ -1,6 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
+ * Allowed hostnames for URL resolution.
+ * Only Google Maps URLs are permitted to prevent SSRF.
+ */
+const ALLOWED_HOSTS = [
+  "google.com",
+  "www.google.com",
+  "maps.google.com",
+  "maps.googleapis.com",
+  "share.google.com",
+  "share.google",
+];
+
+/**
+ * Validate that a URL is safe to resolve (no SSRF).
+ * Only allows Google Maps URLs.
+ */
+function isAllowedUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.toLowerCase();
+    // Only allow http/https
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return false;
+    }
+    // Check against allowed hosts
+    const allowed = ALLOWED_HOSTS.some((host) => hostname === host || hostname.endsWith("." + host));
+    return allowed;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Try to extract a redirect URL from HTML content.
  * share.google links often use JavaScript redirects (location.replace),
  * not HTTP redirects, so a plain fetch won't follow them.
@@ -37,6 +70,14 @@ export async function GET(request: NextRequest) {
   const rawUrl = request.nextUrl.searchParams.get("url");
   if (!rawUrl) {
     return NextResponse.json({ error: "Missing 'url' parameter" }, { status: 400 });
+  }
+
+  // ── SSRF Protection: validate URL before fetching ──
+  if (!isAllowedUrl(rawUrl)) {
+    return NextResponse.json(
+      { error: "URL tidak diizinkan. Hanya Google Maps URLs yang diperbolehkan." },
+      { status: 403 }
+    );
   }
 
   const isShareGoogle = rawUrl.includes("share.google");
