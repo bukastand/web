@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
-import PortfolioSection from "@/components/PortfolioSection";
+
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
 
 
@@ -23,10 +23,6 @@ export default function Home() {
         <ServicesSection />
 
         <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0d0d1a] to-[#08080f]" />
-
-        <PortfolioSection />
-
-        <div className="h-8 sm:h-16 bg-gradient-to-b from-[#0d0d1a] to-[#08080f]" />
 
         <HeroBuilderCTA />
 
