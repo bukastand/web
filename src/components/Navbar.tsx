@@ -17,6 +17,7 @@ export default function Navbar() {
     { href: "/tentang", label: "Tentang" },
     { href: "/layanan", label: "Layanan" },
     { href: "/portofolio", label: "Portofolio" },
+    { href: "/blog", label: "Blog" },
     { href: "/kontak", label: "Kontak" },
   ];
 
