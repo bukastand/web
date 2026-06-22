@@ -140,7 +140,7 @@ export default function ArticlePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#08080f]">
+    <main className="min-h-screen bg-[#111827]">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-[#08080f]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -221,7 +221,7 @@ export default function ArticlePage() {
         {/* Content - Rendered HTML */}
         {article.content ? (
           <div
-            className="prose prose-invert prose-lg max-w-none
+className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-headings:font-bold
               prose-p:text-white prose-p:leading-relaxed prose-p:font-normal
               prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
@@ -233,7 +233,11 @@ export default function ArticlePage() {
               prose-li:text-white
               prose-ul:my-4 prose-ol:my-4
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
-              prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3"
+              prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+              [&_p]:!text-white
+              [&_li]:!text-white
+              [&_h2]:!text-white [&_h3]:!text-white
+              [&_strong]:!text-white"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         ) : (
