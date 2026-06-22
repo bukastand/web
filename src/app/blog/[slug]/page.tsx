@@ -160,6 +160,7 @@ export default function ArticlePage() {
       </nav>
 
       <article className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
+        <div className="bg-[#0d0d1a] border border-white/10 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/30">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-300 mb-6">
           <Link href="/" className="hover:text-[#a78bfa] transition-colors">Beranda</Link>
@@ -222,7 +223,7 @@ export default function ArticlePage() {
           <div
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-headings:font-bold
-              prose-p:text-white prose-p:leading-relaxed prose-p:font-light
+              prose-p:text-white prose-p:leading-relaxed prose-p:font-normal
               prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
               prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg
               prose-blockquote:border-[#a78bfa] prose-blockquote:text-white/90 prose-blockquote:bg-[#a78bfa]/10 prose-blockquote:rounded-r-xl
@@ -262,6 +263,7 @@ export default function ArticlePage() {
               </a>
             ))}
           </div>
+        </div>
         </div>
       </article>
 
