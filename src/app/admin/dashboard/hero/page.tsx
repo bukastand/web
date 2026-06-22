@@ -25,7 +25,7 @@ const defaults: HeroData = {
   cta_text: "Konsultasi Gratis",
   cta_link: "https://wa.me/6282210099969",
   secondary_cta_text: "Lihat Paket",
-  secondary_cta_link: "#paket",
+  secondary_cta_link: "/layanan",
 };
 
 export default function HeroEditor() {
