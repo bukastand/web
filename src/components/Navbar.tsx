@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "./Logo";
 import { useState } from "react";
 import { useTranslation, useLocale } from "@/lib/i18n/LanguageProvider";
 import { usePathname } from "next/navigation";
@@ -35,7 +34,6 @@ export default function Navbar() {
             href="/"
             className="flex items-center gap-3 group"
           >
-            <Logo className="w-9 h-9 transition-transform duration-300 group-hover:scale-110" />
             <div className="flex flex-col">
               <span className="text-xl font-extrabold tracking-tight text-white leading-tight">
                 PAGODA<span className="text-[#a78bfa]"> STUDIO</span>

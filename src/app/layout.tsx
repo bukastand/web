@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   title: "PAGODA STUDIO — Professional Website Development Services",
   description:
     "Modern, fast, mobile-friendly websites. Professional website development services for businesses, institutions, and companies.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

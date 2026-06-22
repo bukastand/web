@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import Logo from "./Logo";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function Footer() {
@@ -39,7 +38,6 @@ export default function Footer() {
             {/* ── Brand ── */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3 mb-4">
-                <Logo className="w-10 h-10" />
                 <div>
                   <h3 className="text-xl font-bold text-white leading-tight">
                     PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
