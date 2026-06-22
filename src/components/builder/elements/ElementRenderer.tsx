@@ -3040,20 +3040,30 @@ function SocialEmbedElement({ el }: ElementComponentProps) {
  */
 function sanitizeHtml(html: string): string {
   return html
-    // Remove <script>...</script> tags
+    // Remove <script>...</script> tags (standard + SVG namespace)
     .replace(/<script[\s\S]*?<\/script>/gi, '')
+    // Remove <style>...</style> tags (CSS injection via expression())
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    // Remove <object>, <embed>, <applet> tags (binary content execution)
+    .replace(/<\/?(?:object|embed|applet|base|meta|link)\b[^>]*>/gi, '')
+    // Strip iframe srcdoc attribute (can execute inline HTML/JS)
+    .replace(/\s+srcdoc\s*=\s*(['\"]).*?\1/gi, '')
     // Remove event handlers with quotes: onload="..." onclick='...'
     // Also handles <svg/onload=...> (slash before on)
     .replace(/[\s/]+on\w+\s*=\s*(['\"]).*?\1/gi, '')
     // Remove event handlers without quotes: onload=alert(1)
     .replace(/[\s/]+on\w+\s*=\s*[^\s>]+/gi, '')
-    // Block javascript: URLs (including obfuscated variants)
+    // Block javascript: URLs (including obfuscated variants like j a v a s c r i p t : )
     .replace(/\bj\s*\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/gi, 'blocked:')
-    // Block data:text/html URLs (common XSS vector)
-    .replace(/data:text\/html/gi, 'blocked:');
-}
-
-function HtmlElement({ el }: ElementComponentProps) {
+    // Block vbscript: URLs
+    .replace(/\bv\s*b\s*s\s*c\s*r\s*i\s*p\s*t\s*:/gi, 'blocked:')
+    // Block ALL data: URIs that contain script-executable MIME types
+    .replace(/data:(?:text\/html|text\/javascript|application\/x-javascript|application\/javascript)/gi, 'blocked:')
+    // Block CSS expression() in style attributes (IE XSS vector)
+    .replace(/expression\s*\(/gi, 'blocked(')
+    // Strip document.write, eval, setTimeout, setInterval from inline handlers
+    .replace(/\b(?:document\s*\.\s*write|eval|setTimeout|setInterval|Function\s*\()/gi, 'blocked(');
+}function HtmlElement({ el }: ElementComponentProps) {
   const rawHtml = el.content.html || "";
   const htmlContent = sanitizeHtml(rawHtml);
   const styles = applyStyles(el);

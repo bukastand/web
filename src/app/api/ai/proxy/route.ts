@@ -1,5 +1,37 @@
 import { NextResponse } from "next/server";
 
+// ── Rate Limiter ──
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 20;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return false;
+  }
+  entry.count++;
+  return true;
+}
+
+function getClientIp(request: Request): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip")
+    || "unknown";
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, val] of rateLimitMap.entries()) {
+    if (now > val.resetAt) rateLimitMap.delete(key);
+  }
+}, 300_000);
+
 // ─── Model Configuration ────────────────────────────
 
 const PROVIDER_CONFIGS: Record<string, {
@@ -68,6 +100,15 @@ const SYSTEM_PROMPT = "Anda adalah desainer web profesional dan copywriter bisni
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const ip = getClientIp(request);
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: "Terlalu banyak permintaan. Silakan coba lagi dalam 60 detik." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { provider, apiKey, prompt, action, model, providers } = body;
 

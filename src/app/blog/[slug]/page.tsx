@@ -5,6 +5,16 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { type Article, fetchPublishedArticleBySlug } from "@/lib/supabase/articles";
 
+// Lightweight sanitizer for blog article HTML (defense-in-depth)
+// Strips only script tags and event handlers — preserves formatting
+function sanitizeArticleContent(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/[\s/]+on\w+\s*=\s*(['\"]).*?\1/gi, '')
+    .replace(/[\s/]+on\w+\s*=\s*[^\s>]+/gi, '')
+    .replace(/<\/?(?:script|iframe|object|embed|base)\b[^>]*>/gi, '');
+}
+
 function injectMetaTags(article: Article) {
   const siteName = "PAGODA STUDIO";
   const metaTitle = `${article.title} — ${siteName}`;
@@ -238,7 +248,7 @@ className="prose prose-invert prose-lg max-w-none
               [&_li]:!text-white
               [&_h2]:!text-white [&_h3]:!text-white
               [&_strong]:!text-white"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeArticleContent(article.content) }}
           />
         ) : (
           <p className="text-gray-400 italic">Tidak ada konten artikel.</p>
