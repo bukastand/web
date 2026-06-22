@@ -56,7 +56,7 @@ export default function ArticlesSection() {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Artikel & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a78bfa] to-[#c084fc]">Informasi</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-300 max-w-2xl mx-auto">
             Tips, trik, dan informasi terbaru seputar website, digital marketing, dan teknologi untuk mengembangkan bisnis Anda.
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function ArticlesSection() {
               {/* Content */}
               <div className="p-5">
                 {/* Date */}
-                <p className="text-xs text-gray-500 mb-2">
+                <p className="text-xs text-gray-400 mb-2">
                   {article.created_at
                     ? new Date(article.created_at).toLocaleDateString("id-ID", {
                         day: "numeric",
@@ -107,7 +107,7 @@ export default function ArticlesSection() {
 
                 {/* Excerpt */}
                 {article.excerpt && (
-                  <p className="text-sm text-gray-400 line-clamp-2 mb-4">
+                  <p className="text-sm text-gray-300 line-clamp-2 mb-4">
                     {article.excerpt}
                   </p>
                 )}

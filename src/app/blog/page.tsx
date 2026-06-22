@@ -46,7 +46,7 @@ export default function BlogPage() {
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             Artikel & <span className="gradient-text">Informasi</span>
           </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-300 max-w-2xl mx-auto">
             Temukan tips, trik, dan wawasan terbaru seputar website, digital marketing, dan teknologi.
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function BlogPage() {
                     )}
                   </div>
                   <div className="p-5">
-                    <p className="text-xs text-gray-500 mb-2">
+                    <p className="text-xs text-gray-400 mb-2">
                       {article.created_at
                         ? new Date(article.created_at).toLocaleDateString("id-ID", {
                             day: "numeric",
@@ -120,7 +120,7 @@ export default function BlogPage() {
                       {article.title}
                     </h2>
                     {article.excerpt && (
-                      <p className="text-sm text-gray-400 line-clamp-2 mb-4 leading-relaxed">{article.excerpt}</p>
+                      <p className="text-sm text-gray-300 line-clamp-2 mb-4 leading-relaxed">{article.excerpt}</p>
                     )}
                     <div className="flex items-center gap-1.5 text-[#a78bfa] text-sm font-medium group/link">
                       <span>Baca Selengkapnya</span>
@@ -134,7 +134,7 @@ export default function BlogPage() {
             </div>
 
             {/* Article count */}
-            <p className="text-center text-sm text-gray-600 mt-10">
+            <p className="text-center text-sm text-gray-400 mt-10">
               Menampilkan {articles.length} artikel
             </p>
           </>

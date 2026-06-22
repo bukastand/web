@@ -161,7 +161,7 @@ export default function ArticlePage() {
 
       <article className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <Link href="/" className="hover:text-[#a78bfa] transition-colors">Beranda</Link>
           <span>/</span>
           <Link href="/blog" className="hover:text-[#a78bfa] transition-colors">Blog</Link>
@@ -222,21 +222,21 @@ export default function ArticlePage() {
           <div
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-headings:font-bold
-              prose-p:text-gray-300 prose-p:leading-relaxed
+              prose-p:text-gray-200 prose-p:leading-relaxed
               prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
               prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg
               prose-blockquote:border-[#a78bfa] prose-blockquote:text-gray-300 prose-blockquote:bg-[#a78bfa]/5 prose-blockquote:rounded-r-xl
               prose-strong:text-white
               prose-code:text-[#a78bfa] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
               prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10
-              prose-li:text-gray-300
+              prose-li:text-gray-200
               prose-ul:my-4 prose-ol:my-4
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
               prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         ) : (
-          <p className="text-gray-500 italic">Tidak ada konten artikel.</p>
+          <p className="text-gray-400 italic">Tidak ada konten artikel.</p>
         )}
 
         {/* Divider */}
@@ -244,7 +244,7 @@ export default function ArticlePage() {
 
         {/* Share */}
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">Bagikan artikel:</span>
+          <span className="text-sm text-gray-400">Bagikan artikel:</span>
           <div className="flex items-center gap-2">
             {[
               { label: "WhatsApp", url: `https://wa.me/?text=${encodeURIComponent(`${article.title} - ${currentUrl}`)}` },
