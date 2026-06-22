@@ -16,35 +16,35 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0f172a]">
+    <main className="min-h-screen bg-[#08080f]">
       {/* Header */}
-      <header className="border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="text-xl font-bold text-white">
-              PAGODA<span className="text-[#22c55e]"> STUDIO</span>
-            </Link>
-            <Link
-              href="/"
-              className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1.5"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Kembali ke Beranda
-            </Link>
-          </div>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="text-xl font-extrabold tracking-tight text-white">
+              PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
+            </span>
+          </Link>
+          <Link
+            href="/"
+            className="text-sm text-gray-400 hover:text-[#a78bfa] transition-colors flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali ke Beranda
+          </Link>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto px-4 pt-28 pb-16">
         {/* Page Title */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-[#22c55e]/10 text-[#22c55e] text-sm font-medium rounded-full border border-[#22c55e]/20 mb-4">
+          <span className="inline-block px-4 py-1.5 bg-[#a78bfa]/10 text-[#a78bfa] text-sm font-medium rounded-full border border-[#a78bfa]/20 mb-4">
             Blog & Artikel
           </span>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Artikel & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22c55e] to-[#4ade80]">Informasi</span>
+            Artikel & <span className="gradient-text">Informasi</span>
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Temukan tips, trik, dan wawasan terbaru seputar website, digital marketing, dan teknologi.
@@ -88,9 +88,9 @@ export default function BlogPage() {
                 <Link
                   key={article.id}
                   href={`/blog/${article.slug}`}
-                  className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[#22c55e]/30 hover:bg-white/[0.07] transition-all duration-300"
+                  className="group bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-[#a78bfa]/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="aspect-[16/9] overflow-hidden bg-[#0a0f1e]">
+                  <div className="aspect-[16/9] overflow-hidden bg-[#0d0d1a]">
                     {article.cover_image ? (
                       <img
                         src={article.cover_image}
@@ -116,13 +116,13 @@ export default function BlogPage() {
                           })
                         : ""}
                     </p>
-                    <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-[#22c55e] transition-colors line-clamp-2">
+                    <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-[#a78bfa] transition-colors line-clamp-2">
                       {article.title}
                     </h2>
                     {article.excerpt && (
-                      <p className="text-sm text-gray-400 line-clamp-2 mb-4">{article.excerpt}</p>
+                      <p className="text-sm text-gray-400 line-clamp-2 mb-4 leading-relaxed">{article.excerpt}</p>
                     )}
-                    <div className="flex items-center gap-1.5 text-[#22c55e] text-sm font-medium group/link">
+                    <div className="flex items-center gap-1.5 text-[#a78bfa] text-sm font-medium group/link">
                       <span>Baca Selengkapnya</span>
                       <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -144,11 +144,10 @@ export default function BlogPage() {
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center">
         <Link
-          href="https://pagodastudio.my.id"
-          target="_blank"
-          className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
+          href="/"
+          className="text-xs text-gray-500 hover:text-[#a78bfa] transition-colors"
         >
-          &copy; {new Date().getFullYear()} PAGODA STUDIO — Jasa Pembuatan Website Profesional
+          &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
         </Link>
       </footer>
     </main>
