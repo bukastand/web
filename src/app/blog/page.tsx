@@ -142,10 +142,10 @@ export default function BlogPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 text-center">
+      <footer className="bg-[#0d0d1a] border-t border-white/10 py-10 text-center">
         <Link
           href="/"
-          className="text-xs text-gray-400 hover:text-[#a78bfa] transition-colors"
+          className="text-sm text-gray-300 hover:text-[#a78bfa] transition-colors"
         >
           &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
         </Link>

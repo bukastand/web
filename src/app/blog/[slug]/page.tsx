@@ -161,12 +161,12 @@ export default function ArticlePage() {
 
       <article className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+        <nav className="flex items-center gap-2 text-sm text-gray-300 mb-6">
           <Link href="/" className="hover:text-[#a78bfa] transition-colors">Beranda</Link>
           <span>/</span>
           <Link href="/blog" className="hover:text-[#a78bfa] transition-colors">Blog</Link>
           <span>/</span>
-          <span className="text-gray-400 truncate max-w-[200px]">{article.title}</span>
+          <span className="text-gray-300 truncate max-w-[200px]">{article.title}</span>
         </nav>
 
         {/* Cover Image */}
@@ -181,7 +181,7 @@ export default function ArticlePage() {
         )}
 
         {/* Meta */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-4">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-4">
           <span className="flex items-center gap-1.5">
             <svg className="w-4 h-4 text-[#a78bfa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -209,7 +209,7 @@ export default function ArticlePage() {
 
         {/* Excerpt */}
         {article.excerpt && (
-          <p className="text-lg text-gray-300 mb-8 leading-relaxed border-l-4 border-[#a78bfa]/50 pl-4">
+          <p className="text-lg text-white/90 mb-8 leading-relaxed border-l-4 border-[#a78bfa]/50 pl-4">
             {article.excerpt}
           </p>
         )}
@@ -222,14 +222,14 @@ export default function ArticlePage() {
           <div
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-headings:font-bold
-              prose-p:text-gray-100 prose-p:leading-relaxed
+              prose-p:text-white prose-p:leading-relaxed prose-p:font-light
               prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
               prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg
-              prose-blockquote:border-[#a78bfa] prose-blockquote:text-gray-100 prose-blockquote:bg-[#a78bfa]/5 prose-blockquote:rounded-r-xl
+              prose-blockquote:border-[#a78bfa] prose-blockquote:text-white/90 prose-blockquote:bg-[#a78bfa]/10 prose-blockquote:rounded-r-xl
               prose-strong:text-white
               prose-code:text-[#a78bfa] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
               prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10
-              prose-li:text-gray-100
+              prose-li:text-white
               prose-ul:my-4 prose-ol:my-4
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
               prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3"
@@ -244,7 +244,7 @@ export default function ArticlePage() {
 
         {/* Share */}
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-400">Bagikan artikel:</span>
+          <span className="text-sm text-gray-300">Bagikan artikel:</span>
           <div className="flex items-center gap-2">
             {[
               { label: "WhatsApp", url: `https://wa.me/?text=${encodeURIComponent(`${article.title} - ${currentUrl}`)}` },
@@ -256,7 +256,7 @@ export default function ArticlePage() {
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-400 hover:text-white hover:border-[#a78bfa]/30 hover:bg-[#a78bfa]/10 transition-all"
+                className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-xs text-gray-300 hover:text-white hover:border-[#a78bfa]/30 hover:bg-[#a78bfa]/20 transition-all"
               >
                 {s.label}
               </a>
@@ -316,10 +316,10 @@ export default function ArticlePage() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 text-center">
+      <footer className="bg-[#0d0d1a] border-t border-white/10 py-10 text-center">
         <Link
           href="/"
-          className="text-xs text-gray-400 hover:text-[#a78bfa] transition-colors"
+          className="text-sm text-gray-300 hover:text-[#a78bfa] transition-colors"
         >
           &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
         </Link>
