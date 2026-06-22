@@ -145,7 +145,7 @@ export default function BlogPage() {
       <footer className="border-t border-white/5 py-8 text-center">
         <Link
           href="/"
-          className="text-xs text-gray-500 hover:text-[#a78bfa] transition-colors"
+          className="text-xs text-gray-400 hover:text-[#a78bfa] transition-colors"
         >
           &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
         </Link>

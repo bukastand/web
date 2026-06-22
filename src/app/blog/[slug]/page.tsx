@@ -222,14 +222,14 @@ export default function ArticlePage() {
           <div
             className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-headings:font-bold
-              prose-p:text-gray-200 prose-p:leading-relaxed
+              prose-p:text-gray-100 prose-p:leading-relaxed
               prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
               prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg
-              prose-blockquote:border-[#a78bfa] prose-blockquote:text-gray-300 prose-blockquote:bg-[#a78bfa]/5 prose-blockquote:rounded-r-xl
+              prose-blockquote:border-[#a78bfa] prose-blockquote:text-gray-100 prose-blockquote:bg-[#a78bfa]/5 prose-blockquote:rounded-r-xl
               prose-strong:text-white
               prose-code:text-[#a78bfa] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
               prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10
-              prose-li:text-gray-200
+              prose-li:text-gray-100
               prose-ul:my-4 prose-ol:my-4
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
               prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3"
@@ -296,7 +296,7 @@ export default function ArticlePage() {
                   </div>
                 )}
                 <div className="p-4">
-                  <p className="text-xs text-gray-500 mb-1">
+                  <p className="text-xs text-gray-400 mb-1">
                     {related.created_at
                       ? new Date(related.created_at).toLocaleDateString("id-ID", {
                           day: "numeric",
@@ -319,7 +319,7 @@ export default function ArticlePage() {
       <footer className="border-t border-white/5 py-8 text-center">
         <Link
           href="/"
-          className="text-xs text-gray-500 hover:text-[#a78bfa] transition-colors"
+          className="text-xs text-gray-400 hover:text-[#a78bfa] transition-colors"
         >
           &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
         </Link>
