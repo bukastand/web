@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .single();
       const role = profile?.role || "user";
       document.cookie = "builder_session=authenticated; path=/; max-age=2592000; SameSite=Lax; Secure";
-      document.cookie = `user_role=${role}; path=/; max-age=2592000`;
+      document.cookie = `user_role=${role}; path=/; max-age=2592000; SameSite=Lax; Secure`;
     } catch {
       document.cookie = "builder_session=authenticated; path=/; max-age=2592000; SameSite=Lax; Secure";
     }

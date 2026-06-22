@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
+  const attemptsRef = useRef(0);
+  const lastAttemptRef = useRef(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,6 +17,21 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    // Rate limiting: max 5 attempts per 30 seconds
+    const now = Date.now();
+    if (now - lastAttemptRef.current < 30000) {
+      attemptsRef.current++;
+      if (attemptsRef.current > 5) {
+        const waitSeconds = Math.ceil((30000 - (now - lastAttemptRef.current)) / 1000);
+        setError(`Terlalu banyak percobaan. Coba lagi ${waitSeconds} detik lagi.`);
+        setLoading(false);
+        return;
+      }
+    } else {
+      attemptsRef.current = 1;
+      lastAttemptRef.current = now;
+    }
 
     const { error: authError, data } = await supabase.auth.signInWithPassword({
       email,

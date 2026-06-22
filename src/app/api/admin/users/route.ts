@@ -91,6 +91,9 @@ export async function PATCH(request: Request) {
 
     if (!userId || !role) return NextResponse.json({ error: "userId and role are required" }, { status: 400 });
     if (role !== "admin" && role !== "user") return NextResponse.json({ error: "Role must be 'admin' or 'user'" }, { status: 400 });
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) return NextResponse.json({ error: "Invalid userId format" }, { status: 400 });
 
     const adminClient = getAdminClient();
     const { error } = await adminClient
@@ -121,6 +124,9 @@ export async function DELETE(request: Request) {
     const { userId } = body;
 
     if (!userId) return NextResponse.json({ error: "userId is required" }, { status: 400 });
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) return NextResponse.json({ error: "Invalid userId format" }, { status: 400 });
 
     const adminClient = getAdminClient();
 

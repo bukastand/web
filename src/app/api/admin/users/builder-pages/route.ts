@@ -38,6 +38,9 @@ export async function POST(request: Request) {
     if (!userId) {
       return NextResponse.json({ error: "userId is required" }, { status: 400 });
     }
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) return NextResponse.json({ error: "Invalid userId format" }, { status: 400 });
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 

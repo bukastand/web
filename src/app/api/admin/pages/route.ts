@@ -108,6 +108,9 @@ export async function DELETE(request: Request) {
     if (!pageId || !userId) {
       return NextResponse.json({ error: "pageId and userId are required" }, { status: 400 });
     }
+    // Validate UUID format for userId
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) return NextResponse.json({ error: "Invalid userId format" }, { status: 400 });
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
