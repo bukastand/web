@@ -142,13 +142,28 @@ export default function BlogPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#0d0d1a] border-t border-white/10 py-10 text-center">
-        <Link
-          href="/"
-          className="text-sm text-gray-300 hover:text-[#a78bfa] transition-colors"
-        >
-          &copy; {new Date().getFullYear()} PAGODA STUDIO &mdash; Jasa Pembuatan Website Profesional
-        </Link>
+      <footer className="bg-[#0d0d1a] border-t border-[#a78bfa]/20 py-12 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <Link href="/" className="inline-block mb-4">
+            <span className="text-2xl font-extrabold text-white">
+              PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
+            </span>
+          </Link>
+          <p className="text-sm text-gray-400 max-w-md mx-auto mb-6">
+            Jasa pembuatan website profesional untuk bisnis, UMKM, dan perusahaan. Solusi digital lengkap untuk kebutuhan online Anda.
+          </p>
+          <div className="flex items-center justify-center gap-6 mb-8">
+            <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Beranda</Link>
+            <Link href="/tentang" className="text-sm text-gray-400 hover:text-white transition-colors">Tentang</Link>
+            <Link href="/layanan" className="text-sm text-gray-400 hover:text-white transition-colors">Layanan</Link>
+            <Link href="/kontak" className="text-sm text-gray-400 hover:text-white transition-colors">Kontak</Link>
+          </div>
+          <div className="pt-6 border-t border-white/5">
+            <p className="text-sm text-gray-500">
+              &copy; {new Date().getFullYear()} <span className="text-gray-300 font-semibold">PAGODA STUDIO</span>. All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </main>
   );
