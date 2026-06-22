@@ -188,6 +188,46 @@ CREATE POLICY "Users can delete own templates" ON community_templates
 CREATE POLICY "Admins can manage all templates" ON community_templates
   FOR ALL USING (public.is_admin())
   WITH CHECK (public.is_admin());
+
+-- ============================================================
+-- 5. CMS TABLES (site_settings, hero_content, services, pricing, portfolio, why_us)
+-- ============================================================
+
+ALTER TABLE IF EXISTS site_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view site_settings" ON site_settings;
+DROP POLICY IF EXISTS "Admins can manage site_settings" ON site_settings;
+CREATE POLICY "Anyone can view site_settings" ON site_settings FOR SELECT USING (true);
+CREATE POLICY "Admins can manage site_settings" ON site_settings FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+ALTER TABLE IF EXISTS hero_content ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view hero" ON hero_content;
+DROP POLICY IF EXISTS "Admins can manage hero" ON hero_content;
+CREATE POLICY "Anyone can view hero" ON hero_content FOR SELECT USING (true);
+CREATE POLICY "Admins can manage hero" ON hero_content FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+ALTER TABLE IF EXISTS services ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view services" ON services;
+DROP POLICY IF EXISTS "Admins can manage services" ON services;
+CREATE POLICY "Anyone can view services" ON services FOR SELECT USING (true);
+CREATE POLICY "Admins can manage services" ON services FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+ALTER TABLE IF EXISTS pricing ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view pricing" ON pricing;
+DROP POLICY IF EXISTS "Admins can manage pricing" ON pricing;
+CREATE POLICY "Anyone can view pricing" ON pricing FOR SELECT USING (true);
+CREATE POLICY "Admins can manage pricing" ON pricing FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+ALTER TABLE IF EXISTS portfolio ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view portfolio" ON portfolio;
+DROP POLICY IF EXISTS "Admins can manage portfolio" ON portfolio;
+CREATE POLICY "Anyone can view portfolio" ON portfolio FOR SELECT USING (true);
+CREATE POLICY "Admins can manage portfolio" ON portfolio FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+ALTER TABLE IF EXISTS why_us ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view why_us" ON why_us;
+DROP POLICY IF EXISTS "Admins can manage why_us" ON why_us;
+CREATE POLICY "Anyone can view why_us" ON why_us FOR SELECT USING (true);
+CREATE POLICY "Admins can manage why_us" ON why_us FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
 `;
 
 export async function GET() {

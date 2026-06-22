@@ -6,6 +6,17 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- SECURITY DEFINER function to check admin (avoids RLS recursion)
+-- Dibutuhkan oleh RLS policies di bawah
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin');
+$$;
+
 -- ============================================================
 -- SITE SETTINGS
 -- ============================================================
@@ -21,6 +32,11 @@ CREATE TABLE IF NOT EXISTS site_settings (
   address TEXT DEFAULT 'Payakumbuh, Sumbar',
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view site_settings" ON site_settings FOR SELECT USING (true);
+CREATE POLICY "Admins can manage site_settings" ON site_settings FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- ============================================================
 -- HERO SECTION
@@ -38,6 +54,11 @@ CREATE TABLE IF NOT EXISTS hero_content (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE hero_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view hero" ON hero_content FOR SELECT USING (true);
+CREATE POLICY "Admins can manage hero" ON hero_content FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
 -- ============================================================
 -- SERVICES
 -- ============================================================
@@ -51,6 +72,11 @@ CREATE TABLE IF NOT EXISTS services (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view services" ON services FOR SELECT USING (true);
+CREATE POLICY "Admins can manage services" ON services FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- ============================================================
 -- PRICING PACKAGES
@@ -66,6 +92,11 @@ CREATE TABLE IF NOT EXISTS pricing (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE pricing ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view pricing" ON pricing FOR SELECT USING (true);
+CREATE POLICY "Admins can manage pricing" ON pricing FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- ============================================================
 -- PORTFOLIO
@@ -85,6 +116,11 @@ CREATE TABLE IF NOT EXISTS portfolio (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view portfolio" ON portfolio FOR SELECT USING (true);
+CREATE POLICY "Admins can manage portfolio" ON portfolio FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
 -- ============================================================
 -- WHY US
 -- ============================================================
@@ -99,6 +135,11 @@ CREATE TABLE IF NOT EXISTS why_us (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE why_us ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view why_us" ON why_us FOR SELECT USING (true);
+CREATE POLICY "Admins can manage why_us" ON why_us FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- ============================================================
 -- SEED DATA

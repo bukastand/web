@@ -40,6 +40,7 @@ scripts/
 # One-off database scripts with hardcoded credentials — DO NOT TRACK
 fix-*.js
 seed-*.js
+check-*.js
 
 # Environment template (contains example secrets; use .env instead)
 .env.example
