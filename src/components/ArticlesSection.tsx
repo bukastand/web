@@ -50,11 +50,11 @@ export default function ArticlesSection() {
       <div className="relative max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-[#22c55e]/10 text-[#22c55e] text-sm font-medium rounded-full border border-[#22c55e]/20 mb-4">
+          <span className="inline-block px-4 py-1.5 bg-[#a78bfa]/10 text-[#a78bfa] text-sm font-medium rounded-full border border-[#a78bfa]/20 mb-4">
             Blog & Artikel
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Artikel & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22c55e] to-[#4ade80]">Informasi</span>
+            Artikel & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a78bfa] to-[#c084fc]">Informasi</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Tips, trik, dan informasi terbaru seputar website, digital marketing, dan teknologi untuk mengembangkan bisnis Anda.
@@ -67,7 +67,7 @@ export default function ArticlesSection() {
             <Link
               key={article.id}
               href={`/blog/${article.slug}`}
-              className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[#22c55e]/30 hover:bg-white/[0.07] transition-all duration-300"
+              className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[#a78bfa]/30 hover:bg-white/[0.07] transition-all duration-300"
             >
               {/* Cover Image */}
               <div className="aspect-[16/9] overflow-hidden bg-[#0a0f1e]">
@@ -101,7 +101,7 @@ export default function ArticlesSection() {
                 </p>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#22c55e] transition-colors line-clamp-2">
+                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#a78bfa] transition-colors line-clamp-2">
                   {article.title}
                 </h3>
 
@@ -113,7 +113,7 @@ export default function ArticlesSection() {
                 )}
 
                 {/* Read More */}
-                <div className="flex items-center gap-1.5 text-[#22c55e] text-sm font-medium group/link">
+                <div className="flex items-center gap-1.5 text-[#a78bfa] text-sm font-medium group/link">
                   <span>Baca Selengkapnya</span>
                   <svg
                     className="w-4 h-4 transition-transform group-hover/link:translate-x-1"

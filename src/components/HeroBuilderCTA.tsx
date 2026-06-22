@@ -35,7 +35,7 @@ export default function HeroBuilderCTA() {
 
   return (
     <section className="relative overflow-hidden pt-20 sm:pt-28 pb-16 sm:pb-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#22c55e]/10 via-[#0f172a] to-[#0f172a] z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#a78bfa]/10 via-[#0f172a] to-[#0f172a] z-0" />
 
       <div
         className="absolute inset-0 z-0 opacity-[0.04]"
@@ -46,11 +46,11 @@ export default function HeroBuilderCTA() {
         }}
       />
 
-      <div className="absolute top-20 left-1/4 w-72 h-72 bg-[#22c55e]/20 rounded-full blur-[120px] animate-pulse z-0" />
-      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#22c55e]/10 rounded-full blur-[150px] animate-pulse z-0" />
+      <div className="absolute top-20 left-1/4 w-72 h-72 bg-[#a78bfa]/20 rounded-full blur-[120px] animate-pulse z-0" />
+      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#a78bfa]/10 rounded-full blur-[150px] animate-pulse z-0" />
 
       <div ref={sectionRef} className="relative z-10 container mx-auto px-6 max-w-5xl text-center">
-        <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#22c55e]/30 bg-[#22c55e]/10 text-[#4ade80] text-sm font-medium mb-6 backdrop-blur-sm">
+        <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#a78bfa]/30 bg-[#a78bfa]/10 text-[#c084fc] text-sm font-medium mb-6 backdrop-blur-sm">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
@@ -91,7 +91,7 @@ export default function HeroBuilderCTA() {
         <div className="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/auth/register"
-            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-[#22c55e] text-white font-bold rounded-xl text-lg transition-all duration-300 hover:bg-[#16a34a] hover:scale-105 animate-pulse-glow"
+            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-[#a78bfa] text-white font-bold rounded-xl text-lg transition-all duration-300 hover:bg-[#7c3aed] hover:scale-105 animate-pulse-glow"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -120,7 +120,7 @@ export default function HeroBuilderCTA() {
               { value: t("cta.trust4_val"), label: t("cta.trust4_label") },
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-sm font-bold text-[#22c55e]">{stat.value}</div>
+                <div className="text-sm font-bold text-[#a78bfa]">{stat.value}</div>
                 <div className="text-[10px] text-gray-600 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
@@ -128,7 +128,7 @@ export default function HeroBuilderCTA() {
           <div className="mt-4">
             <Link
               href="/templates"
-              className="inline-flex items-center gap-2 text-sm text-[#22c55e] hover:text-[#4ade80] transition-colors font-medium"
+              className="inline-flex items-center gap-2 text-sm text-[#a78bfa] hover:text-[#c084fc] transition-colors font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />

@@ -1,7 +1,16 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #22c55e;
+  --color-primary: #a78bfa;
+  --color-primary-dark: #7c3aed;
+  --color-secondary: #2dd4bf;
+  --color-accent: #c084fc;
+  --color-bg-deep: #08080f;
+  --color-bg-surface: #0d0d1a;
+  --color-bg-elevated: #14142a;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-border-default: #1e293b;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -10,14 +19,14 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #08080f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #22c55e;
+  background: #a78bfa;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #16a34a;
+  background: #7c3aed;
 }
 
 /* ===== Smooth scroll ===== */
@@ -78,10 +87,10 @@ html {
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
   }
   50% {
-    box-shadow: 0 0 40px rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.6);
   }
 }
 
@@ -362,12 +371,33 @@ html {
 
 /* ===== Gradient text ===== */
 .gradient-text {
-  background: linear-gradient(135deg, #22c55e, #4ade80, #22c55e);
+  background: linear-gradient(135deg, #a78bfa, #2dd4bf, #c084fc);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 3s linear infinite;
+}
+
+/* ===== Violet glow effect ===== */
+.glow-violet {
+  box-shadow: 0 0 40px rgba(167, 139, 250, 0.15), 0 0 80px rgba(167, 139, 250, 0.05);
+}
+
+.glow-teal {
+  box-shadow: 0 0 40px rgba(45, 212, 191, 0.15), 0 0 80px rgba(45, 212, 191, 0.05);
+}
+
+/* ===== Glass card ===== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(167, 139, 250, 0.3);
 }
 
 

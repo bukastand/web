@@ -74,11 +74,11 @@ export default function ServicesSection() {
     <section
       id="layanan"
       ref={sectionRef}
-      className="relative py-24 sm:py-32 bg-[#0a0f1e] overflow-hidden"
+      className="relative py-24 sm:py-32 bg-[#0d0d1a] overflow-hidden"
     >
       {/* Background accents */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#22c55e]/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#a78bfa]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
         <div className="text-center mb-16 reveal">
@@ -105,7 +105,7 @@ export default function ServicesSection() {
               <div
                 className={`relative flex flex-col items-center text-center p-4 rounded-xl cursor-default transition-all duration-300 ${
                   activeIndex === index
-                    ? "bg-[#22c55e]/10 border-[#22c55e]/40 scale-105"
+                    ? "bg-[#a78bfa]/10 border-[#a78bfa]/40 scale-105"
                     : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/20"
                 } border`}
               >
@@ -115,7 +115,7 @@ export default function ServicesSection() {
                   {service.icon}
                 </span>
                 <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
-                  activeIndex === index ? "text-[#22c55e]" : "text-gray-300"
+                  activeIndex === index ? "text-[#a78bfa]" : "text-gray-300"
                 }`}>
                   {t(`services.item${index + 1}_title`)}
                 </span>

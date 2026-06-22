@@ -1,81 +1,64 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
-import ProcessSection from "@/components/ProcessSection";
-import WhyUsSection from "@/components/WhyUsSection";
-import PricingSection from "@/components/PricingSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import FAQSection from "@/components/FAQSection";
-import LocationSection from "@/components/LocationSection";
-import Footer from "@/components/Footer";
+import PortfolioSection from "@/components/PortfolioSection";
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
-import ArticlesSection from "@/components/ArticlesSection";
+import Footer from "@/components/Footer";
 
-// Load 3D background dynamically (client-side only)
-const ThreeBackground = dynamic(
-  () => import("@/components/ThreeBackground"),
-  { ssr: false }
-);
+const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), { ssr: false });
 
 export default function Home() {
   return (
-    <main className="relative bg-[#0f172a] min-h-screen">
-      {/* Fixed 3D Background */}
+    <main className="relative bg-[#08080f] min-h-screen">
       <ThreeBackground />
-
-      {/* Content overlay */}
       <div className="relative z-10">
         <HeroSection />
 
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
-
-        {/* Buat Landing Page Gratis CTA */}
-        <HeroBuilderCTA />
-
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        {/* ── Section transition ── */}
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#08080f] to-[#0d0d1a]" />
 
         <ServicesSection />
 
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0d0d1a] to-[#08080f]" />
 
-        <ProcessSection />
+        <PortfolioSection />
 
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
+        <div className="h-8 sm:h-16 bg-gradient-to-b from-[#0d0d1a] to-[#08080f]" />
 
-        <WhyUsSection />
+        <HeroBuilderCTA />
 
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-8 sm:h-16 bg-gradient-to-b from-[#0d0d1a] to-[#08080f]" />
 
-        <PricingSection />
+        {/* ├─ Featured Articles ── */}
+        <section className="relative py-12 sm:py-16">
+          <div className="container mx-auto px-6 text-center">
+            <div className="max-w-3xl mx-auto">
+              <span className="inline-block px-3 py-1 rounded-full bg-[#a78bfa]/10 border border-[#a78bfa]/20 text-[#a78bfa] text-xs font-semibold mb-4">
+                Blog
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Artikel & <span className="gradient-text">Informasi</span>
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Tips, trik, dan informasi terbaru seputar website dan digital marketing.
+              </p>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 hover:border-[#a78bfa]/30 hover:text-[#a78bfa] transition-all"
+              >
+                Lihat Semua Artikel
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </section>
 
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0f172a] to-[#0a0f1e]" />
-
-        <TestimonialsSection />
-
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
-
-        <FAQSection />
-
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
-
-        <LocationSection />
-
-        {/* Final transition to footer */}
-        {/* Blog / Articles */}
-        <ArticlesSection />
-
-        {/* Section transition */}
-        <div className="h-12 sm:h-20 bg-gradient-to-b from-[#0a0f1e] to-[#0f172a]" />
+        <div className="h-8 sm:h-16 bg-gradient-to-b from-[#08080f] to-[#0d0d1a]" />
 
         <Footer />
       </div>

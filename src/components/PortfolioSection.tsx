@@ -105,10 +105,10 @@ export default function PortfolioSection() {
     <section
       id="portfolio"
       ref={sectionRef}
-      className="relative py-24 sm:py-32 bg-[#0a0f1e]"
+      className="relative py-24 sm:py-32 bg-[#0d0d1a]"
     >
       {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#22c55e]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#a78bfa]/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="relative container mx-auto px-6">
@@ -130,7 +130,7 @@ export default function PortfolioSection() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === cat
-                  ? "bg-[#22c55e] text-white shadow-lg shadow-[#22c55e]/25"
+                  ? "bg-[#a78bfa] text-white shadow-lg shadow-[#a78bfa]/25"
                   : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
               }`}
             >
@@ -148,7 +148,7 @@ export default function PortfolioSection() {
               rel="noopener noreferrer"
               key={index}
               aria-label={`Lihat detail ${project.title}`}
-              className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-[#22c55e]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#22c55e]/10 ${
+              className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-[#a78bfa]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#a78bfa]/10 ${
                 visibleProjects.includes(index)
                   ? "opacity-100 translate-y-0"
                   : ""
@@ -200,8 +200,8 @@ export default function PortfolioSection() {
               </div>
 
               {/* Project Info */}
-              <div className="p-5 bg-[#0f172a]">
-                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#22c55e] transition-colors duration-300">
+              <div className="p-5 bg-[#08080f]">
+                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#a78bfa] transition-colors duration-300">
                   {project.title}
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed line-clamp-2">
@@ -210,7 +210,7 @@ export default function PortfolioSection() {
               </div>
 
               {/* Hover border bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#22c55e]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#a78bfa]/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             </Link>
           ))}
         </div>
@@ -241,7 +241,7 @@ export default function PortfolioSection() {
             href="https://wa.me/6282210099969"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#22c55e] text-white font-semibold rounded-xl text-lg transition-all duration-300 hover:bg-[#16a34a] hover:scale-105 hover:shadow-lg hover:shadow-[#22c55e]/25"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#a78bfa] text-white font-semibold rounded-xl text-lg transition-all duration-300 hover:bg-[#7c3aed] hover:scale-105 hover:shadow-lg hover:shadow-[#a78bfa]/25"
           >
             <svg
               className="w-5 h-5"
