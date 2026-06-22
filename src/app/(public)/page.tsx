@@ -6,7 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import PortfolioSection from "@/components/PortfolioSection";
 import HeroBuilderCTA from "@/components/HeroBuilderCTA";
-import Footer from "@/components/Footer";
+
 
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), { ssr: false });
 
@@ -59,8 +59,6 @@ export default function Home() {
         </section>
 
         <div className="h-8 sm:h-16 bg-gradient-to-b from-[#08080f] to-[#0d0d1a]" />
-
-        <Footer />
       </div>
     </main>
   );
