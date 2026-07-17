@@ -9,50 +9,37 @@ const socials = [
     name: "WhatsApp",
     href: "https://wa.me/6282210099969",
     icon: (
-      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
       </svg>
     ),
-    color: "bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 hover:text-emerald-300 border-emerald-500/25",
   },
   {
     name: "Instagram",
     href: "https://instagram.com/pagodastudio999",
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeWidth={1.5} />
         <circle cx="12" cy="12" r="5" strokeWidth={1.5} />
         <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
       </svg>
     ),
-    color: "bg-pink-500/15 text-pink-400 hover:bg-pink-500/25 hover:text-pink-300 border-pink-500/25",
   },
   {
     name: "TikTok",
     href: "https://tiktok.com/@pagoda.studio",
     icon: (
-      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
       </svg>
     ),
-    color: "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white border-white/20",
-  },
-  {
-    name: "Threads",
-    href: "https://threads.net/@pagodastudio99",
-    icon: (
-      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.59 12.97c-.18.38-.44.72-.76.99-.56.47-1.27.74-2.06.78-.5.02-1.02-.04-1.54-.18-.37-.1-.73-.24-1.07-.41.35.22.72.4 1.11.53.55.19 1.13.28 1.72.26.85-.03 1.62-.34 2.22-.87.36-.32.64-.71.82-1.15.29-.73.33-1.56.11-2.37-.19-.7-.59-1.3-1.14-1.73-.49-.39-1.09-.63-1.69-.72-.42-.06-.82-.04-1.18.06-.26.07-.48.18-.66.32-.13.1-.24.21-.32.34-.09.15-.16.32-.2.52-.06.36-.02.77.14 1.17.17.42.46.79.83 1.06.53.4 1.18.62 1.86.64.5.02.97-.09 1.36-.32.46-.27.78-.7.91-1.2.11-.43.08-.88-.09-1.3-.18-.45-.5-.83-.91-1.1-.59-.39-1.31-.58-2.02-.56-.83.02-1.55.32-2.09.84-.44.43-.74.99-.88 1.62-.12.55-.1 1.12.07 1.69.15.49.41.93.74 1.3.27.3.58.55.93.74-.68-.3-1.27-.73-1.72-1.25-.55-.63-.89-1.4-.99-2.24-.11-.93.09-1.86.57-2.67.47-.79 1.16-1.4 2.01-1.77.74-.32 1.55-.44 2.37-.36.68.06 1.33.26 1.91.57.52.28.98.65 1.35 1.09.35.42.61.9.78 1.42.28.9.33 1.9.15 2.86-.07.38-.18.75-.33 1.11z"/>
-      </svg>
-    ),
-    color: "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white border-white/20",
   },
 ];
 
 const contactInfo = [
   {
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
@@ -62,7 +49,7 @@ const contactInfo = [
   },
   {
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
       </svg>
     ),
@@ -72,7 +59,7 @@ const contactInfo = [
   },
   {
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
       </svg>
     ),
@@ -110,9 +97,7 @@ export default function KontakPage() {
     e.preventDefault();
     setSending(true);
     try {
-      await supabase
-        .from("contacts")
-        .insert([{ name: formData.name, email: formData.email, phone: formData.phone, message: formData.message }]);
+      await supabase.from("contacts").insert([{ name: formData.name, email: formData.email, phone: formData.phone, message: formData.message }]);
       setSent(true);
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
@@ -123,25 +108,25 @@ export default function KontakPage() {
   };
 
   return (
-    <main className="bg-[#08080f] min-h-screen">
+    <main className="bg-white min-h-screen">
       {/* ═══════════════ HERO ═══════════════ */}
       <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden pt-24">
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-[#a78bfa]/20 rounded-full blur-[120px] animate-pulse pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] bg-[#2dd4bf]/15 rounded-full blur-[150px] animate-pulse pointer-events-none" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(167,139,250,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,0.3) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#08080f] to-transparent z-[2] pointer-events-none" />
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+          <div className="w-full h-full" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #111111 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white to-transparent z-[2] pointer-events-none" />
 
-        <div className="relative z-10 container mx-auto px-6 text-center max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#a78bfa]/30 bg-[#a78bfa]/10 text-[#a78bfa] text-sm font-medium mb-6 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-[#a78bfa] animate-pulse" />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <div className="badge-premium mb-6 inline-flex">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb] mr-1.5" />
             Hubungi Kami
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[0.95] tracking-tight mb-6">
-            <span className="text-white">Mari Diskusi</span>
+          <h1 className="heading-xl mb-6">
+            <span className="text-[#111111]">Mari Diskusi</span>
             <br />
-            <span className="gradient-text">Bersama Kami</span>
+            <span className="text-[#2563eb]">Bersama Kami</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-[#666666] max-w-3xl mx-auto leading-relaxed">
             Punya pertanyaan atau ingin konsultasi? Kami siap membantu. Hubungi kami
             melalui form di bawah atau langsung chat WhatsApp.
           </p>
@@ -149,86 +134,71 @@ export default function KontakPage() {
       </section>
 
       {/* ═══════════════ CONTACT ═══════════════ */}
-      <section className="observe-section relative py-16 sm:py-24">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#a78bfa]/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#2dd4bf]/5 rounded-full blur-[80px] pointer-events-none" />
-
-        <div className="relative container mx-auto px-6">
+      <section className="observe-section section-padding bg-[#f8f8f8]">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="reveal grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
             {/* ─── CONTACT FORM ─── */}
-            <div className="p-8 sm:p-10 rounded-2xl glass-card">
-              <h3 className="text-2xl font-bold text-white mb-2">Kirim Pesan</h3>
-              <p className="text-sm text-gray-500 mb-8">
+            <div className="card-premium p-8 sm:p-10">
+              <h3 className="text-2xl font-semibold text-[#111111] mb-2">Kirim Pesan</h3>
+              <p className="text-sm text-[#666666] mb-8">
                 Isi form di bawah dan tim kami akan merespon dalam 1x24 jam.
               </p>
 
               {sent ? (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2dd4bf]/20 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-[#2dd4bf]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center">
+                    <svg className="w-8 h-8 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-2">Pesan Terkirim! 🎉</h4>
-                  <p className="text-gray-400 text-sm mb-6">Terima kasih! Kami akan segera menghubungi Anda.</p>
-                  <button
-                    onClick={() => setSent(false)}
-                    className="px-6 py-3 bg-[#a78bfa]/10 text-[#a78bfa] rounded-xl font-semibold hover:bg-[#a78bfa]/20 transition-colors"
-                  >
+                  <h4 className="text-xl font-semibold text-[#111111] mb-2">Pesan Terkirim! </h4>
+                  <p className="text-[#666666] text-sm mb-6">Terima kasih! Kami akan segera menghubungi Anda.</p>
+                  <button onClick={() => setSent(false)} className="btn-secondary">
                     Kirim Pesan Lagi
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Nama Lengkap</label>
+                    <label className="block text-sm font-medium text-[#111111] mb-1.5">Nama Lengkap</label>
                     <input
-                      type="text"
-                      required
-                      value={formData.name}
+                      type="text" required value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 focus:border-[#a78bfa]/50 transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[#eeeeee] text-[#111111] placeholder-[#999999] focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb]/20 transition-all bg-white"
                       placeholder="Masukkan nama Anda"
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                      <label className="block text-sm font-medium text-[#111111] mb-1.5">Email</label>
                       <input
-                        type="email"
-                        required
-                        value={formData.email}
+                        type="email" required value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 focus:border-[#a78bfa]/50 transition-all"
+                        className="w-full px-4 py-3 rounded-xl border border-[#eeeeee] text-[#111111] placeholder-[#999999] focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb]/20 transition-all bg-white"
                         placeholder="email@anda.com"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">No. WhatsApp</label>
+                      <label className="block text-sm font-medium text-[#111111] mb-1.5">No. WhatsApp</label>
                       <input
-                        type="tel"
-                        value={formData.phone}
+                        type="tel" value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 focus:border-[#a78bfa]/50 transition-all"
+                        className="w-full px-4 py-3 rounded-xl border border-[#eeeeee] text-[#111111] placeholder-[#999999] focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb]/20 transition-all bg-white"
                         placeholder="08xxxxxxx"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Pesan</label>
+                    <label className="block text-sm font-medium text-[#111111] mb-1.5">Pesan</label>
                     <textarea
-                      required
-                      rows={4}
-                      value={formData.message}
+                      required rows={4} value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 focus:border-[#a78bfa]/50 transition-all resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-[#eeeeee] text-[#111111] placeholder-[#999999] focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb]/20 transition-all resize-none bg-white"
                       placeholder="Ceritakan kebutuhan website Anda..."
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={sending}
-                    className="w-full py-3.5 bg-gradient-to-r from-[#a78bfa] to-[#7c3aed] text-white font-bold rounded-xl transition-all duration-300 hover:from-[#7c3aed] hover:to-[#6d28d9] hover:shadow-lg hover:shadow-[#a78bfa]/25 active:scale-[0.98] disabled:opacity-50"
+                  <button type="submit" disabled={sending}
+                    className="w-full py-3.5 bg-[#111111] text-white font-semibold rounded-xl transition-all duration-300 hover:bg-black active:scale-[0.98] disabled:opacity-50"
                   >
                     {sending ? "Mengirim..." : "Kirim Pesan"}
                   </button>
@@ -238,43 +208,32 @@ export default function KontakPage() {
 
             {/* ─── CONTACT INFO ─── */}
             <div className="space-y-6">
-              {/* Info Cards */}
               {contactInfo.map((info, i) => (
-                <div key={i} className="p-6 rounded-2xl glass-card hover:border-[#a78bfa]/20 transition-all duration-300">
+                <div key={i} className="card-premium p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#2563eb] flex-shrink-0">
                       {info.icon}
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{info.label}</p>
+                      <p className="text-xs text-[#999999] uppercase tracking-wider mb-1">{info.label}</p>
                       {info.href ? (
-                        <a
-                          href={info.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white font-semibold hover:text-[#a78bfa] transition-colors"
-                        >
+                        <a href={info.href} target="_blank" rel="noopener noreferrer" className="text-[#111111] font-semibold hover:text-[#2563eb] transition-colors">
                           {info.value}
                         </a>
                       ) : (
-                        <p className="text-white font-semibold">{info.value}</p>
+                        <p className="text-[#111111] font-semibold">{info.value}</p>
                       )}
                     </div>
                   </div>
                 </div>
               ))}
 
-              {/* Social Links */}
-              <div className="p-6 rounded-2xl glass-card hover:border-[#a78bfa]/20 transition-all duration-300">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-4">Media Sosial</p>
+              <div className="card-premium p-6">
+                <p className="text-xs text-[#999999] uppercase tracking-wider mb-4">Media Sosial</p>
                 <div className="flex gap-3">
                   {socials.map((social) => (
-                    <a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${social.color}`}
+                    <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-xl border border-[#eeeeee] bg-[#f8f8f8] flex items-center justify-center text-[#666666] hover:text-[#2563eb] hover:border-[#2563eb]/30 transition-all duration-200"
                       title={social.name}
                     >
                       {social.icon}
@@ -283,24 +242,20 @@ export default function KontakPage() {
                 </div>
               </div>
 
-              {/* Quick CTA */}
-              <a
-                href="https://wa.me/6282210099969"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-6 rounded-2xl bg-gradient-to-br from-[#a78bfa]/10 to-[#2dd4bf]/5 border border-[#a78bfa]/20 hover:border-[#a78bfa]/40 transition-all duration-300 group"
+              <a href="https://wa.me/6282210099969" target="_blank" rel="noopener noreferrer"
+                className="block p-6 rounded-2xl bg-[#f8f8f8] border border-[#eeeeee] hover:border-[#dddddd] transition-all duration-300 group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 rounded-xl bg-white border border-[#eeeeee] flex items-center justify-center">
+                    <svg className="w-6 h-6 text-[#2563eb]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <p className="text-white font-bold group-hover:text-[#a78bfa] transition-colors">Chat WhatsApp</p>
-                    <p className="text-sm text-gray-500">Respon cepat dalam 1x24 jam</p>
+                    <p className="text-[#111111] font-semibold group-hover:text-[#2563eb] transition-colors">Chat WhatsApp</p>
+                    <p className="text-sm text-[#666666]">Respon cepat dalam 1x24 jam</p>
                   </div>
-                  <svg className="w-5 h-5 text-gray-500 group-hover:text-[#a78bfa] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-[#999999] group-hover:text-[#2563eb] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -311,9 +266,9 @@ export default function KontakPage() {
       </section>
 
       {/* ═══════════════ MAP ═══════════════ */}
-      <section className="observe-section relative py-8">
-        <div className="container mx-auto px-6">
-          <div className="reveal max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/10 shadow-lg shadow-black/20 min-h-[350px]">
+      <section className="observe-section py-8 bg-[#f8f8f8]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="reveal rounded-2xl overflow-hidden border border-[#eeeeee] min-h-[350px]">
             <iframe
               src="https://www.google.com/maps?q=Jl.%20Ade%20Irma%20Suryani%20No.6A%20Payakumbuh&output=embed"
               width="100%"
@@ -329,31 +284,20 @@ export default function KontakPage() {
       </section>
 
       {/* ═══════════════ CTA ═══════════════ */}
-      <section className="observe-section relative py-16">
-        <div className="container mx-auto px-6">
-          <div className="reveal max-w-3xl mx-auto text-center p-10 sm:p-14 rounded-3xl bg-gradient-to-br from-[#a78bfa]/10 to-[#2dd4bf]/5 border border-[#a78bfa]/20 glow-violet">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              Siap <span className="gradient-text">Memulai?</span>
+      <section className="observe-section section-padding bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="reveal max-w-3xl mx-auto text-center p-10 sm:p-14 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee]">
+            <h2 className="heading-lg mb-4">
+              Siap <span className="text-[#2563eb]">Memulai?</span>
             </h2>
-            <p className="text-gray-400 mb-6 max-w-lg mx-auto">
+            <p className="text-[#666666] mb-6 max-w-lg mx-auto">
               Jangan tunda lagi! Hubungi kami sekarang dan dapatkan konsultasi gratis untuk website impian Anda.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="https://wa.me/6282210099969"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#a78bfa] to-[#7c3aed] text-white font-bold rounded-xl transition-all duration-300 hover:from-[#7c3aed] hover:to-[#6d28d9] hover:scale-105 hover:shadow-lg hover:shadow-[#a78bfa]/25"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
+              <a href="https://wa.me/6282210099969" target="_blank" rel="noopener noreferrer" className="btn-primary">
                 Konsultasi Sekarang
               </a>
-              <Link
-                href="/layanan"
-                className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/10 hover:border-white/40"
-              >
+              <Link href="/layanan" className="btn-secondary">
                 Lihat Layanan
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

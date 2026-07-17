@@ -184,12 +184,12 @@ export default function TemplatesPage() {
   const [previewTemplate, setPreviewTemplate] = useState<GalleryTemplate | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] pt-24 pb-16">
+    <div className="min-h-screen bg-white pt-24 pb-16">
       {/* Back button */}
       <div className="container mx-auto px-6 mb-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors group"
+          className="inline-flex items-center gap-2 text-sm text-[#666666] hover:text-[#111111] transition-colors group"
         >
           <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -207,11 +207,11 @@ export default function TemplatesPage() {
             </svg>
             Pilih Template
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
+          <h1            className="heading-lg mb-4">
             Mulai dengan{" "}
-            <span className="gradient-text">Template Siap Pakai</span>
+            <span className="text-[#2563eb]">Template Siap Pakai</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-[#666666] text-lg max-w-2xl mx-auto">
             Pilih template landing page profesional, lalu kustomisasi dengan drag-and-drop builder kami.
             Tidak perlu coding sama sekali.
           </p>

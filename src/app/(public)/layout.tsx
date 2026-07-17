@@ -9,7 +9,9 @@ export default function PublicLayout({
   return (
     <>
       <Navbar />
-      {children}
+      <div className="min-h-screen bg-white">
+        {children}
+      </div>
       <Footer />
     </>
   );

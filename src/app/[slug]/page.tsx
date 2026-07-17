@@ -147,18 +147,18 @@ export default function PublishedPage() {
 
   if (notFound) {
     return (
-      <main className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+      <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Halaman Tidak Ditemukan</h1>
-          <p className="text-gray-500 mb-6">Halaman yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
+          <h1 className="text-2xl font-bold text-[#111111] mb-2">Halaman Tidak Ditemukan</h1>
+          <p className="text-[#666666] mb-6">Halaman yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#22c55e]/20 text-[#22c55e] font-semibold rounded-xl border border-[#22c55e]/30 hover:bg-[#22c55e]/30 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#111111] text-white font-semibold rounded-xl hover:bg-black transition-all"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -171,7 +171,7 @@ export default function PublishedPage() {
   }
 
   if (!page) {
-    return <main className="min-h-screen bg-[#0f172a]" aria-label="Loading" />;
+    return <main className="min-h-screen bg-white" aria-label="Loading" />;
   }
 
   const gs = page.globalStyles;
@@ -208,7 +208,7 @@ export default function PublishedPage() {
       }}
     >
       {/* Skip to content link for accessibility */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#22c55e] focus:text-white focus:rounded-lg focus:font-semibold">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#111111] focus:text-white focus:rounded-lg focus:font-semibold">
         Lewati ke konten utama
       </a>
 
@@ -248,11 +248,11 @@ export default function PublishedPage() {
       </div>
 
       {/* Powered by footer */}
-      <footer className="text-center py-6 border-t border-gray-200" role="contentinfo">
+      <footer className="text-center py-6 border-t border-[#eeeeee]" role="contentinfo">
         <Link
           href="https://pagodastudio.my.id"
           target="_blank"
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          className="text-xs text-[#999999] hover:text-[#666666] transition-colors"
         >
           Dibuat dengan PAGODASTUDIO
         </Link>

@@ -49,7 +49,6 @@ export default function PricingSection() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
             const cards = entry.target.querySelectorAll(".reveal");
             cards.forEach((card, i) => {
               setTimeout(() => card.classList.add("visible"), i * 100);
@@ -65,54 +64,40 @@ export default function PricingSection() {
   }, []);
 
   return (
-    <section
-      id="paket"
-      ref={sectionRef}
-      className="relative py-24 sm:py-32 bg-[#0a0f1e] overflow-hidden"
-    >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="relative container mx-auto px-6">
+    <section id="paket" ref={sectionRef} className="section-padding bg-white">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 reveal">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            {t("pricing.heading")} <span className="gradient-text">{t("pricing.heading_highlight")}</span>
+          <span className="badge-premium mb-4 inline-flex">Pricing</span>
+          <h2 className="heading-lg mb-4">
+            {t("pricing.heading")} <span className="text-[#2563eb]">{t("pricing.heading_highlight")}</span>
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            {t("pricing.subtitle")}
-          </p>
+          <p className="body-lg max-w-2xl mx-auto">{t("pricing.subtitle")}</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 items-start">
           {packages.map((pkg, index) => (
             <div
               key={index}
-              className={`reveal group relative rounded-2xl p-5 sm:p-6 lg:p-7 transition-all duration-500 ${
+              className={`reveal card-premium p-6 ${
                 pkg.is_popular
-                  ? "bg-gradient-to-b from-[#22c55e]/20 via-[#22c55e]/10 to-transparent border-2 border-[#22c55e] shadow-[0_0_30px_rgba(34,197,94,0.15)] hover:-translate-y-2"
-                  : "bg-white/[0.03] border border-white/[0.06] hover:border-[#22c55e]/30 hover:bg-white/[0.06] hover:-translate-y-1"
+                  ? "border-2 border-[#2563eb] relative"
+                  : ""
               }`}
             >
               {pkg.is_popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#22c55e] text-white text-[10px] font-bold rounded-full whitespace-nowrap shadow-lg shadow-[#22c55e]/30">
-                  {t("pricing.popular")}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#2563eb] text-white text-xs font-bold rounded-full whitespace-nowrap">
+                  Popular
                 </div>
               )}
 
-              <div className={pkg.is_popular ? "mt-4" : ""}>
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
-                  {t(pkg.name)}
-                </h3>
-                <div className="text-2xl sm:text-3xl font-extrabold text-[#22c55e] mb-5">
-                  {t(pkg.price)}
-                </div>
+              <div className={pkg.is_popular ? "mt-2" : ""}>
+                <h3 className="text-lg font-semibold text-[#111111] mb-1">{t(pkg.name)}</h3>
+                <div className="text-2xl font-bold text-[#2563eb] mb-5">{t(pkg.price)}</div>
 
-                <ul className="space-y-2.5 mb-6 sm:mb-8">
+                <ul className="space-y-2.5 mb-6">
                   {pkg.features.map((feature, fi) => (
-                    <li
-                      key={fi}
-                      className="flex items-start gap-2.5 text-sm text-gray-400"
-                    >
-                      <svg className="w-4 h-4 text-[#22c55e] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <li key={fi} className="flex items-start gap-2.5 text-sm text-[#666666]">
+                      <svg className="w-4 h-4 text-[#2563eb] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
                       <span>{t(feature)}</span>
@@ -126,8 +111,8 @@ export default function PricingSection() {
                   rel="noopener noreferrer"
                   className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
                     pkg.is_popular
-                      ? "bg-[#22c55e] text-white hover:bg-[#16a34a] hover:shadow-lg hover:shadow-[#22c55e]/25 active:scale-95"
-                      : "bg-white/10 text-white hover:bg-white/20 border border-white/10 active:scale-95"
+                      ? "bg-[#111111] text-white hover:bg-black hover:shadow-lg active:scale-[0.98]"
+                      : "bg-[#f8f8f8] text-[#111111] border border-[#eeeeee] hover:bg-[#eeeeee] active:scale-[0.98]"
                   }`}
                 >
                   {t("pricing.order")}

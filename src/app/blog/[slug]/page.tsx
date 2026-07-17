@@ -5,8 +5,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { type Article, fetchPublishedArticleBySlug } from "@/lib/supabase/articles";
 
-// Lightweight sanitizer for blog article HTML (defense-in-depth)
-// Strips only script tags and event handlers — preserves formatting
 function sanitizeArticleContent(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -63,11 +61,7 @@ function injectMetaTags(article: Article) {
     description: metaDesc,
     image: ogImage,
     author: { "@type": "Person", name: article.author },
-    publisher: {
-      "@type": "Organization",
-      name: siteName,
-      url: "https://pagodastudio.my.id",
-    },
+    publisher: { "@type": "Organization", name: siteName, url: "https://pagodastudio.my.id" },
     datePublished: article.created_at,
     dateModified: article.updated_at || article.created_at,
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
@@ -118,19 +112,16 @@ export default function ArticlePage() {
 
   if (notFound) {
     return (
-      <main className="min-h-screen bg-[#08080f] flex items-center justify-center px-4">
+      <main className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Artikel Tidak Ditemukan</h1>
-          <p className="text-gray-400 mb-6">Artikel yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#a78bfa]/20 text-[#a78bfa] font-semibold rounded-xl border border-[#a78bfa]/30 hover:bg-[#a78bfa]/30 transition-all"
-          >
+          <h1 className="heading-md mb-2">Artikel Tidak Ditemukan</h1>
+          <p className="text-[#666666] mb-6">Artikel yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
+          <Link href="/blog" className="btn-primary">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -143,24 +134,21 @@ export default function ArticlePage() {
 
   if (!article) {
     return (
-      <main className="min-h-screen bg-[#08080f] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#a78bfa] border-t-transparent rounded-full animate-spin" />
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin" />
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#111827]">
+    <main className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-[#08080f]/80 backdrop-blur-xl border-b border-white/5">
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#eeeeee]">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-extrabold text-white">
-            PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
+          <Link href="/" className="text-xl font-bold text-[#111111]">
+            PAGODA<span className="text-[#2563eb]"> STUDIO</span>
           </Link>
-          <Link
-            href="/blog"
-            className="text-sm text-gray-400 hover:text-[#a78bfa] transition-colors flex items-center gap-1.5"
-          >
+          <Link href="/blog" className="text-sm text-[#666666] hover:text-[#2563eb] transition-colors flex items-center gap-1.5">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -170,149 +158,135 @@ export default function ArticlePage() {
       </nav>
 
       <article className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-        <div className="bg-[#0d0d1a] border border-white/10 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/30">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-300 mb-6">
-          <Link href="/" className="hover:text-[#a78bfa] transition-colors">Beranda</Link>
-          <span>/</span>
-          <Link href="/blog" className="hover:text-[#a78bfa] transition-colors">Blog</Link>
-          <span>/</span>
-          <span className="text-gray-300 truncate max-w-[200px]">{article.title}</span>
-        </nav>
+        <div className="bg-white border border-[#eeeeee] rounded-2xl p-6 sm:p-8 lg:p-10">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-sm text-[#666666] mb-6">
+            <Link href="/" className="hover:text-[#2563eb] transition-colors">Beranda</Link>
+            <span>/</span>
+            <Link href="/blog" className="hover:text-[#2563eb] transition-colors">Blog</Link>
+            <span>/</span>
+            <span className="text-[#999999] truncate max-w-[200px]">{article.title}</span>
+          </nav>
 
-        {/* Cover Image */}
-        {article.cover_image && (
-          <div className="aspect-[21/9] rounded-2xl overflow-hidden mb-8 border border-white/10 shadow-lg shadow-black/30">
-            <img
-              src={article.cover_image}
-              alt={article.title}
-              className="w-full h-full object-cover"
+          {/* Cover Image */}
+          {article.cover_image && (
+            <div className="aspect-[21/9] rounded-2xl overflow-hidden mb-8 border border-[#eeeeee]">
+              <img src={article.cover_image} alt={article.title} className="w-full h-full object-cover" />
+            </div>
+          )}
+
+          {/* Meta */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-[#666666] mb-4">
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              {article.author}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {article.created_at
+                ? new Date(article.created_at).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : ""}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 className="heading-lg mb-6">
+            {article.title}
+          </h1>
+
+          {/* Excerpt */}
+          {article.excerpt && (
+            <p className="text-lg text-[#666666] mb-8 leading-relaxed border-l-4 border-[#2563eb]/50 pl-4">
+              {article.excerpt}
+            </p>
+          )}
+
+          {/* Divider */}
+          <div className="h-px bg-[#eeeeee] mb-8" />
+
+          {/* Content */}
+          {article.content ? (
+            <div
+              className="prose prose-lg max-w-none
+                prose-headings:text-[#111111] prose-headings:font-bold
+                prose-p:text-[#444444] prose-p:leading-relaxed
+                prose-a:text-[#2563eb] prose-a:no-underline hover:prose-a:underline
+                prose-img:rounded-xl prose-img:border prose-img:border-[#eeeeee]
+                prose-blockquote:border-[#2563eb] prose-blockquote:text-[#555555] prose-blockquote:bg-[#f8f8f8] prose-blockquote:rounded-r-xl
+                prose-strong:text-[#111111]
+                prose-code:text-[#2563eb] prose-code:bg-[#f8f8f8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                prose-pre:bg-[#f8f8f8] prose-pre:border prose-pre:border-[#eeeeee]
+                prose-li:text-[#444444]
+                prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-[#111111]
+                prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-[#111111]"
+              dangerouslySetInnerHTML={{ __html: sanitizeArticleContent(article.content) }}
             />
+          ) : (
+            <p className="text-[#999999] italic">Tidak ada konten artikel.</p>
+          )}
+
+          {/* Divider */}
+          <div className="h-px bg-[#eeeeee] my-12" />
+
+          {/* Share */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-[#666666]">Bagikan artikel:</span>
+            <div className="flex items-center gap-2">
+              {[
+                { label: "WhatsApp", url: `https://wa.me/?text=${encodeURIComponent(`${article.title} - ${currentUrl}`)}` },
+                { label: "Facebook", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}` },
+                { label: "Twitter", url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}` },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-[#f8f8f8] border border-[#eeeeee] rounded-lg text-xs text-[#666666] hover:text-[#2563eb] hover:border-[#2563eb]/30 transition-all"
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </div>
-        )}
-
-        {/* Meta */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-4">
-          <span className="flex items-center gap-1.5">
-            <svg className="w-4 h-4 text-[#a78bfa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            {article.author}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <svg className="w-4 h-4 text-[#2dd4bf]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            {article.created_at
-              ? new Date(article.created_at).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })
-              : ""}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-          {article.title}
-        </h1>
-
-        {/* Excerpt */}
-        {article.excerpt && (
-          <p className="text-lg text-white/90 mb-8 leading-relaxed border-l-4 border-[#a78bfa]/50 pl-4">
-            {article.excerpt}
-          </p>
-        )}
-
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-[#a78bfa]/50 via-white/10 to-transparent mb-8" />
-
-        {/* Content - Rendered HTML */}
-        {article.content ? (
-          <div
-className="prose prose-invert prose-lg max-w-none
-              prose-headings:text-white prose-headings:font-bold
-              prose-p:text-white prose-p:leading-relaxed prose-p:font-normal
-              prose-a:text-[#a78bfa] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-              prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg
-              prose-blockquote:border-[#a78bfa] prose-blockquote:text-white/90 prose-blockquote:bg-[#a78bfa]/10 prose-blockquote:rounded-r-xl
-              prose-strong:text-white
-              prose-code:text-[#a78bfa] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-              prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10
-              prose-li:text-white
-              prose-ul:my-4 prose-ol:my-4
-              prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
-              prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-              [&_p]:!text-white
-              [&_li]:!text-white
-              [&_h2]:!text-white [&_h3]:!text-white
-              [&_strong]:!text-white"
-            dangerouslySetInnerHTML={{ __html: sanitizeArticleContent(article.content) }}
-          />
-        ) : (
-          <p className="text-gray-400 italic">Tidak ada konten artikel.</p>
-        )}
-
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
-
-        {/* Share */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-300">Bagikan artikel:</span>
-          <div className="flex items-center gap-2">
-            {[
-              { label: "WhatsApp", url: `https://wa.me/?text=${encodeURIComponent(`${article.title} - ${currentUrl}`)}` },
-              { label: "Facebook", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}` },
-              { label: "Twitter", url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}` },
-            ].map((s) => (
-              <a
-                key={s.label}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-xs text-gray-300 hover:text-white hover:border-[#a78bfa]/30 hover:bg-[#a78bfa]/20 transition-all"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-        </div>
         </div>
       </article>
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12" />
-          <h2 className="text-2xl font-bold text-white mb-8 text-center">
-            Artikel <span className="gradient-text">Terkait</span>
+          <div className="h-px bg-[#eeeeee] mb-12" />
+          <h2 className="heading-md mb-8 text-center">
+            Artikel <span className="text-[#2563eb]">Terkait</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedArticles.map((related) => (
               <Link
                 key={related.id}
                 href={`/blog/${related.slug}`}
-                className="group bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-[#a78bfa]/30 transition-all duration-300 hover:-translate-y-1"
+                className="group card-premium overflow-hidden"
               >
                 {related.cover_image ? (
                   <div className="aspect-[16/9] overflow-hidden">
-                    <img
-                      src={related.cover_image}
-                      alt={related.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
+                    <img src={related.cover_image} alt={related.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                   </div>
                 ) : (
-                  <div className="aspect-[16/9] bg-[#0d0d1a] flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="aspect-[16/9] bg-[#f8f8f8] flex items-center justify-center">
+                    <svg className="w-8 h-8 text-[#cccccc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                     </svg>
                   </div>
                 )}
-                <div className="p-4">
-                  <p className="text-xs text-gray-400 mb-1">
+                <div className="p-4 bg-white">
+                  <p className="text-xs text-[#999999] mb-1">
                     {related.created_at
                       ? new Date(related.created_at).toLocaleDateString("id-ID", {
                           day: "numeric",
@@ -321,7 +295,7 @@ className="prose prose-invert prose-lg max-w-none
                         })
                       : ""}
                   </p>
-                  <h3 className="text-white font-semibold line-clamp-2 group-hover:text-[#a78bfa] transition-colors">
+                  <h3 className="text-[#111111] font-semibold line-clamp-2 group-hover:text-[#2563eb] transition-colors">
                     {related.title}
                   </h3>
                 </div>
@@ -332,25 +306,23 @@ className="prose prose-invert prose-lg max-w-none
       )}
 
       {/* Footer */}
-      <footer className="bg-[#0d0d1a] border-t border-[#a78bfa]/20 py-12 sm:py-16">
+      <footer className="border-t border-[#eeeeee] py-12 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <Link href="/" className="inline-block mb-4">
-            <span className="text-2xl font-extrabold text-white">
-              PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
-            </span>
+            <span className="text-2xl font-bold text-[#111111]">PAGODA<span className="text-[#2563eb]"> STUDIO</span></span>
           </Link>
-          <p className="text-sm text-gray-400 max-w-md mx-auto mb-6">
-            Jasa pembuatan website profesional untuk bisnis, UMKM, dan perusahaan. Solusi digital lengkap untuk kebutuhan online Anda.
+          <p className="text-sm text-[#666666] max-w-md mx-auto mb-6">
+            Jasa pembuatan website profesional untuk bisnis, UMKM, dan perusahaan.
           </p>
           <div className="flex items-center justify-center gap-6 mb-8">
-            <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Beranda</Link>
-            <Link href="/tentang" className="text-sm text-gray-400 hover:text-white transition-colors">Tentang</Link>
-            <Link href="/layanan" className="text-sm text-gray-400 hover:text-white transition-colors">Layanan</Link>
-            <Link href="/kontak" className="text-sm text-gray-400 hover:text-white transition-colors">Kontak</Link>
+            <Link href="/" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Beranda</Link>
+            <Link href="/tentang" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Tentang</Link>
+            <Link href="/layanan" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Layanan</Link>
+            <Link href="/kontak" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Kontak</Link>
           </div>
-          <div className="pt-6 border-t border-white/5">
-            <p className="text-sm text-gray-500">
-              &copy; {new Date().getFullYear()} <span className="text-gray-300 font-semibold">PAGODA STUDIO</span>. All rights reserved.
+          <div className="pt-6 border-t border-[#eeeeee]">
+            <p className="text-sm text-[#999999]">
+              &copy; {new Date().getFullYear()} <span className="text-[#111111] font-semibold">PAGODA STUDIO</span>. All rights reserved.
             </p>
           </div>
         </div>

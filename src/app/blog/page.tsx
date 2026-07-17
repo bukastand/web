@@ -16,18 +16,16 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#111827]">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/80 backdrop-blur-xl border-b border-white/5">
+    <main className="min-h-screen bg-white">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#eeeeee]">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-xl font-extrabold tracking-tight text-white">
-              PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
-            </span>
+          <Link href="/" className="text-xl font-bold text-[#111111]">
+            PAGODA<span className="text-[#2563eb]"> STUDIO</span>
           </Link>
           <Link
             href="/"
-            className="text-sm text-gray-400 hover:text-[#a78bfa] transition-colors flex items-center gap-1.5"
+            className="text-sm text-[#666666] hover:text-[#2563eb] transition-colors flex items-center gap-1.5"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -35,18 +33,16 @@ export default function BlogPage() {
             Kembali ke Beranda
           </Link>
         </div>
-      </header>
+      </nav>
 
       <div className="max-w-6xl mx-auto px-4 pt-28 pb-16">
         {/* Page Title */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-[#a78bfa]/10 text-[#a78bfa] text-sm font-medium rounded-full border border-[#a78bfa]/20 mb-4">
-            Blog & Artikel
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Artikel & <span className="gradient-text">Informasi</span>
+          <span className="badge-premium mb-4 inline-flex">Blog & Artikel</span>
+          <h1 className="heading-lg mb-4">
+            Artikel & <span className="text-[#2563eb]">Informasi</span>
           </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <p className="text-[#666666] text-lg max-w-2xl mx-auto">
             Temukan tips, trik, dan wawasan terbaru seputar website, digital marketing, dan teknologi.
           </p>
         </div>
@@ -55,12 +51,12 @@ export default function BlogPage() {
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden animate-pulse">
-                <div className="aspect-[16/9] bg-white/5" />
-                <div className="p-5 space-y-3">
-                  <div className="w-3/4 h-4 bg-white/5 rounded" />
-                  <div className="w-full h-3 bg-white/5 rounded" />
-                  <div className="w-1/2 h-3 bg-white/5 rounded" />
+              <div key={i} className="border border-[#eeeeee] rounded-2xl overflow-hidden animate-pulse">
+                <div className="aspect-[16/9] bg-[#f0f0f0]" />
+                <div className="p-5 space-y-3 bg-white">
+                  <div className="w-3/4 h-4 bg-[#f0f0f0] rounded" />
+                  <div className="w-full h-3 bg-[#f0f0f0] rounded" />
+                  <div className="w-1/2 h-3 bg-[#f0f0f0] rounded" />
                 </div>
               </div>
             ))}
@@ -70,13 +66,13 @@ export default function BlogPage() {
         {/* Empty */}
         {!loading && articles.length === 0 && (
           <div className="text-center py-20">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center">
-              <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center">
+              <svg className="w-10 h-10 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-white mb-2">Belum Ada Artikel</h2>
-            <p className="text-gray-500">Belum ada artikel yang dipublikasikan. Kunjungi lagi nanti.</p>
+            <h2 className="heading-md mb-2">Belum Ada Artikel</h2>
+            <p className="text-[#666666]">Belum ada artikel yang dipublikasikan. Kunjungi lagi nanti.</p>
           </div>
         )}
 
@@ -88,9 +84,9 @@ export default function BlogPage() {
                 <Link
                   key={article.id}
                   href={`/blog/${article.slug}`}
-                  className="group bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-[#a78bfa]/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1"
+                  className="group card-premium overflow-hidden"
                 >
-                  <div className="aspect-[16/9] overflow-hidden bg-[#0d0d1a]">
+                  <div className="aspect-[16/9] overflow-hidden bg-[#f8f8f8]">
                     {article.cover_image ? (
                       <img
                         src={article.cover_image}
@@ -100,14 +96,14 @@ export default function BlogPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-12 h-12 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-12 h-12 text-[#cccccc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                         </svg>
                       </div>
                     )}
                   </div>
-                  <div className="p-5">
-                    <p className="text-xs text-gray-400 mb-2">
+                  <div className="p-5 bg-white">
+                    <p className="text-xs text-[#999999] mb-2">
                       {article.created_at
                         ? new Date(article.created_at).toLocaleDateString("id-ID", {
                             day: "numeric",
@@ -116,13 +112,13 @@ export default function BlogPage() {
                           })
                         : ""}
                     </p>
-                    <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-[#a78bfa] transition-colors line-clamp-2">
+                    <h2 className="text-lg font-semibold text-[#111111] mb-2 group-hover:text-[#2563eb] transition-colors line-clamp-2">
                       {article.title}
                     </h2>
                     {article.excerpt && (
-                      <p className="text-sm text-gray-300 line-clamp-2 mb-4 leading-relaxed">{article.excerpt}</p>
+                      <p className="text-sm text-[#666666] line-clamp-2 mb-4 leading-relaxed">{article.excerpt}</p>
                     )}
-                    <div className="flex items-center gap-1.5 text-[#a78bfa] text-sm font-medium group/link">
+                    <div className="flex items-center gap-1.5 text-[#2563eb] text-sm font-medium group/link">
                       <span>Baca Selengkapnya</span>
                       <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -133,8 +129,7 @@ export default function BlogPage() {
               ))}
             </div>
 
-            {/* Article count */}
-            <p className="text-center text-sm text-gray-400 mt-10">
+            <p className="text-center text-sm text-[#999999] mt-10">
               Menampilkan {articles.length} artikel
             </p>
           </>
@@ -142,25 +137,25 @@ export default function BlogPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#0d0d1a] border-t border-[#a78bfa]/20 py-12 sm:py-16">
+      <footer className="border-t border-[#eeeeee] py-12 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <Link href="/" className="inline-block mb-4">
-            <span className="text-2xl font-extrabold text-white">
-              PAGODA<span className="text-[#a78bfa]"> STUDIO</span>
+            <span className="text-2xl font-bold text-[#111111]">
+              PAGODA<span className="text-[#2563eb]"> STUDIO</span>
             </span>
           </Link>
-          <p className="text-sm text-gray-400 max-w-md mx-auto mb-6">
+          <p className="text-sm text-[#666666] max-w-md mx-auto mb-6">
             Jasa pembuatan website profesional untuk bisnis, UMKM, dan perusahaan. Solusi digital lengkap untuk kebutuhan online Anda.
           </p>
           <div className="flex items-center justify-center gap-6 mb-8">
-            <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Beranda</Link>
-            <Link href="/tentang" className="text-sm text-gray-400 hover:text-white transition-colors">Tentang</Link>
-            <Link href="/layanan" className="text-sm text-gray-400 hover:text-white transition-colors">Layanan</Link>
-            <Link href="/kontak" className="text-sm text-gray-400 hover:text-white transition-colors">Kontak</Link>
+            <Link href="/" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Beranda</Link>
+            <Link href="/tentang" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Tentang</Link>
+            <Link href="/layanan" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Layanan</Link>
+            <Link href="/kontak" className="text-sm text-[#666666] hover:text-[#111111] transition-colors">Kontak</Link>
           </div>
-          <div className="pt-6 border-t border-white/5">
-            <p className="text-sm text-gray-500">
-              &copy; {new Date().getFullYear()} <span className="text-gray-300 font-semibold">PAGODA STUDIO</span>. All rights reserved.
+          <div className="pt-6 border-t border-[#eeeeee]">
+            <p className="text-sm text-[#999999]">
+              &copy; {new Date().getFullYear()} <span className="text-[#111111] font-semibold">PAGODA STUDIO</span>. All rights reserved.
             </p>
           </div>
         </div>
