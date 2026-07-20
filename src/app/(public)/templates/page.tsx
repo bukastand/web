@@ -28,8 +28,8 @@ function TemplateCard({
     <div
       className={`group relative w-full rounded-2xl border-2 overflow-hidden transition-all duration-300 ${
         isSelected
-          ? "border-[#22c55e] ring-2 ring-[#22c55e]/30 shadow-lg shadow-[#22c55e]/10"
-          : "border-white/10 hover:border-[#22c55e]/40 hover:shadow-lg hover:shadow-[#22c55e]/5"
+          ? "border-[#2563eb] ring-2 ring-[#2563eb]/20 shadow-lg shadow-[#2563eb]/10"
+          : "border-[#eeeeee] hover:border-[#2563eb]/40 hover:shadow-lg hover:shadow-[#2563eb]/5"
       }`}
     >
       {/* Preview thumbnail - click to preview */}
@@ -56,9 +56,9 @@ function TemplateCard({
       </button>
 
       {/* Info */}
-      <div className="p-5 bg-[#1e293b]">
+      <div className="p-5 bg-white border-t border-[#eeeeee]">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-white font-semibold text-base leading-tight">{template.title}</h3>
+          <h3 className="text-[#111111] font-semibold text-base leading-tight">{template.title}</h3>
           {isSelected && (
             <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center ml-2">
               <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,11 +67,11 @@ function TemplateCard({
             </span>
           )}
         </div>
-        <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{template.description}</p>
-        <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-500">
+        <p className="text-xs text-[#666666] line-clamp-2 leading-relaxed">{template.description}</p>
+        <div className="mt-3 flex items-center gap-2 text-[10px] text-[#999999]">
           <button
             onClick={() => onPreview(template)}
-            className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 hover:bg-[#22c55e]/20 hover:text-[#22c55e] transition-colors"
+            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#f8f8f8] hover:bg-[#2563eb]/10 hover:text-[#2563eb] transition-colors"
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -79,7 +79,7 @@ function TemplateCard({
             </svg>
             Preview
           </button>
-          <span className="text-gray-700">|</span>
+          <span className="text-[#dddddd]">|</span>
           <span className="flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -100,8 +100,8 @@ function TemplateCard({
           onClick={(e) => { e.stopPropagation(); onSelect(template); }}
           className={`mt-3 w-full py-2 text-xs font-semibold rounded-lg transition-all ${
             isSelected
-              ? "bg-[#22c55e] text-white"
-              : "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/30 hover:bg-[#22c55e]/20"
+              ? "bg-[#2563eb] text-white"
+              : "bg-[#2563eb]/10 text-[#2563eb] border border-[#2563eb]/30 hover:bg-[#2563eb]/20"
           }`}
         >
           {isSelected ? "✓ Dipilih" : "Pilih Template"}
@@ -201,7 +201,7 @@ export default function TemplatesPage() {
       {/* Header */}
       <div className="container mx-auto px-6 mb-10">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#22c55e]/30 bg-[#22c55e]/10 text-[#4ade80] text-sm font-medium mb-4 backdrop-blur-sm">
+          <div className="badge-premium mb-4 inline-flex">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
@@ -227,8 +227,8 @@ export default function TemplatesPage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 text-sm font-medium rounded-xl transition-all ${
                 activeCategory === cat
-                  ? "bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30"
-                  : "text-gray-400 border border-white/10 hover:border-white/30 hover:text-white"
+                  ? "bg-[#111111] text-white"
+                  : "bg-white text-[#666666] border border-[#eeeeee] hover:bg-[#f8f8f8] hover:text-[#111111]"
               }`}
             >
               {cat}
@@ -254,32 +254,32 @@ export default function TemplatesPage() {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-500">Tidak ada template di kategori ini</p>
+            <p className="text-[#999999]">Tidak ada template di kategori ini</p>
           </div>
         )}
       </div>
 
       {/* Selected template - floating action bar */}
       {selectedTemplate && !showConfirm && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#1e293b]/95 backdrop-blur-lg border-t border-white/10">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#eeeeee]">
           <div className="container mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <span className="text-2xl">{selectedTemplate.icon}</span>
               <div>
-                <p className="text-white font-semibold text-sm">{selectedTemplate.title}</p>
-                <p className="text-xs text-gray-500">{selectedTemplate.sections.length} section • {selectedTemplate.category}</p>
+                <p className="text-[#111111] font-semibold text-sm">{selectedTemplate.title}</p>
+                <p className="text-xs text-[#999999]">{selectedTemplate.sections.length} section • {selectedTemplate.category}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSelectedTemplate(null)}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={() => setShowConfirm(true)}
-                className="px-6 py-2.5 bg-[#22c55e] text-white font-semibold rounded-xl hover:bg-[#16a34a] transition-all flex items-center gap-2"
+                className="px-6 py-2.5 bg-[#111111] text-white font-semibold rounded-xl hover:bg-black transition-all flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -294,12 +294,12 @@ export default function TemplatesPage() {
       {/* Confirmation modal */}
       {showConfirm && selectedTemplate && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
-          <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-8 w-full max-w-md">
+          <div className="bg-white border border-[#eeeeee] rounded-2xl p-8 w-full max-w-md shadow-xl">
             <div className="text-center mb-6">
               <span className="text-4xl mb-3 block">{selectedTemplate.icon}</span>
-              <h3 className="text-xl font-bold text-white mb-2">Gunakan Template</h3>
-              <p className="text-sm text-gray-400">
-                Template <span className="text-white font-semibold">{selectedTemplate.title}</span> akan digunakan sebagai dasar halaman baru Anda. Anda bisa mengeditnya nanti di builder.
+              <h3 className="text-xl font-bold text-[#111111] mb-2">Gunakan Template</h3>
+              <p className="text-sm text-[#666666]">
+                Template <span className="text-[#111111] font-semibold">{selectedTemplate.title}</span> akan digunakan sebagai dasar halaman baru Anda. Anda bisa mengeditnya nanti di builder.
               </p>
             </div>
 
@@ -312,7 +312,7 @@ export default function TemplatesPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 py-3 border border-white/10 text-gray-300 rounded-xl hover:bg-white/5 transition-colors"
+                className="flex-1 py-3 border border-[#eeeeee] text-[#666666] rounded-xl hover:bg-[#f8f8f8] transition-colors"
                 disabled={loading}
               >
                 Batal
@@ -320,7 +320,7 @@ export default function TemplatesPage() {
               <button
                 onClick={handleUseTemplate}
                 disabled={loading}
-                className="flex-1 py-3 bg-[#22c55e] text-white font-semibold rounded-xl hover:bg-[#16a34a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-[#111111] text-white font-semibold rounded-xl hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -343,21 +343,21 @@ export default function TemplatesPage() {
       {previewTemplate && (
         <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
           {/* Preview toolbar */}
-          <div className="flex items-center justify-between px-6 py-3 bg-[#0f172a] border-b border-white/10 flex-shrink-0">
+          <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-[#eeeeee] flex-shrink-0">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setPreviewTemplate(null)}
-                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+                className="p-1.5 text-[#666666] hover:text-[#111111] rounded-lg hover:bg-[#f8f8f8] transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <div className="w-px h-5 bg-white/10" />
+              <div className="w-px h-5 bg-[#eeeeee]" />
               <span className="text-2xl">{previewTemplate.icon}</span>
               <div>
-                <p className="text-white font-semibold text-sm">{previewTemplate.title}</p>
-                <p className="text-[10px] text-gray-500">{previewTemplate.sections.length} section • Scroll untuk lihat semua</p>
+                <p className="text-[#111111] font-semibold text-sm">{previewTemplate.title}</p>
+                <p className="text-[10px] text-[#999999]">{previewTemplate.sections.length} section • Scroll untuk lihat semua</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -368,7 +368,7 @@ export default function TemplatesPage() {
                   setSelectedTemplate(t);
                   setShowConfirm(true);
                 }}
-                className="px-5 py-2 bg-[#22c55e] text-white text-sm font-semibold rounded-lg hover:bg-[#16a34a] transition-all flex items-center gap-2"
+                className="px-5 py-2 bg-[#111111] text-white text-sm font-semibold rounded-lg hover:bg-black transition-all flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
