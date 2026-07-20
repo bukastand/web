@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { type Article, fetchPublishedArticles } from "@/lib/supabase/articles";
 
 export default function ArticlesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,6 +14,25 @@ export default function ArticlesSection() {
       setArticles(data.slice(0, 6));
       setLoading(false);
     });
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const cards = entry.target.querySelectorAll(".reveal");
+            cards.forEach((card, i) => {
+              setTimeout(() => card.classList.add("visible"), i * 80);
+            });
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
 
   if (loading) {
@@ -43,7 +63,7 @@ export default function ArticlesSection() {
   if (articles.length === 0) return null;
 
   return (
-    <section className="section-padding bg-[#f8f8f8]">
+    <section ref={sectionRef} className="section-padding bg-[#f8f8f8]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12 reveal">
           <span className="badge-premium mb-4 inline-flex">Blog & Artikel</span>
