@@ -57,7 +57,7 @@ const galleryTemplates: Template[] = [
     id: "landing-pro",
     title: "Landing Page Pro",
     slug: "landing-pro",
-    description: "Landing page profesional dengan hero, fitur, testimonial, pricing, CTA, dan footer.",
+    description: "Landing page profesional dengan hero, fitur, testimonial, paket, CTA, dan footer.",
     category: "Bisnis",
     icon: "🚀",
     previewColor: "from-blue-600 to-indigo-700",
@@ -65,27 +65,27 @@ const galleryTemplates: Template[] = [
       // Navbar section — minimal padding
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#ffffff",
         containerWidth: "full",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "navbar", content: { logo: "PAGODA STUDIO", links: [{ label: "Fitur", href: "#features" }, { label: "Testimonial", href: "#testimonials" }, { label: "Harga", href: "#pricing" }, { label: "Kontak", href: "#contact" }], ctaText: "Hubungi", ctaHref: "#" }, styles: {} },
+              { type: "navbar", content: { logo: "PAGODA STUDIO", links: [{ label: "Fitur", href: "#features" }, { label: "Testimonial", href: "#testimonials" }, { label: "Paket", href: "#pricing" }, { label: "Kontak", href: "#contact" }], ctaText: "Hubungi", ctaHref: "#" }, styles: {} },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "100px 0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#ffffff",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Bangun Website Impian Anda", level: "h1", align: "center" }, styles: { color: "#ffffff", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
-              { type: "text", content: { text: "Platform no-code terbaik untuk membuat landing page profesional. Tanpa coding, tanpa ribet." }, styles: { color: "#94a3b8", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } },
+              { type: "heading", content: { text: "Bangun Website Impian Anda", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
+              { type: "text", content: { text: "Platform no-code terbaik untuk membuat landing page profesional. Tanpa coding, tanpa ribet." }, styles: { color: "#666666", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } },
               { type: "button", content: { text: "Mulai Sekarang", href: "#", variant: "primary" }, styles: { padding: "16px 40px", fontSize: "16px" } },
             ],
           },
@@ -93,28 +93,28 @@ const galleryTemplates: Template[] = [
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Fitur Unggulan", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } },
-              { type: "text", content: { text: "Mengapa ribuan bisnis memilih kami" }, styles: { color: "#64748b", textAlign: "center", margin: "0 0 40px" } },
-              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "🚀", title: "Super Cepat", desc: "Optimasi performa terbaik" }, { icon: "🎨", title: "Desain Modern", desc: "Tampilan menarik & profesional" }, { icon: "📱", title: "Responsive", desc: "Tampil sempurna di semua device" }], columns: 3 }, styles: {} },
+              { type: "heading", content: { text: "Fitur Unggulan", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } },
+              { type: "text", content: { text: "Mengapa ribuan bisnis memilih kami" }, styles: { color: "#666666", textAlign: "center", margin: "0 0 40px" } },
+              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "rocket", title: "Super Cepat", desc: "Optimasi performa terbaik" }, { icon: "lightbulb", title: "Desain Modern", desc: "Tampilan menarik & profesional" }, { icon: "globe", title: "Responsive", desc: "Tampil sempurna di semua device" }], columns: 3 }, styles: {} },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#f8fafc",
+        backgroundColor: "#ffffff",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Apa Kata Klien", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "heading", content: { text: "Apa Kata Klien", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
               { type: "testimonial", content: { title: "", items: [{ name: "Ahmad Fauzi", role: "CEO Startup", text: "Pelayanan luar biasa! Website kami jadi jauh lebih profesional.", rating: 5, avatar: "AF" }, { name: "Siti Rahma", role: "Owner Bisnis", text: "Proses cepat dan hasilnya memuaskan.", rating: 5, avatar: "SR" }] }, styles: {} },
             ],
           },
@@ -122,14 +122,14 @@ const galleryTemplates: Template[] = [
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Paket Harga", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
-              { type: "pricing", content: { title: "", subtitle: "", items: [{ name: "Basic", price: "Rp 99K", desc: "Pemula", features: ["1 Halaman", "Hosting Gratis"], highlighted: false, cta: "Pilih" }, { name: "Pro", price: "Rp 299K", desc: "Berkembang", features: ["5 Halaman", "Custom Domain", "Priority Support"], highlighted: true, cta: "Pilih" }, { name: "Premium", price: "Rp 599K", desc: "Lengkap", features: ["Unlimited", "SEO", "24/7 Support"], highlighted: false, cta: "Pilih" }] }, styles: {} },
+              { type: "heading", content: { text: "Paket Layanan", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "pricing", content: { title: "", subtitle: "", items: [{ name: "Basic", price: "", desc: "Pemula", features: ["1 Halaman", "Hosting Gratis"], highlighted: false, cta: "Konsultasi" }, { name: "Pro", price: "", desc: "Berkembang", features: ["5 Halaman", "Custom Domain", "Priority Support"], highlighted: true, cta: "Konsultasi" }, { name: "Premium", price: "", desc: "Lengkap", features: ["Unlimited", "SEO", "24/7 Support"], highlighted: false, cta: "Konsultasi" }] }, styles: {} },
             ],
           },
         ],
@@ -142,14 +142,14 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "cta", content: { title: "Siap Memulai?", subtitle: "Konsultasi gratis sekarang", buttonText: "Hubungi Kami", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#22c55e" } },
+              { type: "cta", content: { title: "Siap Memulai?", subtitle: "Konsultasi gratis sekarang", buttonText: "Hubungi Kami", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#2563eb" } },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "full",
         columns: [
           {
@@ -179,8 +179,8 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Tentang Perusahaan Kami", level: "h1", align: "center" }, styles: { color: "#0f172a", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
-              { type: "text", content: { text: "Kami adalah perusahaan yang berdedikasi memberikan solusi terbaik untuk bisnis Anda." }, styles: { color: "#64748b", textAlign: "center", margin: "0 0 40px", maxWidth: "600px" } },
+              { type: "heading", content: { text: "Tentang Perusahaan Kami", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
+              { type: "text", content: { text: "Kami adalah perusahaan yang berdedikasi memberikan solusi terbaik untuk bisnis Anda." }, styles: { color: "#666666", textAlign: "center", margin: "0 0 40px", maxWidth: "600px" } },
               { type: "button", content: { text: "Hubungi Kami", href: "#", variant: "primary" }, styles: {} },
             ],
           },
@@ -188,27 +188,27 @@ const galleryTemplates: Template[] = [
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#f8fafc",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 6,
             elements: [
-              { type: "image", content: { src: "https://placehold.co/600x400/1e293b/22c55e?text=Tim+Kami", alt: "Tim Kami" }, styles: { borderRadius: "16px", maxWidth: "100%" } },
+              { type: "image", content: { src: "https://placehold.co/600x400/111111/2563eb?text=Tim+Kami", alt: "Tim Kami" }, styles: { borderRadius: "16px", maxWidth: "100%" } },
             ],
           },
           {
             width: 6,
             elements: [
-              { type: "heading", content: { text: "Visi & Misi", level: "h2", align: "left" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "left", margin: "0 0 12px" } },
-              { type: "text", content: { text: "Kami percaya bahwa setiap bisnis berhak memiliki website berkualitas tinggi untuk mengembangkan brand dan bisnis mereka di era digital." }, styles: { color: "#64748b", textAlign: "left", margin: "0 0 20px" } },
+              { type: "heading", content: { text: "Visi & Misi", level: "h2", align: "left" }, styles: { color: "#111111", fontWeight: "800", textAlign: "left", margin: "0 0 12px" } },
+              { type: "text", content: { text: "Kami percaya bahwa setiap bisnis berhak memiliki website berkualitas tinggi untuk mengembangkan brand dan bisnis mereka di era digital." }, styles: { color: "#666666", textAlign: "left", margin: "0 0 20px" } },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "60px 0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "boxed",
         columns: [
           {
@@ -228,14 +228,14 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "cta", content: { title: "Tertarik Bekerja Sama?", subtitle: "Hubungi kami untuk diskusi lebih lanjut", buttonText: "Konsultasi Gratis", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#22c55e" } },
+              { type: "cta", content: { title: "Tertarik Bekerja Sama?", subtitle: "Hubungi kami untuk diskusi lebih lanjut", buttonText: "Konsultasi Gratis", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#2563eb" } },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "full",
         columns: [
           {
@@ -259,14 +259,14 @@ const galleryTemplates: Template[] = [
     sections: [
       sectionFromData({
         padding: "120px 0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Karya Kreatif Kami", level: "h1", align: "center" }, styles: { color: "#ffffff", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
-              { type: "text", content: { text: "Kami menciptakan pengalaman visual yang memukau untuk brand Anda" }, styles: { color: "#94a3b8", textAlign: "center" } },
+              { type: "heading", content: { text: "Karya Kreatif Kami", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
+              { type: "text", content: { text: "Kami menciptakan pengalaman visual yang memukau untuk brand Anda" }, styles: { color: "#666666", textAlign: "center" } },
             ],
           },
         ],
@@ -279,21 +279,21 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Layanan Kami", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
-              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "🎨", title: "Desain Grafis", desc: "Logo, branding, materi marketing" }, { icon: "📸", title: "Fotografi", desc: "Produk, event, portrait" }, { icon: "🎬", title: "Video", desc: "Company profile, iklan, konten sosial media" }], columns: 3 }, styles: {} },
+              { type: "heading", content: { text: "Layanan Kami", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "star", title: "Desain Grafis", desc: "Logo, branding, materi marketing" }, { icon: "lightbulb", title: "Fotografi", desc: "Produk, event, portrait" }, { icon: "cog", title: "Video", desc: "Company profile, iklan, konten sosial media" }], columns: 3 }, styles: {} },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#f8fafc",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Testimonial Klien", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "heading", content: { text: "Testimonial Klien", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
               { type: "testimonial", content: { title: "", items: [{ name: "Rina", role: "Owner Brand", text: "Hasil kerja tim ini luar biasa! Sangat merekomendasikan.", rating: 5, avatar: "RN" }, { name: "Doni", role: "Startup Founder", text: "Kreatif, profesional, dan tepat waktu. Kerja sama yang menyenangkan!", rating: 5, avatar: "DN" }] }, styles: {} },
             ],
           },
@@ -307,14 +307,14 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "cta", content: { title: "Mulai Proyek Anda", subtitle: "Konsultasi gratis untuk ide kreatif Anda", buttonText: "Diskusi Sekarang", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#22c55e" } },
+              { type: "cta", content: { title: "Mulai Proyek Anda", subtitle: "Konsultasi gratis untuk ide kreatif Anda", buttonText: "Diskusi Sekarang", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#2563eb" } },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "full",
         columns: [
           {
@@ -338,15 +338,29 @@ const galleryTemplates: Template[] = [
     sections: [
       sectionFromData({
         padding: "100px 0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#ffffff",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Revolusi Cara Kerja Tim Anda", level: "h1", align: "center" }, styles: { color: "#ffffff", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
-              { type: "text", content: { text: "Platform all-in-one untuk produktivitas tim. Mulai gratis, upgrade kapan saja." }, styles: { color: "#94a3b8", textAlign: "center", margin: "0 0 32px", maxWidth: "500px" } },
+              { type: "heading", content: { text: "Revolusi Cara Kerja Tim Anda", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
+              { type: "text", content: { text: "Platform all-in-one untuk produktivitas tim. Mulai gratis, upgrade kapan saja." }, styles: { color: "#666666", textAlign: "center", margin: "0 0 32px", maxWidth: "500px" } },
               { type: "button", content: { text: "Coba Gratis", href: "#", variant: "primary" }, styles: { padding: "16px 40px", fontSize: "16px" } },
+            ],
+          },
+        ],
+      }),
+      sectionFromData({
+        padding: "80px 0",
+        backgroundColor: "#f8f8f8",
+        containerWidth: "boxed",
+        columns: [
+          {
+            width: 12,
+            elements: [
+              { type: "heading", content: { text: "Fitur Lengkap untuk Tim Hebat", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "rocket", title: "Cepat & Efisien", desc: "Optimasi workflow tim" }, { icon: "shield", title: "Keamanan Data", desc: "Enkripsi end-to-end" }, { icon: "globe", title: "Cloud Sync", desc: "Akses di mana saja" }], columns: 3 }, styles: {} },
             ],
           },
         ],
@@ -359,29 +373,15 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Fitur Lengkap untuk Tim Hebat", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
-              { type: "features", content: { title: "", subtitle: "", items: [{ icon: "⚡", title: "Cepat & Efisien", desc: "Optimasi workflow tim" }, { icon: "🔒", title: "Keamanan Data", desc: "Enkripsi end-to-end" }, { icon: "☁️", title: "Cloud Sync", desc: "Akses di mana saja" }], columns: 3 }, styles: {} },
-            ],
-          },
-        ],
-      }),
-      sectionFromData({
-        padding: "80px 0",
-        backgroundColor: "#f8fafc",
-        containerWidth: "boxed",
-        columns: [
-          {
-            width: 12,
-            elements: [
-              { type: "heading", content: { text: "Paket & Harga", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
-              { type: "pricing", content: { title: "", subtitle: "", items: [{ name: "Starter", price: "Gratis", desc: "Untuk pemula", features: ["3 Anggota Tim", "1GB Storage", "Support Email"], highlighted: false, cta: "Daftar" }, { name: "Pro", price: "$29/bln", desc: "Tim berkembang", features: ["10 Anggota", "10GB Storage", "Priority Support", "API Access"], highlighted: true, cta: "Mulai Trial" }, { name: "Enterprise", price: "$99/bln", desc: "Skala besar", features: ["Unlimited", "100GB", "24/7 Support", "Kustom Integrasi"], highlighted: false, cta: "Hubungi Sales" }] }, styles: {} },
+              { type: "heading", content: { text: "Paket & Harga", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } },
+              { type: "pricing", content: { title: "", subtitle: "", items: [{ name: "Starter", price: "", desc: "Untuk pemula", features: ["3 Anggota Tim", "1GB Storage", "Support Email"], highlighted: false, cta: "Konsultasi" }, { name: "Pro", price: "", desc: "Tim berkembang", features: ["10 Anggota", "10GB Storage", "Priority Support", "API Access"], highlighted: true, cta: "Konsultasi" }, { name: "Enterprise", price: "", desc: "Skala besar", features: ["Unlimited", "100GB", "24/7 Support", "Kustom Integrasi"], highlighted: false, cta: "Konsultasi" }] }, styles: {} },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "full",
         columns: [
           {
@@ -405,14 +405,14 @@ const galleryTemplates: Template[] = [
     sections: [
       sectionFromData({
         padding: "100px 0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#ffffff",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "heading", content: { text: "Tech Conference 2025", level: "h1", align: "center" }, styles: { color: "#ffffff", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
-              { type: "text", content: { text: "Bergabung dengan 1000+ peserta untuk belajar dari para ahli industri." }, styles: { color: "#94a3b8", textAlign: "center", margin: "0 0 32px" } },
+              { type: "heading", content: { text: "Tech Conference 2025", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } },
+              { type: "text", content: { text: "Bergabung dengan 1000+ peserta untuk belajar dari para ahli industri." }, styles: { color: "#666666", textAlign: "center", margin: "0 0 32px" } },
               { type: "button", content: { text: "Daftar Sekarang", href: "#", variant: "primary" }, styles: { padding: "16px 40px", fontSize: "16px" } },
             ],
           },
@@ -420,13 +420,13 @@ const galleryTemplates: Template[] = [
       }),
       sectionFromData({
         padding: "80px 0",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f8f8f8",
         containerWidth: "boxed",
         columns: [
           {
             width: 12,
             elements: [
-              { type: "features", content: { title: "Mengapa Hadir?", subtitle: "Manfaat mengikuti event ini", items: [{ icon: "🎤", title: "Pembicara Ahli", desc: "Belajar dari top industri" }, { icon: "🤝", title: "Networking", desc: "Bertemu profesional lain" }, { icon: "🏆", title: "Sertifikat", desc: "Dapatkan sertifikat partisipasi" }], columns: 3 }, styles: {} },
+              { type: "features", content: { title: "Mengapa Hadir?", subtitle: "Manfaat mengikuti event ini", items: [{ icon: "users", title: "Pembicara Ahli", desc: "Belajar dari top industri" }, { icon: "users", title: "Networking", desc: "Bertemu profesional lain" }, { icon: "check", title: "Sertifikat", desc: "Dapatkan sertifikat partisipasi" }], columns: 3 }, styles: {} },
             ],
           },
         ],
@@ -439,14 +439,14 @@ const galleryTemplates: Template[] = [
           {
             width: 12,
             elements: [
-              { type: "cta", content: { title: "Jangan Sampai Ketinggalan!", subtitle: "Early bird discount tersedia", buttonText: "Daftar Sekarang", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#3b82f6" } },
+              { type: "cta", content: { title: "Jangan Sampai Ketinggalan!", subtitle: "Early bird discount tersedia", buttonText: "Daftar Sekarang", buttonHref: "#" }, styles: { padding: "60px 0", backgroundColor: "#2563eb" } },
             ],
           },
         ],
       }),
       sectionFromData({
         padding: "0",
-        backgroundColor: "#0f172a",
+        backgroundColor: "#111111",
         containerWidth: "full",
         columns: [
           {
@@ -487,12 +487,12 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
     heading: {
       type: "heading",
       content: { text: "Judul Heading", level: "h2", align: "center" },
-      styles: { color: "#1e293b", fontWeight: "800", textAlign: "center", margin: "0 0 16px" },
+      styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 16px" },
     },
     "heading-left": {
       type: "heading",
       content: { text: "Judul Heading", level: "h2", align: "left" },
-      styles: { color: "#1e293b", fontWeight: "800", textAlign: "left", margin: "0 0 16px" },
+      styles: { color: "#111111", fontWeight: "800", textAlign: "left", margin: "0 0 16px" },
     },
     "heading-white": {
       type: "heading",
@@ -502,22 +502,22 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
     text: {
       type: "text",
       content: { text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      styles: { color: "#64748b", fontSize: "1rem", textAlign: "center", margin: "0 0 0" },
+      styles: { color: "#666666", fontSize: "1rem", textAlign: "center", margin: "0 0 0" },
     },
     "text-white": {
       type: "text",
       content: { text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      styles: { color: "#ffffffcc", fontSize: "1rem", textAlign: "center", margin: "0 0 0" },
+      styles: { color: "#666666", fontSize: "1rem", textAlign: "center", margin: "0 0 0" },
     },
     "text-left": {
       type: "text",
       content: { text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      styles: { color: "#64748b", fontSize: "1rem", textAlign: "left", margin: "0 0 0" },
+      styles: { color: "#666666", fontSize: "1rem", textAlign: "left", margin: "0 0 0" },
     },
     button: {
       type: "button",
       content: { text: "Mulai Sekarang", href: "#", variant: "primary", target: "_self" },
-      styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "14px 32px", fontSize: "16px", fontWeight: "600" },
+      styles: { backgroundColor: "#2563eb", color: "#ffffff", borderRadius: "12px", padding: "14px 32px", fontSize: "16px", fontWeight: "600" },
     },
     image: {
       type: "image",
@@ -530,9 +530,9 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
         title: "Fitur Unggulan",
         subtitle: "Mengapa memilih kami?",
         items: [
-          { icon: "🚀", title: "Cepat & Handal", desc: "Optimasi performa terbaik untuk website Anda" },
-          { icon: "🎨", title: "Desain Modern", desc: "Tampilan menarik yang disesuaikan dengan brand" },
-          { icon: "📱", title: "Responsive", desc: "Tampil sempurna di semua perangkat" },
+          { icon: "rocket", title: "Cepat & Handal", desc: "Optimasi performa terbaik untuk website Anda" },
+          { icon: "lightbulb", title: "Desain Modern", desc: "Tampilan menarik yang disesuaikan dengan brand" },
+          { icon: "globe", title: "Responsive", desc: "Tampil sempurna di semua perangkat" },
         ],
         columns: 3,
       },
@@ -555,12 +555,12 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
         title: "Paket Harga",
         subtitle: "Pilih paket yang sesuai kebutuhan Anda",
         items: [
-          { name: "Basic", price: "Rp 99K", desc: "Cocok untuk pemula", features: ["1 Halaman", "Hosting Gratis", "Support Email"], highlighted: false, cta: "Pilih Paket" },
-          { name: "Pro", price: "Rp 299K", desc: "Untuk bisnis berkembang", features: ["5 Halaman", "Custom Domain", "Priority Support"], highlighted: true, cta: "Pilih Paket" },
-          { name: "Premium", price: "Rp 599K", desc: "Solusi lengkap", features: ["Unlimited Halaman", "SEO Optimasi", "24/7 Support"], highlighted: false, cta: "Pilih Paket" },
+          { name: "Basic", price: "", desc: "Cocok untuk pemula", features: ["1 Halaman", "Hosting Gratis", "Support Email"], highlighted: false, cta: "Konsultasi" },
+          { name: "Pro", price: "", desc: "Untuk bisnis berkembang", features: ["5 Halaman", "Custom Domain", "Priority Support"], highlighted: true, cta: "Konsultasi" },
+          { name: "Premium", price: "", desc: "Solusi lengkap", features: ["Unlimited Halaman", "SEO Optimasi", "24/7 Support"], highlighted: false, cta: "Konsultasi" },
         ],
       },
-      styles: { padding: "0", backgroundColor: "#f8fafc" },
+      styles: { padding: "0", backgroundColor: "#f8f8f8" },
     },
     stats: {
       type: "stats",
@@ -573,7 +573,7 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
         ],
         columns: 4,
       },
-      styles: { padding: "60px 0", backgroundColor: "#0f172a" },
+      styles: { padding: "60px 0", backgroundColor: "#111111" },
     },
     contact: {
       type: "contactForm",
@@ -603,7 +603,7 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
         buttonText: "Konsultasi Gratis",
         buttonHref: "#",
       },
-      styles: { padding: "60px 0", backgroundColor: "#22c55e" },
+      styles: { padding: "60px 0", backgroundColor: "#2563eb" },
     },
     footer: {
       type: "footer",
@@ -625,7 +625,7 @@ function el(type: string, overrides?: Partial<BuilderElement>): BuilderElement {
         ],
         copyright: `© ${new Date().getFullYear()} PAGODA STUDIO. All rights reserved.`,
       },
-      styles: { backgroundColor: "#0f172a", padding: "60px 0 30px" },
+      styles: { backgroundColor: "#111111", padding: "60px 0 30px" },
     },
   };
 
@@ -663,13 +663,13 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 12,
           elements: [
-            el("heading", { content: { text: "Bangun Website Impian Anda", level: "h1", align: "center" }, styles: { color: "#ffffff", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } }),
-            el("text", { content: { text: "Kami hadir untuk membantu Anda membuat website profesional dengan mudah dan cepat. Tanpa coding, tanpa ribet." }, styles: { color: "#ffffffcc", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } }),
-            el("button", { styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "16px 40px", fontSize: "16px", fontWeight: "700" } }),
+            el("heading", { content: { text: "Bangun Website Impian Anda", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } }),
+            el("text", { content: { text: "Kami hadir untuk membantu Anda membuat website profesional dengan mudah dan cepat. Tanpa coding, tanpa ribet." }, styles: { color: "#666666", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } }),
+            el("button", { styles: { backgroundColor: "#2563eb", color: "#ffffff", borderRadius: "12px", padding: "16px 40px", fontSize: "16px", fontWeight: "700" } }),
           ],
         },
       ],
-      styles: { padding: "120px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      styles: { padding: "120px 0", backgroundColor: "#ffffff", containerWidth: "boxed" },
     }),
   },
   {
@@ -685,9 +685,9 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 12,
           elements: [
-            el("heading", { content: { text: "Tumbuhkan Bisnis Anda", level: "h1", align: "center" }, styles: { color: "#0f172a", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } }),
-            el("text", { content: { text: "Solusi website profesional untuk mengembangkan brand dan bisnis Anda di era digital." }, styles: { color: "#64748b", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } }),
-            el("button", { styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "16px 40px", fontSize: "16px", fontWeight: "700" } }),
+            el("heading", { content: { text: "Tumbuhkan Bisnis Anda", level: "h1", align: "center" }, styles: { color: "#111111", fontWeight: "900", textAlign: "center", margin: "0 0 16px" } }),
+            el("text", { content: { text: "Solusi website profesional untuk mengembangkan brand dan bisnis Anda di era digital." }, styles: { color: "#666666", fontSize: "1.125rem", textAlign: "center", margin: "0 0 32px", maxWidth: "600px" } }),
+            el("button", { styles: { backgroundColor: "#2563eb", color: "#ffffff", borderRadius: "12px", padding: "16px 40px", fontSize: "16px", fontWeight: "700" } }),
           ],
         },
       ],
@@ -707,17 +707,17 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 6,
           elements: [
-            el("image", { content: { src: "https://placehold.co/600x500/1e293b/22c55e?text=Tentang+Kami", alt: "Tentang Kami" }, styles: { borderRadius: "16px", maxWidth: "100%" } }),
+            el("image", { content: { src: "https://placehold.co/600x500/111111/2563eb?text=Tentang+Kami", alt: "Tentang Kami" }, styles: { borderRadius: "16px", maxWidth: "100%" } }),
           ],
         },
         {
           id: genId("col"),
           width: 6,
           elements: [
-            el("heading-left", { content: { text: "Tentang Kami", level: "h2", align: "left" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "left", margin: "0 0 12px" } }),
-            el("text-left", { content: { text: "Kami adalah tim profesional yang berdedikasi untuk membantu bisnis Anda tumbuh melalui solusi digital inovatif. Dengan pengalaman lebih dari 5 tahun, kami telah membantu 50+ klien mencapai kesuksesan online." }, styles: { color: "#64748b", fontSize: "1rem", textAlign: "left", margin: "0 0 20px" } }),
-            el("text-left", { content: { text: "Visi kami adalah memberdayakan setiap bisnis dengan website berkualitas tinggi yang mudah dikelola." }, styles: { color: "#64748b", fontSize: "1rem", textAlign: "left", margin: "0 0 24px" } }),
-            el("button", { content: { text: "Pelajari Lebih", href: "#" }, styles: { backgroundColor: "#22c55e", color: "#ffffff", borderRadius: "12px", padding: "12px 28px", fontSize: "15px", fontWeight: "600" } }),
+            el("heading-left", { content: { text: "Tentang Kami", level: "h2", align: "left" }, styles: { color: "#111111", fontWeight: "800", textAlign: "left", margin: "0 0 12px" } }),
+            el("text-left", { content: { text: "Kami adalah tim profesional yang berdedikasi untuk membantu bisnis Anda tumbuh melalui solusi digital inovatif. Dengan pengalaman lebih dari 5 tahun, kami telah membantu 50+ klien mencapai kesuksesan online." }, styles: { color: "#666666", fontSize: "1rem", textAlign: "left", margin: "0 0 20px" } }),
+            el("text-left", { content: { text: "Visi kami adalah memberdayakan setiap bisnis dengan website berkualitas tinggi yang mudah dikelola." }, styles: { color: "#666666", fontSize: "1rem", textAlign: "left", margin: "0 0 24px" } }),
+            el("button", { content: { text: "Pelajari Lebih", href: "#" }, styles: { backgroundColor: "#2563eb", color: "#ffffff", borderRadius: "12px", padding: "12px 28px", fontSize: "15px", fontWeight: "600" } }),
           ],
         },
       ],
@@ -737,13 +737,13 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 12,
           elements: [
-            el("heading", { content: { text: "Layanan Kami", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } }),
-            el("text", { content: { text: "Solusi lengkap untuk kebutuhan digital Anda" }, styles: { color: "#64748b", fontSize: "1rem", textAlign: "center", margin: "0 0 40px" } }),
+            el("heading", { content: { text: "Layanan Kami", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } }),
+            el("text", { content: { text: "Solusi lengkap untuk kebutuhan digital Anda" }, styles: { color: "#666666", fontSize: "1rem", textAlign: "center", margin: "0 0 40px" } }),
             el("features", {}),
           ],
         },
       ],
-      styles: { padding: "80px 0", backgroundColor: "#f8fafc", containerWidth: "boxed" },
+      styles: { padding: "80px 0", backgroundColor: "#f8f8f8", containerWidth: "boxed" },
     }),
   },
   {
@@ -764,7 +764,7 @@ const builderTemplates: BuilderTemplateDef[] = [
           ],
         },
       ],
-      styles: { padding: "60px 0", backgroundColor: "#0f172a", containerWidth: "boxed" },
+      styles: { padding: "60px 0", backgroundColor: "#111111", containerWidth: "boxed" },
     }),
   },
   {
@@ -780,7 +780,7 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 12,
           elements: [
-            el("heading", { content: { text: "Apa Kata Klien", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } }),
+            el("heading", { content: { text: "Apa Kata Klien", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 40px" } }),
             el("testimonial", {}),
           ],
         },
@@ -801,13 +801,13 @@ const builderTemplates: BuilderTemplateDef[] = [
           id: genId("col"),
           width: 12,
           elements: [
-            el("heading", { content: { text: "Paket Harga", level: "h2", align: "center" }, styles: { color: "#0f172a", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } }),
-            el("text", { content: { text: "Pilih paket yang paling sesuai dengan kebutuhan Anda" }, styles: { color: "#64748b", fontSize: "1rem", textAlign: "center", margin: "0 0 40px" } }),
+            el("heading", { content: { text: "Paket Harga", level: "h2", align: "center" }, styles: { color: "#111111", fontWeight: "800", textAlign: "center", margin: "0 0 8px" } }),
+            el("text", { content: { text: "Pilih paket yang paling sesuai dengan kebutuhan Anda" }, styles: { color: "#666666", fontSize: "1rem", textAlign: "center", margin: "0 0 40px" } }),
             el("pricing", {}),
           ],
         },
       ],
-      styles: { padding: "80px 0", backgroundColor: "#f8fafc", containerWidth: "boxed" },
+      styles: { padding: "80px 0", backgroundColor: "#f8f8f8", containerWidth: "boxed" },
     }),
   },
   {

@@ -190,9 +190,9 @@ function ButtonElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
   const styles = applyStyles(el);
   const base = "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300";
   const variants: Record<string, string> = {
-    primary: "bg-[#22c55e] text-white hover:bg-[#16a34a]",
-    secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/20",
-    outline: "border-2 border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-white",
+    primary: "bg-[#2563eb] text-white hover:bg-[#1d4ed8]",
+    secondary: "bg-white text-[#111111] hover:bg-[#f8f8f8] border border-[#eeeeee]",
+    outline: "border-2 border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white",
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
@@ -287,7 +287,7 @@ export const FEATURE_ICONS: Record<string, { icon: React.ReactNode; label: strin
 
 function IconElement({ el }: ElementComponentProps) {
   const size = el.content.size || "48px";
-  const color = el.content.color || "#22c55e";
+  const color = el.content.color || "#2563eb";
   const icons: Record<string, React.ReactNode> = Object.fromEntries(
     Object.entries(FEATURE_ICONS).map(([k, v]) => [k, v.icon])
   );
@@ -319,13 +319,13 @@ function FeaturesElement({ el }: ElementComponentProps) {
   const cols = el.content.columns || 3;
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
-    color: el.content.titleColor || "#ffffff",
+    color: el.content.titleColor || "#111111",
     fontSize: el.content.titleSize || "24px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
   };
   const subtitleStyle: React.CSSProperties = {
-    color: el.content.subtitleColor || "#94a3b8",
+    color: el.content.subtitleColor || "#666666",
     fontSize: el.content.subtitleSize || "16px",
     fontFamily: el.styles.fontFamily || undefined,
   };
@@ -341,19 +341,19 @@ function FeaturesElement({ el }: ElementComponentProps) {
               key={i}
               className="p-4 md:p-6 rounded-2xl text-center"
               style={{
-                backgroundColor: el.content.itemBg || "rgba(255,255,255,0.05)",
-                borderColor: el.content.itemBorder || "rgba(255,255,255,0.1)",
+                backgroundColor: el.content.itemBg || "#ffffff",
+                borderColor: el.content.itemBorder || "#eeeeee",
                 borderWidth: "1px",
                 borderStyle: "solid",
               }}
             >
-              <div className="flex items-center justify-center mb-3" style={{ color: el.styles.color || "#22c55e" }}>
+              <div className="flex items-center justify-center mb-3" style={{ color: el.styles.color || "#2563eb" }}>
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                   {iconDef ? iconDef.icon : FEATURE_ICONS.star.icon}
                 </svg>
               </div>
-              <h3 className="text-lg font-bold mb-2" style={{ color: el.content.itemTitleColor || "#ffffff" }}>{item.title}</h3>
-              <p className="text-sm" style={{ color: el.content.itemTextColor || "#94a3b8" }}>{item.desc}</p>
+              <h3 className="text-lg font-bold mb-2" style={{ color: el.content.itemTitleColor || "#111111" }}>{item.title}</h3>
+              <p className="text-sm" style={{ color: el.content.itemTextColor || "#666666" }}>{item.desc}</p>
             </div>
           );
         })}
@@ -366,13 +366,13 @@ function PricingElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
-    color: el.content.titleColor || "#ffffff",
+    color: el.content.titleColor || "#111111",
     fontSize: el.content.titleSize || "30px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
   };
   const subtitleStyle: React.CSSProperties = {
-    color: el.content.subtitleColor || "#94a3b8",
+    color: el.content.subtitleColor || "#666666",
     fontSize: el.content.subtitleSize || "16px",
     fontFamily: el.styles.fontFamily || undefined,
   };
@@ -392,27 +392,27 @@ function PricingElement({ el }: ElementComponentProps) {
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#22c55e] scale-[1.01] md:scale-105 z-10" : ""}`}
+            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#2563eb] scale-[1.01] md:scale-105 z-10" : ""}`}
             style={{
               padding: item.highlighted ? "1.25rem" : "1rem",
-              border: item.highlighted ? "none" : `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
-              backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(34,197,94,0.08)") : (el.content.cardBg || "rgba(255,255,255,0.05)"),
+              border: item.highlighted ? "none" : `1px solid ${el.content.cardBorder || "#eeeeee"}`,
+              backgroundColor: item.highlighted ? (el.content.highlightBg || el.content.cardBg || "rgba(37,99,235,0.06)") : (el.content.cardBg || "#ffffff"),
             }}
           >
-            <h3 className="text-lg md:text-xl font-bold mb-1.5" style={{ color: el.content.cardNameColor || "#ffffff" }}>{item.name}</h3>
-            <p className="text-xs md:text-sm mb-3" style={{ color: el.content.cardDescColor || "#94a3b8" }}>{item.desc}</p>
-            <p className="text-xl md:text-2xl lg:text-3xl font-extrabold mb-4 md:mb-6" style={{ color: el.content.cardPriceColor || "#ffffff" }}>{item.price}</p>
+            <h3 className="text-lg md:text-xl font-bold mb-1.5" style={{ color: el.content.cardNameColor || "#111111" }}>{item.name}</h3>
+            <p className="text-xs md:text-sm mb-3" style={{ color: el.content.cardDescColor || "#666666" }}>{item.desc}</p>
+            {item.price && <p className="text-xl md:text-2xl lg:text-3xl font-extrabold mb-4 md:mb-6" style={{ color: el.content.cardPriceColor || "#111111" }}>{item.price}</p>}
             <ul className="space-y-1.5 md:space-y-2 mb-4 md:mb-8 flex-1">
               {(item.features || []).map((f: string, fi: number) => (
-                <li key={fi} className="flex items-start gap-2 text-xs md:text-sm" style={{ color: el.content.cardFeatureColor || "#d1d5db" }}>
-                  <svg className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#22c55e" }}>
+                <li key={fi} className="flex items-start gap-2 text-xs md:text-sm" style={{ color: el.content.cardFeatureColor || "#555555" }}>
+                  <svg className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: el.content.cardFeatureColor || "#2563eb" }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                   <span className="leading-relaxed">{f}</span>
                 </li>
               ))}
             </ul>
-            <button className="w-full py-2 md:py-3 rounded-xl font-semibold text-xs md:text-sm hover:opacity-90 transition-all mt-auto" style={{ backgroundColor: el.content.cardButtonBg || "#22c55e", color: el.content.cardButtonTextColor || "#ffffff" }}>{item.cta || "Pilih Paket"}</button>
+            <button className="w-full py-2 md:py-3 rounded-xl font-semibold text-xs md:text-sm hover:opacity-90 transition-all mt-auto" style={{ backgroundColor: el.content.cardButtonBg || "#2563eb", color: el.content.cardButtonTextColor || "#ffffff" }}>{item.cta || "Konsultasi"}</button>
           </div>
         ))}
       </div>
@@ -424,7 +424,7 @@ function TestimonialElement({ el }: ElementComponentProps) {
   const items = el.content.items || [];
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
-    color: el.content.titleColor || "#ffffff",
+    color: el.content.titleColor || "#111111",
     fontSize: el.content.titleSize || "30px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
@@ -438,8 +438,8 @@ function TestimonialElement({ el }: ElementComponentProps) {
             key={i}
             className="p-4 md:p-6 rounded-2xl"
             style={{
-              backgroundColor: el.content.cardBg || "rgba(255,255,255,0.05)",
-              border: `1px solid ${el.content.cardBorder || "rgba(255,255,255,0.1)"}`,
+              backgroundColor: el.content.cardBg || "#ffffff",
+              border: `1px solid ${el.content.cardBorder || "#eeeeee"}`,
             }}
           >
             <div className="flex gap-1 mb-3">
@@ -449,12 +449,12 @@ function TestimonialElement({ el }: ElementComponentProps) {
                 </svg>
               ))}
             </div>
-            <p className="mb-4" style={{ color: el.content.cardTextColor || "#d1d5db" }}>&ldquo;{item.text}&rdquo;</p>
+            <p className="mb-4" style={{ color: el.content.cardTextColor || "#555555" }}>&ldquo;{item.text}&rdquo;</p>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: el.content.avatarBg || "rgba(34,197,94,0.2)", color: el.content.avatarColor || "#22c55e" }}>{item.avatar || "U"}</div>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: el.content.avatarBg || "rgba(37,99,235,0.1)", color: el.content.avatarColor || "#2563eb" }}>{item.avatar || "U"}</div>
               <div>
-                <p style={{ color: el.content.authorNameColor || "#ffffff", fontSize: el.content.authorNameSize || "14px", fontWeight: el.content.authorNameWeight || "600" }}>{item.name}</p>
-                <p style={{ color: el.content.authorRoleColor || "#6b7280", fontSize: el.content.authorRoleSize || "12px" }}>{item.role}</p>
+                <p style={{ color: el.content.authorNameColor || "#111111", fontSize: el.content.authorNameSize || "14px", fontWeight: el.content.authorNameWeight || "600" }}>{item.name}</p>
+                <p style={{ color: el.content.authorRoleColor || "#666666", fontSize: el.content.authorRoleSize || "12px" }}>{item.role}</p>
               </div>
             </div>
           </div>
@@ -467,7 +467,7 @@ function TestimonialElement({ el }: ElementComponentProps) {
 function CTAElement({ el, editing, onEdit, onBlurEditing }: ElementComponentProps) {
   const elStyles = applyStyles(el);
   if (!elStyles.backgroundColor) {
-    elStyles.backgroundColor = "#22c55e";
+    elStyles.backgroundColor = "#2563eb";
   }
 
   const titleStyle: React.CSSProperties = {
@@ -563,7 +563,7 @@ function StatsElement({ el }: ElementComponentProps) {
     <div className="grid gap-4 md:gap-8" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 150px), 1fr))`, ...elStyles }}>
       {items.map((item: any, i: number) => (
         <div key={i} className="text-center">
-          <div className="font-extrabold mb-1" style={{ color: el.content.valueColor || "#22c55e", fontSize: el.content.valueSize || "36px", fontWeight: el.content.valueWeight || "800" }}>{item.value}</div>
+          <div className="font-extrabold mb-1" style={{ color: el.content.valueColor || "#2563eb", fontSize: el.content.valueSize || "36px", fontWeight: el.content.valueWeight || "800" }}>{item.value}</div>
           <div style={{ color: el.content.labelColor || "#94a3b8", fontSize: el.content.labelSize || "14px" }}>{item.label}</div>
         </div>
       ))}
@@ -628,20 +628,20 @@ function ContactFormElement({ el }: ElementComponentProps) {
 
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
-    color: el.content.titleColor || "#ffffff",
+    color: el.content.titleColor || "#111111",
     fontSize: el.content.titleSize || "30px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
   };
   const subtitleStyle: React.CSSProperties = {
-    color: el.content.subtitleColor || "#94a3b8",
+    color: el.content.subtitleColor || "#666666",
     fontSize: el.content.subtitleSize || "16px",
     fontFamily: el.styles.fontFamily || undefined,
   };
-  const inputBg = el.content.inputBg || "rgba(255,255,255,0.05)";
-  const inputBorder = el.content.inputBorder || "rgba(255,255,255,0.1)";
-  const inputText = el.content.inputText || "#ffffff";
-  const buttonBg = el.content.buttonBg || "#22c55e";
+  const inputBg = el.content.inputBg || "#ffffff";
+  const inputBorder = el.content.inputBorder || "#eeeeee";
+  const inputText = el.content.inputText || "#111111";
+  const buttonBg = el.content.buttonBg || "#2563eb";
   const buttonTextColor = el.content.buttonTextColor || "#ffffff";
   return (
     <div style={elStyles}>
@@ -664,7 +664,7 @@ function ContactFormElement({ el }: ElementComponentProps) {
 function MapsElement({ el }: ElementComponentProps) {
   const elStyles = applyStyles(el);
   const titleStyle: React.CSSProperties = {
-    color: el.content.titleColor || "#ffffff",
+    color: el.content.titleColor || "#111111",
     fontSize: el.content.titleSize || "30px",
     fontWeight: el.content.titleWeight || "700",
     fontFamily: el.styles.fontFamily || undefined,
@@ -749,7 +749,7 @@ function MapsElement({ el }: ElementComponentProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <p className="text-sm" style={{ color: el.content.addressColor || "#94a3b8" }}>{el.content.address || "Jakarta, Indonesia"}</p>
+              <p className="text-sm" style={{ color: el.content.addressColor || "#666666" }}>{el.content.address || "Jakarta, Indonesia"}</p>
               <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Masukkan link Google Maps</p>
             </div>
           </div>
@@ -790,23 +790,23 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
 
   // ── Per-component styles ──
   const logoStyle: React.CSSProperties = {
-    color: el.content.logoColor || "#ffffff",
+    color: el.content.logoColor || "#111111",
     fontWeight: el.content.logoFontWeight || "700",
     fontSize: el.content.logoFontSize || undefined,
     fontFamily: el.styles.fontFamily || undefined,
   };
 
   const menuStyle: React.CSSProperties = {
-    color: el.content.menuColor || "#94a3b8",
+    color: el.content.menuColor || "#666666",
     fontWeight: el.content.menuFontWeight || "500",
     fontSize: el.content.menuFontSize || "14px",
     fontFamily: el.styles.fontFamily || undefined,
   };
 
-  const menuHoverColor = el.content.menuHoverColor || "#22c55e";
+  const menuHoverColor = el.content.menuHoverColor || "#2563eb";
 
   const ctaStyle: React.CSSProperties = {
-    backgroundColor: el.content.ctaBgColor || "#22c55e",
+    backgroundColor: el.content.ctaBgColor || "#2563eb",
     color: el.content.ctaColor || "#ffffff",
     fontWeight: el.content.ctaFontWeight || "600",
     fontSize: el.content.ctaFontSize || "14px",
@@ -853,7 +853,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
               className="relative transition-colors duration-200"
               style={menuStyle}
               onMouseEnter={(e) => { e.currentTarget.style.color = menuHoverColor; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#94a3b8'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#666666'; }}
             >
               {link.label}
               <span
@@ -876,9 +876,9 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* Hamburger Button - Mobile */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="md:hidden p-2 rounded-lg hover:bg-[#f8f8f8] transition-colors"
           aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
-          style={{ color: el.content.menuColor || "#94a3b8" }}
+          style={{ color: el.content.menuColor || "#666666" }}
         >
           {menuOpen ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -893,7 +893,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
       </nav>
       {/* Mobile Menu Overlay - with z-index so it shows above other content */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/10 relative z-50 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#0f172a" }}>
+        <div className="md:hidden border-t border-[#eeeeee] relative z-50 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#ffffff" }}>
           <div className="px-6 py-4 space-y-3">
             {links.map((link: any, i: number) => (
               <a
@@ -903,7 +903,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
                 className="block py-2 transition-colors duration-200"
                 style={menuStyle}
                 onMouseEnter={(e) => { e.currentTarget.style.color = menuHoverColor; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#94a3b8'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = menuStyle.color || '#666666'; }}
               >
                 {link.label}
               </a>
@@ -960,8 +960,8 @@ function FooterElement({ el }: ElementComponentProps) {
     borderColor: el.content.socialIconBorder || "rgba(255,255,255,0.1)",
     color: el.content.socialIconColor || "#9ca3af",
   };
-  const socialHoverBorder = el.content.socialIconHoverBorder || "rgba(34,197,94,0.4)";
-  const socialHoverColor = el.content.socialIconHoverColor || "#22c55e";
+  const socialHoverBorder = el.content.socialIconHoverBorder || "rgba(37,99,235,0.4)";
+  const socialHoverColor = el.content.socialIconHoverColor || "#2563eb";
 
   const copyrightStyle: React.CSSProperties = {
     color: el.content.copyrightColor || "#4b5563",

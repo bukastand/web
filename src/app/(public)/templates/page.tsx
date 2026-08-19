@@ -13,6 +13,16 @@ import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 
 const categories = ["Semua", "Bisnis", "Kreatif", "Event", "Lainnya"];
 
+function Monogram({ title, className = "" }: { title: string; className?: string }) {
+  return (
+    <span
+      className={`flex-shrink-0 w-10 h-10 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-base font-bold text-[#2563eb] ${className}`}
+    >
+      {(title || "T").trim().charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
 function TemplateCard({
   template,
   onSelect,
@@ -37,19 +47,48 @@ function TemplateCard({
         onClick={() => onPreview(template)}
         className="w-full text-left"
       >
-        <div className={`h-48 bg-gradient-to-br ${template.previewColor} flex items-center justify-center relative overflow-hidden`}>
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" />
-          <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-white/10 rounded-full" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-            <span className="text-5xl mb-2">{template.icon}</span>
-            <span className="text-white/60 text-xs font-medium uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
-              {template.category}
-            </span>
+        <div className="h-48 bg-[#f8f8f8] relative overflow-hidden transition-colors group-hover:bg-white">
+          {/* Mini website wireframe */}
+          <div className="absolute inset-x-5 top-5 bottom-5 bg-white border border-[#eeeeee] rounded-xl shadow-sm overflow-hidden">
+            {/* Fake navbar */}
+            <div className="flex items-center gap-1.5 px-3 py-2.5 border-b border-[#eeeeee]">
+              <span className="w-2 h-2 rounded-full bg-[#2563eb]" />
+              <span className="w-10 h-1 rounded-full bg-[#dddddd]" />
+              <div className="ml-auto flex items-center gap-1.5">
+                <span className="w-6 h-1 rounded-full bg-[#dddddd]" />
+                <span className="w-6 h-1 rounded-full bg-[#dddddd]" />
+                <span className="w-8 h-2.5 rounded-full bg-[#2563eb]" />
+              </div>
+            </div>
+            {/* Fake hero */}
+            <div className="px-3 pt-3 pb-2.5 space-y-1.5">
+              <div className="h-1.5 w-3/4 rounded-full bg-[#eeeeee]" />
+              <div className="h-1.5 w-1/2 rounded-full bg-[#eeeeee]" />
+              <div className="h-1 w-1/3 rounded-full bg-[#f5f5f5]" />
+              <div className="flex gap-1.5 pt-1.5">
+                <span className="w-12 h-2.5 rounded-full bg-[#2563eb]" />
+                <span className="w-12 h-2.5 rounded-full border border-[#eeeeee]" />
+              </div>
+            </div>
+            {/* Fake feature cards */}
+            <div className="grid grid-cols-3 gap-1.5 px-3">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="h-9 rounded-md bg-[#f8f8f8] border border-[#f0f0f0]" />
+              ))}
+            </div>
           </div>
+          {/* Category pill */}
+          <span className="absolute top-3 left-3 text-[10px] font-medium text-[#666666] bg-white border border-[#eeeeee] px-2 py-0.5 rounded-full">
+            {template.category}
+          </span>
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="text-white font-semibold text-sm bg-white/20 backdrop-blur-md px-6 py-2 rounded-xl">
-              👁️ Preview
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="bg-[#111111] text-white font-semibold text-xs px-5 py-2 rounded-xl flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Preview
             </span>
           </div>
         </div>
@@ -60,7 +99,7 @@ function TemplateCard({
         <div className="flex items-start justify-between mb-2">
           <h3 className="text-[#111111] font-semibold text-base leading-tight">{template.title}</h3>
           {isSelected && (
-            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center ml-2">
+            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#2563eb] flex items-center justify-center ml-2">
               <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
@@ -87,7 +126,7 @@ function TemplateCard({
             {template.sections.length} section
           </span>
           {(template as any).isCommunity && (
-            <span className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-medium">
+            <span className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#2563eb]/10 text-[#2563eb] text-[9px] font-medium">
               <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
@@ -104,7 +143,16 @@ function TemplateCard({
               : "bg-[#2563eb]/10 text-[#2563eb] border border-[#2563eb]/30 hover:bg-[#2563eb]/20"
           }`}
         >
-          {isSelected ? "✓ Dipilih" : "Pilih Template"}
+          {isSelected ? (
+            <span className="inline-flex items-center justify-center gap-1.5">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+              Dipilih
+            </span>
+          ) : (
+            "Pilih Template"
+          )}
         </button>
       </div>
     </div>
@@ -264,7 +312,7 @@ export default function TemplatesPage() {
         <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#eeeeee]">
           <div className="container mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="text-2xl">{selectedTemplate.icon}</span>
+              <Monogram title={selectedTemplate.title} />
               <div>
                 <p className="text-[#111111] font-semibold text-sm">{selectedTemplate.title}</p>
                 <p className="text-xs text-[#999999]">{selectedTemplate.sections.length} section • {selectedTemplate.category}</p>
@@ -296,7 +344,9 @@ export default function TemplatesPage() {
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
           <div className="bg-white border border-[#eeeeee] rounded-2xl p-8 w-full max-w-md shadow-xl">
             <div className="text-center mb-6">
-              <span className="text-4xl mb-3 block">{selectedTemplate.icon}</span>
+              <div className="flex justify-center mb-4">
+                <Monogram title={selectedTemplate.title} className="w-14 h-14 text-xl" />
+              </div>
               <h3 className="text-xl font-bold text-[#111111] mb-2">Gunakan Template</h3>
               <p className="text-sm text-[#666666]">
                 Template <span className="text-[#111111] font-semibold">{selectedTemplate.title}</span> akan digunakan sebagai dasar halaman baru Anda. Anda bisa mengeditnya nanti di builder.
@@ -354,7 +404,7 @@ export default function TemplatesPage() {
                 </svg>
               </button>
               <div className="w-px h-5 bg-[#eeeeee]" />
-              <span className="text-2xl">{previewTemplate.icon}</span>
+              <Monogram title={previewTemplate.title} />
               <div>
                 <p className="text-[#111111] font-semibold text-sm">{previewTemplate.title}</p>
                 <p className="text-[10px] text-[#999999]">{previewTemplate.sections.length} section • Scroll untuk lihat semua</p>
