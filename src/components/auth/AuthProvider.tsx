@@ -60,17 +60,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        fetchProfile(session.user.id);
-        refreshCookies(session.user); // Refresh cookies on page load
-      } else {
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (session?.user) {
+          setUser(session.user);
+          fetchProfile(session.user.id);
+          refreshCookies(session.user); // Refresh cookies on page load
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        // Storage/auth failure (e.g. blocked localStorage on mobile) — treat as logged out
         setUser(null);
         setProfile(null);
-      }
-      setLoading(false);
-    });
+        setLoading(false);
+      });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
