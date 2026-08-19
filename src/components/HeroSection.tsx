@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
-import Logo from "./Logo";
 
 interface HeroData {
   badge_text: string;
@@ -96,25 +95,25 @@ export default function HeroSection() {
       <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-[#2563eb]/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           {/* Badge */}
-          <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f8f8] border border-[#eeeeee] text-[#666666] text-sm font-medium mb-8">
+          <div className="reveal inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#f8f8f8] border border-[#eeeeee] text-[#666666] text-sm font-medium mb-10">
             <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb]" />
             {t("hero.badge")}
           </div>
 
           {/* Main Title */}
-          <h1 className="reveal reveal-delay-1">
-            <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[#111111] leading-[0.95] mb-4">
+          <h1 className="reveal">
+            <span className="block text-[clamp(2.75rem,8vw,6.5rem)] font-bold tracking-[-0.04em] text-[#111111] leading-[0.95] mb-2">
               {t("hero.title1")}
             </span>
-            <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[#2563eb] leading-[0.95]">
+            <span className="block text-[clamp(2.75rem,8vw,6.5rem)] font-bold tracking-[-0.04em] text-[#2563eb] leading-[0.95]">
               {t("hero.title2")}
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="reveal reveal-delay-2 text-lg sm:text-xl text-[#666666] max-w-2xl mx-auto mt-8 mb-10 leading-relaxed">
+          <p className="reveal reveal-delay-2 text-lg sm:text-xl text-[#666666] max-w-3xl mx-auto mt-8 mb-12 leading-relaxed">
             {t("hero.subtitle")}
           </p>
 
@@ -143,26 +142,33 @@ export default function HeroSection() {
           </div>
 
           {/* Stats */}
-          <div className="reveal reveal-delay-4 mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-            {[
-              { value: "50+", label: t("hero.stat1") },
-              { value: "30+", label: t("hero.stat2") },
-              { value: "12", label: t("hero.stat3") },
-              { value: "24/7", label: t("hero.stat4") },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-[#111111] mb-1">
-                  {stat.value}
+          <div className="reveal reveal-delay-4 mt-24 max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4">
+              {[
+                { value: "50+", label: t("hero.stat1") },
+                { value: "30+", label: t("hero.stat2") },
+                { value: "12", label: t("hero.stat3") },
+                { value: "24/7", label: t("hero.stat4") },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  className={`relative py-4 px-2 ${
+                    i > 0 ? "md:border-l md:border-[#eeeeee]" : ""
+                  }`}
+                >
+                  <div className="text-3xl md:text-4xl font-bold text-[#111111] mb-1 tracking-tight">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-[#999999]">{stat.label}</div>
                 </div>
-                <div className="text-sm text-[#999999]">{stat.label}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in-up">
         <span className="text-[10px] text-[#cccccc] tracking-[0.2em] uppercase">Scroll</span>
         <svg className="w-4 h-4 text-[#cccccc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7" />

@@ -3,6 +3,12 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
+const initials = [
+  { chars: "JC", bg: "bg-[#dbeafe] text-[#1d4ed8]" },
+  { chars: "SW", bg: "bg-[#fce7f3] text-[#be185d]" },
+  { chars: "BS", bg: "bg-[#d1fae5] text-[#047857]" },
+];
+
 export default function TestimonialsSection() {
   const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,16 +46,12 @@ export default function TestimonialsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map((num, index) => (
-            <div key={index} className="reveal card-premium p-8 hover-lift">
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: 5 }).map((_, ri) => (
-                  <svg key={ri} className="w-4 h-4 text-[#2563eb]" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+            <div key={index} className="reveal card-premium p-8 hover-lift flex flex-col">
+              <svg className="w-8 h-8 text-[#2563eb]/20 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11 7H6a2 2 0 00-2 2v4a2 2 0 002 2h3v1a2 2 0 01-2 2H6v2h1a4 4 0 004-4V9a2 2 0 00-2-2zm10 0h-5a2 2 0 00-2 2v4a2 2 0 002 2h3v1a2 2 0 01-2 2h-1v2h1a4 4 0 004-4V9a2 2 0 00-2-2z" />
+              </svg>
 
-              <p className="text-[#666666] leading-relaxed mb-6 text-sm">
+              <p className="text-[#666666] leading-relaxed mb-6 text-sm flex-1">
                 &ldquo;{t(`testimonials.quote${num}`)}&rdquo;
               </p>
 
@@ -62,9 +64,9 @@ export default function TestimonialsSection() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-xs font-bold text-[#666666]">
-                  {["JC", "SW", "BS"][index]}
+              <div className="flex items-center gap-3 pt-5 border-t border-[#eeeeee]">
+                <div className={`w-10 h-10 rounded-full ${initials[index].bg} flex items-center justify-center text-xs font-bold`}>
+                  {initials[index].chars}
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-[#111111]">

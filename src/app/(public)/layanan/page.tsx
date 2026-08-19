@@ -1,78 +1,65 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
-import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { resolveServiceIcon } from "@/lib/service-icons";
 
 const services = [
   {
-    icon: "🎓",
     title: "University Website",
     desc: "Campus portal, academic information, student registration, and modern education systems.",
     features: ["Akademik Portal", "Registrasi Online", "Info Jurusan", "E-Learning"],
   },
   {
-    icon: "📚",
     title: "School Website",
     desc: "Modern school website with information, gallery, PPDB, and school news.",
     features: ["Profil Sekolah", "PPDB Online", "Galeri Kegiatan", "Berita & Artikel"],
   },
   {
-    icon: "🏢",
     title: "Company Profile",
     desc: "Professional appearance to enhance your business branding and credibility.",
     features: ["Brand Identity", "Tim & Portofolio", "Layanan Detail", "Inquiry Form"],
   },
   {
-    icon: "🏬",
     title: "Property Website",
     desc: "Property website for housing, apartments, real estate agents, and property listings.",
     features: ["List Properti", "Virtual Tour", "Booking Unit", "Agent Profile"],
   },
   {
-    icon: "✈️",
     title: "Travel Website",
     desc: "Travel and tour website with tour packages and online booking.",
     features: ["Paket Wisata", "Booking Online", "Destinasi Gallery", "Testimonial"],
   },
   {
-    icon: "🏥",
     title: "Clinic & Hospital",
     desc: "Healthcare information system, doctor schedules, and online patient services.",
     features: ["Jadwal Dokter", "Reservasi Online", "Rekam Medis", "Info Layanan"],
   },
   {
-    icon: "🛒",
     title: "Online Store",
     desc: "Modern e-commerce website to sell products online.",
     features: ["Katalog Produk", "Payment Gateway", "Manajemen Stok", "Dashboard Admin"],
   },
   {
-    icon: "🏨",
     title: "Hotel Website",
     desc: "Hotel and lodging website with online booking and reservation features.",
     features: ["Reservasi Kamar", "Menu Restoran", "Virtual Tour", "Fasilitas Hotel"],
   },
   {
-    icon: "🍽️",
     title: "Restaurant & Cafe",
     desc: "Digital menu website, table reservations, and cafe or restaurant promotions.",
     features: ["Menu Digital", "Reservasi Meja", "Promo & Event", "Lokasi & Jam"],
   },
   {
-    icon: "🏛️",
     title: "Government",
     desc: "Government agency information portal and digital public services.",
     features: ["Portal Informasi", "Layanan Publik", "Berita & Pengumuman", "Dokumen"],
   },
   {
-    icon: "📰",
     title: "News Portal",
     desc: "Online media and news portal with complete category and article system.",
     features: ["Multi Kategori", "Artikel & Tag", "Multimedia", "Trending Topics"],
   },
   {
-    icon: "💻",
     title: "Custom Web App",
     desc: "Dashboard systems, ERP, CRM, booking systems, and custom web-based applications.",
     features: ["Custom Fitur", "Dashboard Admin", "API Integration", "Scalable System"],
@@ -82,31 +69,26 @@ const services = [
 const packages = [
   {
     name: "Landing Page",
-    price: "Rp1,2 Juta",
     features: ["1 Halaman Profesional", "Mobile Responsive", "Tombol WhatsApp", "Copywriting Dasar", "Fast Loading", "SEO Dasar", "Free Domain 1 Tahun", "2x Revisi"],
     isPopular: false,
   },
   {
     name: "Starter UMKM",
-    price: "Rp2 Juta",
     features: ["1–5 Halaman", "Mobile Responsive", "Chat WhatsApp", "Google Maps", "SEO Dasar", "Free Domain 1 Tahun", "Free Hosting 1 Tahun", "2x Revisi"],
     isPopular: false,
   },
   {
     name: "Business Pro",
-    price: "Rp5 Juta",
     features: ["Semua Fitur Starter", "Semi Custom Design", "Optimasi SEO", "Blog / Artikel", "Speed Optimization", "Admin Training", "Backup Website", "4x Revisi"],
     isPopular: true,
   },
   {
     name: "Premium Custom",
-    price: "Mulai Rp10 Juta",
     features: ["UI/UX Full Custom", "Admin Dashboard", "Member Login", "Payment Gateway", "API Integration", "Advanced Security", "Priority Support", "3 Mo Maintenance"],
     isPopular: false,
   },
   {
     name: "Aplikasi Mobile",
-    price: "Mulai Rp15 Juta",
     features: ["Android & iOS App", "Modern UI/UX", "User Login", "Push Notification", "API Integration", "Admin Dashboard", "1 Mo Maintenance", "Full Source Code"],
     isPopular: false,
   },
@@ -122,8 +104,6 @@ const faqs = [
 ];
 
 export default function LayananPage() {
-  const { t } = useTranslation();
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -174,6 +154,7 @@ export default function LayananPage() {
       <section className="observe-section section-padding bg-[#f8f8f8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
+            <span className="badge-premium mb-4 inline-flex">Layanan</span>
             <h2 className="heading-lg mb-4">
               Semua <span className="text-[#2563eb]">Layanan</span>
             </h2>
@@ -184,8 +165,10 @@ export default function LayananPage() {
 
           <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {services.map((service, i) => (
-              <div key={i} className="card-premium p-5 hover-lift group">
-                <span className="text-3xl mb-3 block">{service.icon}</span>
+              <div key={i} className="card-premium p-6 hover-lift group">
+                <div className="w-11 h-11 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-4 transition-all duration-300">
+                  {resolveServiceIcon(service.title)}
+                </div>
                 <h4 className="text-base font-semibold text-[#111111] mb-2 group-hover:text-[#2563eb] transition-colors">
                   {service.title}
                 </h4>
@@ -205,24 +188,24 @@ export default function LayananPage() {
         </div>
       </section>
 
-      {/* ═══════════════ PRICING ═══════════════ */}
+      {/* ═══════════════ PACKAGES ═══════════════ */}
       <section id="paket" className="observe-section section-padding bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
-            <span className="badge-premium mb-4 inline-flex">Pricing</span>
+            <span className="badge-premium mb-4 inline-flex">Paket Layanan</span>
             <h2 className="heading-lg mb-4">
-              Paket <span className="text-[#2563eb]">Harga</span>
+              Paket <span className="text-[#2563eb]">Layanan</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
-              Harga transparan, tidak ada biaya tersembunyi. Pilih paket yang sesuai kebutuhan Anda.
+              Pilih paket sesuai kebutuhan Anda — konsultasikan untuk mendapatkan penawaran terbaik.
             </p>
           </div>
 
-          <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 items-start">
+          <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 items-stretch">
             {packages.map((pkg, i) => (
               <div
                 key={i}
-                className={`card-premium p-5 ${
+                className={`card-premium p-6 flex flex-col ${
                   pkg.isPopular ? "border-2 border-[#2563eb] relative" : ""
                 }`}
               >
@@ -232,13 +215,10 @@ export default function LayananPage() {
                   </div>
                 )}
 
-                <div className={pkg.isPopular ? "mt-4" : ""}>
-                  <h3 className="text-base font-semibold text-[#111111] mb-1">{pkg.name}</h3>
-                  <div className="text-xl font-bold text-[#2563eb] mb-4">
-                    {pkg.price}
-                  </div>
+                <div className={`flex flex-col h-full ${pkg.isPopular ? "mt-4" : ""}`}>
+                  <h3 className="text-base font-semibold text-[#111111] mb-5">{pkg.name}</h3>
 
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-2 mb-8 flex-1">
                     {pkg.features.map((f, fi) => (
                       <li key={fi} className="flex items-start gap-2 text-xs text-[#666666]">
                         <svg className="w-3.5 h-3.5 text-[#2563eb] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +239,7 @@ export default function LayananPage() {
                         : "bg-[#f8f8f8] text-[#111111] border border-[#eeeeee] hover:bg-[#eeeeee] active:scale-[0.98]"
                     }`}
                   >
-                    Pilih Paket
+                    Konsultasi Harga
                   </a>
                 </div>
               </div>

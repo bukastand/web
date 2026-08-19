@@ -34,10 +34,10 @@ const iconSvg: Record<string, React.ReactNode> = {
 };
 
 const defaultWhyUs: WhyUsItem[] = [
-  { icon: iconSvg.image || null, title: "Modern Design", desc: "Elegant and professional appearance to increase customer trust." },
-  { icon: iconSvg.smartphone || null, title: "Mobile Friendly", desc: "Websites display optimally on phones, tablets, and desktops." },
-  { icon: iconSvg.zap || null, title: "Fast Loading", desc: "Lightweight and fast-loading websites for a better user experience." },
-  { icon: iconSvg.settings || null, title: "Quick Support", desc: "We're ready to help with any issues or website updates." },
+  { icon: iconSvg.image, title: "Modern Design", desc: "Elegant and professional appearance to increase customer trust." },
+  { icon: iconSvg.smartphone, title: "Mobile Friendly", desc: "Websites display optimally on phones, tablets, and desktops." },
+  { icon: iconSvg.zap, title: "Fast Loading", desc: "Lightweight and fast-loading websites for a better user experience." },
+  { icon: iconSvg.settings, title: "Quick Support", desc: "We're ready to help with any issues or website updates." },
 ];
 
 export default function WhyUsSection() {
@@ -99,16 +99,17 @@ export default function WhyUsSection() {
           {reasons.map((reason, index) => (
             <div
               key={index}
-              className="reveal card-premium p-8 hover-lift group"
+              className="reveal card-premium p-8 hover-lift group relative overflow-hidden"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-5 transition-all duration-300">
+              <div className="absolute top-0 left-0 h-full w-1 bg-[#2563eb] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
+              <div className="w-[52px] h-[52px] rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-6 transition-all duration-300">
                 {reason.icon}
               </div>
               <h4 className="text-xl font-semibold text-[#111111] mb-3 group-hover:text-[#2563eb] transition-colors">
-                {t(`whyus.item${index + 1}_title`)}
+                {reason.title}
               </h4>
               <p className="text-sm text-[#666666] leading-relaxed">
-                {t(`whyus.item${index + 1}_desc`)}
+                {reason.desc}
               </p>
             </div>
           ))}

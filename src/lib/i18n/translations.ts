@@ -82,11 +82,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     "whyus.item4_desc": "We're ready to help with any issues or website updates.",
 
     // ── Pricing ──
-    "pricing.heading": "Website",
-    "pricing.heading_highlight": "Pricing",
+    "pricing.heading": "Service",
+    "pricing.heading_highlight": "Packages",
     "pricing.subtitle": "Choose a package that suits your business needs",
-    "pricing.popular": "Most Popular ⭐",
-    "pricing.order": "Order Now",
+    "pricing.popular": "Most Popular",
+    "pricing.consult": "Get a Quote",
     "pricing.feature1": "1 Professional Page",
     "pricing.feature2": "Mobile Responsive",
     "pricing.feature3": "WhatsApp Button",
@@ -123,11 +123,6 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pricing.feature34": "1 Month Maintenance",
 
     // ── Pricing reverse mappings (ID→EN for Supabase data) ──
-    "Rp1,2 Juta": "Rp1.2 Million",
-    "Rp2 Juta": "Rp2 Million",
-    "Rp5 Juta": "Rp5 Million",
-    "Mulai Rp10 Juta": "From Rp10 Million",
-    "Mulai Rp15 Juta": "From Rp15 Million",
     "Aplikasi Android & iOS": "Android & iOS App",
     "1 Halaman Profesional": "1 Professional Page",
     "Tombol WhatsApp": "WhatsApp Button",
@@ -178,7 +173,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "faq.q3": "Can I edit the website content myself?",
     "faq.a3": "Yes. Every project includes a free 2-hour training session to show you how to edit text, images, and other content. For major changes, our team is ready to help.",
     "faq.q4": "How much does a website cost?",
-    "faq.a4": "Prices start from Rp1.2 million for a landing page to Rp15 million+ for mobile applications. Every package includes domain, hosting, and complete features. Check the Pricing page for details.",
+    "faq.a4": "The cost depends on the scope and features of your project. Every business is different, so we prepare a tailored quote after a free consultation. Contact us via WhatsApp and we'll be happy to discuss it.",
     "faq.q5": "Are domain and hosting included?",
     "faq.a5": "For Landing Page, Starter UMKM, and Business Pro packages, domain and hosting are FREE for 1 year. For Premium and Application packages, domain and hosting can be arranged as needed.",
     "faq.q6": "How do I place an order?",
@@ -200,7 +195,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "footer.address": "Payakumbuh, West Sumatra",
     "footer.copyright": "All rights reserved.",
     "footer.services_link": "Services",
-    "footer.pricing_link": "Pricing",
+    "footer.pricing_link": "Packages",
     "footer.contact_link": "Contact",
 
     // ── HeroBuilderCTA ──
@@ -309,11 +304,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     "whyus.item4_desc": "Kami siap membantu jika ada kendala atau update website.",
 
     // ── Pricing ──
-    "pricing.heading": "Paket Harga",
-    "pricing.heading_highlight": "Website",
+    "pricing.heading": "Paket",
+    "pricing.heading_highlight": "Layanan",
     "pricing.subtitle": "Pilih paket sesuai kebutuhan bisnis Anda",
-    "pricing.popular": "Paling Laris ⭐",
-    "pricing.order": "Pesan Sekarang",
+    "pricing.popular": "Paling Laris",
+    "pricing.consult": "Konsultasi Harga",
     "pricing.feature1": "1 Halaman Profesional",
     "pricing.feature2": "Mobile Responsive",
     "pricing.feature3": "Tombol WhatsApp",
@@ -354,11 +349,6 @@ export const translations: Record<Locale, Record<string, string>> = {
     "Business Pro": "Business Pro",
     "Premium Custom": "Premium Custom",
     "Android & iOS App": "Aplikasi Android & iOS",
-    "Rp1.2 Million": "Rp1,2 Juta",
-    "Rp2 Million": "Rp2 Juta",
-    "Rp5 Million": "Rp5 Juta",
-    "From Rp10 Million": "Mulai Rp10 Juta",
-    "From Rp15 Million": "Mulai Rp15 Juta",
     "1 Professional Page": "1 Halaman Profesional",
     "WhatsApp Button": "Tombol WhatsApp",
     "Basic Copywriting": "Copywriting Basic",
@@ -418,7 +408,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "faq.q3": "Apakah saya bisa mengedit konten website sendiri?",
     "faq.a3": "Ya. Setiap project disertai sesi training 2 jam gratis untuk menunjukkan cara mengedit teks, gambar, dan konten lainnya. Untuk perubahan besar, tim kami siap membantu.",
     "faq.q4": "Berapa biaya pembuatan website?",
-    "faq.a4": "Biaya mulai dari Rp1,2 juta untuk landing page hingga Rp15 juta+ untuk aplikasi mobile. Setiap paket sudah termasuk domain, hosting, dan fitur lengkap. Lihat halaman Paket Harga untuk detailnya.",
+    "faq.a4": "Biaya tergantung pada cakupan dan fitur project Anda. Setiap bisnis berbeda, jadi kami menyiapkan penawaran yang disesuaikan setelah konsultasi gratis. Hubungi kami via WhatsApp dan kami akan dengan senang hati mendiskusikannya.",
     "faq.q5": "Apakah domain dan hosting sudah termasuk?",
     "faq.a5": "Untuk paket Landing Page, Starter UMKM, dan Business Pro, domain dan hosting GRATIS 1 tahun. Untuk paket Premium dan Aplikasi, domain dan hosting bisa diatur sesuai kebutuhan.",
     "faq.q6": "Bagaimana cara memesan?",
@@ -440,7 +430,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "footer.address": "Payakumbuh, Sumatera Barat",
     "footer.copyright": "All rights reserved.",
     "footer.services_link": "Layanan",
-    "footer.pricing_link": "Paket Harga",
+    "footer.pricing_link": "Paket Layanan",
     "footer.contact_link": "Kontak",
 
     // ── HeroBuilderCTA ──

@@ -3,26 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { resolveServiceIcon } from "@/lib/service-icons";
 
 interface Service {
-  icon: string;
   title: string;
   description: string;
 }
 
 const defaultServices: Service[] = [
-  { icon: "🎓", title: "University Website", description: "Campus portal, academic information, student registration, and modern education systems." },
-  { icon: "📚", title: "School Website", description: "Modern school website with information, gallery, PPDB, and school news." },
-  { icon: "🏢", title: "Property Website", description: "Property website for housing, apartments, real estate agents, and property listings." },
-  { icon: "🏬", title: "Company Profile", description: "Professional appearance to enhance your business branding and credibility." },
-  { icon: "✈️", title: "Travel Website", description: "Travel and tour website with tour packages and online booking." },
-  { icon: "🏥", title: "Clinic & Hospital", description: "Healthcare information system, doctor schedules, and online patient services." },
-  { icon: "🛒", title: "Online Store", description: "Modern e-commerce website to sell products online." },
-  { icon: "🏨", title: "Hotel Website", description: "Hotel and lodging website with online booking and reservation features." },
-  { icon: "🍽️", title: "Restaurant & Cafe", description: "Digital menu website, table reservations, and cafe or restaurant promotions." },
-  { icon: "🏛️", title: "Government", description: "Government agency information portal and digital public services." },
-  { icon: "📰", title: "News Portal", description: "Online media and news portal with complete category and article system." },
-  { icon: "💻", title: "Custom Web App", description: "Dashboard systems, ERP, CRM, booking systems, and custom web-based applications." },
+  { title: "University Website", description: "Campus portal, academic information, student registration, and modern education systems." },
+  { title: "School Website", description: "Modern school website with information, gallery, PPDB, and school news." },
+  { title: "Property Website", description: "Property website for housing, apartments, real estate agents, and property listings." },
+  { title: "Company Profile", description: "Professional appearance to enhance your business branding and credibility." },
+  { title: "Travel Website", description: "Travel and tour website with tour packages and online booking." },
+  { title: "Clinic & Hospital", description: "Healthcare information system, doctor schedules, and online patient services." },
+  { title: "Online Store", description: "Modern e-commerce website to sell products online." },
+  { title: "Hotel Website", description: "Hotel and lodging website with online booking and reservation features." },
+  { title: "Restaurant & Cafe", description: "Digital menu website, table reservations, and cafe or restaurant promotions." },
+  { title: "Government", description: "Government agency information portal and digital public services." },
+  { title: "News Portal", description: "Online media and news portal with complete category and article system." },
+  { title: "Custom Web App", description: "Dashboard systems, ERP, CRM, booking systems, and custom web-based applications." },
 ];
 
 export default function ServicesSection() {
@@ -33,14 +33,13 @@ export default function ServicesSection() {
   useEffect(() => {
     supabase
       .from("services")
-      .select("title, description, icon")
+      .select("title, description")
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
         if (data && data.length > 0) {
           setServices(
             data.map((s) => ({
-              icon: s.icon || "💻",
               title: s.title,
               description: s.description,
             }))
@@ -88,15 +87,20 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {services.map((service, index) => (
             <div
               key={index}
-              className="reveal group card-premium p-5 text-center cursor-default"
+              className="reveal group card-premium p-6 hover-lift"
             >
-              <span className="text-2xl mb-3 block">{service.icon}</span>
-              <span className="text-xs font-semibold text-[#666666] group-hover:text-[#111111] transition-colors leading-tight block">
-                {t(`services.item${index + 1}_title`)}
+              <div className="w-11 h-11 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-4 transition-all duration-300">
+                {resolveServiceIcon(service.title)}
+              </div>
+              <span className="block text-sm font-semibold text-[#111111] group-hover:text-[#2563eb] transition-colors mb-1.5 leading-tight">
+                {service.title}
+              </span>
+              <span className="block text-xs text-[#666666] leading-relaxed">
+                {service.description}
               </span>
             </div>
           ))}

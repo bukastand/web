@@ -72,6 +72,7 @@ export default function KontakPage() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -96,12 +97,18 @@ export default function KontakPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
+    setError("");
     try {
-      await supabase.from("contacts").insert([{ name: formData.name, email: formData.email, phone: formData.phone, message: formData.message }]);
-      setSent(true);
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      const { error: insertError } = await supabase.from("contacts").insert([{ name: formData.name, email: formData.email, phone: formData.phone, message: formData.message }]);
+      if (insertError) {
+        setError("Terjadi kendala saat mengirim pesan. Silakan coba lagi atau hubungi kami via WhatsApp.");
+      } else {
+        setSent(true);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      }
     } catch (err) {
       console.error(err);
+      setError("Terjadi kendala saat mengirim pesan. Silakan coba lagi atau hubungi kami via WhatsApp.");
     } finally {
       setSending(false);
     }
@@ -151,7 +158,7 @@ export default function KontakPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="text-xl font-semibold text-[#111111] mb-2">Pesan Terkirim! </h4>
+                  <h4 className="text-xl font-semibold text-[#111111] mb-2">Pesan Terkirim!</h4>
                   <p className="text-[#666666] text-sm mb-6">Terima kasih! Kami akan segera menghubungi Anda.</p>
                   <button onClick={() => setSent(false)} className="btn-secondary">
                     Kirim Pesan Lagi
@@ -197,6 +204,14 @@ export default function KontakPage() {
                       placeholder="Ceritakan kebutuhan website Anda..."
                     />
                   </div>
+                  {error && (
+                    <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
+                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {error}
+                    </div>
+                  )}
                   <button type="submit" disabled={sending}
                     className="w-full py-3.5 bg-[#111111] text-white font-semibold rounded-xl transition-all duration-300 hover:bg-black active:scale-[0.98] disabled:opacity-50"
                   >

@@ -69,7 +69,7 @@ export default function ProcessSection() {
             {steps.map((step, i) => (
               <div key={i} className="reveal group relative flex flex-col items-center text-center">
                 <div className="relative mb-6">
-                  <div className="w-16 h-16 rounded-full bg-[#f8f8f8] border-2 border-[#eeeeee] flex items-center justify-center group-hover:border-[#2563eb] group-hover:bg-white transition-all duration-500">
+                  <div className="w-16 h-16 rounded-full bg-[#f8f8f8] border-2 border-[#eeeeee] flex items-center justify-center group-hover:border-[#2563eb] group-hover:bg-white group-hover:shadow-[0_0_0_8px_rgba(37,99,235,0.08)] transition-all duration-500">
                     <span className="text-lg font-bold text-[#2563eb]">{step.num}</span>
                   </div>
                 </div>
