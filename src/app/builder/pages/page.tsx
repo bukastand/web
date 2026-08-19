@@ -4,8 +4,8 @@ import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { templates } from "@/lib/builder/templates";
+import { useEffect, useState } from "react";
+import { fetchApprovedTemplates, communityToGalleryTemplate } from "@/lib/supabase/community-templates";
 
 export default function BuilderPages() {
   const router = useRouter();
@@ -15,6 +15,13 @@ export default function BuilderPages() {
   const [title, setTitle] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [communityTemplates, setCommunityTemplates] = useState<ReturnType<typeof communityToGalleryTemplate>[]>([]);
+
+  useEffect(() => {
+    fetchApprovedTemplates().then((cts) => {
+      setCommunityTemplates(cts.map(communityToGalleryTemplate));
+    });
+  }, []);
 
   const handleCreate = () => {
     const newPageId = createNewPage(title || undefined);
@@ -179,37 +186,40 @@ export default function BuilderPages() {
                 </div>
               </div>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-[10px] text-gray-600 uppercase tracking-wider">atau</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
+              {/* Option 2: From Template (community) */}
+              {communityTemplates.length > 0 && (
+                <>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex-1 h-px bg-white/10" />
+                    <span className="text-[10px] text-gray-600 uppercase tracking-wider">atau</span>
+                    <div className="flex-1 h-px bg-white/10" />
+                  </div>
 
-              {/* Option 2: From Template */}
-              <div>
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-3">Mulai dari Template</p>
-                <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
-                  {templates.map((t) => (
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-3">Mulai dari Template Komunitas</p>
+                    <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                      {communityTemplates.map((t) => (
+                        <Link
+                          key={t.id}
+                          href="/templates"
+                          className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all"
+                        >
+                          <div className={`w-full h-16 rounded-lg bg-gradient-to-br ${t.previewColor} flex items-center justify-center`}>
+                            <span className="text-2xl">{t.icon}</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400 group-hover:text-white text-center leading-tight transition-colors">{t.title}</span>
+                        </Link>
+                      ))}
+                    </div>
                     <Link
-                      key={t.id}
                       href="/templates"
-                      className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 hover:border-[#22c55e]/40 hover:bg-[#22c55e]/5 transition-all"
+                      className="block w-full mt-3 py-2 text-center text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
                     >
-                      <div className={`w-full h-16 rounded-lg bg-gradient-to-br ${t.previewColor} flex items-center justify-center`}>
-                        <span className="text-2xl">{t.icon}</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 group-hover:text-white text-center leading-tight transition-colors">{t.title}</span>
+                      Lihat Semua Template →
                     </Link>
-                  ))}
-                </div>
-                <Link
-                  href="/templates"
-                  className="block w-full mt-3 py-2 text-center text-xs text-[#22c55e] border border-dashed border-[#22c55e]/30 rounded-lg hover:bg-[#22c55e]/10 transition-colors"
-                >
-                  Lihat Semua Template →
-                </Link>
-              </div>
+                  </div>
+                </>
+              )}
 
               {/* Cancel button */}
               <div className="mt-4 pt-4 border-t border-white/10">

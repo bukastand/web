@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { fetchAllTemplates, approveTemplate, rejectTemplate, type CommunityTemplate } from "@/lib/supabase/community-templates";
-import { createPageFromTemplate } from "@/lib/builder/templates";
 import { ElementRenderer } from "@/components/builder/elements/ElementRenderer";
 
 export default function AdminTemplatesPage() {

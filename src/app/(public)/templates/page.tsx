@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { templates, createPageFromTemplate } from "@/lib/builder/templates";
+import { createPageFromTemplate } from "@/lib/builder/templates";
 import type { Template } from "@/lib/builder/templates";
 import { fetchApprovedTemplates, communityToGalleryTemplate } from "@/lib/supabase/community-templates";
 
@@ -177,8 +177,8 @@ export default function TemplatesPage() {
     });
   }, []);
 
-  // Combine built-in + community templates
-  const allTemplates = [...templates, ...communityTemplates];
+  // Community templates (user-shared) only
+  const allTemplates = communityTemplates;
 
   const filtered = activeCategory === "Semua"
     ? allTemplates
@@ -256,11 +256,11 @@ export default function TemplatesPage() {
             Pilih Template
           </div>
           <h1            className="heading-lg mb-4">
-            Mulai dengan{" "}
-            <span className="text-[#2563eb]">Template Siap Pakai</span>
+            Template dari{" "}
+            <span className="text-[#2563eb]">Komunitas</span>
           </h1>
           <p className="text-[#666666] text-lg max-w-2xl mx-auto">
-            Pilih template landing page profesional, lalu kustomisasi dengan drag-and-drop builder kami.
+            Template yang dibagikan oleh pengguna lain. Pilih template, lalu kustomisasi dengan drag-and-drop builder kami.
             Tidak perlu coding sama sekali.
           </p>
         </div>
@@ -301,8 +301,18 @@ export default function TemplatesPage() {
 
         {/* Empty state */}
         {filtered.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-[#999999]">Tidak ada template di kategori ini</p>
+          <div className="text-center py-20">
+            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center">
+              <svg className="w-8 h-8 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+            </div>
+            <h3 className="text-[#111111] font-semibold text-lg mb-2">Belum Ada Template dari Komunitas</h3>
+            <p className="text-[#666666] text-sm max-w-md mx-auto">
+              {activeCategory === "Semua"
+                ? "Ketika pengguna membagikan template mereka, template akan tampil di sini setelah disetujui."
+                : "Belum ada template di kategori ini."}
+            </p>
           </div>
         )}
       </div>

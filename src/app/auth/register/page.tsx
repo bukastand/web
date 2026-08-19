@@ -4,7 +4,8 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { templates, createPageFromTemplate } from "@/lib/builder/templates";
+import { createPageFromTemplate } from "@/lib/builder/templates";
+import { fetchApprovedTemplates, communityToGalleryTemplate } from "@/lib/supabase/community-templates";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -16,12 +17,15 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   // Read template param from URL (client-side only, avoids Suspense boundary issue)
-  const getSelectedTemplate = () => {
+  const getSelectedTemplate = async () => {
     if (typeof window === "undefined") return null;
     const params = new URLSearchParams(window.location.search);
     const templateId = params.get("template");
     if (!templateId) return null;
-    return templates.find((t) => t.id === templateId) || null;
+    const cts = await fetchApprovedTemplates();
+    const ct = cts.find((t) => t.id === templateId);
+    if (!ct) return null;
+    return communityToGalleryTemplate(ct);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -82,7 +86,7 @@ export default function RegisterPage() {
       document.cookie = "user_role=user; path=/; max-age=2592000; SameSite=Lax; Secure";
       
       // If user came from a template, create the page from template first
-      const selectedTemplate = getSelectedTemplate();
+      const selectedTemplate = await getSelectedTemplate();
       if (selectedTemplate) {
         try {
           const page = createPageFromTemplate(selectedTemplate);

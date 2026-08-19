@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import type { ElementType } from "@/lib/builder/types";
-import TemplatePicker from "./TemplatePicker";
 
 interface ElementItem {
   type: ElementType;
@@ -149,78 +147,46 @@ function DraggableItem({ item }: { item: ElementItem }) {
 
 export default function ElementSidebar() {
   const categories = [...new Set(elements.map((e) => e.category))];
-  const [showTemplates, setShowTemplates] = useState(false);
 
   return (
     <aside className="w-60 flex-shrink-0 bg-[#0f172a] border-r border-white/10 overflow-y-auto">
-      {/* Tab buttons */}
-      <div className="flex border-b border-white/10">
-        <button
-          onClick={() => setShowTemplates(false)}
-          className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
-            !showTemplates
-              ? "text-[#22c55e] border-b-2 border-[#22c55e]"
-              : "text-gray-500 hover:text-white"
-          }`}
-        >
-          Elements
-        </button>
-        <button
-          onClick={() => setShowTemplates(true)}
-          className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
-            showTemplates
-              ? "text-[#22c55e] border-b-2 border-[#22c55e]"
-              : "text-gray-500 hover:text-white"
-          }`}
-        >
-          Templates
-        </button>
-      </div>
-
-      {showTemplates ? (
-        <div className="p-3">
-          <p className="text-[10px] text-gray-500 mb-3">Klik untuk tambah section lengkap</p>
-          <TemplatePicker onClose={undefined} compact />
-        </div>
-      ) : (
-        <div className="p-3 space-y-4">
-          <p className="text-[10px] text-gray-500">Drag ke canvas untuk menambahkan</p>
-          {categories
-            .filter((cat) => cat !== "Premium")
-            .map((cat) => (
-              <div key={cat}>
-                <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
-                <div className="space-y-1">
-                  {elements
-                    .filter((e) => e.category === cat)
-                    .map((item) => (
-                      <DraggableItem key={item.type} item={item} />
-                    ))}
-                </div>
-              </div>
-            ))}
-
-          {/* Premium Elements Section */}
-          {categories.includes("Premium") && (
-            <div>
-              <div className="flex items-center gap-2 mb-3 px-1 mt-6 border-t border-[#f59e0b]/20 pt-4">
-                <span className="text-[10px] font-bold text-[#f59e0b] uppercase tracking-wider">✨ Premium Elements</span>
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] font-medium">Pro</span>
-              </div>
-              <div className="space-y-1 relative">
+      <div className="p-3 space-y-4">
+        <p className="text-[10px] text-gray-500">Drag ke canvas untuk menambahkan</p>
+        {categories
+          .filter((cat) => cat !== "Premium")
+          .map((cat) => (
+            <div key={cat}>
+              <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">{cat}</h4>
+              <div className="space-y-1">
                 {elements
-                  .filter((e) => e.category === "Premium")
+                  .filter((e) => e.category === cat)
                   .map((item) => (
-                    <div key={item.type} className="relative group">
-                      <div className="absolute -left-1 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#f59e0b] to-[#22c55e] opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
-                      <DraggableItem item={item} />
-                    </div>
+                    <DraggableItem key={item.type} item={item} />
                   ))}
               </div>
             </div>
-          )}
-        </div>
-      )}
+          ))}
+
+        {/* Premium Elements Section */}
+        {categories.includes("Premium") && (
+          <div>
+            <div className="flex items-center gap-2 mb-3 px-1 mt-6 border-t border-[#f59e0b]/20 pt-4">
+              <span className="text-[10px] font-bold text-[#f59e0b] uppercase tracking-wider">✨ Premium Elements</span>
+              <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] font-medium">Pro</span>
+            </div>
+            <div className="space-y-1 relative">
+              {elements
+                .filter((e) => e.category === "Premium")
+                .map((item) => (
+                  <div key={item.type} className="relative group">
+                    <div className="absolute -left-1 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#f59e0b] to-[#22c55e] opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+                    <DraggableItem item={item} />
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
