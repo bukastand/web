@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { resolveServiceIcon } from "@/lib/service-icons";
+import KeahlianSection from "@/components/KeahlianSection";
 
 const services = [
   {
@@ -187,6 +188,9 @@ export default function LayananPage() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════════ KEAHLIAN KAMI ═══════════════ */}
+      <KeahlianSection />
 
       {/* ═══════════════ PACKAGES ═══════════════ */}
       <section id="paket" className="observe-section section-padding bg-white">

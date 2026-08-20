@@ -2,6 +2,7 @@
 
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
+import KeahlianSection from "@/components/KeahlianSection";
 import WhyUsSection from "@/components/WhyUsSection";
 import ProcessSection from "@/components/ProcessSection";
 import PricingSection from "@/components/PricingSection";
@@ -16,6 +17,7 @@ export default function Home() {
     <main className="bg-white min-h-screen">
       <HeroSection />
       <ServicesSection />
+      <KeahlianSection />
       <WhyUsSection />
       <ProcessSection />
       <TestimonialsSection />

@@ -21,8 +21,8 @@ export default function PortofolioPage() {
             <span className="text-[#2563eb]">Kami</span>
           </h1>
           <p className="text-lg sm:text-xl text-[#666666] max-w-3xl mx-auto leading-relaxed">
-            Beberapa project yang telah kami kerjakan untuk berbagai klien
-            dari berbagai industri — sekolah, properti, travel, dan lainnya.
+            Aplikasi yang telah kami bangun dan berjalan langsung untuk bisnis
+            nyata — kasir, laundry, sistem restoran, dan lainnya.
           </p>
         </div>
       </section>
