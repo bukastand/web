@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
-import { resolveServiceIcon } from "@/lib/service-icons";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
+import { ArrowRightIcon } from "@/lib/icons";
 
 interface Service {
   title: string;
@@ -28,7 +30,6 @@ const defaultServices: Service[] = [
 export default function ServicesSection() {
   const [services, setServices] = useState<Service[]>(defaultServices);
   const { t } = useTranslation();
-  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     supabase
@@ -48,62 +49,58 @@ export default function ServicesSection() {
       });
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const items = entry.target.querySelectorAll(".reveal");
-            items.forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 60);
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      id="layanan"
-      ref={sectionRef}
-      className="section-padding bg-[#f8f8f8]"
-    >
+    <section id="layanan" className="section-padding bg-surface">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
-          <span className="badge-premium mb-4 inline-flex">
-            Layanan
-          </span>
-          <h2 className="heading-lg mb-4">
-            {t("services.heading")}{" "}
-            <span className="text-[#2563eb]">{t("services.heading_highlight")}</span>
-          </h2>
-          <p className="body-lg max-w-2xl mx-auto">
-            {t("services.subtitle")}
-          </p>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-12 lg:gap-20">
+          {/* Sticky intro */}
+          <div className="lg:sticky lg:top-32 self-start">
+            <SectionHeading
+              index="01"
+              eyebrow="Layanan"
+              title={
+                <>
+                  {t("services.heading")}{" "}
+                  <span className="text-muted">{t("services.heading_highlight")}</span>
+                </>
+              }
+              description={t("services.subtitle")}
+            />
+            <Reveal delay={0.15}>
+              <a
+                href="https://wa.me/6282210099969"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 mt-8 text-sm font-semibold text-accent"
+              >
+                Diskusikan kebutuhan Anda
+                <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </Reveal>
+          </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="reveal group card-premium p-6 hover-lift"
-            >
-              <div className="w-11 h-11 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-4 transition-all duration-300">
-                {resolveServiceIcon(service.title)}
-              </div>
-              <span className="block text-sm font-semibold text-[#111111] group-hover:text-[#2563eb] transition-colors mb-1.5 leading-tight">
-                {service.title}
-              </span>
-              <span className="block text-xs text-[#666666] leading-relaxed">
-                {service.description}
-              </span>
-            </div>
-          ))}
+          {/* Service list */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
+            {services.map((service, index) => (
+              <Reveal key={index} delay={Math.min(index % 6, 5) * 0.05} y={16}>
+                <div className="group border-t border-line py-6 sm:py-7">
+                  <div className="flex items-baseline gap-3 mb-1.5">
+                    <span className="font-mono text-xs text-faint tabular-nums">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="text-base font-semibold text-ink transition-colors duration-300 group-hover:text-accent">
+                      {service.title}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted leading-relaxed pl-7 text-pretty">
+                    {service.description}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+            <div className="border-t border-line" />
+            <div className="border-t border-line hidden sm:block" />
+          </div>
         </div>
       </div>
     </section>

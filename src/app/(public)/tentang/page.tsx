@@ -94,15 +94,15 @@ export default function TentangPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <div className="badge-premium mb-6 inline-flex">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb] mr-1.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent mr-1.5" />
             PAGODA STUDIO
           </div>
           <h1 className="heading-xl mb-6">
-            <span className="text-[#111111]">Kisah di Balik</span>
+            <span className="text-ink">Kisah di Balik</span>
             <br />
-            <span className="text-[#2563eb]">Setiap Website</span>
+            <span className="text-accent">Setiap Website</span>
           </h1>
-          <p className="text-lg sm:text-xl text-[#666666] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-muted max-w-3xl mx-auto leading-relaxed">
             Kami adalah tim kreatif dan teknis yang percaya bahwa setiap bisnis berhak
             memiliki website profesional, modern, dan terjangkau.
           </p>
@@ -110,15 +110,15 @@ export default function TentangPage() {
       </section>
 
       {/* ═══════════════ STATS ═══════════════ */}
-      <section className="observe-section py-16 bg-[#f8f8f8]">
+      <section className="observe-section py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-6">
           <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {stats.map((stat, i) => (
-              <div key={i} className="text-center p-6 rounded-2xl bg-white border border-[#eeeeee]">
-                <div className="text-3xl md:text-4xl font-bold text-[#2563eb] mb-1">
+              <div key={i} className="text-center p-6 rounded-2xl bg-white border border-line">
+                <div className="text-3xl md:text-4xl font-bold text-accent mb-1">
                   {stat.value}
                 </div>
-                <div className="text-sm text-[#999999]">{stat.label}</div>
+                <div className="text-sm text-faint">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -132,9 +132,9 @@ export default function TentangPage() {
             <div>
               <span className="badge-premium mb-4 inline-flex">Our Story</span>
               <h2 className="heading-lg mb-6">
-                Dari <span className="text-[#2563eb]">Payakumbuh</span> untuk Dunia
+                Dari <span className="text-accent">Payakumbuh</span> untuk Dunia
               </h2>
-              <div className="space-y-4 text-[#666666] leading-relaxed">
+              <div className="space-y-4 text-muted leading-relaxed">
                 <p>
                   Berawal dari kecintaan terhadap teknologi dan desain, PAGODA STUDIO
                   lahir di Payakumbuh, Sumatera Barat. Kami melihat banyak UMKM dan bisnis
@@ -154,7 +154,7 @@ export default function TentangPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="relative p-8 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee]">
+              <div className="relative p-8 rounded-3xl bg-surface border border-line">
                 <div className="grid grid-cols-2 gap-4">
                   {[
                     {
@@ -186,9 +186,9 @@ export default function TentangPage() {
                       ),
                       label: "Results Driven" },
                   ].map((item, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white border border-[#eeeeee] text-center">
-                      <span className="text-[#2563eb] mb-2 block">{item.icon}</span>
-                      <span className="text-sm font-semibold text-[#111111]">{item.label}</span>
+                    <div key={i} className="p-4 rounded-xl bg-white border border-line text-center">
+                      <span className="text-accent mb-2 block">{item.icon}</span>
+                      <span className="text-sm font-semibold text-ink">{item.label}</span>
                     </div>
                   ))}
                 </div>
@@ -199,12 +199,12 @@ export default function TentangPage() {
       </section>
 
       {/* ═══════════════ VALUES / WHY US ═══════════════ */}
-      <section className="observe-section section-padding bg-[#f8f8f8]">
+      <section className="observe-section section-padding bg-surface">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">Why Us</span>
             <h2 className="heading-lg mb-4">
-              Kenapa Pilih <span className="text-[#2563eb]">Kami?</span>
+              Kenapa Pilih <span className="text-accent">Kami?</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Kami tidak hanya membuat website — kami membangun solusi digital yang tepat untuk bisnis Anda.
@@ -214,13 +214,13 @@ export default function TentangPage() {
           <div className="reveal grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
             {values.map((val, i) => (
               <div key={i} className="card-premium p-6 sm:p-8 hover-lift group">
-                <div className="w-12 h-12 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#2563eb] mb-5 group-hover:border-[#2563eb]/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-surface border border-line flex items-center justify-center text-accent mb-5 group-hover:border-accent/30 transition-all duration-300">
                   {val.icon}
                 </div>
-                <h4 className="text-xl font-semibold text-[#111111] mb-3 group-hover:text-[#2563eb] transition-colors">
+                <h4 className="text-xl font-semibold text-ink mb-3 group-hover:text-accent transition-colors">
                   {val.label}
                 </h4>
-                <p className="text-sm text-[#666666] leading-relaxed">
+                <p className="text-sm text-muted leading-relaxed">
                   {val.desc}
                 </p>
               </div>
@@ -235,7 +235,7 @@ export default function TentangPage() {
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">Process</span>
             <h2 className="heading-lg mb-4">
-              Cara Kami <span className="text-[#2563eb]">Bekerja</span>
+              Cara Kami <span className="text-accent">Bekerja</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Proses yang transparan dan terstruktur dari awal hingga website live.
@@ -243,20 +243,20 @@ export default function TentangPage() {
           </div>
 
           <div className="reveal relative max-w-5xl mx-auto">
-            <div className="hidden lg:block absolute top-12 left-[calc(12.5%+28px)] right-[calc(12.5%+28px)] h-[1px] bg-[#eeeeee] pointer-events-none" />
+            <div className="hidden lg:block absolute top-12 left-[calc(12.5%+28px)] right-[calc(12.5%+28px)] h-[1px] bg-line pointer-events-none" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
               {steps.map((step, i) => (
                 <div key={i} className="group relative flex flex-col items-center text-center">
                   <div className="relative mb-6">
-                    <div className="w-16 h-16 rounded-full bg-[#f8f8f8] border-2 border-[#eeeeee] flex items-center justify-center group-hover:border-[#2563eb] group-hover:bg-white transition-all duration-500">
-                      <span className="text-lg font-bold text-[#2563eb]">{step.num}</span>
+                    <div className="w-16 h-16 rounded-full bg-surface border-2 border-line flex items-center justify-center group-hover:border-accent group-hover:bg-white transition-all duration-500">
+                      <span className="text-lg font-bold text-accent">{step.num}</span>
                     </div>
                   </div>
-                  <h4 className="text-lg font-semibold text-[#111111] mb-3 group-hover:text-[#2563eb] transition-colors">
+                  <h4 className="text-lg font-semibold text-ink mb-3 group-hover:text-accent transition-colors">
                     {step.title}
                   </h4>
-                  <p className="text-sm text-[#666666] leading-relaxed max-w-[240px]">
+                  <p className="text-sm text-muted leading-relaxed max-w-[240px]">
                     {step.desc}
                   </p>
                 </div>
@@ -267,12 +267,12 @@ export default function TentangPage() {
       </section>
 
       {/* ═══════════════ TEAM ═══════════════ */}
-      <section className="observe-section section-padding bg-[#f8f8f8]">
+      <section className="observe-section section-padding bg-surface">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">Team</span>
             <h2 className="heading-lg mb-4">
-              Tim <span className="text-[#2563eb]">Kami</span>
+              Tim <span className="text-accent">Kami</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Orang-orang kreatif dan teknis di balik setiap website yang kami buat.
@@ -282,11 +282,11 @@ export default function TentangPage() {
           <div className="reveal grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {team.map((member, i) => (
               <div key={i} className="card-premium p-8 text-center hover-lift group">
-                <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-[#f8f8f8] border-2 border-[#eeeeee] flex items-center justify-center text-xl font-bold text-[#2563eb] group-hover:border-[#2563eb]/30 transition-all duration-300">
+                <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-surface border-2 border-line flex items-center justify-center text-xl font-bold text-accent group-hover:border-accent/30 transition-all duration-300">
                   {member.initials}
                 </div>
-                <h4 className="text-lg font-semibold text-[#111111] mb-1">{member.name}</h4>
-                <p className="text-sm text-[#666666]">{member.role}</p>
+                <h4 className="text-lg font-semibold text-ink mb-1">{member.name}</h4>
+                <p className="text-sm text-muted">{member.role}</p>
               </div>
             ))}
           </div>
@@ -296,11 +296,11 @@ export default function TentangPage() {
       {/* ═══════════════ CTA ═══════════════ */}
       <section className="observe-section section-padding bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="reveal max-w-3xl mx-auto text-center p-12 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee]">
+          <div className="reveal max-w-3xl mx-auto text-center p-12 rounded-3xl bg-surface border border-line">
             <h2 className="heading-lg mb-4">
-              Siap Membangun <span className="text-[#2563eb]">Website Impian?</span>
+              Siap Membangun <span className="text-accent">Website Impian?</span>
             </h2>
-            <p className="text-[#666666] mb-8 max-w-xl mx-auto">
+            <p className="text-muted mb-8 max-w-xl mx-auto">
               Konsultasi gratis tanpa biaya. Ceritakan kebutuhan Anda, dan kami akan
               memberikan solusi terbaik.
             </p>

@@ -1,84 +1,131 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
 
-const initials = [
-  { chars: "JC", bg: "bg-[#dbeafe] text-[#1d4ed8]" },
-  { chars: "SW", bg: "bg-[#fce7f3] text-[#be185d]" },
-  { chars: "BS", bg: "bg-[#d1fae5] text-[#047857]" },
+const testimonials = [
+  {
+    chars: "JC",
+    name: "James Clarke",
+    role: "Owner, Shop The Paws",
+    metric: "300%",
+    quoteKey: "quote1",
+    resultKey: "result1",
+  },
+  {
+    chars: "SW",
+    name: "Sarah Wijaya",
+    role: "CEO, TechBiz Solutions",
+    metric: "20%",
+    quoteKey: "quote2",
+    resultKey: "result2",
+  },
+  {
+    chars: "BS",
+    name: "Budi Santoso",
+    role: "Direktur, GreenHill Residence",
+    metric: "150+",
+    quoteKey: "quote3",
+    resultKey: "result3",
+  },
 ];
 
 export default function TestimonialsSection() {
   const { t } = useTranslation();
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const items = entry.target.querySelectorAll(".reveal");
-            items.forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 150);
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const [active, setActive] = useState(0);
+  const current = testimonials[active];
 
   return (
-    <section ref={sectionRef} className="section-padding bg-[#f8f8f8]">
+    <section className="section-padding bg-white">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
-          <span className="badge-premium mb-4 inline-flex">Testimonials</span>
-          <h2 className="heading-lg mb-4">
-            {t("testimonials.heading")}{" "}
-            <span className="text-[#2563eb]">{t("testimonials.heading_highlight")}</span>
-          </h2>
-          <p className="body-lg max-w-2xl mx-auto">{t("testimonials.subtitle")}</p>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-12 lg:gap-20">
+          <div className="lg:sticky lg:top-32 self-start">
+            <SectionHeading
+              index="05"
+              eyebrow="Testimoni"
+              title={
+                <>
+                  {t("testimonials.heading")}{" "}
+                  <span className="text-muted">{t("testimonials.heading_highlight")}</span>
+                </>
+              }
+              description={t("testimonials.subtitle")}
+            />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((num, index) => (
-            <div key={index} className="reveal card-premium p-8 hover-lift flex flex-col">
-              <svg className="w-8 h-8 text-[#2563eb]/20 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M11 7H6a2 2 0 00-2 2v4a2 2 0 002 2h3v1a2 2 0 01-2 2H6v2h1a4 4 0 004-4V9a2 2 0 00-2-2zm10 0h-5a2 2 0 00-2 2v4a2 2 0 002 2h3v1a2 2 0 01-2 2h-1v2h1a4 4 0 004-4V9a2 2 0 00-2-2z" />
-              </svg>
-
-              <p className="text-[#666666] leading-relaxed mb-6 text-sm flex-1">
-                &ldquo;{t(`testimonials.quote${num}`)}&rdquo;
-              </p>
-
-              <div className="mb-6 p-3 rounded-xl bg-[#f8f8f8] border border-[#eeeeee]">
-                <div className="text-xl font-bold text-[#2563eb]">
-                  {["300%", "20%", "150+"][index]}
-                </div>
-                <div className="text-xs text-[#999999] uppercase tracking-wider">
-                  {t(`testimonials.result${num}`)}
-                </div>
+            {/* Client switcher */}
+            <Reveal delay={0.15}>
+              <div className="flex flex-col gap-1 mt-10">
+                {testimonials.map((item, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    aria-pressed={i === active}
+                    className={`text-left text-sm px-4 py-2.5 rounded-lg transition-all duration-200 font-medium ${
+                      i === active
+                        ? "bg-surface text-ink"
+                        : "text-faint hover:text-muted"
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ))}
               </div>
+            </Reveal>
+          </div>
 
-              <div className="flex items-center gap-3 pt-5 border-t border-[#eeeeee]">
-                <div className={`w-10 h-10 rounded-full ${initials[index].bg} flex items-center justify-center text-xs font-bold`}>
-                  {initials[index].chars}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-[#111111]">
-                    {["James Clarke", "Sarah Wijaya", "Budi Santoso"][index]}
-                  </div>
-                  <div className="text-xs text-[#999999]">
-                    {["Owner, Shop The Paws", "CEO, TechBiz Solutions", "Direktur, GreenHill Residence"][index]}
-                  </div>
-                </div>
-              </div>
+          {/* Active quote */}
+          <Reveal delay={0.1}>
+            <div className="relative border-l-2 border-accent pl-8 sm:pl-12 py-2 min-h-[320px] flex flex-col justify-between">
+              <AnimatePresence mode="wait">
+                <motion.blockquote
+                  key={active}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <p className="text-xl sm:text-2xl md:text-[1.75rem] text-ink leading-relaxed font-medium tracking-tight text-pretty">
+                    &ldquo;{t(`testimonials.${current.quoteKey}`)}&rdquo;
+                  </p>
+
+                  <footer className="mt-10 flex items-center gap-4">
+                    <div className="w-11 h-11 rounded-full bg-accent-light text-accent-hover flex items-center justify-center text-xs font-bold">
+                      {current.chars}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-ink">{current.name}</div>
+                      <div className="text-xs text-faint">{current.role}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-semibold text-accent tabular-nums tracking-tight">
+                        {current.metric}
+                      </div>
+                      <div className="text-[11px] text-faint uppercase tracking-wider">
+                        {t(`testimonials.${current.resultKey}`)}
+                      </div>
+                    </div>
+                  </footer>
+                </motion.blockquote>
+              </AnimatePresence>
             </div>
-          ))}
+
+            {/* Pager */}
+            <div className="flex items-center gap-2 mt-8 pl-8 sm:pl-12">
+              {testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  aria-label={`Testimoni ${i + 1}`}
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    i === active ? "w-8 bg-accent" : "w-3 bg-line hover:bg-line-hover"
+                  }`}
+                />
+              ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -136,15 +136,15 @@ export default function LayananPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <div className="badge-premium mb-6 inline-flex">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb] mr-1.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent mr-1.5" />
             Layanan Kami
           </div>
           <h1 className="heading-xl mb-6">
-            <span className="text-[#111111]">Solusi Website</span>
+            <span className="text-ink">Solusi Website</span>
             <br />
-            <span className="text-[#2563eb]">Untuk Semua Bisnis</span>
+            <span className="text-accent">Untuk Semua Bisnis</span>
           </h1>
-          <p className="text-lg sm:text-xl text-[#666666] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-muted max-w-3xl mx-auto leading-relaxed">
             Dari landing page sederhana hingga aplikasi web kompleks — kami siap
             membantu Anda membangun kehadiran digital yang profesional dan efektif.
           </p>
@@ -152,12 +152,12 @@ export default function LayananPage() {
       </section>
 
       {/* ═══════════════ SERVICES GRID ═══════════════ */}
-      <section className="observe-section section-padding bg-[#f8f8f8]">
+      <section className="observe-section section-padding bg-surface">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">Layanan</span>
             <h2 className="heading-lg mb-4">
-              Semua <span className="text-[#2563eb]">Layanan</span>
+              Semua <span className="text-accent">Layanan</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Berbagai jenis website yang bisa kami bangun untuk kebutuhan bisnis Anda.
@@ -167,18 +167,18 @@ export default function LayananPage() {
           <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {services.map((service, i) => (
               <div key={i} className="card-premium p-6 hover-lift group">
-                <div className="w-11 h-11 rounded-xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center text-[#666666] group-hover:text-[#2563eb] group-hover:border-[#2563eb]/30 mb-4 transition-all duration-300">
+                <div className="w-11 h-11 rounded-xl bg-surface border border-line flex items-center justify-center text-muted group-hover:text-accent group-hover:border-accent/30 mb-4 transition-all duration-300">
                   {resolveServiceIcon(service.title)}
                 </div>
-                <h4 className="text-base font-semibold text-[#111111] mb-2 group-hover:text-[#2563eb] transition-colors">
+                <h4 className="text-base font-semibold text-ink mb-2 group-hover:text-accent transition-colors">
                   {service.title}
                 </h4>
-                <p className="text-xs text-[#666666] leading-relaxed mb-3 line-clamp-2">
+                <p className="text-xs text-muted leading-relaxed mb-3 line-clamp-2">
                   {service.desc}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {service.features.map((f, fi) => (
-                    <span key={fi} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#f8f8f8] text-[#666666] border border-[#eeeeee]">
+                    <span key={fi} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface text-muted border border-line">
                       {f}
                     </span>
                   ))}
@@ -198,7 +198,7 @@ export default function LayananPage() {
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">Paket Layanan</span>
             <h2 className="heading-lg mb-4">
-              Paket <span className="text-[#2563eb]">Layanan</span>
+              Paket <span className="text-accent">Layanan</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Pilih paket sesuai kebutuhan Anda — konsultasikan untuk mendapatkan penawaran terbaik.
@@ -210,22 +210,22 @@ export default function LayananPage() {
               <div
                 key={i}
                 className={`card-premium p-6 flex flex-col ${
-                  pkg.isPopular ? "border-2 border-[#2563eb] relative" : ""
+                  pkg.isPopular ? "border-2 border-accent relative" : ""
                 }`}
               >
                 {pkg.isPopular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#2563eb] text-white text-[10px] font-bold rounded-full whitespace-nowrap">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-white text-[10px] font-bold rounded-full whitespace-nowrap">
                     POPULER
                   </div>
                 )}
 
                 <div className={`flex flex-col h-full ${pkg.isPopular ? "mt-4" : ""}`}>
-                  <h3 className="text-base font-semibold text-[#111111] mb-5">{pkg.name}</h3>
+                  <h3 className="text-base font-semibold text-ink mb-5">{pkg.name}</h3>
 
                   <ul className="space-y-2 mb-8 flex-1">
                     {pkg.features.map((f, fi) => (
-                      <li key={fi} className="flex items-start gap-2 text-xs text-[#666666]">
-                        <svg className="w-3.5 h-3.5 text-[#2563eb] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <li key={fi} className="flex items-start gap-2 text-xs text-muted">
+                        <svg className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
                         <span>{f}</span>
@@ -239,8 +239,8 @@ export default function LayananPage() {
                     rel="noopener noreferrer"
                     className={`block text-center py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-300 ${
                       pkg.isPopular
-                        ? "bg-[#111111] text-white hover:bg-black active:scale-[0.98]"
-                        : "bg-[#f8f8f8] text-[#111111] border border-[#eeeeee] hover:bg-[#eeeeee] active:scale-[0.98]"
+                        ? "bg-ink text-white hover:bg-black active:scale-[0.98]"
+                        : "bg-surface text-ink border border-line hover:bg-line active:scale-[0.98]"
                     }`}
                   >
                     Konsultasi Harga
@@ -253,12 +253,12 @@ export default function LayananPage() {
       </section>
 
       {/* ═══════════════ FAQ ═══════════════ */}
-      <section className="observe-section section-padding bg-[#f8f8f8]">
+      <section className="observe-section section-padding bg-surface">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16 reveal">
             <span className="badge-premium mb-4 inline-flex">FAQ</span>
             <h2 className="heading-lg mb-4">
-              Pertanyaan <span className="text-[#2563eb]">Umum</span>
+              Pertanyaan <span className="text-accent">Umum</span>
             </h2>
             <p className="body-lg max-w-2xl mx-auto">
               Jawaban untuk pertanyaan yang sering diajukan tentang layanan kami.
@@ -267,15 +267,15 @@ export default function LayananPage() {
 
           <div className="reveal space-y-3">
             {faqs.map((faq, i) => (
-              <details key={i} className="group border border-[#eeeeee] rounded-xl overflow-hidden transition-all duration-300 hover:border-[#dddddd]">
-                <summary className="flex items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer list-none bg-white hover:bg-[#f8f8f8] transition-colors">
-                  <span className="text-sm sm:text-base font-medium text-[#111111] pr-4">{faq.q}</span>
-                  <svg className="w-5 h-5 flex-shrink-0 text-[#2563eb] transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <details key={i} className="group border border-line rounded-xl overflow-hidden transition-all duration-300 hover:border-line-hover">
+                <summary className="flex items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer list-none bg-white hover:bg-surface transition-colors">
+                  <span className="text-sm sm:text-base font-medium text-ink pr-4">{faq.q}</span>
+                  <svg className="w-5 h-5 flex-shrink-0 text-accent transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
                 <div className="px-5 sm:px-6 pb-5 sm:pb-6 bg-white">
-                  <p className="text-sm text-[#666666] leading-relaxed">{faq.a}</p>
+                  <p className="text-sm text-muted leading-relaxed">{faq.a}</p>
                 </div>
               </details>
             ))}
@@ -286,11 +286,11 @@ export default function LayananPage() {
       {/* ═══════════════ CTA ═══════════════ */}
       <section className="observe-section section-padding bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="reveal max-w-3xl mx-auto text-center p-10 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee]">
+          <div className="reveal max-w-3xl mx-auto text-center p-10 rounded-3xl bg-surface border border-line">
             <h2 className="heading-lg mb-4">
-              Konsultasi <span className="text-[#2563eb]">Gratis</span>
+              Konsultasi <span className="text-accent">Gratis</span>
             </h2>
-            <p className="text-[#666666] mb-6 max-w-lg mx-auto">
+            <p className="text-muted mb-6 max-w-lg mx-auto">
               Tidak yakin paket mana yang cocok? Hubungi kami untuk konsultasi gratis.
             </p>
             <a

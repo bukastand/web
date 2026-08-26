@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
+import { CheckIcon } from "@/lib/icons";
 
 interface PricingItem {
   name: string;
@@ -21,7 +24,6 @@ const defaultPackages: PricingItem[] = [
 export default function PricingSection() {
   const [packages, setPackages] = useState<PricingItem[]>(defaultPackages);
   const { t } = useTranslation();
-  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     supabase
@@ -42,82 +44,86 @@ export default function PricingSection() {
       });
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const cards = entry.target.querySelectorAll(".reveal");
-            cards.forEach((card, i) => {
-              setTimeout(() => card.classList.add("visible"), i * 100);
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="paket" ref={sectionRef} className="section-padding bg-white">
+    <section id="paket" className="section-padding bg-surface">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
-          <span className="badge-premium mb-4 inline-flex">Packages</span>
-          <h2 className="heading-lg mb-4">
-            {t("pricing.heading")} <span className="text-[#2563eb]">{t("pricing.heading_highlight")}</span>
-          </h2>
-          <p className="body-lg max-w-2xl mx-auto">{t("pricing.subtitle")}</p>
-        </div>
+        <SectionHeading
+          index="06"
+          eyebrow="Paket"
+          title={
+            <>
+              {t("pricing.heading")}{" "}
+              <span className="text-muted">{t("pricing.heading_highlight")}</span>
+            </>
+          }
+          description={t("pricing.subtitle")}
+          className="mb-14"
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 items-stretch">
-          {packages.map((pkg, index) => (
-            <div
-              key={index}
-              className={`reveal card-premium p-6 flex flex-col ${
-                pkg.is_popular
-                  ? "border-2 border-[#2563eb] relative"
-                  : ""
-              }`}
-            >
-              {pkg.is_popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#2563eb] text-white text-xs font-bold rounded-full whitespace-nowrap">
-                  Popular
-                </div>
-              )}
-
-              <div className={`flex flex-col h-full ${pkg.is_popular ? "mt-2" : ""}`}>
-                <h3 className="text-lg font-semibold text-[#111111] mb-5">{t(pkg.name)}</h3>
-
-                <ul className="space-y-2.5 mb-8 flex-1">
-                  {pkg.features.map((feature, fi) => (
-                    <li key={fi} className="flex items-start gap-2.5 text-sm text-[#666666]">
-                      <svg className="w-4 h-4 text-[#2563eb] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{t(feature)}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href="https://wa.me/6282210099969"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                    pkg.is_popular
-                      ? "bg-[#111111] text-white hover:bg-black hover:shadow-lg active:scale-[0.98]"
-                      : "bg-[#f8f8f8] text-[#111111] border border-[#eeeeee] hover:bg-[#eeeeee] active:scale-[0.98]"
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 items-stretch">
+          {packages.map((pkg, index) => {
+            const popular = pkg.is_popular;
+            return (
+              <Reveal
+                key={index}
+                delay={index * 0.07}
+                y={20}
+                className={popular ? "sm:col-span-2 xl:col-span-2" : "xl:col-span-1"}
+              >
+                <div
+                  className={`h-full flex flex-col p-7 rounded-2xl transition-transform duration-300 hover:-translate-y-1 ${
+                    popular
+                      ? "bg-ink text-white shadow-[0_24px_48px_-16px_rgba(17,17,17,0.35)]"
+                      : "bg-white border border-line"
                   }`}
                 >
-                  {t("pricing.consult")}
-                </a>
-              </div>
-            </div>
-          ))}
+                  <div className="flex items-center justify-between mb-5 min-h-[28px]">
+                    <h3 className={`text-lg font-semibold ${popular ? "text-white" : "text-ink"}`}>
+                      {t(pkg.name)}
+                    </h3>
+                    {popular && (
+                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-md bg-accent text-white whitespace-nowrap">
+                        {t("pricing.popular")}
+                      </span>
+                    )}
+                  </div>
+
+                  <ul className="space-y-2.5 mb-8 flex-1">
+                    {pkg.features.map((feature, fi) => (
+                      <li
+                        key={fi}
+                        className={`flex items-start gap-2.5 text-sm ${popular ? "text-white/70" : "text-muted"}`}
+                      >
+                        <CheckIcon
+                          className={`w-4 h-4 flex-shrink-0 mt-0.5 ${popular ? "text-accent-light" : "text-accent"}`}
+                          strokeWidth={2.5}
+                        />
+                        <span>{t(feature)}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="https://wa.me/6282210099969"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 active:scale-[0.98] ${
+                      popular
+                        ? "bg-white text-ink hover:bg-accent-light"
+                        : "bg-ink text-white hover:bg-black"
+                    }`}
+                  >
+                    {t("pricing.consult")}
+                  </a>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
+
+        <p className="text-xs text-faint mt-8 text-center">
+          Semua paket termasuk konsultasi gratis dan garansi perbaikan bug.
+        </p>
       </div>
     </section>
   );

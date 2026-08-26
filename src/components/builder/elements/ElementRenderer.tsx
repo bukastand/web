@@ -190,9 +190,9 @@ function ButtonElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
   const styles = applyStyles(el);
   const base = "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300";
   const variants: Record<string, string> = {
-    primary: "bg-[#2563eb] text-white hover:bg-[#1d4ed8]",
-    secondary: "bg-white text-[#111111] hover:bg-[#f8f8f8] border border-[#eeeeee]",
-    outline: "border-2 border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white",
+    primary: "bg-accent text-white hover:bg-accent-hover",
+    secondary: "bg-white text-ink hover:bg-surface border border-line",
+    outline: "border-2 border-accent text-accent hover:bg-accent hover:text-white",
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
@@ -392,7 +392,7 @@ function PricingElement({ el }: ElementComponentProps) {
         {items.map((item: any, i: number) => (
           <div
             key={i}
-            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-[#2563eb] scale-[1.01] md:scale-105 z-10" : ""}`}
+            className={`flex flex-col rounded-2xl ${item.highlighted ? "ring-2 ring-accent scale-[1.01] md:scale-105 z-10" : ""}`}
             style={{
               padding: item.highlighted ? "1.25rem" : "1rem",
               border: item.highlighted ? "none" : `1px solid ${el.content.cardBorder || "#eeeeee"}`,
@@ -876,7 +876,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
         {/* Hamburger Button - Mobile */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-[#f8f8f8] transition-colors"
+          className="md:hidden p-2 rounded-lg hover:bg-surface transition-colors"
           aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
           style={{ color: el.content.menuColor || "#666666" }}
         >
@@ -893,7 +893,7 @@ function NavbarElement({ el, editing, onEdit, onBlurEditing }: ElementComponentP
       </nav>
       {/* Mobile Menu Overlay - with z-index so it shows above other content */}
       {menuOpen && (
-        <div className="md:hidden border-t border-[#eeeeee] relative z-50 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#ffffff" }}>
+        <div className="md:hidden border-t border-line relative z-50 w-full" style={{ backgroundColor: navStyle.backgroundColor || "#ffffff" }}>
           <div className="px-6 py-4 space-y-3">
             {links.map((link: any, i: number) => (
               <a

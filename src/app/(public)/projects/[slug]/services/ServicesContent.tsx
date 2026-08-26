@@ -54,14 +54,14 @@ export default function ServicesContent({ project }: { project: ProjectData }) {
         <div className="absolute inset-0 opacity-[0.02]"
           style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         <div className="relative z-10 container mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#f8f8f8] backdrop-blur-sm border border-[#eeeeee] text-[#111111] text-sm mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#2563eb] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface backdrop-blur-sm border border-line text-ink text-sm mb-6">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             Layanan
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#111111] leading-tight mb-6">
-            Layanan <span className="text-[#2563eb]">Kami</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-ink leading-tight mb-6">
+            Layanan <span className="text-accent">Kami</span>
           </h1>
-          <p className="text-lg text-[#666666] max-w-2xl mx-auto">
+          <p className="text-lg text-muted max-w-2xl mx-auto">
             Solusi lengkap yang kami tawarkan untuk memenuhi kebutuhan {project.industry}
           </p>
         </div>
@@ -69,22 +69,22 @@ export default function ServicesContent({ project }: { project: ProjectData }) {
 
       {/* Services Grid */}
       <section className="relative py-24 bg-white">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#2563eb]/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {servicesSection.items.map((service, i) => {
               const path = serviceIcons[service.icon] || "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z";
               return (
                 <div key={i}
-                  className="reveal-section group p-6 sm:p-8 rounded-2xl bg-[#f8f8f8] border border-[#eeeeee] hover:border-[#2563eb]/40 transition-all duration-500 hover:-translate-y-2 opacity-0 translate-y-8"
+                  className="reveal-section group p-6 sm:p-8 rounded-2xl bg-surface border border-line hover:border-accent/40 transition-all duration-500 hover:-translate-y-2 opacity-0 translate-y-8"
                   style={{ transitionDelay: `${i * 100}ms`, transitionDuration: "700ms" }}>
-                  <div className="w-14 h-14 rounded-xl bg-[#2563eb]/10 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                    <svg className="w-7 h-7 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <svg className="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={path} />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-[#111111] mb-3">{service.title}</h3>
-                  <p className="text-[#666666] leading-relaxed">{service.description}</p>
+                  <h3 className="text-xl font-bold text-ink mb-3">{service.title}</h3>
+                  <p className="text-muted leading-relaxed">{service.description}</p>
                 </div>
               );
             })}
@@ -93,13 +93,13 @@ export default function ServicesContent({ project }: { project: ProjectData }) {
       </section>
 
       {/* Process */}
-      <section className="relative py-24 bg-[#f8f8f8]">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2563eb]/[0.02] via-transparent to-transparent" />
+      <section className="relative py-24 bg-surface">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent/[0.02] via-transparent to-transparent" />
         <div className="container mx-auto px-6">
           <div className="text-center mb-16 reveal-section opacity-0 translate-y-8 transition-all duration-700">
-            <span className="text-[#2563eb] text-sm font-semibold tracking-widest uppercase mb-4 block">Proses</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Bagaimana <span className="text-[#2563eb]">Prosesnya</span>
+            <span className="text-accent text-sm font-semibold tracking-widest uppercase mb-4 block">Proses</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-ink mb-4">
+              Bagaimana <span className="text-accent">Prosesnya</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
@@ -107,13 +107,13 @@ export default function ServicesContent({ project }: { project: ProjectData }) {
               <div key={i}
                 className="reveal-section relative text-center opacity-0 translate-y-8 transition-all duration-700"
                 style={{ transitionDelay: `${i * 150}ms` }}>
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center text-2xl font-bold text-white`}>
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center text-2xl font-bold text-ink`}>
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <h4 className="text-xl font-bold text-[#111111] mb-3">{step.title}</h4>
-                <p className="text-[#666666] leading-relaxed">{step.desc}</p>
+                <h4 className="text-xl font-bold text-ink mb-3">{step.title}</h4>
+                <p className="text-muted leading-relaxed">{step.desc}</p>
                 {i < servicesSection.process.length - 1 && (
-                  <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#2563eb]/40 to-transparent" />
+                  <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-accent/40 to-transparent" />
                 )}
               </div>
             ))}
@@ -126,14 +126,14 @@ export default function ServicesContent({ project }: { project: ProjectData }) {
         <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-5`} />
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="reveal-section max-w-2xl mx-auto opacity-0 translate-y-8 transition-all duration-700">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Siap untuk <span className="text-[#2563eb]">Memulai?</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-ink mb-6">
+              Siap untuk <span className="text-accent">Memulai?</span>
             </h2>
-            <p className="text-lg text-[#666666] mb-8">
+            <p className="text-lg text-muted mb-8">
               Hubungi kami untuk konsultasi gratis dan diskusikan kebutuhan Anda
             </p>
             <a href="https://wa.me/6282210099969" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-[#2563eb] text-[#111111] font-bold rounded-2xl text-lg hover:bg-[#1d4ed8] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#2563eb]/25">
+              className="inline-flex items-center gap-3 px-8 py-4 bg-ink text-white font-bold rounded-2xl text-lg hover:bg-accent-hover transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-accent/25">
               Konsultasi Gratis
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

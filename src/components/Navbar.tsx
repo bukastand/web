@@ -16,9 +16,19 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   const navLinks = [
     { href: "/", label: "Beranda" },
@@ -37,51 +47,59 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/90 backdrop-blur-md border-b border-[#eeeeee]"
+        scrolled || menuOpen
+          ? "bg-white/90 backdrop-blur-md border-b border-line"
           : "bg-white/0"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-16 md:h-[76px]">
           {/* ── LOGO ── */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-xl font-bold tracking-tight text-[#111111]">
+          <Link href="/" className="group flex items-center gap-2.5" aria-label="PAGODA STUDIO — Beranda">
+            <span className="text-lg font-bold tracking-tight text-ink">
               PAGODA
             </span>
-            <span className="w-px h-6 bg-[#eeeeee]" />
-            <span className="text-sm text-[#666666] font-medium">
-              STUDIO
+            <span className="w-px h-5 bg-line group-hover:bg-accent transition-colors duration-300" />
+            <span className="text-xs font-mono uppercase tracking-[0.14em] text-faint group-hover:text-muted transition-colors duration-300">
+              Studio
             </span>
           </Link>
 
           {/* ── DESKTOP NAV ── */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5" aria-label="Navigasi utama">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                aria-current={isActive(link.href) ? "page" : undefined}
+                className={`relative px-3.5 py-2 text-sm transition-colors duration-200 ${
                   isActive(link.href)
-                    ? "text-[#2563eb] bg-[#dbeafe]"
-                    : "text-[#666666] hover:text-[#111111] hover:bg-[#f8f8f8]"
+                    ? "text-ink font-semibold"
+                    : "text-muted hover:text-ink"
                 }`}
               >
                 {link.label}
+                <span
+                  aria-hidden="true"
+                  className={`absolute left-3.5 right-3.5 -bottom-px h-0.5 rounded-full bg-accent origin-left transition-transform duration-300 ${
+                    isActive(link.href) ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
               </Link>
             ))}
           </nav>
 
           {/* ── RIGHT SIDE ── */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Language Toggle */}
             <button
               onClick={() => setLocale(locale === "en" ? "id" : "en")}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#eeeeee] bg-white text-xs font-semibold text-[#666666] hover:text-[#111111] hover:border-[#dddddd] transition-all duration-200"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-line bg-white text-xs font-semibold text-faint hover:text-ink hover:border-line-hover transition-all duration-200"
+              aria-label="Ganti bahasa"
             >
-              <span className={locale === "en" ? "text-[#2563eb]" : ""}>EN</span>
-              <span className="text-[#cccccc]">/</span>
-              <span className={locale === "id" ? "text-[#2563eb]" : ""}>ID</span>
+              <span className={locale === "en" ? "text-accent" : ""}>EN</span>
+              <span className="text-fainter">/</span>
+              <span className={locale === "id" ? "text-accent" : ""}>ID</span>
             </button>
 
             {/* CTA */}
@@ -89,7 +107,7 @@ export default function Navbar() {
               href="https://wa.me/6282210099969"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] text-white text-sm font-semibold rounded-xl hover:bg-black transition-all duration-300 hover:scale-[1.02]"
+              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-ink text-white text-sm font-semibold rounded-xl hover:bg-black active:scale-[0.98] transition-all duration-300"
             >
               {t("nav.consultation")}
             </a>
@@ -97,14 +115,15 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-[#666666] hover:text-[#111111] transition-colors"
-              aria-label="Toggle menu"
+              className="md:hidden p-2 -mr-2 text-ink transition-colors"
+              aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+              aria-expanded={menuOpen}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {menuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7h16M4 12h16M4 17h16" />
                 )}
               </svg>
             </button>
@@ -113,28 +132,31 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden pb-6 border-t border-[#eeeeee] mt-2 pt-4 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className={`block px-4 py-2.5 text-sm rounded-xl transition-colors ${
-                  isActive(link.href)
-                    ? "text-[#2563eb] bg-[#dbeafe]"
-                    : "text-[#666666] hover:text-[#111111] hover:bg-[#f8f8f8]"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-3 mt-3 border-t border-[#eeeeee]">
+          <div className="md:hidden pb-6 pt-2">
+            <nav className="space-y-0.5" aria-label="Navigasi mobile">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className={`block px-4 py-3 text-[15px] rounded-xl transition-colors ${
+                    isActive(link.href)
+                      ? "text-accent font-semibold bg-surface"
+                      : "text-muted hover:text-ink hover:bg-surface"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="pt-4 mt-3 border-t border-line">
               <a
                 href="https://wa.me/6282210099969"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] text-white text-sm font-semibold rounded-xl hover:bg-black transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3.5 bg-ink text-white text-sm font-semibold rounded-xl hover:bg-black transition-colors"
               >
                 {t("nav.consultation")}
               </a>

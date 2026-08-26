@@ -149,16 +149,16 @@ export default function PublishedPage() {
     return (
       <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-3xl bg-[#f8f8f8] border border-[#eeeeee] flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 rounded-3xl bg-surface border border-line flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-faint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-[#111111] mb-2">Halaman Tidak Ditemukan</h1>
-          <p className="text-[#666666] mb-6">Halaman yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
+          <h1 className="text-2xl font-bold text-ink mb-2">Halaman Tidak Ditemukan</h1>
+          <p className="text-muted mb-6">Halaman yang kamu cari tidak tersedia atau belum dipublikasikan.</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#111111] text-white font-semibold rounded-xl hover:bg-black transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-ink text-white font-semibold rounded-xl hover:bg-black transition-all"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -208,7 +208,7 @@ export default function PublishedPage() {
       }}
     >
       {/* Skip to content link for accessibility */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#111111] focus:text-white focus:rounded-lg focus:font-semibold">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:rounded-lg focus:font-semibold">
         Lewati ke konten utama
       </a>
 
@@ -248,11 +248,11 @@ export default function PublishedPage() {
       </div>
 
       {/* Powered by footer */}
-      <footer className="text-center py-6 border-t border-[#eeeeee]" role="contentinfo">
+      <footer className="text-center py-6 border-t border-line" role="contentinfo">
         <Link
           href="https://pagodastudio.my.id"
           target="_blank"
-          className="text-xs text-[#999999] hover:text-[#666666] transition-colors"
+          className="text-xs text-faint hover:text-muted transition-colors"
         >
           Dibuat dengan PAGODASTUDIO
         </Link>
